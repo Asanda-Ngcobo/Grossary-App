@@ -50,7 +50,7 @@ export default async function Page() {
     firstName.charAt(0).toUpperCase() + firstName.slice(1).toLowerCase();
 
   return (
-    <div className="bg-[#041527] mt-[15%] lg:mt-[6%]">
+    <div className="bg-[#041527] mt-[5%] lg:mt-[6%]">
       <Pages profile={profile}/>
 
       {/* Desktop greeting */}
