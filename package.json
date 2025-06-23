@@ -9,15 +9,26 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@deemlol/next-icons": "^0.1.9",
+    "@heroicons/react": "^2.2.0",
+    "@supabase/ssr": "^0.6.1",
+    "@supabase/supabase-js": "^2.49.4",
+    "next": "15.3.1",
+    "next-auth": "^4.24.11",
+    "papaparse": "^5.5.3",
+    "playwright": "^1.53.0",
     "react": "^19.0.0",
+    "react-canvas-confetti": "^2.0.7",
     "react-dom": "^19.0.0",
-    "next": "15.3.1"
+    "react-hot-toast": "^2.5.2",
+    "react-responsive-carousel": "^3.2.23",
+    "react-router-dom": "^7.6.2"
   },
   "devDependencies": {
+    "@eslint/eslintrc": "^3",
     "@tailwindcss/postcss": "^4",
-    "tailwindcss": "^4",
     "eslint": "^9",
     "eslint-config-next": "15.3.1",
-    "@eslint/eslintrc": "^3"
+    "tailwindcss": "^4"
   }
 }
