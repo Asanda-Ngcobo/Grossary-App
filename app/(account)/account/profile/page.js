@@ -1,10 +1,8 @@
 import SignOutButton from "@/app/(authentication)/signOutButton";
-import { auth } from "@/app/_lib/auth";
-import {  ChevronLeft, Edit,    LogOut,  Mail,  Tag, Trash2 } from "@deemlol/next-icons";
+import {  ChevronLeft, Edit,    LogOut,  Mail, Trash2 } from "@deemlol/next-icons";
 import Image from "next/image";
 import Link from "next/link";
-import GrossaryPlusButton from "../../_ui/GrossaryPlusButton";
-import { getLists, getUserById } from "@/app/_lib/data-services";
+import { getLists } from "@/app/_lib/data-services";
 import { createClient } from "@/app/_utils/supabase/server";
 
 

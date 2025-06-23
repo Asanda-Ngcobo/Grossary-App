@@ -1,6 +1,5 @@
-import { auth } from "@/app/_lib/auth"
-import { getLists } from "@/app/_lib/data-services"
 
+import { getLists } from "@/app/_lib/data-services"
 import HistoryClient from "./HistoryClient"
 import { Suspense } from "react"
 import Spinner from "@/app/(website)/_components/Spinner"

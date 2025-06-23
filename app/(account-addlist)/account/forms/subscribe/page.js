@@ -1,19 +1,31 @@
-import { auth } from "@/app/_lib/auth";
+
 import { ChevronLeft, CreditCard, PayPal } from "@deemlol/next-icons";
 import Link from "next/link";
 import EditButton from "../[listId]/edit-list/EditButton";
-import { getUserByEmail } from "@/app/_lib/data-services";
+import { createClient } from "@/app/_utils/supabase/server";
 
 
 
 
 async function page() {
-     const session = await auth();
+  const supabase = await createClient()
+       const { data, error } = await supabase.auth.getUser()
+     
+     
+     // Get additional profile info
+      // Get additional profile info
+       const { data: profile } = await supabase
+         .from('users_info')
+         .select('*')
+         .eq('id', data.user.id)
+         .single();
+  
+
+  
     
     
     
-      const profileInfo = await getUserByEmail(session.user.email);
-      const { name, email } = profileInfo;
+      const email = profile.email;
     return (
         <div>
             <button className="m-5 bg-white rounded-full w-[50px] h-[50px] flex justify-center items-center">

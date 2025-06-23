@@ -4,7 +4,6 @@
 
 
 import { redirect } from "next/navigation";
-import { auth } from "./auth";
 import { revalidatePath } from "next/cache";
 import { getLists } from "./data-services";
 import {supabaseServer} from './supabase-server'
@@ -13,20 +12,6 @@ import toast from "react-hot-toast";
 import { createClient } from "../_utils/supabase/server";
 import { createClient as createClientClient } from "../_utils/supabase/client";
 
-// export async function getGoogleSignInUrl(callbackUrl='/account') {
-//   return `/api/auth/signin/google?callbackUrl=${encodeURIComponent(callbackUrl)}`;
-// }
-// export async function login(formData) {
-//   const callbackUrl = formData.get("callbackUrl") ?? "/";
-//   redirect(`/api/auth/signin/google?callbackUrl=${encodeURIComponent(callbackUrl)}`);
-// }
-
-
-
-
-// export async function logout() {
-//   redirect("/api/auth/signout?callbackUrl=/");
-// }
 
 export async function createList(formData) {
   // const session = await auth();

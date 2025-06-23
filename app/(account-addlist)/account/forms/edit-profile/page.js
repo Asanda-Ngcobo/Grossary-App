@@ -1,7 +1,6 @@
 
 import { ChevronLeft } from "@deemlol/next-icons";
 import Link from "next/link";
-
 import { updateProfile } from "@/app/_lib/actions";
 import { redirect } from "next/navigation";
 import EditButton from "../[listId]/edit-list/EditButton";
