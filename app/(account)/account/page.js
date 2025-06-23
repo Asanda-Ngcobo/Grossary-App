@@ -74,7 +74,7 @@ export default async function Page() {
       </section>
 
       {/* Center image */}
-      <div className="flex justify-center mt-[35%] lg:mt-[5%]">
+      <div className="flex justify-center mt-[20%] lg:mt-[5%]">
         <Image src={ShoppingPic} alt="Shopping" height={400} width={319} />
       </div>
 

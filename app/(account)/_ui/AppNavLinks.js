@@ -51,7 +51,7 @@ function AppNavLinks({ userLists }) {
       <Link
         className={`flex flex-col lg:flex-row items-center lg:gap-10 lg:text-[#04284B]
           lg:w-[90%] lg:ml-[5%] hover:bg-[#04284B] hover:text-gray-50
-          hover:rounded-[4px] lg:p-3 
+          hover:rounded-[4px] lg:p-3 active:opacity-60
           ${isActive ? "text-[#E32227] lg:bg-[#041527] rounded-[4px] lg:text-gray-50" : ""}`}
         href={link.href}
       >

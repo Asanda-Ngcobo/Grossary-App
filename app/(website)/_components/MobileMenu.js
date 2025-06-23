@@ -17,7 +17,7 @@ function MobileMenu({ handleDisplayMenu, showMenu }) {
   return (
     <div
       onClick={handleDisplayMenu}
-      className={`absolute top-24 left-1/2 transform -translate-x-1/2 
+      className={`absolute top-16 left-1/2 transform -translate-x-1/2 
         w-[96%] h-[80vh] z-40
       rounded-2xl bg-white shadow-lg px-6 py-4 text-[#4B4B4B]
       transition-all duration-300 ease-in-out
