@@ -71,7 +71,7 @@ export default function AddItemPage() {
           required
         />
         {suggestions.length > 0 && (
-          <ul className="absolute z-10 w-full bg-white border rounded shadow max-h-40 overflow-y-auto">
+          <ul className="absolute z-10 w-full bg-white border rounded shadow max-h-[70px] overflow-y-auto">
             {suggestions.map((item) => (
               <li
                 key={item.id}
