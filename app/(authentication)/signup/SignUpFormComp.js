@@ -36,8 +36,9 @@ function SignUpFormComp({handleSubmit, isPending}) {
 <input
   type="date"
   name="date_of_birth"
-  required
-  className="border p-2 w-full"
+  placeholder="YYYY/MM/DD"
+  
+  className="border p-2 w-full rounded-sm"
 />
       <button
         type="submit"
