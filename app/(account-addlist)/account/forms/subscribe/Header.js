@@ -1,6 +1,7 @@
 import { auth } from "@/app/_lib/auth";
 import { ChevronLeft, CreditCard, PayPal } from "@deemlol/next-icons";
 import { Link, Links } from "react-router-dom";
+import EditButton from "../[listId]/edit-list/EditButton";
 
 async function Header() {
    
