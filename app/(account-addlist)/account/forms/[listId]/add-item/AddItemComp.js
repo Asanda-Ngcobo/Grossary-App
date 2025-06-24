@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 
-import { supabase } from "@/app/_lib/supabase";
+ 
 
 export default function AddItemPage() {
   const [itemName, setItemName] = useState("");
@@ -18,13 +18,7 @@ export default function AddItemPage() {
         return;
       }
 
-    //   const { data, error } = await supabase
-    //          .from("grocery_items")
-    //          .select("*")
-    //          .ilike("item_name", `${itemName}%`) // match items starting with input
-    //          .limit(5);
-     
-    //        if (!error) setSuggestions(data || []);
+
     };
 
     fetchSuggestions();
@@ -36,25 +30,6 @@ export default function AddItemPage() {
     setSuggestions([]);
   };
 
-//   const handleSubmit = async (e) => {
-//     e.preventDefault();
-
-//     const res = await fetch("/api/items", {
-//       method: "POST",
-//       body: JSON.stringify({
-//         list_id: params.listId,
-//         item_name: itemName,
-//         category,
-//         brand,
-//         quantity,
-//         price,
-//       }),
-//       headers: { "Content-Type": "application/json" },
-//     });
-
-//     if (res.ok) router.push(`/account/lists/${params.listId}`);
-//     else alert("Failed to add item.");
-//   };
 
   return (
     <form className="p-4 max-w-md mx-auto mt-10 bg-white rounded shadow">
@@ -71,7 +46,7 @@ export default function AddItemPage() {
           required
         />
         {suggestions.length > 0 && (
-          <ul className="absolute z-10 w-full bg-white border rounded shadow max-h-[70px] overflow-y-auto">
+          <ul className="absolute z-10 w-full bg-white border rounded shadow max-h-[7s0px] overflow-y-auto">
             {suggestions.map((item) => (
               <li
                 key={item.id}

@@ -36,7 +36,7 @@ function SignUpFormComp({handleSubmit, isPending}) {
 <input
   type="date"
   name="date_of_birth"
-  placeholder="YYYY/MM/DD"
+  placeholder="Date Of Birth"
   
   className="border p-2 w-full rounded-sm"
 />

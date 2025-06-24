@@ -70,7 +70,7 @@ export default function AddItemForm({ listId }) {
       <div className="py-2 px-4 rounded-md w-[90%] mt-[5%]
   ml-[5%] md:w-[40%] md:ml-[25%] grid grid-rows-2 gap-2 bg-[#041527]
    shadow-sm">
-         <label htmlFor="name" className=" text-2xl">Item Name</label>
+         <label htmlFor="name" className=" text-2xl">Search Item</label>
         <input
           type="text"
           name="item_name"
@@ -86,8 +86,8 @@ export default function AddItemForm({ listId }) {
 
         {suggestions.length > 0 && (
           <ul className="absolute bg-[#041527] border text-white
-           shadow-xl w-[80%] max-h-[300px]  z-10 rounded
-           mt-[80%] overflow-y-auto lg:mt-[20%] lg:w-[40%]
+           shadow-xl    z-10 rounded
+           mt-[53%] overflow-y-auto lg:mt-[20%] lg:w-[40%]
 
             ">
             {suggestions.map((item, index) => (
@@ -119,7 +119,7 @@ export default function AddItemForm({ listId }) {
           </ul>
         )}
         {/* Category (Auto-filled) */}
-       <label htmlFor="name" className=" text-2xl">Item Category</label>
+       <label htmlFor="name" className=" text-2xl hidden">Item Category</label>
       <input
         type="text"
         name="item_category"
@@ -127,7 +127,7 @@ export default function AddItemForm({ listId }) {
        
         onChange={(e) => setSelectedCategory(e.target.value)}
         required
-        className="bg-white text-gray-300 text-2xl p-3 rounded-md w-full"
+        className="bg-white text-gray-300 text-2xl p-3 rounded-md w-full hidden"
       />
       </div>
 
