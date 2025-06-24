@@ -15,7 +15,7 @@ export default function AddItemForm({ listId }) {
   const [selectedBrand, setSelectedBrand] = useState('');
   const [selectedNumber, setSelectedNumber] = useState('');
   const [selectedUnit, setSelectedUnit] = useState('');
-const [hasSearched, setHasSearched] = useState(false);
+// const [hasSearched, setHasSearched] = useState(false);
 
   const [supabase] = useState(() =>
     createClient(
@@ -28,7 +28,7 @@ const [hasSearched, setHasSearched] = useState(false);
   const fetchSuggestions = async () => {
     if (query.length < 2) {
       setSuggestions([]);
-      setHasSearched(false);
+      // setHasSearched(false);
       return;
     }
 
@@ -91,17 +91,17 @@ const [hasSearched, setHasSearched] = useState(false);
           autoComplete="on"
           className="bg-white text-black text-2xl p-3  rounded-4xl w-full"
         />
- {query.length > 2 && hasSearched && suggestions.length === 0 && (
+ {/* {query.length > 2 && hasSearched && suggestions.length === 0 && (
   <div className='absolute top-[30%] bg-red-500 text-white text-center rounded-md p-3 w-[80%] md:w-[40%]'>
     😞 Item not found. Please try a different name.
   </div>
-)}
+)} */}
 
 
        {suggestions.length > 0 && (
           <ul className="absolute bg-[#041527] border text-white
            shadow-xl  w-[80%]  z-10 rounded
-           mt-[32%] overflow-y-auto lg:mt-[20%] lg:w-[40%]
+           mt-[35%] overflow-y-auto lg:mt-[20%] lg:w-[40%]
 
             ">
             {suggestions.map((item, index) => (
