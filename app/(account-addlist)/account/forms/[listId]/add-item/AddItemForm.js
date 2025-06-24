@@ -77,6 +77,20 @@ const [hasSearched, setHasSearched] = useState(false);
   ml-[5%] md:w-[40%] md:ml-[25%] grid grid-rows-2 gap-2 bg-[#041527]
    shadow-sm">
 
+
+         <label htmlFor="name" className=" text-2xl text-center">Add Item</label>
+        <input
+          type="text"
+          name="item_name"
+          placeholder="Item Name"
+          value={query}
+          onChange={(e) => {
+            setQuery(e.target.value);
+          }}
+          required
+          autoComplete="on"
+          className="bg-white text-black text-2xl p-3  rounded-4xl w-full"
+        />
  {query.length > 2 && hasSearched && suggestions.length === 0 && (
   <div className='absolute top-[25%] bg-red-500 text-white text-center rounded-md p-3 w-[80%] md:w-[40%]'>
     😞 Item not found. Please try a different name.
@@ -87,7 +101,7 @@ const [hasSearched, setHasSearched] = useState(false);
        {suggestions.length > 0 && (
           <ul className="absolute bg-[#041527] border text-white
            shadow-xl  w-[80%]  z-10 rounded
-           mt-[25%] overflow-y-auto lg:mt-[20%] lg:w-[40%]
+           mt-[30%] overflow-y-auto lg:mt-[20%] lg:w-[40%]
 
             ">
             {suggestions.map((item, index) => (
@@ -118,20 +132,6 @@ const [hasSearched, setHasSearched] = useState(false);
             ))}
           </ul>
         )}
-         <label htmlFor="name" className=" text-2xl">Search Item</label>
-        <input
-          type="text"
-          name="item_name"
-          placeholder="Item Name"
-          value={query}
-          onChange={(e) => {
-            setQuery(e.target.value);
-          }}
-          required
-          autoComplete="off"
-          className="bg-white text-black text-2xl p-3 mt-[40%] rounded-md w-full"
-        />
-
      
         {/* Category (Auto-filled) */}
        <label htmlFor="name" className=" text-2xl hidden">Item Category</label>
@@ -146,7 +146,7 @@ const [hasSearched, setHasSearched] = useState(false);
       />
       </div>
 
-      <AddItemButton>Add Item</AddItemButton>
+      
 
       <input
         type="text"
@@ -182,6 +182,7 @@ const [hasSearched, setHasSearched] = useState(false);
           onChange={(e) => setSelectedUnit(e.target.value)}
         className="w-full border px-3 py-2 rounded hidden"
       />
+      {query && <AddItemButton>Add Item</AddItemButton>}
 
       </form>
     </main>

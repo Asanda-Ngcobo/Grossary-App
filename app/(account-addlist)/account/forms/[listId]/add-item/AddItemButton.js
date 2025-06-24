@@ -14,9 +14,9 @@ function AddItemButton({children}) {
     return (
         <button className={`${ButtonFont.className} bg-[#A2B06D]
         
-        w-[60%]
-        mx-[20%]
-        mt-10
+        w-[80%]
+        mx-[10%]
+        mt-[80%]
         lg:w-[20%] lg:ml-[35%]
          h-[50px] rounded-[10px]
          text-white
