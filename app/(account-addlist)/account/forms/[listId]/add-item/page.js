@@ -8,7 +8,7 @@ export default async function Page({ params }) {
 
   return (
 <Suspense fallback={<Loading/>}>
- <AddItemForm listId={listId} />;
+ <AddItemForm listId={listId} />
   </Suspense>
   )
   
