@@ -15,6 +15,7 @@ export default function AddItemForm({ listId }) {
   const [selectedBrand, setSelectedBrand] = useState('');
   const [selectedNumber, setSelectedNumber] = useState('');
   const [selectedUnit, setSelectedUnit] = useState('');
+const [hasSearched, setHasSearched] = useState(false);
 
   const [supabase] = useState(() =>
     createClient(
@@ -24,23 +25,28 @@ export default function AddItemForm({ listId }) {
   );
 
   useEffect(() => {
-    const fetchSuggestions = async () => {
-      if (query.length < 2) {
-        setSuggestions([]);
-        return;
-      }
+  const fetchSuggestions = async () => {
+    if (query.length < 2) {
+      setSuggestions([]);
+      setHasSearched(false);
+      return;
+    }
 
-      const { data, error } = await supabase
-        .from('grocery_items')
-        .select('*')
-        .ilike('item_name', `${query}%`)
-        .limit(5);
+    const { data, error } = await supabase
+      .from('grocery_items')
+      .select('*')
+      .ilike('item_name', `${query}%`)
+      .limit(5);
 
-      if (!error) setSuggestions(data);
-    };
+    if (!error) {
+      setSuggestions(data);
+      setHasSearched(true); // mark search complete
+    }
+  };
 
-    fetchSuggestions();
-  }, [query, supabase]);
+  fetchSuggestions();
+}, [query, supabase]);
+
 
  const handleSuggestionClick = (item) => {
   setQuery(item.item_name ?? '');
@@ -70,6 +76,13 @@ export default function AddItemForm({ listId }) {
       <div className="py-2 px-4 rounded-md w-[90%] mt-[5%]
   ml-[5%] md:w-[40%] md:ml-[25%] grid grid-rows-2 gap-2 bg-[#041527]
    shadow-sm">
+
+ {query.length > 2 && hasSearched && suggestions.length === 0 && (
+  <div className='absolute top-[25%] bg-red-500 text-white text-center rounded-md p-3 w-[80%] md:w-[40%]'>
+    😞 Item not found. Please try a different name.
+  </div>
+)}
+
 
        {suggestions.length > 0 && (
           <ul className="absolute bg-[#041527] border text-white

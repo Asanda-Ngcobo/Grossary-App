@@ -376,13 +376,13 @@ export async function signUpUser(formData) {
   const fullName = formData.get('fullName').toString();
   const email = formData.get('email').toString();
   const password = formData.get('password').toString();
-const dob = formData.get('date_of_birth').toString();
+// const dob = formData.get('date_of_birth').toString();
 
   const { data, error } = await supabase.auth.signUp({
     email,
     password,
     fullName,
-    dob
+    // dob
   });
 
   if (error) throw new Error(error.message);
@@ -396,7 +396,7 @@ const { error: profileError } = await supabaseServer.from('users_info').insert({
   email: email,
   fullName: fullName,
   role: 'user',
-  date_of_birth: dob, // ✅ storing DOB
+  // date_of_birth: dob, // ✅ storing DOB
 });
   if (profileError) throw new Error(profileError.message);
 

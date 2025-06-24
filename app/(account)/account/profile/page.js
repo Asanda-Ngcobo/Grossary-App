@@ -71,7 +71,7 @@ const navLinks = [
     name: <SignOutButton/>,
     
   
-    icon2: <LogOut/>,
+    
     
   },
  

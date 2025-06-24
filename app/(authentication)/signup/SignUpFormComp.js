@@ -33,13 +33,13 @@ function SignUpFormComp({handleSubmit, isPending}) {
       <input type="password" name="password" placeholder="Password"
        required className="border p-2 w-full rounded-sm" />
 
-<input
+{/* <input
   type="date"
   name="date_of_birth"
   placeholder="Date Of Birth"
   
   className="border p-2 w-full rounded-sm"
-/>
+/> */}
       <button
         type="submit"
         disabled={isPending}
