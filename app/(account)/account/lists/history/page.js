@@ -2,8 +2,9 @@
 import { getLists } from "@/app/_lib/data-services"
 import HistoryClient from "./HistoryClient"
 import { Suspense } from "react"
-import Spinner from "@/app/(website)/_components/Spinner"
 import { createClient } from "@/app/_utils/supabase/server"
+import Loading from "../../loading"
+
 
 async function page() {
      const supabase = await createClient()
@@ -31,7 +32,7 @@ list.money_spent > 0 )
 
 
     return (
-      <Suspense fallback={<Spinner/>}>
+      <Suspense fallback={<Loading/>}>
  <HistoryClient 
             userId={profile.id}
             History={History}/>

@@ -3,9 +3,10 @@ import { getLists } from "@/app/_lib/data-services"
 import Link from "next/link"
 import Lists from '@/app/(account)/_ui/Lists'
 import { Suspense } from "react"
-import Spinner from "@/app/(website)/_components/Spinner"
+
 
 import { createClient } from "@/app/_utils/supabase/server"
+import Loading from "./loading"
 
 async function page() {
 
@@ -47,7 +48,7 @@ list.money_spent === 0 || list.money_spent === null)
                 text-[#A2B06D]">
                 &#43; New List</span></Link></p>
             ): (
-                <Suspense fallback={<Spinner/>}>
+                <Suspense fallback={<Loading/>}>
 <Lists myLists={activeList}/>
                 </Suspense>
                 

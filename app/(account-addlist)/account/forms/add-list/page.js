@@ -1,11 +1,14 @@
 import { Suspense } from "react"
 import AddListForm from "./AddListForm"
-import ListAnimation from "@/app/(account)/_ui/ListAnimation"
+import Loading from "../loading"
+
+
+
 
 
 function page() {
    
-    return <Suspense fallback={<ListAnimation/>}>
+    return <Suspense fallback={<Loading/>}>
         <AddListForm/>
     </Suspense>
 }

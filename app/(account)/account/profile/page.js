@@ -4,6 +4,10 @@ import Image from "next/image";
 import Link from "next/link";
 import { getLists } from "@/app/_lib/data-services";
 import { createClient } from "@/app/_utils/supabase/server";
+import { Suspense } from "react";
+import Loading from "../loading";
+
+
 
 
 
@@ -48,6 +52,7 @@ const monthlySave = new Intl.NumberFormat('en-ZA', {
   // const monthlySave = Number(profile.avg_monthly_savings).toFixed(2);
   const monthlyBudget = Number(profile.avg_monthly_savings) + Number(profile.avg_monthly_spend);
   const savedPercentage = ((profile.avg_monthly_savings / monthlyBudget) * 100).toFixed(2);
+  
 const navLinks = [
 
   {
@@ -82,7 +87,8 @@ const navLinks = [
 ];
 
     return (
-        <>
+
+        <Suspense fallback={<Loading/>}>
         {/* back button */}
        <div className="my-5 mx-[5%] bg-white rounded-full
         w-[40px] h-[40px] flex justify-center items-center lg:hidden"> 
@@ -161,7 +167,7 @@ const navLinks = [
 </section>
   
           
-</>
+</Suspense>
         
         )
       }

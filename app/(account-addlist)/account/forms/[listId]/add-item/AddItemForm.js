@@ -86,8 +86,8 @@ export default function AddItemForm({ listId }) {
 
         {suggestions.length > 0 && (
           <ul className="absolute bg-[#041527] border text-white
-           shadow-xl    z-10 rounded
-           mt-[53%] overflow-y-auto lg:mt-[20%] lg:w-[40%]
+           shadow-xl  w-[80%]  z-10 rounded
+           mt-[55%] overflow-y-auto lg:mt-[20%] lg:w-[40%]
 
             ">
             {suggestions.map((item, index) => (
