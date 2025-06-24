@@ -4,7 +4,7 @@ import { getList, getListsItemsById } from "@/app/_lib/data-services";
 
 import PageClient from "./add-price/PageClient";
 import { Suspense } from "react";
-import ListAnimation from "@/app/(account)/_ui/ListAnimation";
+import Loading from "../loading";
 
 
 
@@ -35,7 +35,7 @@ export default async function Page({ params }) {
      
   return (
     <main>
- <Suspense fallback={<ListAnimation/>}>
+ <Suspense fallback={<Loading/>}>
 <PageClient listId={id} list_name={list_name}
 list_budget={list_budget}
  groupedItems={groupItemsByCategory(listitems)}
