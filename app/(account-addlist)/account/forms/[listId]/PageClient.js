@@ -176,7 +176,7 @@ useEffect(() => {
           );
         })}
       </div>
-     {itemsLength !== 0 && <div className=' rounded-2xl w-[70%] h-[70px] mx-[15%]  md:w-[40%] md:mx-[30%]
+     {overallShopped > 0 && overallShopped === itemsLength  && <div className=' rounded-2xl w-[70%] h-[70px] mx-[15%]  md:w-[40%] md:mx-[30%]
      flex  justify-center items-center bg-[#04284B]
  
       fixed bottom-3 left-0 z-20 shadow-2xl'
@@ -184,9 +184,7 @@ useEffect(() => {
         
  
   <h1 className="font-bold">
-    {toBeShopped > 0
-      ? `${toBeShopped} of ${itemsLength} items still to be shopped`
-      : "All Done☺️🎉"}
+     All Done☺️🎉
   </h1>
 
 

@@ -40,7 +40,7 @@ export default function AddItemForm({ listId }) {
 
     if (!error) {
       setSuggestions(data);
-      setHasSearched(true); // mark search complete
+      // setHasSearched(true); // mark search complete
     }
   };
 
