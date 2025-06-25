@@ -35,6 +35,8 @@ function List({ list, onDelete }) {
         <DeleteList handleModal={handleModal}/>
       </div>
     </li>
+
+    {/* Delete List Modal */}
     {isOpenModal && <DeleteModal listId={id} 
     onDelete={onDelete}
     handleModal={handleModal}

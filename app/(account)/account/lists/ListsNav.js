@@ -25,12 +25,12 @@ export default function ListNavigation() {
 
   return (
     <nav className="fixed top-0 w-[90%] ml-[5%] 
-    lg:w-[60%]  xl:ml-[5%]  mt-6 bg-[#041527] -z-10">
-       <div className="my-5 mx-[5%] bg-white rounded-full
+    lg:w-[60%]  xl:ml-[10%]  mt-6 bg-[#041527] -z-10  ">
+       <div className="my-5 mx-[5%] bg-white active:bg-gray-600 rounded-full
         w-[40px] h-[40px] flex justify-center items-center lg:hidden"> 
             <Link href='/account'><ChevronLeft color="black" size={30}/></Link> </div>
             
-      <ul className="flex flex-row justify-between gap-0 border-b border-[#D9D9D9]">
+      <ul className="flex flex-row justify-between gap-0 border-b border-[#D9D9D9] cursor-pointer">
         {navLinks.map((link) => {
           const isActive = pathname === link.href;
 
@@ -38,16 +38,16 @@ export default function ListNavigation() {
             <li
               key={link.name}
               className={`flex flex-col items-center justify-center 
-                lg:flex-row lg:gap-2 w-full 
+                lg:flex-row lg:gap-2 w-full cursor-pointer
                 ${isActive ? "border-b-2 border-[#E32227]" : "border-b-2 border-transparent"}`}
             >
               <Link
                 href={link.href}
-                className={`flex flex-col lg:flex-row items-center justify-center
+                className={`flex flex-col lg:flex-row items-center justify-center cursor-pointer 
                   w-full text-center lg:gap-2 hover:text-[#E32227] hover:rounded-[4px] p-3`}
               >
                 {link.icon}
-                <span>{link.name}</span>
+                <span className="cursor-pointer ">{link.name}</span>
               </Link>
             </li>
           );

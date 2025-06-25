@@ -1,13 +1,13 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import HandleCategories from './HandleCategories';
+import HandleCategories from './add-price/HandleCategories';
 import Link from 'next/link';
 import { ChevronLeft, Edit, Plus, ShoppingCart } from '@deemlol/next-icons';
-import DecreaseQuantity from '../add-item/DecreaseQuantity';
-import DeleteItem from '../add-item/DeleteItem';
-import IncreaseQuantity from '../add-item/IncreaseQuantity';
-import FireworksComponent from '../FireWorksComponent';
+import DecreaseQuantity from './add-item/DecreaseQuantity';
+import DeleteItem from './add-item/DeleteItem';
+import IncreaseQuantity from './add-item/IncreaseQuantity';
+import FireworksComponent from './FireWorksComponent';
 
 
 
@@ -66,7 +66,7 @@ useEffect(() => {
        text-white rounded-md shadow-sm px-4 py-4">
         <div className="flex items-center justify-between mb-4">
           <Link href="/account/lists">
-            <button className="bg-white text-black rounded-full w-10 h-10 flex items-center justify-center">
+            <button className="bg-white active:bg-gray-600 text-black rounded-full w-10 h-10 flex items-center justify-center">
               <ChevronLeft />
             </button>
           </Link>
@@ -98,7 +98,7 @@ useEffect(() => {
           />
         </div>
 
-        <Link href={`/account/forms/${listId}/add-item`} className="bg-[#A2B06D] w-[40px] h-[40px] rounded-full flex justify-center items-center -mb-8 ml-[90%]">
+        <Link href={`/account/forms/${listId}/add-item`} className="bg-[#A2B06D] active:bg-gray-600 w-[40px] h-[40px] rounded-full flex justify-center items-center -mb-8 ml-[90%]">
           <button className="cursor-pointer"><Plus /></button>
         </Link>
       </div>

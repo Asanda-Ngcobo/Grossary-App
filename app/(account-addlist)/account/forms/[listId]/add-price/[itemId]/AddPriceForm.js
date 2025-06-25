@@ -47,7 +47,7 @@ export default function AddPriceForm({ itemId, listId }) {
         onSubmit={handleSubmit}
         className="py-2 px-4 rounded-md w-[90%] mt-[5%] ml-[5%] md:w-[40%] md:ml-[25%] grid grid-rows-2 gap-2 bg-[#041527] shadow-sm"
       >
-         <button className="my-5 mx-[5%] bg-white rounded-full w-[50px] h-[50px] flex justify-center items-center"> 
+         <button className="my-5 mx-[5%] bg-white active:bg-gray-600 rounded-full w-[50px] h-[50px] flex justify-center items-center"> 
                     <Link href={`/account/forms/${listId}`}><ChevronLeft color="black" size={40}/></Link> </button>
         <label className="text-white text-xl">Item Name</label>
         <input

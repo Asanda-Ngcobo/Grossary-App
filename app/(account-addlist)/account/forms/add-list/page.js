@@ -1,6 +1,6 @@
 import { Suspense } from "react"
 import AddListForm from "./AddListForm"
-import Loading from "../loading"
+import Loading from "./loading"
 
 
 

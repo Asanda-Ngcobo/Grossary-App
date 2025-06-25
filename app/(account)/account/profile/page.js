@@ -90,7 +90,7 @@ const navLinks = [
 
         <Suspense fallback={<Loading/>}>
         {/* back button */}
-       <div className="my-5 mx-[5%] bg-white rounded-full
+       <div className="my-5 mx-[5%] bg-white active:bg-gray-600 rounded-full
         w-[40px] h-[40px] flex justify-center items-center lg:hidden"> 
             <Link href='/account'><ChevronLeft color="black" size={30}/></Link> </div>   
 
@@ -115,9 +115,9 @@ const navLinks = [
       <h1 className="text-lg">{fullName}</h1>
       <button
       type="button"
-      className="p-2 rounded-full bg-accent-100 hover:bg-accent-200 transition cursor-pointer"
+      className="p-2 rounded-full  bg-accent-100 hover:bg-accent-200 transition cursor-pointer"
     >
-     <Link href='/account/forms/edit-profile'><Edit color="#A2B06D" /></Link> 
+     <Link href='/account/forms/edit-profile'><Edit color="#A2B06D" className="active:bg-gray-600"/></Link> 
     </button>
     </div>
     

@@ -60,7 +60,7 @@ export default function AddItemForm({ listId }) {
 
   return (
     <main>
-      <button className="my-5 mx-[5%] bg-white rounded-full w-[50px] h-[50px] flex justify-center items-center">
+      <button className="my-5 mx-[5%] bg-white active:bg-gray-600 rounded-full w-[50px] h-[50px] flex justify-center items-center">
         <Link href={`/account/forms/${listId}`}>
           <ChevronLeft color="black" size={40} />
         </Link>
@@ -74,7 +74,7 @@ export default function AddItemForm({ listId }) {
       >
         {/* Item Name with Autocomplete */}
       <div className="py-2 px-4 rounded-md w-[90%] mt-[2%]
-  ml-[5%] md:w-[40%] md:ml-[25%] grid grid-rows-2 gap-2 bg-[#041527]
+  ml-[5%] md:w-[40%] md:ml-[25%] lg:w-[40%] lg:ml-[30%] grid grid-rows-2 gap-2 bg-[#041527]
    shadow-sm">
 
 
@@ -101,17 +101,17 @@ export default function AddItemForm({ listId }) {
        {suggestions.length > 0 && (
           <ul className="absolute bg-[#041527] border text-white
            shadow-xl  w-[80%]  z-10 rounded
-           mt-[35%] overflow-y-auto lg:mt-[20%] lg:w-[40%]
+           mt-[35%]  overflow-y-auto lg:mt-[15%] lg:w-[40%]
 
             ">
             {suggestions.map((item, index) => (
               <li
                 key={index}
                 onClick={() => handleSuggestionClick(item)}
-                className="px-3 py-2 hover:bg-gray-100 cursor-pointer"
+                className="px-3 py-2 hover:bg-gray-100 hover:text-[#041527] cursor-pointer"
               >
                
-                       <div className='flex flex-row justify-between text-[##041527]'>
+                       <div className='flex flex-row justify-between '>
                     <div className='flex gap-4'>
                  <h1>{item.item_name}</h1>
                  <h1>{item.item_brand}</h1>

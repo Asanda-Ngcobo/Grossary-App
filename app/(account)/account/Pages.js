@@ -31,17 +31,20 @@ list.money_spent === 0 || list.money_spent === null)
                  
              <div>
       <ul className=" flex gap-2 mr-4">
-            <li ><Link href='/account/lists' className="w-[40px] h-[40px] rounded-full bg-[#04284B]
+        {/* Lists */}
+            <li ><Link href='/account/lists' className="w-[40px] h-[40px] rounded-full bg-[#04284B] active:bg-gray-600
             flex justify-center items-center"><List  /></Link>
              <span className="text-xs absolute lg:text-sm bg-[#E32227] text-white px-2 py-0.5
               rounded-full ml-5 -mt-10 lg:ml-25 lg:-mt-5">
             {listCount}
           </span></li>
-            <li ><Link href='/account/reports' className="w-[40px] h-[40px] rounded-full bg-[#04284B]
+          {/* Reports */}
+            <li ><Link href='/account/reports' className="w-[40px] h-[40px] rounded-full bg-[#04284B] active:bg-gray-600
             flex justify-center items-center "> <BarChart/></Link></li>
+            {/* Profile */}
                <li className="flex gap-3 text-[#8F8C8C] text-[15px]"> 
                 <Link href='/account/profile'>  <Image   src={profile?.image ?? "/default-profile-picture.jpg"} height={40} width={40} alt='profile'
-             className="rounded-full"/></Link>
+             className="rounded-full active:bg-gray-600"/></Link>
                   
              </li>
 

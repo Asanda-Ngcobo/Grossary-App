@@ -1,7 +1,7 @@
 function loading() {
     return (
-        <section className="mt-[40%]">
-               <div className="mx-auto w-full max-w-sm rounded-md  p-4">
+        <section className="mt-[40%] lg:mt-[10%] w-[80%] mx-[10%]">
+               <div className="mx-auto w-full rounded-md  p-4">
   <div className="flex animate-pulse space-x-4">
     <div className="size-10 rounded-full bg-gray-200"></div>
     <div className="flex-1 space-y-6 py-1">
@@ -16,7 +16,7 @@ function loading() {
     </div>
   </div>
 </div>
-               <div className="mx-auto w-full max-w-sm rounded-md  p-4">
+               <div className="mx-auto w-full  rounded-md  p-4">
   <div className="flex animate-pulse space-x-4">
     <div className="size-10 rounded-full bg-gray-200"></div>
     <div className="flex-1 space-y-6 py-1">
@@ -31,7 +31,7 @@ function loading() {
     </div>
   </div>
 </div>
-               <div className="mx-auto w-full max-w-sm rounded-md  p-4">
+               <div className="mx-auto w-full  rounded-md  p-4">
   <div className="flex animate-pulse space-x-4">
     <div className="size-10 rounded-full bg-gray-200"></div>
     <div className="flex-1 space-y-6 py-1">

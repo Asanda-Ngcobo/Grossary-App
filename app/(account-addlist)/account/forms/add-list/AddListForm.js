@@ -9,7 +9,7 @@ import SubmitButton from "../SubmitButton"
 function AddListForm() {
     return (
          <main>
-              <div className="my-5 mx-[5%] bg-white rounded-full w-[50px] h-[50px] flex justify-center items-center"> 
+              <div className="my-5 mx-[5%] bg-white active:bg-gray-600 rounded-full w-[50px] h-[50px] flex justify-center items-center"> 
             <Link href='/account'><ChevronLeft color="black" size={40}/></Link> </div>
             <section>
                      

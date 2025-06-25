@@ -66,7 +66,7 @@ export default async function Page() {
 
         <Link href="/account/forms/add-list">
           <MainAppButton>
-            <span className="flex justify-between items-center mx-3">
+            <span className="flex justify-between items-center mx-3 active:bg-gray-600">
               + New List
             </span>
           </MainAppButton>
@@ -80,7 +80,7 @@ export default async function Page() {
 
       {/* Mobile CTA button */}
       <button
-        className={`${ButtonFont.className} bg-[#A2B06D] w-[90%] mx-[5%] h-[50px] rounded-[10px] mt-25 text-white font-semibold cursor-pointer hover:bg-[#6f7a46] lg:hidden`}
+        className={`${ButtonFont.className} bg-[#A2B06D] active:bg-gray-600 w-[90%] mx-[5%] h-[50px] rounded-[10px] mt-25 text-white font-semibold cursor-pointer hover:bg-[#6f7a46] lg:hidden`}
       >
         <Link
           href="/account/forms/add-list"

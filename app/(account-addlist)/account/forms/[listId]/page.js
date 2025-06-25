@@ -2,9 +2,10 @@
 
 import { getList, getListsItemsById } from "@/app/_lib/data-services";
 
-import PageClient from "./add-price/PageClient";
+import PageClient from "./PageClient";
 import { Suspense } from "react";
-import Loading from "../loading";
+import Loading from "./loading";
+
 
 
 
