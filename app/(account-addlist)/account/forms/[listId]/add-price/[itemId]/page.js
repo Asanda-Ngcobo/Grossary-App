@@ -7,6 +7,7 @@ import Link from 'next/link';
 import { ChevronLeft } from '@deemlol/next-icons';
 import Spinner from '@/app/(website)/_components/Spinner';
 import { Lexend_Deca } from "next/font/google";
+import Loading from './loading';
 
 const ButtonFont = Lexend_Deca({ subsets: ["latin"], display: 'swap' });
 export default function AddPricePage({ params }) {
@@ -48,7 +49,7 @@ export default function AddPricePage({ params }) {
 
   if (!item) {
     return <div className="
-    flex justify-center items-center"><Spinner/></div>
+    flex justify-center items-center"><Loading/></div>
   }
 
   return (
