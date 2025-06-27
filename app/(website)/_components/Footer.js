@@ -19,9 +19,9 @@ function Footer() {
             <li className="hover:underline p-2 rounded-md transition">
               <Link href="/features/staying-under-budget">Stay Under Budget</Link>
             </li>
-            <li className="hover:underline p-2 rounded-md transition">
+            {/* <li className="hover:underline p-2 rounded-md transition">
               <Link href="/features/grossaryplus">Grossary Plus</Link>
-            </li>
+            </li> */}
           </ul>
         </div>
 
@@ -64,8 +64,9 @@ function Footer() {
       </div>
       <div className="md:flex flex-row justify-between">
         <div className="flex flex-row gap-3">
-        <Instagram/>
-        <Facebook/>
+        
+        <Link href=''><Instagram/></Link>
+        {/* <TikTok/> */}
         <Linkedin/>
         </div>
         

@@ -35,9 +35,9 @@ function MobileMenu({ handleDisplayMenu, showMenu }) {
             <li className="p-3 hover:bg-gray-100 rounded-xl transition">
               <Link href="/features/staying-under-budget">Staying under Budget</Link>
             </li>
-            <li className="p-3 hover:bg-gray-100 rounded-xl transition">
+            {/* <li className="p-3 hover:bg-gray-100 rounded-xl transition">
               <Link href="/features/grossaryplus">Grossary Plus</Link>
-            </li>
+            </li> */}
           </ul>
         </li>
 

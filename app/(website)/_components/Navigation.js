@@ -48,9 +48,9 @@ export default async function Navigation() {
       <li className="p-3 hover:bg-[#f1f0f0] rounded-xl">
         <Link href="/features/staying-under-budget">Staying under Budget</Link>
       </li>
-      <li className="p-3 hover:bg-[#f1f0f0] rounded-xl">
+      {/* <li className="p-3 hover:bg-[#f1f0f0] rounded-xl">
         <Link href="/features/grossaryplus">Grossary Plus</Link>
-      </li>
+      </li> */}
     </ul>
   </div>
 </li>

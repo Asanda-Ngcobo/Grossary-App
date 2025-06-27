@@ -19,7 +19,7 @@ export default function Home() {
     <>
      <HomeImage/>
    <PlanningAhead/>
-   <HomeGrossaryPlus/>
+   {/* <HomeGrossaryPlus/> */}
    <BuildFor/>
    <Testimonials/>
    <ShoppingReimagined/>
