@@ -20,7 +20,7 @@ export default function RootLayout({ children }) {
       >
         <Navigation/>
         {children}
-                <Toaster position="top-center" reverseOrder={false} />
+               
         <Footer/>
       </body>
 

@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import HandleCategories from './add-price/HandleCategories';
 import Link from 'next/link';
 import { ChevronLeft, Edit, Plus, ShoppingCart } from '@deemlol/next-icons';
@@ -12,32 +12,35 @@ import FireworksComponent from './FireWorksComponent';
 
 
 export default function PageClient({ listId, list_name, list_budget, listitems, groupedItems }) {
-  const [selectedCategory, setSelectedCategory] = useState('');
+ const [selectedCategory, setSelectedCategory] = useState('');
 
-
-
-  const sortedCategoryEntries = Object.entries(groupedItems).sort(([catA], [catB]) => {
-    if (catA === selectedCategory) return -1;
-    if (catB === selectedCategory) return 1;
-    return 0;
-  });
-
+  // Load selected category from localStorage on mount
   useEffect(() => {
-  const storedCategory = localStorage.getItem('selectedCategory');
-  if (storedCategory) setSelectedCategory(storedCategory);
-}, []);
+    const stored = localStorage.getItem('selectedCategory');
+    if (stored) setSelectedCategory(stored);
+  }, []);
 
-useEffect(() => {
-  if (selectedCategory) {
-    localStorage.setItem('selectedCategory', selectedCategory);
-  }
-}, [selectedCategory]);
+  // Save selected category to localStorage on change
+  useEffect(() => {
+    if (selectedCategory) {
+      localStorage.setItem('selectedCategory', selectedCategory);
+    }
+  }, [selectedCategory]);
 
-useEffect(() => {
-  return () => {
-    localStorage.removeItem('selectedCategory');
-  };
-}, []);
+  // Only re-calculate when dependencies change
+  const sortedCategoryEntries = useMemo(() => {
+    return Object.entries(groupedItems).sort(([catA], [catB]) => {
+      if (catA === selectedCategory) return -1;
+      if (catB === selectedCategory) return 1;
+      return 0;
+    });
+  }, [groupedItems, selectedCategory]);
+
+// useEffect(() => {
+//   return () => {
+//     localStorage.removeItem('selectedCategory');
+//   };
+// }, [listId]);
 
   const moneySpent = listitems.reduce((acc, item) => acc + (item.total_price || 0), 0);
   //display money spent
@@ -66,7 +69,7 @@ useEffect(() => {
        text-white rounded-md shadow-sm px-4 py-4">
         <div className="flex items-center justify-between mb-4">
           <Link href="/account/lists">
-            <button className="bg-white active:bg-gray-600 text-black rounded-full w-10 h-10 flex items-center justify-center">
+            <button className="bg-white cursor-pointer active:bg-gray-600 text-black rounded-full w-10 h-10 flex items-center justify-center">
               <ChevronLeft />
             </button>
           </Link>

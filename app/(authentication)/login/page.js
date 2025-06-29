@@ -10,7 +10,7 @@ import OneTapComponent from '@/app/(authentication)/signup/AuthButton';
 import { Eye, EyeOff } from '@deemlol/next-icons';
 
 
-export default function SignUpForm() {
+export default function SignInForm() {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [showPassword, setShowPassword] = useState(false);
@@ -33,9 +33,10 @@ export default function SignUpForm() {
           } else {
             router.push('/account');
           }
-        }, 1500);
+        }, 1000);
       } catch (error) {
-        toast.error('Error Occurred when trying to signin, please try again', {
+        toast.error(`Error Occurred when trying to signin,
+           Please your connection or your login details`, {
           duration: 4000,
           style: {
             background: '#041527',

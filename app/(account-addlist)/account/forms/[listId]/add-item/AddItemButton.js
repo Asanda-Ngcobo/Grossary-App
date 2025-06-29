@@ -1,18 +1,26 @@
 'use client'
 
-import { Lexend_Deca } from "next/font/google";
-import { useFormStatus } from "react-dom";
+import { useFormStatus } from 'react-dom'
 
+
+import { Lexend_Deca } from "next/font/google";
 
 
 const ButtonFont = Lexend_Deca({
   subsets: ["latin"],
   display: 'swap',
 });
-function AddItemButton({children}) {
-    const { pending } = useFormStatus();
-    return (
-        <button className={`${ButtonFont.className} bg-[#A2B06D]
+
+export default function AddItemButton({ children}) {
+  const { pending } = useFormStatus()
+ 
+
+  return (
+    <button
+      type="submit"
+    
+      disabled={pending}
+    className={`${ButtonFont.className} bg-[#A2B06D]
         
         w-[80%]
         mx-[10%]
@@ -23,11 +31,12 @@ function AddItemButton({children}) {
          cursor-pointer
          font-semibold
          hover
-         hover:bg-[#6f7a46]`}>
-            {pending ? 'Adding Your Item...'  : children}
-            
-        </button>
-    )
+         hover:bg-[#6f7a46]`}
+    >
+      {pending ? 'Adding Your Item...' : children}
+    </button>
+  )
 }
 
-export default AddItemButton
+
+

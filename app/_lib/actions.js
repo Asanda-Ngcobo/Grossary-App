@@ -117,9 +117,10 @@ redirect(`/account/forms/${list.id}`);
     console.error("Supabase addItem error:", error.message);
     throw new Error("The item could not be added");
   }
+  
 revalidatePath(`/account/forms/${listId}`)
-redirect(`/account/forms/${listId}`);
 
+  return { success: true };
 
 }
 

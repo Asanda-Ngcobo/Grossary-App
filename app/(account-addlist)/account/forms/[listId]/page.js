@@ -13,6 +13,7 @@ export default async function Page({ params }) {
   const {listId} = await params
   const list = await getList(listId);
   const listitems = await getListsItemsById(listId);
+  
 
   if (!list) return <div>List not found</div>;
 

@@ -1,22 +1,56 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { startTransition, useEffect, useRef, useState } from 'react';
 import { createClient } from '@supabase/supabase-js';
 import { addItem } from '@/app/_lib/actions';
 import { ChevronLeft } from '@deemlol/next-icons';
 import Link from 'next/link';
 import AddItemButton from './AddItemButton';
+import { useRouter } from 'next/navigation';
+import toast from 'react-hot-toast';
 
 export default function AddItemForm({ listId }) {
-  const formRef = useRef(null);
   const [query, setQuery] = useState('');
   const [suggestions, setSuggestions] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState('');
   const [selectedBrand, setSelectedBrand] = useState('');
   const [selectedNumber, setSelectedNumber] = useState('');
   const [selectedUnit, setSelectedUnit] = useState('');
-// const [hasSearched, setHasSearched] = useState(false);
+  const router = useRouter()
+ 
 
+  async function handleSubmit(formData) {
+    startTransition(async () => {
+      try {
+        const result = await addItem(formData, listId)
+
+        if (result.success) {
+            toast.success(`Item added on ${selectedCategory}`, {
+          duration: 5000,
+          style: {
+            background: '#041527',
+            color: '#fff',
+          },
+        });
+          
+          // ✅ Wait before redirect
+          setTimeout(() => {
+            router.push(`/account/forms/${listId}`)
+          }, 2000)
+        }
+      } catch (error) {
+        toast.error('Something went wrong, check your connection!',
+           {
+          duration: 5000,
+          style: {
+            background: '#041527',
+            color: '#fff',
+          },
+        }
+        )
+      }
+    })
+  }
   const [supabase] = useState(() =>
     createClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL,
@@ -28,7 +62,7 @@ export default function AddItemForm({ listId }) {
   const fetchSuggestions = async () => {
     if (query.length < 2) {
       setSuggestions([]);
-      // setHasSearched(false);
+   
       return;
     }
 
@@ -40,7 +74,7 @@ export default function AddItemForm({ listId }) {
 
     if (!error) {
       setSuggestions(data);
-      // setHasSearched(true); // mark search complete
+   
     }
   };
 
@@ -67,10 +101,7 @@ export default function AddItemForm({ listId }) {
       </button>
 
       <form
-        ref={formRef}
-        action={async (formData) => {
-          await addItem(formData, listId);
-        }}
+      action={handleSubmit}
       >
         {/* Item Name with Autocomplete */}
       <div className="py-2 px-4 rounded-md w-[90%] mt-[2%]
@@ -91,11 +122,7 @@ export default function AddItemForm({ listId }) {
           autoComplete="on"
           className="bg-white text-black text-2xl p-3  rounded-4xl w-full"
         />
- {/* {query.length > 2 && hasSearched && suggestions.length === 0 && (
-  <div className='absolute top-[30%] bg-red-500 text-white text-center rounded-md p-3 w-[80%] md:w-[40%]'>
-    😞 Item not found. Please try a different name.
-  </div>
-)} */}
+ 
 
 
        {suggestions.length > 0 && (
@@ -182,7 +209,8 @@ export default function AddItemForm({ listId }) {
           onChange={(e) => setSelectedUnit(e.target.value)}
         className="w-full border px-3 py-2 rounded hidden"
       />
-      {query && <AddItemButton>Add Item</AddItemButton>}
+      {query && <AddItemButton selectedCategory={selectedCategory}
+      >Add Item</AddItemButton>}
 
       </form>
     </main>
