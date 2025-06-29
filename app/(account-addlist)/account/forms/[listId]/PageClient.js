@@ -78,7 +78,7 @@ export default function PageClient({ listId, list_name, list_budget, listitems, 
 
         <div className="flex justify-between font-bold">
            <p className=' text-[#F38A8C]'>Money Spent<br />R{moneySpent.toFixed(2)}</p>
-          <p className=' text-green-400'>Money Left<br />R{moneyLeft.toFixed(2)}</p>
+          <p className={`${moneyLeft  > 0 ? 'text-green-400': 'text-[#E32227]'}`}>Money Left<br />R{moneyLeft.toFixed(2)}</p>
          
         </div>
 
@@ -179,16 +179,27 @@ export default function PageClient({ listId, list_name, list_budget, listitems, 
           );
         })}
       </div>
-     {overallShopped > 0 && overallShopped === itemsLength  && <div className=' rounded-2xl w-[70%] h-[70px] mx-[15%]  md:w-[40%] md:mx-[30%]
+     {overallShopped > 0 && overallShopped === itemsLength  && <div className=' 
+     rounded-2xl
+      w-[90%] h-[500px] mx-[5%]  shadow-white md:w-[40%] md:mx-[30%]
      flex  justify-center items-center bg-[#04284B]
  
-      fixed bottom-3 left-0 z-20 shadow-2xl'
+      fixed bottom-1 left-0 z-20 shadow-sm
+      text-3xl text-center'
       >
         
- 
-  <h1 className="font-bold">
-     All Done☺️🎉
-  </h1>
+ {moneyLeft > 0 ? <div className='mx-3 py-4'>
+  <h1 className='font-bold'>Congratulations!</h1>
+  <p>  Your shopping is done and you managed
+   to stay <span className=' text-green-400 font-extrabold'>{(moneyLeft / list_budget * 100).toFixed(2)}% </span>
+   which is R{(moneyLeft).toFixed(2)}. 😊🎉</p>
+ </div>: 
+   <div>  <h1 className='font-bold'>Congratulations!</h1>
+   <p>Your shopping is done. However, 
+  you went <span className='text-[#E32227]'>{(moneyLeft / list_budget * 100 * -1).toFixed(2)}%</span> over budget 😞</p>
+  </div>
+  }
+
 
 
 </div> }
