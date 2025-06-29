@@ -191,8 +191,9 @@ export default function PageClient({ listId, list_name, list_budget, listitems, 
  {moneyLeft > 0 ? <div className='mx-3 py-4'>
   <h1 className='font-bold'>Congratulations!</h1>
   <p>  Your shopping is done and you managed
-   to stay <span className=' text-green-400 font-extrabold'>{(moneyLeft / list_budget * 100).toFixed(2)}% </span>
-   which is R{(moneyLeft).toFixed(2)}. 😊🎉</p>
+   to stay <span className=' text-green-400 font-extrabold'>
+    {(moneyLeft / list_budget * 100).toFixed(2)}% </span> under budget
+   . 😊🎉</p>
  </div>: 
    <div>  <h1 className='font-bold'>Congratulations!</h1>
    <p>Your shopping is done. However, 
