@@ -189,6 +189,7 @@ export default function PageClient({ listId, list_name, list_budget, listitems, 
       >
         
  {moneyLeft > 0 ? <div className='mx-3 py-4'>
+  <FireworksComponent/>
   <h1 className='font-bold'>Congratulations!</h1>
   <p>  Your shopping is done and you managed
    to stay <span className=' text-green-400 font-extrabold'>
@@ -204,7 +205,7 @@ export default function PageClient({ listId, list_name, list_budget, listitems, 
 
 
 </div> }
-{overallShopped > 0 && overallShopped === itemsLength && <FireworksComponent/> }
+
    
 
     </div>
