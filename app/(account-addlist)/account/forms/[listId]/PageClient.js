@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import HandleCategories from './add-price/HandleCategories';
 import Link from 'next/link';
-import { ChevronLeft, Edit, Plus, ShoppingCart } from '@deemlol/next-icons';
+import { Check, ChevronLeft, Edit, Plus, ShoppingCart } from '@deemlol/next-icons';
 import DecreaseQuantity from './add-item/DecreaseQuantity';
 import DeleteItem from './add-item/DeleteItem';
 import IncreaseQuantity from './add-item/IncreaseQuantity';
@@ -11,7 +11,7 @@ import FireworksComponent from './FireWorksComponent';
 
 
 
-export default function PageClient({ listId, list_name, list_budget, listitems, groupedItems }) {
+export default function PageClient({ listId, list_name, list_budget, listitems, groupedItems, profile }) {
  const [selectedCategory, setSelectedCategory] = useState('');
 
   // Load selected category from localStorage on mount
@@ -36,11 +36,11 @@ export default function PageClient({ listId, list_name, list_budget, listitems, 
     });
   }, [groupedItems, selectedCategory]);
 
-// useEffect(() => {
-//   return () => {
-//     localStorage.removeItem('selectedCategory');
-//   };
-// }, [listId]);
+//Name
+const firstName = profile.fullName?.split(" ")[0] || "there";
+  const capitalizedFirstName =
+    firstName.charAt(0).toUpperCase() + firstName.slice(1).toLowerCase();
+
 
   const moneySpent = listitems.reduce((acc, item) => acc + (item.total_price || 0), 0);
   //display money spent
@@ -179,32 +179,48 @@ export default function PageClient({ listId, list_name, list_budget, listitems, 
           );
         })}
       </div>
-     {overallShopped > 0 && overallShopped === itemsLength  && <div className=' 
-     rounded-2xl
-      w-[90%] h-[500px] mx-[5%]  shadow-white md:w-[40%] md:mx-[30%]
-     flex  justify-center items-center bg-[#04284B]
- 
-      fixed bottom-1 left-0 z-20 shadow-sm
-      text-3xl text-center'
-      >
-        
- {moneyLeft > 0 ? <div className='mx-3 py-4'>
-  <FireworksComponent/>
-  <h1 className='font-bold'>Congratulations!</h1>
-  <p>  Your shopping is done and you managed
-   to stay <span className=' text-green-400 font-extrabold'>
-    {(moneyLeft / list_budget * 100).toFixed(2)}% </span> under budget
-   . 😊🎉</p>
- </div>: 
-   <div>  <h1 className='font-bold'>Congratulations!</h1>
-   <p>Your shopping is done. However, 
-  you went <span className='text-[#E32227]'>{(moneyLeft / list_budget * 100 * -1).toFixed(2)}%</span> over budget 😞</p>
+     {overallShopped > 0 && overallShopped === itemsLength  && <div
+  className="
+    fixed bottom-4 left-1/2 -translate-x-1/2 z-50
+    w-[90%] max-w-lg bg-[#041527] text-white
+    rounded-2xl shadow-lg px-6 py-8
+    flex flex-col items-center text-center space-y-4
+    animate-fade-in
+  "
+>
+  <div className="w-20 h-20 flex justify-center items-center rounded-full bg-green-500 shadow-md animate-pulse">
+    <Check className="text-white text-4xl" />
   </div>
-  }
 
+  {moneyLeft > 0 ? (
+    <>
+      {/* <FireworksComponent /> */}
+      <h1 className="text-2xl font-bold text-green-400 animate-bounce">
+        Well Done {capitalizedFirstName}!
+      </h1>
+      <p className="text-base">
+        Your shopping is done and you managed to stay&nbsp;
+        <span className="font-bold text-green-300">
+          {(moneyLeft / list_budget * 100).toFixed(2)}%
+        </span> under budget. 🎉😊
+      </p>
+    </>
+  ) : (
+    <>
+      <h1 className="text-2xl font-bold text-red-400 animate-bounce">
+        Well Done!
+      </h1>
+      <p className="text-base">
+        Your shopping is done. However, you went&nbsp;
+        <span className="font-bold text-red-300">
+          {(moneyLeft / list_budget * 100 * -1).toFixed(2)}%
+        </span> over budget. 😞
+      </p>
+    </>
+  )}
+</div>
 
-
-</div> }
+ }
 
    
 
