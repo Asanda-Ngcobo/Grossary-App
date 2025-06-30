@@ -74,13 +74,14 @@ export default async function Page() {
       </section>
 
       {/* Center image */}
-      <div className="flex justify-center mt-[20%] lg:mt-[5%]">
+      <div className="flex justify-center mt-[15%] lg:mt-[5%]">
         <Image src={ShoppingPic} alt="Shopping" height={400} width={319} />
       </div>
 
       {/* Mobile CTA button */}
       <button
-        className={`${ButtonFont.className} bg-[#A2B06D] active:bg-gray-600 w-[90%] mx-[5%] h-[50px] rounded-[10px] mt-25 text-white font-semibold cursor-pointer hover:bg-[#6f7a46] lg:hidden`}
+        className={`${ButtonFont.className} bg-[#A2B06D] active:bg-gray-600
+         w-[90%] mx-[5%] h-[50px] rounded-[10px] mt-20 text-white font-semibold cursor-pointer hover:bg-[#6f7a46] lg:hidden`}
       >
         <Link
           href="/account/forms/add-list"
