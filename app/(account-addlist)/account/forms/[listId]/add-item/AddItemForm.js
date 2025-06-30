@@ -25,7 +25,8 @@ export default function AddItemForm({ listId }) {
         const result = await addItem(formData, listId)
 
         if (result.success) {
-            toast.success(<p>Item added to <span className='font-bold text-[#E32227]'>{selectedCategory}</span></p>, {
+            toast.success(<p>Item added to <span className='font-bold
+               text-green-400 '>{selectedCategory}</span></p>, {
           duration: 5000,
           style: {
             background: '#041527',
