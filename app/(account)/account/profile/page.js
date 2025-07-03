@@ -6,6 +6,7 @@ import { getLists } from "@/app/_lib/data-services";
 import { createClient } from "@/app/_utils/supabase/server";
 import { Suspense } from "react";
 import Loading from "../loading";
+import DeleteAccount from "./DeleteAccount";
 
 
 
@@ -59,6 +60,7 @@ const navLinks = [
     name: profile.email,
     
     icon2: <Mail/>,
+    id: 1,
    
   },
   // {
@@ -69,6 +71,7 @@ const navLinks = [
   // },
       {
     name: <SignOutButton/>,
+    id: 2,
     
   
     
@@ -76,10 +79,11 @@ const navLinks = [
   },
  
     {
-    name: 'Delete Account',
+    name: <DeleteAccount/>,
+    id: 3,
     
   
-    icon2: <Trash2/>,
+   
     
   },
 
@@ -153,8 +157,8 @@ const navLinks = [
 <section  className="py-3 rounded-md w-[90%] ml-[5%]
         xl:w-[60%] xl:ml-[15%] lg:ml-0">
   {navLinks.map(function(userInfo){
-    return <ul key={userInfo.name} className="w-[90%] ml-[5%]">
-      <li  className="border-b border-gray-300 p-6 flex justify-between ">
+    return <ul key={userInfo.id} className="w-[90%] ml-[5%]">
+      <li  className="border-b border-gray-300 p-6 flex justify-between  cursor-pointer">
        
  <span className="flex gap-2.5">{userInfo.icon2}{userInfo.name}</span>
         <span>{userInfo.icon}</span>

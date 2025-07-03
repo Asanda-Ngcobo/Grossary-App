@@ -436,14 +436,19 @@ const email = formData.get('email')?.toString();
 
   // Get user role or redirect destination
   const {
-    data: { user },
+    data
   } = await supabase.auth.getUser();
 
  
 
+ const {data: profile} = await supabase
+ .from('users_info')
+ .select('*')
+ .eq('id', data.user.id)
+ .single()
  
 
-  if (user?.admin) {
+  if (profile?.role === 'admin') {
     redirect('/dashboard'); // Admin
   } else {
     redirect('/account'); // Regular user
@@ -467,4 +472,38 @@ export async function googleAuthLogin() {
     });
   };
 
+  //Delete Account
+  export async function handleDeleteAccount(reason) {
+  const supabase = await createClient()
+  const { data: { user }, error } = await supabase.auth.getUser()
+
+  if (error || !user) {
+    throw new Error('Unauthorized')
+  }
+
+  const userId = user.id
+
+  // 1. Soft delete user (set deleted_at)
+  const { error: updateError } = await supabase
+    .from('users_info')
+    .update({ deleted_at: new Date().toISOString() })
+    .eq('id', userId)
+
+  if (updateError) throw updateError
+
+  // 2. Save feedback
+  await supabase.from('delete_feedback').insert({
+    user_id: userId,
+    name: user.fullName,
+    reason,
+    submitted_at: new Date().toISOString(),
+  })
+
+  // 3. Sign out the user
+  await supabase.auth.signOut()
+ 
+  return { success: true }
+
+ 
+}
  

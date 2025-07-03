@@ -1,11 +1,8 @@
 
-
-
-// import { auth } from "@/app/_lib/auth";
 import { supabaseServer } from "@/app/_lib/supabase-server";
 import AppNavLinks from "./AppNavLinks";
-import { getLists, getUserById } from "@/app/_lib/data-services";
-import { redirect } from "next/navigation";
+import { getLists } from "@/app/_lib/data-services";
+
 import { createClient } from "@/app/_utils/supabase/server";
 
 

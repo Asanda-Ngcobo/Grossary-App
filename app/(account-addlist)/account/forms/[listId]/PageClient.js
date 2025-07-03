@@ -8,11 +8,18 @@ import DecreaseQuantity from './add-item/DecreaseQuantity';
 import DeleteItem from './add-item/DeleteItem';
 import IncreaseQuantity from './add-item/IncreaseQuantity';
 import FireworksComponent from './FireWorksComponent';
+import AccountModal from '@/app/(account)/_ui/AccountModal';
+import { Lexend_Deca } from 'next/font/google';
 
 
+const ButtonFont = Lexend_Deca({
+  subsets: ["latin"],
+  display: 'swap',
+});
 
 export default function PageClient({ listId, list_name, list_budget, listitems, groupedItems, profile }) {
  const [selectedCategory, setSelectedCategory] = useState('');
+ const [isOpenModal, setIsOpenModal] = useState(false)
 
   // Load selected category from localStorage on mount
   useEffect(() => {
@@ -52,6 +59,13 @@ const firstName = profile.fullName?.split(" ")[0] || "there";
   const itemsLength = listitems.length;
  
   const toBeShopped = itemsLength - overallShopped;
+
+// Trigger modal only when shopping is completed
+useEffect(() => {
+  if (overallShopped > 0 && overallShopped === itemsLength) {
+    setIsOpenModal(true)
+  }
+}, [overallShopped, itemsLength])
 
 
   const progressColor =
@@ -179,9 +193,11 @@ const firstName = profile.fullName?.split(" ")[0] || "there";
           );
         })}
       </div>
-     {overallShopped > 0 && overallShopped === itemsLength  && <div
+     {isOpenModal  &&
+     <AccountModal>
+      <div
   className="
-    fixed bottom-4 left-1/2 -translate-x-1/2 z-50
+    fixed mt-[50%] left-1/2 -translate-x-1/2 z-50
     w-[90%] max-w-lg bg-[#041527] text-white
     rounded-2xl shadow-lg px-6 py-8
     flex flex-col items-center text-center space-y-4
@@ -194,6 +210,7 @@ const firstName = profile.fullName?.split(" ")[0] || "there";
 
   {moneyLeft > 0 ? (
     <>
+    
       {/* <FireworksComponent /> */}
       <h1 className="text-2xl font-bold text-green-400 animate-bounce">
         Well Done {capitalizedFirstName}!
@@ -204,6 +221,27 @@ const firstName = profile.fullName?.split(" ")[0] || "there";
           {(moneyLeft / list_budget * 100).toFixed(2)}%
         </span> under budget. 🎉😊
       </p>
+       <div className={`${ButtonFont.className} 
+   grid gap-6 mt-11 mx-4 `}>
+     <button
+     
+      className="h-10 min-w-[300px] px-2  bg-[#A2B06D]  cursor-pointer  rounded-lg text-[#04284B]
+      font-semibold hover:bg-[#041527] transition-colors"
+    >
+      <Link href={`/account/forms/${listId}/list-summary`}>  View Virtual Slip</Link>
+    
+    </button>
+    <button
+    onClick={() => setIsOpenModal(false)}
+
+      className="h-10 min-w-[300px] px-2 rounded-lg 
+      cursor-pointer border bg-transparent text-gray-400 border-[#04284B]  font-semibold hover:opacity-70 transition-all"
+    >
+     Continue Shopping
+    </button>
+   
+    
+  </div>
     </>
   ) : (
     <>
@@ -220,6 +258,7 @@ const firstName = profile.fullName?.split(" ")[0] || "there";
   )}
 </div>
 
+    </AccountModal> 
  }
 
    

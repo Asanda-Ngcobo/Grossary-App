@@ -19,7 +19,8 @@ function SignOutButton() {
       <button
         type="submit"
         disabled={isPending}
-        className="flex items-center gap-2  py-2  text-white rounded  disabled:opacity-50"
+        className="flex items-center gap-2  py-2
+        cursor-pointer  text-white rounded  disabled:opacity-50"
       >
         {isPending ? (
           <>
