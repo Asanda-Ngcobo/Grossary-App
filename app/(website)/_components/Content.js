@@ -10,7 +10,7 @@ function Content({ content}) {
     <div className={`p-4 sm:flex sm:gap-6 items-center ${isSecond ? 'sm:flex-row-reverse' : ''}`}>
       {/* Image section */}
       <div className="sm:w-1/2">
-        <Image src={content.image} alt="shopping list" className="w-full h-auto object-cover" />
+        <Image src={content.image} alt="shopping list" className="w-full h-auto object-cover rounded-3xl" />
       </div>
 
       {/* Text section */}

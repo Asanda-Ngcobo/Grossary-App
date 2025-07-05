@@ -61,9 +61,9 @@ function SignUpFormComp({handleSubmit, isPending}) {
       {/* Terms and Privacy */}
       <section className="text-center text-sm text-[#908787] mb-4 px-2">
         By clicking the button above, you agree to our{" "}
-        <Link href="/terms-of-use" className="underline text-[#041527]">Terms of Use</Link>{" "}
+        <Link href="/terms" className="underline text-[#041527]">Terms of Use</Link>{" "}
         and{" "}
-        <Link href="/private-policy" className="underline text-[#041527]">Privacy Policy</Link>.
+        <Link href="/privacy-policy" className="underline text-[#041527]">Privacy Policy</Link>.
       </section>
 
       {/* Already have an account */}
