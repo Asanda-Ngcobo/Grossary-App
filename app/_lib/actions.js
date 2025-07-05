@@ -506,4 +506,50 @@ export async function googleAuthLogin() {
 
  
 }
+
+
+
+export async function ReportIssue(formData) {
+  const supabase = await createClient();
+ const issue = formData.get('issue')?.toString().trim();
+  // 1. Get authenticated user
+  const {
+    data: { user },
+    error: authError
+  } = await supabase.auth.getUser();
+
+  if (authError || !user) {
+    console.error("Auth error:", authError);
+    throw new Error("Unauthorized");
+  }
+
+  // 2. Get user profile from users_info
+  const { data: profile, error: profileError } = await supabase
+    .from("users_info")
+    .select("fullName, email")
+    .eq("id", user.id)
+    .single();
+
+  if (profileError) {
+    console.error("Profile fetch error:", profileError);
+    throw new Error("Failed to fetch user profile");
+  }
+
+  // 3. Save issue or suggestion
+  const { error: insertError } = await supabase.from("issues_suggestions").insert({
+    name: profile.fullName,
+    email: profile.email,
+    issue,
+    submitted_at: new Date().toISOString(),
+  });
+
+  if (insertError) {
+    console.error("Insert error:", insertError);
+    throw new Error("Failed to submit issue");
+  }
+
+  return { success: true };
+}
+
+ 
  

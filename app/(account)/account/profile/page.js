@@ -7,6 +7,7 @@ import { createClient } from "@/app/_utils/supabase/server";
 import { Suspense } from "react";
 import Loading from "../loading";
 import DeleteAccount from "./DeleteAccount";
+import ReportIssueButton from "@/app/(account-addlist)/account/forms/reports/ReportIssueButton";
 
 
 
@@ -63,15 +64,26 @@ const navLinks = [
     id: 1,
    
   },
+
+  
   // {
   //   name: 'Grossary+',
   //   icon: <GrossaryPlusButton/>,
   //   icon2: <Tag/>,
    
   // },
+
+   {
+    name: <ReportIssueButton/>,
+    id: 2,
+    
+  
+    
+    
+  },
       {
     name: <SignOutButton/>,
-    id: 2,
+    id: 3,
     
   
     
@@ -80,7 +92,7 @@ const navLinks = [
  
     {
     name: <DeleteAccount/>,
-    id: 3,
+    id: 4,
     
   
    

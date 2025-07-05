@@ -72,15 +72,7 @@ async function Slip({list,listItems, listId}) {
    
     </button>
    
-   <button
-   
-
-      className="h-10 min-w-[300px] px-2 rounded-lg 
-      cursor-pointer border bg-transparent text-gray-400 border-[#04284B]  font-semibold hover:opacity-70 transition-all"
-    >
-         <Link href={`/account/forms/`}>  Report Issue or Add Suggestion</Link>
-   
-    </button>
+  
     
   </div>
         </div>

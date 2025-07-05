@@ -2,7 +2,7 @@
 
 import Link from "next/link"
 import { SubmitButton } from "./ReUseButton"
-import { Link2, ShoppingBag } from "@deemlol/next-icons"
+import { FileText, Link2, ShoppingBag } from "@deemlol/next-icons"
 import { reuseList } from "@/app/_lib/actions";
 
 function HistoryClient({History, userId}) {
@@ -58,7 +58,7 @@ const groupedHistory = History.reduce((acc, item) => {
           
           {/* Link button */}
           <div className="flex gap-2">
-         <Link href={`/account/forms/${history.id}`} > <Link2/></Link>
+         <Link href={`/account/forms/${history.id}/list-summary`} > <FileText color="#6f7a46"/></Link>
              
             
           </div>

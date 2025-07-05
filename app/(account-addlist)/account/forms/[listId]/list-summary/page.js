@@ -1,15 +1,16 @@
 import { Suspense } from "react"
 import Slip from "./Slip"
-import { getList, getListItemById, getListsItemsById } from "@/app/_lib/data-services"
+import { getList, getListsItemsById } from "@/app/_lib/data-services"
+import Loading from "../add-item/loading"
 
-async function page({params}) {
+
+async function Page({params}) {
      const {listId} = await params
      const list = await getList(listId)
      const listitems = await getListsItemsById(listId)
-     console.log(list)
-     console.log(listitems)
+    
     return (
-       <Suspense >
+       <Suspense fallback={<Loading/>}>
         <Slip list={list}
         listItems={listitems}
         listId={listId}/>
@@ -18,4 +19,4 @@ async function page({params}) {
     )
 }
 
-export default page
+export default Page
