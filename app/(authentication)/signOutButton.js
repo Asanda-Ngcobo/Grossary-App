@@ -20,11 +20,15 @@ function SignOutButton() {
         type="submit"
         disabled={isPending}
         className="flex items-center gap-2  py-2
-        cursor-pointer  text-white rounded  disabled:opacity-50"
+        cursor-pointer  rounded 
+         disabled:opacity-50
+         text-[#04284B]
+         font-bold"
       >
         {isPending ? (
           <>
-            <div className="h-4 w-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+            <div className="h-4 w-4 border-2 border-white
+             border-t-transparent rounded-full animate-spin" />
             <span>Logging out...</span>
           </>
         ) : (

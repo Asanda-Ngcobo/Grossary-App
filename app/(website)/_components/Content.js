@@ -17,9 +17,9 @@ function Content({ content}) {
       <div className="sm:w-1/2">
         <h2 className="font-semibold text-[24px] py-2">{content.heading}</h2>
         <p className="mb-2">{content.description}</p>
-        <Link href={content.link} className="text-[#A2B06D] underline flex items-center">
+        {/* <Link href={content.link} className="text-[#A2B06D] underline flex items-center">
           Learn More &rarr;
-        </Link>
+        </Link> */}
       </div>
     </div>
   );

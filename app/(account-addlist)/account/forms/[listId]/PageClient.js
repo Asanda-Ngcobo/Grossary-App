@@ -183,7 +183,7 @@ useEffect(() => {
                         </div>
 
                         <Link href={`/account/forms/${listId}/add-price/${item.id}`}>
-                          <ShoppingCart className={!item.price ? `text-[#A2B06D]`: 'text-gray-500'} />
+                          <ShoppingCart className={!item.price ? `text-[#A2B06D] active:text-gray-600`: 'text-gray-500 active:text-[#A2B06D]'} />
                         </Link>
                       </form>
                     </div>
@@ -225,7 +225,7 @@ useEffect(() => {
    grid gap-6 mt-11 mx-4 `}>
      <button
      
-      className="h-10 min-w-[300px] px-2  bg-[#A2B06D]  cursor-pointer  rounded-lg text-[#04284B]
+      className="h-10 min-w-[300px] px-2 active:bg-gray-600 bg-[#A2B06D]  cursor-pointer  rounded-lg text-[#04284B]
       font-semibold hover:bg-[#041527] transition-colors"
     >
       <Link href={`/account/forms/${listId}/list-summary`}>  View Virtual Slip</Link>
@@ -235,7 +235,7 @@ useEffect(() => {
     onClick={() => setIsOpenModal(false)}
 
       className="h-10 min-w-[300px] px-2 rounded-lg 
-      cursor-pointer border bg-transparent text-gray-400 border-[#04284B]  font-semibold hover:opacity-70 transition-all"
+      cursor-pointer border bg-transparent active:bg-[#A2B06D] text-gray-400 border-[#04284B]  font-semibold hover:opacity-70 transition-all"
     >
      Continue Shopping
     </button>

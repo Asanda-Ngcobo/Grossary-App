@@ -56,7 +56,7 @@ async function Slip({list,listItems, listId}) {
    grid gap-6 mt-11 mx-4 `}>
      <button
      
-      className="h-10 min-w-[300px] px-2  bg-[#A2B06D]  cursor-pointer  rounded-lg text-[#04284B]
+      className="h-10 min-w-[300px] px-2  bg-[#A2B06D] active:bg-gray-600 cursor-pointer  rounded-lg text-[#04284B]
       font-semibold hover:bg-[#041527] transition-colors"
     >
       <Link href={`/account/lists/history`}>  Finish Shopping</Link>
@@ -66,7 +66,7 @@ async function Slip({list,listItems, listId}) {
    
 
       className="h-10 min-w-[300px] px-2 rounded-lg 
-      cursor-pointer border bg-transparent text-gray-400 border-[#04284B]  font-semibold hover:opacity-70 transition-all"
+      cursor-pointer border bg-transparent text-gray-400 border-[#04284B] active:bg-[#A2B06D]  font-semibold hover:opacity-70 transition-all"
     >
          <Link href={`/account/forms/${listId}`}>  Continue Shopping</Link>
    

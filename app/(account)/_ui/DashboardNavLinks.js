@@ -45,10 +45,9 @@ function DashNavLinks({ userLists }) {
   return (
 
     <main className="">
-             <h1 className="text-black text-center">Grossary</h1>
-       
-<nav className='h-[115px] text-white mt-[40%]
-     w-full z-50 flex items-center justify-center
+        
+<nav className='h-[115px] text-white 
+     w-full z-50 flex items-center justify-center mt-10
      
 '>
 

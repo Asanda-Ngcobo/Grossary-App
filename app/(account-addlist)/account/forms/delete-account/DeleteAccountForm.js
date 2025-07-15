@@ -14,7 +14,7 @@ function DeleteAccountForm({onDelete, isPending}) {
        
      
     return (
-        <div className=" w-[90%] mx-auto mt-[50%] h-[40%] md:mt-[20%] md:w-[50%]
+        <div className=" w-[90%] mx-auto mt-[50%] min-h-[40%] md:mt-[20%] md:w-[50%]
      md-[25%]
       bg-[#04284B] text-white rounded-2xl z-10  shadow-2xl p-6">
         <div className="flex justify-center">  <AlertTriangle color="red" width={50} height={50} className="text-center "/></div>
@@ -29,13 +29,16 @@ function DeleteAccountForm({onDelete, isPending}) {
   flex justify-between gap-6 mt-11 mx-4 `}>
     <button
      onClick={onDelete}
-      className="h-10 w-auto px-2 rounded-lg cursor-pointer border bg-transparent text-gray-400 border-[#041527]  font-semibold hover:opacity-70 transition-all"
+      className="min-h-10 w-auto px-2 rounded-lg cursor-pointer border bg-transparent
+       text-gray-400 border-[#041527]  font-semibold 
+       hover:opacity-70 transition-all
+       active:bg-[#A2B06D]"
     >
       {isPending ? 'Deleting...' : 'Delete Account'}
     </button>
     <button
      
-      className="h-10 w-auto px-2  bg-[#A2B06D]  cursor-pointer  rounded-lg text-[#04284B]
+      className="min-h-10 w-auto px-2 active:bg-gray-600  bg-[#A2B06D]  cursor-pointer  rounded-lg text-[#04284B]
       font-semibold hover:bg-[#041527] transition-colors"
     >
         <Link href='/account/profile'>  Keep Account</Link>

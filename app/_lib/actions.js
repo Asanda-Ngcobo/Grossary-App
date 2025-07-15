@@ -472,6 +472,38 @@ export async function googleAuthLogin() {
     });
   };
 
+
+  //Reset Password
+export async function ResetPasswordWithEmail(formData) {
+  const supabase = await createClient();
+  const email = formData.get('email').toString();
+
+  if (!email) {
+    return { success: false, error: 'Email is required.' };
+  }
+
+  const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
+    redirectTo: 'http://localhost:3000/update-password',
+  });
+
+  if (error) {
+    console.error('Reset password error:', error.message);
+    return { success: false, error: error.message };
+  }
+
+  return { success: true, data };
+}
+
+//   export async function UpdatePassword(formData){
+//        const supabase =  createClientClient();
+//        const { error} = await supabase.auth.updateUser(
+//         formData.get('password')
+//        )
+// if(error){
+//   console.log('error', error)
+// }
+
+//   }
   //Delete Account
   export async function handleDeleteAccount(reason) {
   const supabase = await createClient()

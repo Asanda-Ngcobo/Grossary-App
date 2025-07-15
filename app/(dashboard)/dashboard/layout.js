@@ -1,9 +1,8 @@
 import { Nunito_Sans } from "next/font/google";
 import "@/app/globals.css";
-
-import AppNav from '@/app/(account)/_ui/AppNav'
 import DashboardNavigation from "@/app/(account)/_ui/DashboardNav";
-import SignOutButton from "@/app/(authentication)/signOutButton";
+import DashboardHeader from "@/app/(account)/_ui/DashboardHeader";
+
 
 
 
@@ -20,11 +19,15 @@ export default function WebAppLayout({ children }) {
   return (
     <html>
  <body
-        className={`${MainFont.className} bg-[#041527] text-white lg:grid grid-cols-[16rem_1fr] h-screen 
+        className={`${MainFont.className} bg-[#041527] text-white  h-screen 
         gap-12`}
       >
-        <div><DashboardNavigation/></div>
+         <div><DashboardHeader/></div>
+        <div className="lg:grid grid-cols-[16rem_1fr]">
+           <div><DashboardNavigation/></div>
         <div>{children}</div>
+        </div>
+        
        
        
          

@@ -1,7 +1,7 @@
 import { ChevronLeft } from "@deemlol/next-icons"
 import Link from "next/link"
 import { Suspense } from "react"
-import Loading from "../loading"
+import Loading from "./loading"
 
 
 function page() {
@@ -15,7 +15,7 @@ function page() {
             <Link href='/account'><ChevronLeft color="black" size={30}/></Link> </div>
             <h1 className="text-[#8F8C8C] font-semibold text-[24px]">Reports</h1>
             <div className="flex justify-center items-center">
-  <p className="">Reports will come after one month of using the App</p>
+  <p className="text-5xl">Coming Soon!!</p>
             </div>
           
         </div>
