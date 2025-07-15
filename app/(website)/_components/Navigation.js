@@ -35,7 +35,7 @@ export default async function Navigation() {
          
          
             <ul className=" flex gap-10 list-none mx-3.5">
-         
+{/*          
             <li className="relative hidden lg:flex group">
   <NavigationButtons>Features</NavigationButtons>
   <div className="absolute top-full mt-0 hidden group-hover:flex flex-col
@@ -48,12 +48,13 @@ export default async function Navigation() {
       <li className="p-3 hover:bg-[#f1f0f0] rounded-xl">
         <Link href="/features/staying-under-budget">Staying under Budget</Link>
       </li>
-      {/* <li className="p-3 hover:bg-[#f1f0f0] rounded-xl">
+      <li className="p-3 hover:bg-[#f1f0f0] rounded-xl">
         <Link href="/features/grossaryplus">Grossary Plus</Link>
-      </li> */}
+      </li> 
     </ul>
+    
   </div>
-</li>
+</li> */}
 <li className="relative hidden lg:flex group">
   <NavigationButtons>Company</NavigationButtons>
   <div className="absolute top-full mt-0 hidden group-hover:flex flex-col
