@@ -29,7 +29,8 @@ function SignInButton() {
         flex justify-center items-center
         rounded-full bg-white
          border
-         border-gray-300">
+         border-gray-300
+         active:bg-gray-400">
 <User/>
         </button></>
       
