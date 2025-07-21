@@ -56,12 +56,12 @@ function Footer() {
         </div>
 
         {/* Sign In + Legal */}
-        <div className="flex flex-col justify-between space-y-6">
-          <div>
+        <div className="flex flex-col  justify-between space-y-6">
+          {/* <div>
             <Link href="/account">
               <SignInButton />
             </Link>
-          </div>
+          </div> */}
           
         </div>
         
