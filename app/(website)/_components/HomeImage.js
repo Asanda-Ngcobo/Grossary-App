@@ -14,7 +14,7 @@ const HeaderFont = Quicksand({
 });
 function HomeImage() {
     return (
-        <section className="h-[100vh]">
+        <section className="h-fit lg:h-[100vh] mb-3">
 
 <PrimaryBunner>
       <MainBunner>   <h1 className={`text-[#041527] text-[24px] font-semibold text-left
