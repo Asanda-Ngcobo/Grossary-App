@@ -17,8 +17,8 @@ function MobileMenu({ handleDisplayMenu, showMenu }) {
   return (
     <div
       onClick={handleDisplayMenu}
-      className={`absolute top-16 left-1/2 transform -translate-x-1/2 
-        w-[96%] h-[70vh] z-40
+      className={`absolute top-[100px] left-1/2 transform -translate-x-1/2 
+        w-full h-[90vh] z-40
       rounded-2xl bg-white shadow-lg px-6 py-4 text-[#4B4B4B]
       transition-all duration-300 ease-in-out
       overflow-hidden 
@@ -51,9 +51,9 @@ function MobileMenu({ handleDisplayMenu, showMenu }) {
             <li className="p-3 hover:bg-gray-100 rounded-xl transition">
               <Link href="/company/blog">Blog</Link>
             </li>
-            <li className="p-3 hover:bg-gray-100 rounded-xl transition">
+            {/* <li className="p-3 hover:bg-gray-100 rounded-xl transition">
               <Link href="/company/help-center">Help Center</Link>
-            </li>
+            </li> */}
           </ul>
         </li>
         <li className="mb-5 px-6 pb-5 hover:bg-gray-100 

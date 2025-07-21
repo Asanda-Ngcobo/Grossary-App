@@ -2,6 +2,7 @@ import Image from "next/image";
 import Organizing from "@/public/Organizing.jpg";
 import SaveTime from "@/public/Save time.jpg";
 import Smart from "@/public/Smart budgeting.jpg";
+import { Quicksand } from "next/font/google";
 
 
 const contents = [
@@ -25,10 +26,14 @@ const contents = [
   },
 ];
 
+const HeaderFont = Quicksand({
+  subsets: ["latin"],
+  display: 'swap',
+});
 function BuildFor() {
   return (
     <div className="px-4 py-8 max-w-6xl mx-auto">
-      <h1 className="text-[20px] font-bold mb-8 text-center">
+      <h1 className={`text-[20px] font-bold mb-8 text-center ${HeaderFont.className}`}>
         Built for Busy Professionals, Parents & Students
       </h1>
 
@@ -47,7 +52,7 @@ function BuildFor() {
             </div>
 
             <div className="w-full ">
-              <h2 className="text-[16px] font-bold mb-1">{content.heading}</h2>
+              <h2 className={`text-[16px] font-bold mb-1 ${HeaderFont.className}`}>{content.heading}</h2>
               <p className="text-[14px] text-gray-700">{content.description}</p>
             </div>
           </div>

@@ -2,6 +2,7 @@
 import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
 import { Carousel } from 'react-responsive-carousel';
 import TestimonialBunner from "./TestimonialBunner";
+import { Quicksand } from "next/font/google";
 const testimonials = [
     {testimonial: `Meal prep used to be chaos. 
         Now i stay on top of my list and budget every week`,
@@ -33,10 +34,16 @@ const testimonials = [
 //        id:3
 //    },
 ]
+
+const HeaderFont = Quicksand({
+  subsets: ["latin"],
+  display: 'swap',
+});
 function Testimonials() {
     return (
-        <div className="w-full bg-[#041527]">
-            <h1 className="text-[20px] font-bold mb-8 text-center text-[#A2B06D]">What Are Our users Saying?</h1>
+        <div className="w-full bg-[#041527] h-[70vh] ">
+            <h1 className={`text-[20px] font-bold mb-8 text-center text-[#A2B06D]
+                ${HeaderFont.className}`}>What Are Our users Saying?</h1>
               <Carousel showThumbs={false}
               autoPlay
               infiniteLoop

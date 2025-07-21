@@ -17,7 +17,7 @@ function SignInButton() {
          border-gray-300
          hover
          hover:border-gray-400`}>
-            Sign In
+            Account
         </button>
     )
 }

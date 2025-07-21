@@ -11,22 +11,25 @@ import Testimonials from "@/app/(website)/_components/Testimonials";
 
 export const metadata = {
   title: "Plan, Shop, Save more | Grossary",
-  description: "Landing page",
+  description: "Grossary - a simple, all-in-one grocery app that helps you",
 };
 
 export default function Home() {
   return (
-    <>
-     <HomeImage/>
+    <main className="pt-30">
+           <HomeImage/>
    <PlanningAhead/>
    {/* <HomeGrossaryPlus/> */}
    <BuildFor/>
    <Testimonials/>
    <ShoppingReimagined/>
+
+    </main>
+
    
      
  
-    </>
+    
    
 
      

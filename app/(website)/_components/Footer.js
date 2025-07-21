@@ -10,7 +10,7 @@ function Footer() {
       <div className=" w-[80%] mx-[10%] grid gap-10 grid-cols-2
        lg:grid-cols-4 min-h-[40vh] items-center  ">
         {/* Features Section */}
-        <div className="text-white">
+        {/* <div className="text-white">
         <h3 className="text-[#4B4B4B] font-bold">Features</h3>
           <ul className="mt-4 space-y-2 text-[14px]">
             <li className="hover:underline p-2 rounded-md transition">
@@ -19,11 +19,11 @@ function Footer() {
             <li className="hover:underline p-2 rounded-md transition">
               <Link href="/features/staying-under-budget">Stay Under Budget</Link>
             </li>
-            {/* <li className="hover:underline p-2 rounded-md transition">
+            <li className="hover:underline p-2 rounded-md transition">
               <Link href="/features/grossaryplus">Grossary Plus</Link>
-            </li> */}
+            </li>
           </ul>
-        </div>
+        </div> */}
 
         {/* Company Section */}
         <div className="text-white">
@@ -35,8 +35,12 @@ function Footer() {
             <li className="hover:underline p-2 rounded-md transition">
               <Link href="/company/blog">Blog</Link>
             </li>
+
             <li className="hover:underline p-2 rounded-md transition">
-              <Link href="/company/help-center">Help Center</Link>
+              <Link href="/privacy-policy">Privacy Policy</Link>
+            </li>
+            <li className="hover:underline p-2 rounded-md transition">
+              <Link href="/terms">Terms of Service</Link>
             </li>
           </ul>
         </div>
@@ -54,7 +58,7 @@ function Footer() {
         {/* Sign In + Legal */}
         <div className="flex flex-col justify-between space-y-6">
           <div>
-            <Link href="/signin">
+            <Link href="/account">
               <SignInButton />
             </Link>
           </div>

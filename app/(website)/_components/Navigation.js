@@ -4,6 +4,7 @@ import Logo from "./Logo";
 import SignUpButton from "./SignUpButton";
 import SignInButton from "./SignInButton";
 import NavigationButtons from "./NavigationButtons"
+import { DollarSign, FastForward, ShoppingBag, Tag } from "@deemlol/next-icons";
 
 
 
@@ -16,40 +17,57 @@ export default async function Navigation() {
  
     return (
         <div className="flex justify-between
-         h-[60px] bg-white
+         h-[100px] bg-white
  
-        w-[90%] ml-[5%]
-        
-        rounded-[20px]
+        w-full
+     
         items-center
-        mt-[5%]
-        sm:mt-[2%]
-        border
-        border-gray-300 
-        shadow-sm
-        shadow-[#b6b5b5]
+        
+       
+      
+        border-b
+        border-b-gray-300 
+       
         z-10
         fixed">
-        
+          <div className="w-[90%] mx-[5%] flex justify-between items-center">
+
             <Logo/>
          
          
-            <ul className=" flex gap-10 list-none mx-3.5">
-{/*          
-            <li className="relative hidden lg:flex group">
+            <ul className=" flex gap-10 list-none mx-3.5 ">
+         
+            {/* <li className="relative hidden lg:flex group">
   <NavigationButtons>Features</NavigationButtons>
-  <div className="absolute top-full mt-0 hidden group-hover:flex flex-col
-   bg-white shadow-md p-2 rounded-md z-50
-   w-[300px] h-[200px] border border-gray-300">
+  <div className="absolute top-full mt-0 hidden group-hover:flex flex-row
+   bg-white shadow-md p-2 rounded-2xl z-50
+   w-[500px] h-fit border border-gray-300 cursor-pointer">
     <ul >
-      <li className="p-3 hover:bg-[#f1f0f0] rounded-xl">
-        <Link href="/features/planning-ahead">Planning Ahead</Link>
+      <li className="p-3 hover:bg-[#f1f0f0] rounded-xl ">
+        <Link href="/features/planning-ahead" ><span className="flex flex-row gap-2"><FastForward width={20}/> Planning Ahead</span>
+              <p className="text-xs text-gray-400">Add everything you need as you remember, from staples to treats.</p></Link>
+  
+      </li>
+      <li className="p-3 hover:bg-[#f1f0f0] rounded-xl ">
+        <Link href="/features/planning-ahead" ><span className="flex flex-row gap-2"><ShoppingBag width={20}/>Tracking Prices</span>
+        <p className="text-xs text-gray-400">Add everything you need as you remember, from staples to treats.</p>
+        </Link>
+        
+      </li>
+      
+    </ul>
+    <ul>
+      <li className="p-3 hover:bg-[#f1f0f0] rounded-xl  ">
+        <Link href="/features/staying-under-budget"><span className="flex flex-row gap-2"><DollarSign width={20}/> Staying under Budget</span>
+                <p className="text-xs text-gray-400">Grossary can help you stay within your budget without sacrificing essentials.</p>
+        </Link>
+
       </li>
       <li className="p-3 hover:bg-[#f1f0f0] rounded-xl">
-        <Link href="/features/staying-under-budget">Staying under Budget</Link>
-      </li>
-      <li className="p-3 hover:bg-[#f1f0f0] rounded-xl">
-        <Link href="/features/grossaryplus">Grossary Plus</Link>
+        <Link href="/features/grossaryplus" ><span className="flex flex-row gap-2"><Tag/> Grossary Plus</span>
+        <p className="text-xs text-gray-400 mx-2">  No more flipping through ClicFlyer or chasing random deals.</p>
+        </Link>
+         
       </li> 
     </ul>
     
@@ -59,7 +77,7 @@ export default async function Navigation() {
   <NavigationButtons>Company</NavigationButtons>
   <div className="absolute top-full mt-0 hidden group-hover:flex flex-col
    bg-white shadow-md p-2 rounded-md z-50
-   w-[300px] h-[200px] border border-gray-300">
+   w-[200px] h-auto border border-gray-300">
     <ul >
       <li className="p-3 hover:bg-[#f1f0f0] rounded-xl">
         <Link href="/company/about">About</Link>
@@ -67,9 +85,9 @@ export default async function Navigation() {
       <li className="p-3 hover:bg-[#f1f0f0] rounded-xl">
         <Link href="/company/blog">Blog</Link>
       </li>
-      <li className="p-3 hover:bg-[#f1f0f0] rounded-xl">
+      {/* <li className="p-3 hover:bg-[#f1f0f0] rounded-xl">
         <Link href="/company/help-center">Help Center</Link>
-      </li>
+      </li> */}
     </ul>
   </div>
 </li>
@@ -83,10 +101,13 @@ export default async function Navigation() {
          min-w-[130px]">For Stores</button></Link></li>
             </ul>
             <ul className=" flex gap-10 list-none mx-3.5">
-                <li className="hidden lg:flex"><Link href='/account'><SignInButton/></Link></li>
+                <li className="hidden lg:flex"><Link href='/account'>
+                <SignInButton/></Link></li>
                 <li><Link href='/signup'><SignUpButton>Sign Up</SignUpButton></Link></li>
                 <li className="lg:hidden"><Menu/></li>
             </ul>
+          </div>
+        
         </div>
     )
 }
