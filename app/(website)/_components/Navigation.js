@@ -1,10 +1,10 @@
 import Link from "next/link"
-import Menu from "./Menu";
+
 import Logo from "./Logo";
 import SignUpButton from "./SignUpButton";
 import SignInButton from "./SignInButton";
 import NavigationButtons from "./NavigationButtons"
-import { DollarSign, FastForward, ShoppingBag, Tag } from "@deemlol/next-icons";
+
 
 
 
@@ -35,9 +35,9 @@ export default async function Navigation() {
             <Logo/>
          
          
-            <ul className=" flex gap-10 list-none mx-3.5 ">
+            {/* <ul className=" flex gap-10 list-none mx-3.5 ">
          
-            {/* <li className="relative hidden lg:flex group">
+            <li className="relative hidden lg:flex group">
   <NavigationButtons>Features</NavigationButtons>
   <div className="absolute top-full mt-0 hidden group-hover:flex flex-row
    bg-white shadow-md p-2 rounded-2xl z-50
@@ -72,7 +72,7 @@ export default async function Navigation() {
     </ul>
     
   </div>
-</li> */}
+</li> 
 <li className="relative hidden lg:flex group">
   <NavigationButtons>Company</NavigationButtons>
   <div className="absolute top-full mt-0 hidden group-hover:flex flex-col
@@ -85,9 +85,9 @@ export default async function Navigation() {
       <li className="p-3 hover:bg-[#f1f0f0] rounded-xl">
         <Link href="/company/blog">Blog</Link>
       </li>
-      {/* <li className="p-3 hover:bg-[#f1f0f0] rounded-xl">
+      <li className="p-3 hover:bg-[#f1f0f0] rounded-xl">
         <Link href="/company/help-center">Help Center</Link>
-      </li> */}
+      </li>
     </ul>
   </div>
 </li>
@@ -99,12 +99,13 @@ export default async function Navigation() {
          hover
          hover:bg-[#f1f0f0]
          min-w-[130px]">For Stores</button></Link></li>
-            </ul>
-            <ul className=" flex gap-10 list-none mx-3.5">
-                <li className="hidden lg:flex"><Link href='/account'>
-                <SignInButton/></Link></li>
+            </ul> */}
+            <ul className=" flex lg:flex-row-reverse gap-10 list-none mx-3.5">
+                
                 <li><Link href='/signup'><SignUpButton>Sign Up</SignUpButton></Link></li>
-                <li className="lg:hidden"><Menu/></li>
+                {/* <li className="lg:hidden"><Menu/></li> */}
+                <li className=" lg:flex"><Link href='/account'>
+                <SignInButton/></Link></li>
             </ul>
           </div>
         

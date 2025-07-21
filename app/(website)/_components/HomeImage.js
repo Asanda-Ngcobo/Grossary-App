@@ -21,8 +21,8 @@ function HomeImage() {
          pb-2 sm:text-[36px] sm:font-medium ${HeaderFont.className}  `}>
             Still Juggling between your note and calculator app when shopping?</h1>
             <ul className="py-2 text-[#04284B]">
-                <p className={`${HeaderFont.className}`}>Try Grossary
-                     </p>
+                <h2 className={`${HeaderFont.className} font-semibold`}>Try Grossary
+                     </h2>
                      <p>A  simple, all-in-one grocery app that helps you:</p>
                 <li className="flex gap-2 py-1"> <CheckCircle color="#A2B06D"/>Create & store your lists </li>
                 <li className="flex gap-2 py-1"> <CheckCircle color="#A2B06D"/> Track prices as you shop</li>
