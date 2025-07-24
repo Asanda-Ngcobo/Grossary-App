@@ -5,7 +5,7 @@ function Loading() {
     return (
         <div className="grid">
             <Spinner/>
-            <p>Loading...</p>
+            
         </div>
         
 

@@ -35,7 +35,7 @@ function page() {
         <h2 className="text-2xl font-semibold mb-4">Student Testimonial</h2>
         <blockquote className="border-l-4 border-[#A2B06D] pl-4 italic text-gray-700 text-lg">
           “As a university student on a tight NSFAS budget, Grossary has become my weekly lifesaver.
-          I just input my list, and it tells me where to shop without going over budget.
+          I just input my list, and helps me track prices as i shop, keeping me within my budget.
           It’s like having a personal shopper that actually understands my financial situation.”
         </blockquote>
         <p className="mt-2 text-sm text-gray-600">— Zanele M., 3rd-year student at UKZN</p>
