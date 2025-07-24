@@ -2,7 +2,7 @@ import { Nunito_Sans } from "next/font/google";
 import "../globals.css";
 import Navigation from "@/app/(website)/_components/Navigation";
 import Footer from "@/app/(website)/_components/Footer";
-import { Toaster } from "react-hot-toast";
+import { Analytics } from "@vercel/analytics/next"
 
 const MainFont = Nunito_Sans({
   variable: "--font-geist-sans",
@@ -22,6 +22,7 @@ export default function RootLayout({ children }) {
         {children}
                
         <Footer/>
+        <Analytics/>
       </body>
 
     </html>
