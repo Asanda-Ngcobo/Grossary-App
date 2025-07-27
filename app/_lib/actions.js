@@ -153,6 +153,7 @@ export async function increaseQuantity(itemId, listId) {
 
   // Revalidate path to reflect the change
   revalidatePath(`/account/forms/${listId}`);
+  redirect(`/account/forms/${listId}`);
 }
 
 export async function decreaseQuantity(itemId, listId) {
@@ -183,6 +184,7 @@ export async function decreaseQuantity(itemId, listId) {
 
   // Revalidate path to reflect the change
   revalidatePath(`/account/forms/${listId}`);
+  redirect(`/account/forms/${listId}`);
 }
 
 export async function deleteItem(itemId, listId){
@@ -192,12 +194,17 @@ const { error } = await supabase
   .delete()
   .eq('id', itemId)
       
-  if (error) {
-    console.error(error);
-    throw new Error('Item could not be deleted');
-  }
+   if (error) {
+      console.error(error);
+      return { success: false, message: 'Item could not be deleted' };
+    }
+
+    
     // Revalidate path to reflect the change
   revalidatePath(`/account/forms/${listId}`);
+  
+  redirect(`/account/forms/${listId}`);
+  
 }
 
 

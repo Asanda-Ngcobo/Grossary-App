@@ -1,22 +1,47 @@
-'use client'
-import { increaseQuantity } from "@/app/_lib/actions"
-import { Plus } from "@deemlol/next-icons"
+'use client';
 
-function IncreaseQuantity({ itemId, listId }) {
-    //      const [optimisticLists, optimisticDelete] = useOptimistic(myLists,
-    //          (currentLists, listId)=>{
-    // return currentLists.filter((list)=>
-    //     list.id !== listId)
-    //     });
-    //     async  function handleDelete(listId){
-    //         optimisticDelete(listId)
-    // await deleteList(listId)
-    //     }
+import { increaseQuantity } from "@/app/_lib/actions";
+import { Plus } from "@deemlol/next-icons";
+import toast from "react-hot-toast";
+
+function IncreaseQuantity({ itemId, itemName, itemQuantity, listId }) {
   async function handleClick() {
     try {
-      await increaseQuantity(itemId, listId);
+      const results = await increaseQuantity(itemId, listId);
+      if (results.success) {
+        toast.success(
+          `${itemName} increased to ${itemQuantity}`,
+          {
+            duration: 5000,
+            style: {
+              background: '#041527',
+              color: '#fff',
+            },
+          }
+        );
+      } else {
+        toast.error(
+          results.message || "Failed to increase quantity.",
+          {
+            duration: 5000,
+            style: {
+              background: '#041527',
+              color: '#fff',
+            },
+          }
+        );
+      }
     } catch (error) {
-      console.error("Failed to increase quantity:", error);
+      toast.error(
+        "An error occurred while increasing quantity.",
+        {
+          duration: 5000,
+          style: {
+            background: '#041527',
+            color: '#fff',
+          },
+        }
+      );
     }
   }
 

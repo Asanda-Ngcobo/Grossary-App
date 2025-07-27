@@ -174,7 +174,9 @@ useEffect(() => {
                             }
                           </div>
                           <span className="font-bold text-lg">{item.item_quantity}</span>
-                          <IncreaseQuantity itemId={item.id} listId={listId} />
+                          <IncreaseQuantity itemId={item.id}
+                          itemName={item.item_name}
+                          itemQuantity={item.item_quantity} listId={listId} />
                         </div>
 
                         <div>

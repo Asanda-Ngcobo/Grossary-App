@@ -22,7 +22,12 @@ export default function FormsLayout({ children }) {
         gap-12`}
       >
          <Toaster position="top-center" 
-         reverseOrder={false} />
+         reverseOrder={false}
+            toastOptions={{
+            style: {
+              zIndex: 9999, // Ensure it's on top
+            },
+          }} />
         <div>{children}</div>
         
          

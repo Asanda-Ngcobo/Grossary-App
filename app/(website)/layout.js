@@ -16,6 +16,7 @@ export default function RootLayout({ children }) {
   
   return (
     <html lang="en">
+      
       <body
         className={`${MainFont.className} gap-6`}
       >

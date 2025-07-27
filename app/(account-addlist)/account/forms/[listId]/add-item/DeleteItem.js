@@ -1,6 +1,7 @@
 'use client'
 import { deleteItem } from "@/app/_lib/actions"
 import {  Trash2 } from "@deemlol/next-icons"
+import toast from "react-hot-toast";
 
 
 function DeleteItem({ itemId, listId }) {
@@ -9,7 +10,15 @@ function DeleteItem({ itemId, listId }) {
     try {
       await deleteItem(itemId, listId);
     } catch (error) {
-      console.error("Failed to increase quantity:", error);
+      toast.error( error,
+        {
+          duration: 5000,
+          style: {
+            background: '#041527',
+            color: '#fff',
+          },
+        }
+      );
     }
   }
 
