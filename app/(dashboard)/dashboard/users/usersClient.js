@@ -7,6 +7,20 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
+
+function isSameMonth(dateString, offset = 0) {
+  const date = new Date(dateString);
+  const now = new Date();
+  const targetMonth = now.getMonth() - offset;
+  const targetYear = now.getFullYear();
+
+  const adjustedDate = new Date(now.getFullYear(), now.getMonth() - offset, 1);
+
+  return (
+    date.getMonth() === adjustedDate.getMonth() &&
+    date.getFullYear() === adjustedDate.getFullYear()
+  );
+}
 export default  function UsersClient() {
   const [users, setUsers] = useState([]);
 
@@ -50,6 +64,31 @@ export default  function UsersClient() {
     fetchUsers();
   }, []);
 
+ 
+
+const currentMonthUsers = users.filter((user)=> user.created_at &&
+ isSameMonth(user.created_at, 0));
+
+ console.log(currentMonthUsers)
+
+ const lastMonthUsers = users.filter((user)=> user.created_at &&
+ isSameMonth(user.created_at, 1));
+
+ const currentCount = currentMonthUsers.length;
+const lastCount = lastMonthUsers.length;
+
+let userChangeText = "No change";
+if (lastCount === 0 && currentCount > 0) {
+  userChangeText = "📈 100% increase from last month";
+} else if (lastCount > 0) {
+  const change = ((currentCount - lastCount) / lastCount) * 100;
+  const percentage = Math.abs(change.toFixed(1));
+  userChangeText =
+    change > 0
+      ? `📈 ${percentage}% more than last month`
+      : `📉 ${percentage}% less than last month`;
+}
+
   return (
     <div className="mt-20 ml-[10%] w-[80%]">
       <ul className="flex gap-4 ">
@@ -78,7 +117,9 @@ export default  function UsersClient() {
             </div>
             <div className="grid justify-center items-center">
                 <span>New users</span>
-          <span className="font-extrabold">2</span>
+          <span className="font-extrabold">{currentCount}</span>
+<span className="text-xs text-white">{userChangeText}</span>
+
             </div>
         </li>
         <li className="w-1/4 bg-[#04284B] h-[100px] rounded-lg  text-white
@@ -93,7 +134,7 @@ export default  function UsersClient() {
           <span className="font-extrabold">2</span>
             </div>
         </li>
-        
+{/*         
          <li className="w-1/4 bg-[#04284B] h-[100px] rounded-lg  text-white
          flex justify-center gap-4 items-center ">
             <div className="w-[50px] h-[50px] rounded-full
@@ -105,14 +146,14 @@ export default  function UsersClient() {
                 <span>Plus Subscribers</span>
           <span className="font-extrabold">2</span>
             </div>
-        </li>
+        </li> */}
       </ul>
 
       <div className="p-4">
         <h2 className="text-xl font-bold mb-4">User List</h2>
         <table className="w-full table-auto border-0 bg-[#04284B]
          rounded-2xl text-white
-         h-[500px] overflow-y-auto">
+        ">
           <thead className="text-sm">
             <tr>
               <th className="p-2">Image</th>
@@ -124,7 +165,7 @@ export default  function UsersClient() {
               <th className="p-2">Last Login</th>
             </tr>
           </thead>
-          <tbody className="text-xs">
+          <tbody className="text-xs  h-[300px] overflow-y-auto">
             {users.map((user) => (
               <tr key={user.id} className="text-center border-t
                border-gray-600">

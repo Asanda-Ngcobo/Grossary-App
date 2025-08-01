@@ -1,5 +1,6 @@
 'use client'
 
+import SpinnerMini from "@/app/(website)/_components/SpinnerMini";
 import { Lexend_Deca } from "next/font/google";
 import { useFormStatus } from "react-dom";
 
@@ -23,9 +24,12 @@ function SubmitButton({children}) {
          cursor-pointer
          font-semibold
          hover
-         hover:bg-[#6f7a46]`}
+         hover:bg-[#6f7a46]
+         flex justify-center items-center`}
+         
+         disabled={pending}
          >
-            {pending? 'Adding Your List...'  : children}
+            {pending? <SpinnerMini/>  : children}
             
         </button>
     )

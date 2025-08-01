@@ -31,12 +31,14 @@ className="bg-white text-black text-2xl p-3 rounded-md"
 
  
 
-      <label htmlFor="list_budget" className=" text-2xl">Budget</label>
+      <label htmlFor="list_budget" className=" text-2xl">Budget (R)</label>
                     <input
                     id="list_budget"
                     name="list_budget"
+                    type="number"
                    
                     required
+                    placeholder="e.g.,1000"
                     
 className="bg-white text-black text-2xl p-3 rounded-md"
                     

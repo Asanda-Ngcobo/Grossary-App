@@ -14,34 +14,7 @@ const supabaseweb = createClient()
   return data;
 }
 
-export async function getUserDetails()
-{
 
-}
-
-// export async function getGuest(email) {
-//   const { data, error } = await supabase
-//     .from('Guests')
-//     .select('*')
-//     .eq('email', email)
-//     .single();
-
-//   // No error here! We handle the possibility of no guest in the sign in callback
-//   return data;
-// }
-// export async function createUser(newUser) {
-//   const { data, error } = await supabase
-//     .from("users_info")
-//     .insert([newUser])
-//     .select(); // Optional: return inserted user
-
-//   if (error) {
-//     console.error("Supabase createUser error:", error.message);
-//     throw new Error("User could not be created");
-//   }
-
-//   return data;
-// }
 
 
 export async function getList(listId){
@@ -102,4 +75,19 @@ export async function getListItemById(itemId) {
   }
 
   return data;
+}
+
+export async function getAlllists(){
+  
+let { data: user_lists, error } = await supabase
+  .from('user_lists')
+  .select('*')
+
+    if (error) {
+    console.error("Error fetching lists:", error);
+    return null;
+  }
+
+  return user_lists;
+          
 }
