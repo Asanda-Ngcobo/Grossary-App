@@ -2,6 +2,7 @@ import { Nunito_Sans } from "next/font/google";
 import "@/app/globals.css";
 import DashboardNavigation from "@/app/(account)/_ui/DashboardNav";
 import DashboardHeader from "@/app/(account)/_ui/DashboardHeader";
+import { Analytics } from "@vercel/analytics/next";
 
 
 
@@ -26,6 +27,7 @@ export default function WebAppLayout({ children }) {
         <div className="lg:grid grid-cols-[16rem_1fr]">
            <div><DashboardNavigation/></div>
         <div>{children}</div>
+         <Analytics/>
         </div>
         
        

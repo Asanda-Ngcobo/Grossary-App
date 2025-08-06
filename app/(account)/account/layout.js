@@ -2,6 +2,7 @@ import { Nunito_Sans } from "next/font/google";
 import "@/app/globals.css";
 
 import AppNav from '@/app/(account)/_ui/AppNav'
+import { Analytics } from "@vercel/analytics/next";
 
 
 
@@ -24,7 +25,7 @@ export default function WebAppLayout({ children }) {
         <div><AppNav/></div>
         <div>{children}</div>
         
-         
+          <Analytics/>
         
         
         

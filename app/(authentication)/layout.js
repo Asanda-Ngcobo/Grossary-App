@@ -3,6 +3,7 @@
 import { Nunito_Sans } from "next/font/google";
 import "../globals.css";
 import { Toaster } from "react-hot-toast";
+import { Analytics } from "@vercel/analytics/next";
 
 
 const MainFont = Nunito_Sans({
@@ -22,7 +23,7 @@ export default async function AuthLayout({ children }) {
          <Toaster position="top-center" 
          reverseOrder={false} />
         {children}
-       
+        <Analytics/>
       </body>
 
     </html>
