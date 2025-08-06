@@ -24,7 +24,7 @@ list.money_spent === 0 || list.money_spent === null)
         <div className="flex justify-between
           w-[90%] mx-[5%] mb-4 lg:hidden">
             <div>
-             <Logo/> <span className="italic text-[10px] text-gray-600">Beta</span>
+             <Logo/> <span className="italic text-[10px] text-gray-600">Beta v.2.0</span>
       
 
             </div>
