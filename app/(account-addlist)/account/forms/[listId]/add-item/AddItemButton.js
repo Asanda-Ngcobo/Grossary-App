@@ -4,6 +4,7 @@ import { useFormStatus } from 'react-dom'
 
 
 import { Lexend_Deca } from "next/font/google";
+import SpinnerMini from '@/app/(website)/_components/SpinnerMini';
 
 
 const ButtonFont = Lexend_Deca({
@@ -31,9 +32,10 @@ export default function AddItemButton({ children}) {
          cursor-pointer
          font-semibold
          hover
-         hover:bg-[#6f7a46]`}
+         hover:bg-[#6f7a46]
+         flex justify-center items-center`}
     >
-      {pending ? 'Adding Your Item...' : children}
+      {pending ? <SpinnerMini/> : children}
     </button>
   )
 }

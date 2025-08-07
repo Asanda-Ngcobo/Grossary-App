@@ -6,6 +6,7 @@ import { updateItemPrice, getListItemById } from '@/app/_lib/actions'
 import Link from 'next/link';
 import { ChevronLeft } from '@deemlol/next-icons';
 import { Lexend_Deca } from "next/font/google";
+import SpinnerMini from '@/app/(website)/_components/SpinnerMini';
 
 const ButtonFont = Lexend_Deca({ subsets: ["latin"], display: 'swap' });
 
@@ -71,10 +72,14 @@ export default function AddPriceForm({ itemId, listId }) {
 
         <button
           type="submit"
-   className={`${ButtonFont.className} bg-[#A2B06D] min-w-[100px] h-[40px] rounded-[5px] text-white font-semibold hover:bg-[#6f7a46]`}
+   className={`${ButtonFont.className}
+    bg-[#A2B06D] min-w-[100px] h-[40px]
+     rounded-[5px] text-white font-semibold
+      hover:bg-[#6f7a46]
+      flex justify-center items-center`}
           disabled={loading}
         >
-          {loading ? 'Saving...' : 'Save Price'}
+          {loading ? <SpinnerMini/> : 'Save Price'}
         </button>
       </form>
   );
