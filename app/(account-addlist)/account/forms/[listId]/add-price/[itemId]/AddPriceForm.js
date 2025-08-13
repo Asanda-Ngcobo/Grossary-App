@@ -68,6 +68,7 @@ export default function AddPriceForm({ itemId, listId }) {
           value={price}
           onChange={(e) => setPrice(e.target.value)}
           required
+          placeholder='e.g. 29.99'
         />
 
         <button

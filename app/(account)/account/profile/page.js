@@ -8,9 +8,13 @@ import { Suspense } from "react";
 import Loading from "../loading";
 import DeleteAccount from "./DeleteAccount";
 import ReportIssueButton from "@/app/(account-addlist)/account/forms/reports/ReportIssueButton";
+import { Quicksand } from "next/font/google";
 
 
-
+const MoneyFont = Quicksand({
+  subsets: ["latin"],
+  display: 'swap',
+});
 
 
 async function page() {
@@ -145,20 +149,23 @@ const navLinks = [
    {/* Monthly Spending */}
        <div className=" p-2 col-start-1 col-end-4 h-[120px] bg-[#04284B] 
        grid justify-center items-center rounded-lg">
-        <h2 className="text-4xl font-bold text-center">{monthlySpend}</h2>
+        <h2 className={`${MoneyFont.className} text-4xl font-bold
+         text-center`}>{monthlySpend}</h2>
         <p className="text-sm text-gray-500 text-center">Average Monthly Grocery Spend</p>
       </div>
 {/* Money Saved Container */}
        <div className=" pb-2 col-start-1 col-end-3 h-[120px] bg-[#04284B] 
        grid justify-center items-center rounded-lg ">
-        <h2 className="text-4xl font-bold text-center">{monthlySave} <span className="text-sm
+        <h2 className={`${MoneyFont.className} text-4xl font-bold
+         text-center`}>{monthlySave} <span className="text-sm
          text-gray-600">({savedPercentage}%)</span></h2>
         <p className="text-sm text-gray-500 text-center">Average Money Saved Per Month</p>
       </div>
       {/* Lists Created Container */}
       <div className=" pb-2 h-[120px] bg-[#04284B] 
        grid justify-center items-center rounded-lg ">
-        <h2 className="text-4xl font-bold text-center">{numberOfLists}</h2>
+        <h2 className={`${MoneyFont.className} text-4xl font-bold
+         text-center`}>{numberOfLists}</h2>
         <p className="text-sm text-gray-500 text-center">Lists Created</p>
       </div>
      

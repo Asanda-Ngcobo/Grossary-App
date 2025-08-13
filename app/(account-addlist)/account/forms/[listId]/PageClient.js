@@ -9,7 +9,7 @@ import DeleteItem from './add-item/DeleteItem';
 import IncreaseQuantity from './add-item/IncreaseQuantity';
 import FireworksComponent from './FireWorksComponent';
 import AccountModal from '@/app/(account)/_ui/AccountModal';
-import { Lexend_Deca } from 'next/font/google';
+import { Lexend_Deca, Quicksand } from 'next/font/google';
 
 
 const ButtonFont = Lexend_Deca({
@@ -17,6 +17,10 @@ const ButtonFont = Lexend_Deca({
   display: 'swap',
 });
 
+const MoneyFont = Quicksand({
+  subsets: ["latin"],
+  display: 'swap',
+});
 export default function PageClient({ listId, list_name, list_budget, listitems, groupedItems, profile }) {
  const [selectedCategory, setSelectedCategory] = useState('');
  const [isOpenModal, setIsOpenModal] = useState(false)
@@ -48,12 +52,31 @@ const firstName = profile.fullName?.split(" ")[0] || "there";
   const capitalizedFirstName =
     firstName.charAt(0).toUpperCase() + firstName.slice(1).toLowerCase();
 
+//Display List Budget
+  const listBudget =  new Intl.NumberFormat('en-ZA', {
+  style: 'currency',
+  currency: 'ZAR',
+  minimumFractionDigits: 2,
+}).format(list_budget);
 
-  const moneySpent = listitems.reduce((acc, item) => acc + (item.total_price || 0), 0);
-  //display money spent
+//Display Money Spent
+
+  const money_spent = listitems.reduce((acc, item) => acc + (item.total_price || 0), 0);
+  const moneySpent =    new Intl.NumberFormat('en-ZA', {
+  style: 'currency',
+  currency: 'ZAR',
+  minimumFractionDigits: 2,
+}).format(money_spent);
+
+  //display money left
   
-  const moneyLeft = list_budget - moneySpent;
-  const spentPercent = (moneySpent / list_budget) * 100;
+  const money_left = list_budget - money_spent;
+  const moneyLeft =   new Intl.NumberFormat('en-ZA', {
+  style: 'currency',
+  currency: 'ZAR',
+  minimumFractionDigits: 2,
+}).format(money_left);
+  const spentPercent = (money_spent / list_budget) * 100;
 
   const overallShopped = listitems.filter(item => item.is_checked).length;
   const itemsLength = listitems.length;
@@ -91,8 +114,13 @@ useEffect(() => {
         </div>
 
         <div className="flex justify-between font-bold">
-           <p className=' text-[#F38A8C]'>Money Spent<br />R{moneySpent.toFixed(2)}</p>
-          <p className={`${moneyLeft  > 0 ? 'text-green-400': 'text-[#E32227]'}`}>Money Left<br />R{moneyLeft.toFixed(2)}</p>
+           <div className='text-[#F38A8C]'  ><p>Money Spent</p>
+            <p className={`${MoneyFont.className}
+           text-2xl`}>{moneySpent}</p></div>
+            <div className={`${money_left  > 0 ? 'text-green-400': 'text-[#E32227]'}`}  >
+              <p>Money Left</p> <h1 className={`${MoneyFont.className}
+           text-2xl`}>{moneyLeft}</h1></div>
+
          
         </div>
 
@@ -103,7 +131,7 @@ useEffect(() => {
         <div className="flex justify-between items-center mt-4">
           <div className="text-gray-50">
             Budget: <br />
-            <span className="font-bold text-lg flex flex-row gap-3"><h5>R{list_budget}</h5>
+            <span className={` ${MoneyFont.className} font-bold text-lg flex flex-row gap-3`}><h5>{listBudget}</h5>
             <Link href={`/account/forms/${listId}/edit-list`}><Edit size={20} color='#A2B06D'/></Link></span>
           </div>
 
@@ -206,11 +234,12 @@ useEffect(() => {
     animate-fade-in
   "
 >
-  <div className="w-20 h-20 flex justify-center items-center rounded-full bg-green-500 shadow-md animate-pulse">
+  <div className="w-20 h-20 flex justify-center items-center rounded-full
+   bg-green-500 shadow-md animate-pulse">
     <Check className="text-white text-4xl" />
   </div>
 
-  {moneyLeft > 0 ? (
+  {money_left > 0 ? (
     <>
     
       {/* <FireworksComponent /> */}
@@ -220,7 +249,7 @@ useEffect(() => {
       <p className="text-base">
         Your shopping is done and you managed to stay&nbsp;
         <span className="font-bold text-green-300">
-          {(moneyLeft / list_budget * 100).toFixed(2)}%
+          {(money_left / list_budget * 100).toFixed(2)}%
         </span> under budget. 🎉😊
       </p>
        <div className={`${ButtonFont.className} 
@@ -253,9 +282,30 @@ useEffect(() => {
       <p className="text-base">
         Your shopping is done. However, you went&nbsp;
         <span className="font-bold text-red-300">
-          {(moneyLeft / list_budget * 100 * -1).toFixed(2)}%
+          {(money_left / list_budget * 100 ).toFixed(2)}%
         </span> over budget. 😞
       </p>
+       <div className={`${ButtonFont.className} 
+   grid gap-6 mt-11 mx-4 `}>
+     <button
+     
+      className="h-10 min-w-[300px] px-2 active:bg-gray-600 bg-[#A2B06D]  cursor-pointer  rounded-lg text-[#04284B]
+      font-semibold hover:bg-[#041527] transition-colors"
+    >
+      <Link href={`/account/forms/${listId}/list-summary`}>  View Virtual Slip</Link>
+    
+    </button>
+    <button
+    onClick={() => setIsOpenModal(false)}
+
+      className="h-10 min-w-[300px] px-2 rounded-lg 
+      cursor-pointer border bg-transparent active:bg-[#A2B06D] text-gray-400 border-[#04284B]  font-semibold hover:opacity-70 transition-all"
+    >
+     Continue Shopping
+    </button>
+   
+    
+  </div>
     </>
   )}
 </div>
