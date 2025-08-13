@@ -134,7 +134,7 @@ if (lastCount === 0 && currentCount > 0) {
           <span className="font-extrabold">2</span>
             </div>
         </li>
-{/*         
+        
          <li className="w-1/4 bg-[#04284B] h-[100px] rounded-lg  text-white
          flex justify-center gap-4 items-center ">
             <div className="w-[50px] h-[50px] rounded-full
@@ -146,11 +146,13 @@ if (lastCount === 0 && currentCount > 0) {
                 <span>Plus Subscribers</span>
           <span className="font-extrabold">2</span>
             </div>
-        </li> */}
+        </li> 
       </ul>
 
       <div className="p-4">
         <h2 className="text-xl font-bold mb-4">User List</h2>
+        <div className="mt-8 bg-[#04284B] p-4 rounded-lg h-[60vh]
+ overflow-y-auto">
         <table className="w-full table-auto border-0 bg-[#04284B]
          rounded-2xl text-white
         ">
@@ -167,6 +169,7 @@ if (lastCount === 0 && currentCount > 0) {
           </thead>
           <tbody className="text-xs  h-[300px] overflow-y-auto">
             {users.map((user) => (
+              
               <tr key={user.id} className="text-center border-t
                border-gray-600">
                 <td className="p-2 flex justify-center">
@@ -193,6 +196,7 @@ if (lastCount === 0 && currentCount > 0) {
             ))}
           </tbody>
         </table>
+        </div>
       </div>
     </div>
   );
