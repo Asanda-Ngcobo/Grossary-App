@@ -18,12 +18,7 @@ const navLinks = [
     exact: false, // Active on nested routes like /account/lists/123
     icon: <Users  />,
   },
-  {
-    name: 'Lists',
-    href: '/dashboard/lists',
-    exact: false,
-    icon: <FileText  />,
-  },
+ 
   {
     name: 'Revenue',
     href: '/dashboard/revenue',

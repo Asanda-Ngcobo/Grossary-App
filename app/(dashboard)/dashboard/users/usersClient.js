@@ -92,59 +92,60 @@ if (lastCount === 0 && currentCount > 0) {
   return (
     <div className="mt-20 ml-[10%] w-[80%]">
       <ul className="flex gap-4 ">
-        <li className="w-1/4 bg-[#04284B] h-[100px] rounded-lg  text-white
+        <li className="w-1/4 bg-[#04284B] h-[130px] rounded-lg  text-white
          flex justify-center gap-4 items-center ">
        
-            <div className="w-[50px] h-[50px] rounded-full
+            {/* <div className="w-[50px] h-[50px] rounded-full
              bg-[#041527]
              flex justify-center items-center">
               <Users/>
-            </div>
+            </div> */}
             <div className="grid justify-center items-center">
                 <span>All users</span>
-          <span className="font-extrabold">{users.length}</span>
+          <span className="font-extrabold text-3xl">{users.length}</span>
             </div>
               
         
         
         </li>
-        <li className="w-1/4 bg-[#04284B] h-[100px] rounded-lg  text-white
+        <li className="w-1/4 bg-[#04284B] 
+        h-[130px] rounded-lg  text-white
          flex justify-center gap-4 items-center ">
-             <div className="w-[50px] h-[50px] rounded-full
+             {/* <div className="w-[50px] h-[50px] rounded-full
              bg-green-400
              flex justify-center items-center">
               <UserPlus/>
-            </div>
+            </div> */}
             <div className="grid justify-center items-center">
                 <span>New users</span>
-          <span className="font-extrabold">{currentCount}</span>
-<span className="text-xs text-white">{userChangeText}</span>
+          <span className="font-extrabold text-3xl">{currentCount}</span>
+<span className="text-[10px] text-gray-400">{userChangeText}</span>
 
             </div>
         </li>
-        <li className="w-1/4 bg-[#04284B] h-[100px] rounded-lg  text-white
+        <li className="w-1/4 bg-[#04284B] h-[130px] rounded-lg  text-white
          flex justify-center gap-4 items-center ">
-            <div className="w-[50px] h-[50px] rounded-full
+            {/* <div className="w-[50px] h-[50px] rounded-full
              bg-[#F38A8C]
              flex justify-center items-center">
               <UserMinus/>
-            </div>
+            </div> */}
             <div className="grid justify-center items-center">
                 <span>Churn users</span>
-          <span className="font-extrabold">2</span>
+          <span className="font-extrabold text-3xl">2</span>
             </div>
         </li>
         
-         <li className="w-1/4 bg-[#04284B] h-[100px] rounded-lg  text-white
+         <li className="w-1/4 bg-[#04284B] h-[130px] rounded-lg  text-white
          flex justify-center gap-4 items-center ">
-            <div className="w-[50px] h-[50px] rounded-full
+            {/* <div className="w-[50px] h-[50px] rounded-full
              bg-blue-400
              flex justify-center items-center">
               <CreditCard/>
-            </div>
+            </div> */}
             <div className="grid justify-center items-center capitalize">
                 <span>Plus Subscribers</span>
-          <span className="font-extrabold">2</span>
+          <span className="font-extrabold text-3xl">2</span>
             </div>
         </li> 
       </ul>
@@ -160,7 +161,7 @@ if (lastCount === 0 && currentCount > 0) {
             <tr>
               <th className="p-2">Image</th>
               <th className="p-2">Full Name</th>
-            
+              <th className="p-2">Email</th>
               <th className="p-2">Monthly Spend</th>
               <th className="p-2">Monthly Savings</th>
               <th className="p-2">Lists</th>
@@ -183,6 +184,7 @@ if (lastCount === 0 && currentCount > 0) {
                   /></Link>
                  
                 </td>
+                <td className="p-2">{user.email}</td>
                 <td className="p-2">{user.fullName}</td>
                 <td className="p-2">R{Number(user?.avg_monthly_spend || 0).toFixed(2)}</td>
                 <td className="p-2">R{Number(user?.avg_monthly_savings || 0).toFixed(2)}</td>

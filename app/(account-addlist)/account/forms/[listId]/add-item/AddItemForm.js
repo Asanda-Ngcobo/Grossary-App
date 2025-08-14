@@ -26,7 +26,7 @@ export default function AddItemForm({ listId }) {
 
         if (result.success) {
             toast.success(<p>Item added to <span className='font-bold
-               text-green-400 '>{selectedCategory}</span></p>, {
+               text-green-400 '>{selectedCategory || 'Uncategorized'}</span></p>, {
           duration: 5000,
           style: {
             background: '#041527',
@@ -85,7 +85,7 @@ export default function AddItemForm({ listId }) {
 
  const handleSuggestionClick = (item) => {
   setQuery(item.item_name ?? '');
-  setSelectedCategory(item.item_category ?? '');
+  setSelectedCategory(item.item_category ?? 'Uncategorized');
   setSelectedBrand(item.item_brand ?? '');
   setSelectedNumber(item.item_volume_mass ?? '');
   setSelectedUnit(item.item_unit ?? '');
@@ -161,6 +161,37 @@ export default function AddItemForm({ listId }) {
           </ul>
         )}
      
+     {suggestions.length === 0 && query.length >= 2 && (
+  <>
+    <input
+      type="number"
+      name="item_volume_mass"
+      value={selectedNumber}
+      placeholder="Volume/Mass"
+      onChange={(e) => setSelectedNumber(e.target.value)}
+      className="w-full border px-3 py-2 rounded"
+      required
+    />
+
+    <select
+      name="item_unit"
+      value={selectedUnit}
+      onChange={(e) => setSelectedUnit(e.target.value)}
+      className="w-full border px-3 py-2 rounded bg-[#04284B]"
+      required
+    >
+      <option value="">Select Unit</option>
+      <option value="kg">kg</option>
+      <option value="g">g</option>
+      <option value="ml">ml</option>
+      <option value="L">L</option>
+      <option value="Pack">Pack</option>
+       <option value="unit">Unit</option>
+       <option value="unit">bag</option>
+       
+    </select>
+  </>
+)}
         {/* Category (Auto-filled) */}
        <label htmlFor="name" className=" text-2xl hidden">Item Category</label>
       <input
@@ -169,7 +200,7 @@ export default function AddItemForm({ listId }) {
         value={selectedCategory}
        
         onChange={(e) => setSelectedCategory(e.target.value)}
-        required
+        
         className="bg-white text-gray-300 text-2xl p-3 rounded-md w-full hidden"
       />
       </div>

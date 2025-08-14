@@ -131,7 +131,7 @@ export default function UserPage({params}) {
       <tbody>
         {lists.map((list) => (
           <tr key={list.id} className="">
-            <td className="p-2">{list.list_name}</td>
+            <td className="p-2"><Link href={`/dashboard/users/${user.id}/${list.id}`}>{list.list_name}</Link></td>
             <td className="p-2 py-7">{list.list_budget}</td>
             <td className="p-2">{list.money_spent || "Active"}</td>
             <td className="p-2 ">

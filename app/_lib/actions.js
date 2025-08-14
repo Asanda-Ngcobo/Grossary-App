@@ -81,47 +81,70 @@ redirect(`/account/forms/${list.id}`);
     }
 
     export async function addItem(formData, listId) {
-
-
   const item_name = formData.get('item_name');
-  const item_category = formData.get('item_category');
-  const item_brand = formData.get('item_brand');
-  const item_quantity = formData.get('item_quantity');
-  const item_volume_mass = formData.get('item_volume_mass');
-  const item_unit = formData.get('item_unit');
+  const item_category = formData.get('item_category') || 'Uncategorized';
+  const item_brand = formData.get('item_brand') || '';
+  const item_quantity = formData.get('item_quantity') || 1;
+  const item_volume_mass = formData.get('item_volume_mass') || null;
+  const item_unit = formData.get('item_unit') || null;
 
   if (typeof item_name !== 'string') {
     throw new Error('Invalid form data');
   }
 
-  const newItem = {
-    list_id: listId,
-    item_name,
-    item_category,
-    item_brand,
-    item_quantity,
-    item_volume_mass,
-    item_unit
+  // 1️⃣ Check if item exists in grocery_items
+  const { data: existingItem, error: findError } = await supabaseServer
+    .from('grocery_items')
+    .select('id')
+    .ilike('item_name', item_name)
+    .maybeSingle();
 
+  let groceryItemId;
 
+  if (existingItem) {
+    groceryItemId = existingItem.id;
+  } else {
+    // 2️⃣ Insert into grocery_items
+    const { data: newGroceryItem, error: insertGroceryError } = await supabaseServer
+      .from('grocery_items')
+      .insert([{
+        item_name,
+        item_category,
+        item_brand,
+        item_volume_mass,
+        item_unit
+      }])
+      .select()
+      .single();
 
-  };
+    if (insertGroceryError) {
+      console.error("Error adding to grocery_items:", insertGroceryError.message);
+      throw new Error("Could not add new grocery item");
+    }
+    groceryItemId = newGroceryItem.id;
+  }
 
-  const { data: list, error } = await supabaseServer
+  // 3️⃣ Insert into list_items
+  const { error: listError } = await supabaseServer
     .from('list_items')
-    .insert([newItem])
-    .select()
-    .single();
+    .insert([{
+      list_id: listId,
+      item_name,
+      item_category,
+      item_brand,
+      item_quantity,
+      item_volume_mass,
+      item_unit,
+      
+    }]);
 
-  if (error) {
-    console.error("Supabase addItem error:", error.message);
+  if (listError) {
+    console.error("Supabase addItem error:", listError.message);
     throw new Error("The item could not be added");
   }
-  
-revalidatePath(`/account/forms/${listId}`)
 
+  revalidatePath(`/account/forms/${listId}`);
   return { success: true };
-
 }
 
 
@@ -467,7 +490,8 @@ const supabase = await createClient()
 
   await supabase.auth.signOut()
 
-  redirect('/') // or wherever you want to send the user after logout
+  redirect('/') 
+  // or wherever you want to send the user after logout
 }
 
 //Google Auth Login
