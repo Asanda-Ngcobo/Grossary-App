@@ -99,9 +99,7 @@ export function UpdatePasswordForm() {
             {error && <p className="text-sm text-red-500">{error}</p>}
 
             {/* Submit */}
-            {/* <SignUpBu type="submit" className="w-full" disabled={isLoading}>
-              {isLoading ? 'Saving...' : 'Save new password'}
-            </SignUpBu> */}
+           
 
             <button
           type="submit"

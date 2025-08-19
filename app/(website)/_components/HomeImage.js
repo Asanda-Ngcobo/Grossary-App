@@ -14,7 +14,8 @@ const HeaderFont = Quicksand({
 });
 function HomeImage() {
     return (
-        <section className="h-fit lg:h-[100vh] mb-3">
+        <section className="h-fit
+         lg:h-[100vh] mb-3">
 
 <PrimaryBunner>
       <MainBunner>   <h1 className={`text-[#041527] text-[24px] font-semibold text-left
@@ -33,16 +34,19 @@ function HomeImage() {
           
 
            <Link href='/signup'>
-           <SignUpButton><span className="px-10">Get Started</span></SignUpButton></Link></MainBunner>
+           <SignUpButton><span className="px-10
+           ">Get Started</span></SignUpButton></Link></MainBunner>
                  <Image src={ListImage}  
-                 width={350}
-                 height={600}
+                 width={280}
+                 height={450}
           
-          className=" mr-10 hidden md:flex"  alt="List Mock up" />
+          className=" mr-10 hidden
+           md:flex absolute ml-[60%]
+           -mt-10"  alt="List Mock up" />
           
           <div className="flex justify-center">
 <Image src={ListImageMobile}  
-                 width={350}
+                 width={370}
                  height={500}
           
           className="  md:hidden bottom-0 py-3 "  alt="List Mock up" />

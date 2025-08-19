@@ -65,7 +65,7 @@ export default function SignInForm() {
           required
           className="border p-2 w-full rounded-sm"
         />
-        <Link className='right-0' href='/auth/reset'>Forgot Password?</Link>
+        <Link className='right-0 text-[#5358BB]' href='/auth/reset'>Forgot Password?</Link>
         <div className="relative">
          
           <input

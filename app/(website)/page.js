@@ -16,7 +16,7 @@ export const metadata = {
 
 export default function Home() {
   return (
-    <main className="pt-30">
+    <main className="pt-35">
            <HomeImage/>
    <PlanningAhead/>
    {/* <HomeGrossaryPlus/> */}
