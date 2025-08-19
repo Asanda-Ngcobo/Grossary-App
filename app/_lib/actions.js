@@ -514,7 +514,7 @@ export async function ResetPasswordWithEmail(formData) {
   }
 
   const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
-    redirectTo: 'http://localhost:3000/auth/update-password',
+     redirectTo: `${window.location.origin}/auth/update-password`,
   });
 
   if (error) {
