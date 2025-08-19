@@ -48,7 +48,7 @@ function Page() {
       <div className="flex justify-center"><Logo/></div>
       <h1 className="text-center text-2xl">Enter your email to reset your password.</h1>
       <form className="space-y-4 mx-auto mb-10" action={handleSubmit}>
-        <label className="text-center text-gray-400">We will send you a link to reset your password.</label>
+        <p className="text-center text-gray-400">We will send you a link to reset your password.</p>
         <input
           type="email"
           name="email"

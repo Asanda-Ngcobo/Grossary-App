@@ -35,14 +35,14 @@ function HomeImage() {
            <Link href='/signup'>
            <SignUpButton><span className="px-10">Get Started</span></SignUpButton></Link></MainBunner>
                  <Image src={ListImage}  
-                 width={250}
-                 height={500}
+                 width={350}
+                 height={600}
           
           className=" mr-10 hidden md:flex"  alt="List Mock up" />
           
           <div className="flex justify-center">
 <Image src={ListImageMobile}  
-                 width={250}
+                 width={350}
                  height={500}
           
           className="  md:hidden bottom-0 py-3 "  alt="List Mock up" />

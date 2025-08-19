@@ -42,8 +42,8 @@ export function UpdatePasswordForm() {
   return (
     <div className="flex flex-col gap-6">
       <div className="rounded-2xl border p-6 shadow-sm">
-        <div className="mb-4">
-          <h2 className="text-2xl font-semibold">Reset Your Password</h2>
+        <div className="mb-4 grid justify-center">
+          <h2 className="text-2xl font-semibold ">Reset Your Password</h2>
           <p className="text-sm text-muted-foreground">
             Please enter your new password below.
           </p>
@@ -52,7 +52,7 @@ export function UpdatePasswordForm() {
         <form onSubmit={handleForgotPassword} className="space-y-4 mx-auto mb-10">
             <div className="max-w-3xl mx-auto pt-[25%] lg:pt-[10%] p-6 text-gray-900">
             {/* New Password */}
-            <div className="grid gap-2 relative">
+            <div className="grid gap-2 relative items-center">
               <label htmlFor="password">New password</label>
               <input
                 id="password"
@@ -65,7 +65,7 @@ export function UpdatePasswordForm() {
               />
               <button
                 type="button"
-                className="absolute right-3 top-9 text-gray-500 hover:text-gray-700"
+                className="absolute right-3 top-11 text-gray-500 hover:text-gray-700"
                 onClick={() => setShowPassword((prev) => !prev)}
                 tabIndex={-1}
               >
@@ -87,7 +87,7 @@ export function UpdatePasswordForm() {
               />
               <button
                 type="button"
-                className="absolute right-3 top-9 text-gray-500 hover:text-gray-700"
+                className="absolute right-3 top-11 text-gray-500 hover:text-gray-700"
                 onClick={() => setShowConfirmPassword((prev) => !prev)}
                 tabIndex={-1}
               >
