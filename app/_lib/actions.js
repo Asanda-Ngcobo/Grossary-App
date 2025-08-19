@@ -507,14 +507,14 @@ export async function googleAuthLogin() {
   //Reset Password
 export async function ResetPasswordWithEmail(formData) {
   const supabase = await createClient();
-  const email = formData.get('email').toString();
+  const email = formData.get('email')?.toString();
 
   if (!email) {
     return { success: false, error: 'Email is required.' };
   }
 
   const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
-    redirectTo: 'http://localhost:3000/update-password',
+    redirectTo: 'http://localhost:3000/auth/update-password',
   });
 
   if (error) {
@@ -525,16 +525,26 @@ export async function ResetPasswordWithEmail(formData) {
   return { success: true, data };
 }
 
-//   export async function UpdatePassword(formData){
-//        const supabase =  createClientClient();
-//        const { error} = await supabase.auth.updateUser(
-//         formData.get('password')
-//        )
-// if(error){
-//   console.log('error', error)
-// }
 
-//   }
+ export async function UpdatePassword(formData) {
+  const supabase = await createClient();
+  const password = formData.get("password")?.toString();
+
+  if (!password) {
+    return { success: false, error: "Password is required." };
+  }
+
+  const { error } = await supabase.auth.updateUser({ password });
+
+  if (error) {
+    console.error("Error updating password:", error.message);
+    return { success: false, error: error.message };
+  }
+
+  return { success: true };
+}
+
+  
   //Delete Account
   export async function handleDeleteAccount(reason) {
   const supabase = await createClient()

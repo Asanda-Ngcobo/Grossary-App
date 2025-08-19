@@ -24,8 +24,7 @@ function Page() {
             },
           }
         );
-        //Optional: Redirect after success
-        // router.push('http://localhost:3000/account/update-password');
+        
       } else {
         toast.error(
           error || 'Something went wrong. Please try again.',
@@ -55,7 +54,7 @@ function Page() {
         <button
           type="submit"
           disabled={isPending}
-          className="bg-[#A2B06D] text-white px-4 py-2 w-full rounded disabled:opacity-50"
+          className="bg-[#A2B06D] cursor-pointer text-white px-4 py-2 w-full rounded disabled:opacity-50"
         >
           {isPending ? 'Sending Email...' : 'Reset Password'}
         </button>

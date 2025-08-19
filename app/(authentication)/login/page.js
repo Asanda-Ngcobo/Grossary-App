@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation';
 import { useTransition, useState } from 'react';
 import { toast } from 'react-hot-toast';
 
-import OneTapComponent from '@/app/(authentication)/signup/AuthButton';
+import OneTapComponent from '@/app/(authentication)/auth/signup/AuthButton';
 import { Eye, EyeOff } from '@deemlol/next-icons';
 
 
@@ -65,7 +65,7 @@ export default function SignInForm() {
           required
           className="border p-2 w-full rounded-sm"
         />
-        {/* <Link className='right-0' href='/reset'>Forgot Password?</Link> */}
+        <Link className='right-0' href='/auth/reset'>Forgot Password?</Link>
         <div className="relative">
          
           <input

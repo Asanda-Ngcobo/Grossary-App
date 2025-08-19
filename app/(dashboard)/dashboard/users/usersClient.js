@@ -40,7 +40,8 @@ export default  function UsersClient() {
         const { data: userProfiles, error: userError } = await supabase
           .from('users_info')
           .select('*')
-          .eq('role', 'user');
+          .eq('role', 'user')
+          .order('created_at',{ascending: false});
 
         const { data: userLists, error: listError } = await supabase
           .from('user_lists')
@@ -184,8 +185,9 @@ if (lastCount === 0 && currentCount > 0) {
                   /></Link>
                  
                 </td>
-                <td className="p-2">{user.email}</td>
+               
                 <td className="p-2">{user.fullName}</td>
+                 <td className="p-2">{user.email}</td>
                 <td className="p-2">R{Number(user?.avg_monthly_spend || 0).toFixed(2)}</td>
                 <td className="p-2">R{Number(user?.avg_monthly_savings || 0).toFixed(2)}</td>
                 <td className="p-2">{user.listCount}</td>

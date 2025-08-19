@@ -102,7 +102,7 @@ export default async function Navigation() {
             </ul> */}
             <ul className=" flex lg:flex-row-reverse gap-10 list-none mx-3.5">
                 
-                <li><Link href='/signup'><SignUpButton>Sign Up</SignUpButton></Link></li>
+                <li><Link href='/auth/signup'><SignUpButton>Sign Up</SignUpButton></Link></li>
                 {/* <li className="lg:hidden"><Menu/></li> */}
                 <li className=" lg:flex"><Link href='/account'>
                 <SignInButton/></Link></li>
