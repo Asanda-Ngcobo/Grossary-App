@@ -1,6 +1,8 @@
 'use client';
 
+import Logo from "@/app/(website)/_components/Logo";
 import { ResetPasswordWithEmail } from "@/app/_lib/actions";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useTransition } from "react";
 import toast from "react-hot-toast";
@@ -41,14 +43,18 @@ function Page() {
   };
 
   return (
-    <div className="max-w-3xl mx-auto pt-[25%] lg:pt-[10%] p-6 text-gray-900">
+    <div className="max-w-3xl mx-auto pt-[25%] lg:pt-[10%] p-6
+     text-gray-900">
+      <div className="flex justify-center"><Logo/></div>
+      <h1 className="text-center text-2xl">Enter your email to reset your password.</h1>
       <form className="space-y-4 mx-auto mb-10" action={handleSubmit}>
+        <label className="text-center text-gray-400">We will send you a link to reset your password.</label>
         <input
           type="email"
           name="email"
           placeholder="Email"
           required
-          className="border p-2 w-full rounded-sm"
+          className="border p-2 w-full rounded-sm mt-5"
         />
 
         <button

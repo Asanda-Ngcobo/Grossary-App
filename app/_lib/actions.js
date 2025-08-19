@@ -514,7 +514,7 @@ export async function ResetPasswordWithEmail(formData) {
   }
 
   const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
-     redirectTo: `${window.location.origin}/auth/update-password`,
+     redirectTo: `https://www.grossary.shop/auth/update-password`,
   });
 
   if (error) {
