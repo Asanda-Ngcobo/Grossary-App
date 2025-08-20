@@ -4,10 +4,15 @@ function HandleCategories({ allItems, selectedCategory, setSelectedCategory }) {
   // Extract unique categories
   const categoryNames = [...new Set(allItems.map(item => item.item_category))];
 
-  // Reorder to move selected category to the top
+  // Sort alphabetically
+  const alphabeticallySorted = categoryNames
+    .filter(c => c !== selectedCategory) // exclude selected first
+    .sort((a, b) => a.localeCompare(b));
+
+  // Reorder: selected first, rest alphabetically
   const sortedCategories = selectedCategory
-    ? [selectedCategory, ...categoryNames.filter(c => c !== selectedCategory)]
-    : categoryNames;
+    ? [selectedCategory, ...alphabeticallySorted]
+    : alphabeticallySorted;
 
   // Calculate items left for each category
   const categoryStatusMap = sortedCategories.reduce((acc, category) => {
@@ -22,18 +27,24 @@ function HandleCategories({ allItems, selectedCategory, setSelectedCategory }) {
   return (
     <select
       name="categories"
-      className={`rounded px-2 py-1 bg-[#04284B] text-[#A2B06D] w-[200px]` }
+      className="rounded px-2 py-1 bg-[#04284B] text-[#A2B06D] w-[200px]"
       value={selectedCategory}
       onChange={(e) => setSelectedCategory(e.target.value)}
     >
       {sortedCategories.map(category => (
-        <option key={category} value={category}
-         className={categoryStatusMap[category]?.left > 0 ? 'text-[#F38A8C] text-sm ': 'text-[#A2B06D]'}>
-            {categoryStatusMap[category]?.left > 0
+        <option
+          key={category}
+          value={category}
+          className={
+            categoryStatusMap[category]?.left > 0
+              ? 'text-[#F38A8C] text-sm'
+              : 'text-[#A2B06D]'
+          }
+        >
+          {categoryStatusMap[category]?.left > 0
             ? `(${categoryStatusMap[category].left} left) `
-            : '(All Shopped)'}
-          {category.charAt(0).toUpperCase() + category.slice(1).replace('-', ' ')}{' '}
-          
+            : '(All Shopped) '}
+          {category.charAt(0).toUpperCase() + category.slice(1).replace('-', ' ')}
         </option>
       ))}
     </select>
