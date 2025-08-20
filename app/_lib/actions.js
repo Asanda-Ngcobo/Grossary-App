@@ -110,7 +110,8 @@ redirect(`/account/forms/${list.id}`);
       .insert([{
         item_name,
         item_category,
-        item_brand,
+        item_brand: null,
+        item_quantity: 1,
         item_volume_mass,
         item_unit
       }])
