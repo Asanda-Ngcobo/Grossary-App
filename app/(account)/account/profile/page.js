@@ -1,5 +1,5 @@
 import SignOutButton from "@/app/(authentication)/signOutButton";
-import {  ChevronLeft, Edit,    LogOut,  Mail, Trash2 } from "@deemlol/next-icons";
+import {  ChevronLeft, Edit,    Edit2,    LogOut,  Mail, Trash2 } from "@deemlol/next-icons";
 import Image from "next/image";
 import Link from "next/link";
 import { getLists } from "@/app/_lib/data-services";
@@ -137,7 +137,7 @@ const navLinks = [
       type="button"
       className="p-2 rounded-full  bg-accent-100 hover:bg-accent-200 transition cursor-pointer"
     >
-     <Link href='/account/forms/edit-profile'><Edit color="#A2B06D" className="active:bg-gray-600"/></Link> 
+     <Link href='/account/forms/edit-profile'><Edit2 color="#A2B06D" className="active:bg-gray-600"/></Link> 
     </button>
     </div>
     

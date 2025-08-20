@@ -38,7 +38,7 @@ function DeleteItem({ itemId, listId }) {
 
   return (
     <button onClick={handleClick} className="cursor-pointer">
-      <Trash2 />
+      <Trash2 className="text-gray-500" />
     </button>
   );
 }

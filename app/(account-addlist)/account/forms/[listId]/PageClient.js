@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import HandleCategories from './add-price/HandleCategories';
 import Link from 'next/link';
-import { Check, ChevronLeft, Edit, Plus, ShoppingCart } from '@deemlol/next-icons';
+import { Check, ChevronLeft, Edit, Edit2, Plus, ShoppingCart } from '@deemlol/next-icons';
 import DecreaseQuantity from './add-item/DecreaseQuantity';
 import DeleteItem from './add-item/DeleteItem';
 import IncreaseQuantity from './add-item/IncreaseQuantity';
@@ -128,20 +128,26 @@ useEffect(() => {
           <div className={`${progressColor} h-4 rounded-full transition-all duration-500`} style={{ width: `${spentPercent}%` }} />
         </div>
 
-        <div className="flex justify-between items-center mt-4">
-          <div className="text-gray-50">
-            Budget: <br />
-            <span className={` ${MoneyFont.className} font-bold text-lg flex flex-row gap-3`}><h5>{listBudget}</h5>
-            <Link href={`/account/forms/${listId}/edit-list`}><Edit size={20} color='#A2B06D'/></Link></span>
-          </div>
+       <div className="flex flex-col items-center justify-center mt-4 space-y-4">
+  <div className="text-gray-500">
+    <span
+      className={`${MoneyFont.className} font-bold text-lg flex flex-row items-center justify-center gap-3`}
+    >
+      <h5 className="text-center">Budget: {listBudget}</h5>
+      <Link href={`/account/forms/${listId}/edit-list`}>
+        <Edit2 size={20} color="#A2B06D" />
+      </Link>
+    </span>
+  </div>
 
-          <HandleCategories
-            allItems={Object.values(groupedItems).flat()}
-            selectedCategory={selectedCategory}
-            setSelectedCategory={setSelectedCategory}
-            sortedCategoryEntries={sortedCategoryEntries}
-          />
-        </div>
+  <HandleCategories
+    allItems={Object.values(groupedItems).flat()}
+    selectedCategory={selectedCategory}
+    setSelectedCategory={setSelectedCategory}
+    sortedCategoryEntries={sortedCategoryEntries}
+  />
+</div>
+
 
         <Link href={`/account/forms/${listId}/add-item`} className="bg-[#A2B06D] active:bg-gray-600 w-[40px] h-[40px] rounded-full flex justify-center items-center -mb-8 ml-[90%]">
           <button className="cursor-pointer"><Plus /></button>

@@ -22,13 +22,13 @@ function HandleCategories({ allItems, selectedCategory, setSelectedCategory }) {
   return (
     <select
       name="categories"
-      className={`rounded px-2 py-1 bg-[#04284B] w-[200px]` }
+      className={`rounded px-2 py-1 bg-[#04284B] text-[#A2B06D] w-[200px]` }
       value={selectedCategory}
       onChange={(e) => setSelectedCategory(e.target.value)}
     >
       {sortedCategories.map(category => (
         <option key={category} value={category}
-         className={categoryStatusMap[category]?.left > 0 ? 'text-[#F38A8C] text-sm ': 'text-white'}>
+         className={categoryStatusMap[category]?.left > 0 ? 'text-[#F38A8C] text-sm ': 'text-[#A2B06D]'}>
             {categoryStatusMap[category]?.left > 0
             ? `(${categoryStatusMap[category].left} left) `
             : '(All Shopped)'}
