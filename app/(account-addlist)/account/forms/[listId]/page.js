@@ -1,6 +1,5 @@
 import { getList, getListsItemsById } from "@/app/_lib/data-services";
 import PageClient from "./PageClient";
-import Loading from "./loading";
 import { createClient } from "@/app/_utils/supabase/server";
 
 export default async function Page({ params }) {
@@ -33,7 +32,7 @@ export default async function Page({ params }) {
 
   return (
     <main>
-      {/* Don’t wrap client component in Suspense here — let it handle its own loading */}
+    
       <PageClient
         listId={id}
         list_name={list_name}

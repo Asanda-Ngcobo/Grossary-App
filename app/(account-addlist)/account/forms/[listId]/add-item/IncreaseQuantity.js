@@ -1,16 +1,17 @@
 'use client';
 
-import { increaseQuantity } from "@/app/_lib/actions";
-import { Plus } from "@deemlol/next-icons";
+import { updateQuantity } from "@/app/_lib/actions";
 import toast from "react-hot-toast";
 
-function IncreaseQuantity({ itemId, itemName, itemQuantity, listId }) {
-  async function handleClick() {
+function QuantitySelector({ itemId, itemName, itemQuantity, listId }) {
+  async function handleChange(e) {
+    const newQuantity = parseInt(e.target.value);
+
     try {
-      const results = await increaseQuantity(itemId, listId);
+      const results = await updateQuantity(itemId, listId, newQuantity);
       if (results.success) {
         toast.success(
-          `${itemName} increased to ${itemQuantity}`,
+          `${itemName} quantity set to ${newQuantity}`,
           {
             duration: 5000,
             style: {
@@ -21,7 +22,7 @@ function IncreaseQuantity({ itemId, itemName, itemQuantity, listId }) {
         );
       } else {
         toast.error(
-          results.message || "Failed to increase quantity.",
+          results.message || "Failed to update quantity.",
           {
             duration: 5000,
             style: {
@@ -33,7 +34,7 @@ function IncreaseQuantity({ itemId, itemName, itemQuantity, listId }) {
       }
     } catch (error) {
       toast.error(
-        "An error occurred while increasing quantity.",
+        "An error occurred while updating quantity.",
         {
           duration: 5000,
           style: {
@@ -46,10 +47,19 @@ function IncreaseQuantity({ itemId, itemName, itemQuantity, listId }) {
   }
 
   return (
-    <button onClick={handleClick} className="cursor-pointer">
-      <Plus />
-    </button>
+    <select
+      onChange={handleChange}
+      defaultValue={itemQuantity}
+      className="cursor-pointer 
+       px-2 py-1 bg-[#04284B] text-white font-bold"
+    >
+      {Array.from({ length: 10 }, (_, i) => i + 1).map(num => (
+        <option key={num} value={num}>
+          {num}
+        </option>
+      ))}
+    </select>
   );
 }
 
-export default IncreaseQuantity;
+export default QuantitySelector;

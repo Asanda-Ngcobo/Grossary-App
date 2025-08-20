@@ -194,17 +194,19 @@ useEffect(() => {
                         <span>{item.item_volume_mass}{item.item_unit}</span>
                       </div>
                       <form className="flex items-center gap-4 justify-between">
-                        <div className="flex flex-row w-[30%] justify-between">
-                          <div>
-                            {item.item_quantity > 1
-                              ? <DecreaseQuantity itemId={item.id} listId={listId} />
-                              : <DeleteItem itemId={item.id} listId={listId} />
-                            }
-                          </div>
-                          <span className="font-bold text-lg">{item.item_quantity}</span>
-                          <IncreaseQuantity itemId={item.id}
+                        <div className="flex flex-row w-[40%] justify-between">
+                            <IncreaseQuantity itemId={item.id}
                           itemName={item.item_name}
                           itemQuantity={item.item_quantity} listId={listId} />
+                          
+                          <div>
+                          
+                              
+                               <DeleteItem itemId={item.id} listId={listId} />
+                            
+                          </div>
+                          {/* <span className="font-bold text-lg">{item.item_quantity}</span> */}
+                        
                         </div>
 
                         <div>

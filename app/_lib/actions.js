@@ -148,22 +148,8 @@ redirect(`/account/forms/${list.id}`);
 }
 
 
-export async function increaseQuantity(itemId, listId) {
-  // Fetch current quantity
-  const { data: currentItem, error: fetchError } = await supabaseServer
-    .from('list_items')
-    .select('item_quantity')
-    .eq('id', itemId)
-    .single();
-
-  if (fetchError || !currentItem) {
-    console.error(fetchError);
-    throw new Error('Could not fetch item to update quantity');
-  }
-
-  const newQuantity = currentItem.item_quantity + 1;
-
-  // Update quantity
+export async function updateQuantity(itemId, listId, newQuantity) {
+  // Update quantity directly
   const { error: updateError } = await supabaseServer
     .from('list_items')
     .update({ item_quantity: newQuantity })
@@ -171,13 +157,15 @@ export async function increaseQuantity(itemId, listId) {
 
   if (updateError) {
     console.error(updateError);
-    throw new Error('Could not update item quantity');
+    return { success: false, message: "Could not update item quantity" };
   }
 
   // Revalidate path to reflect the change
   revalidatePath(`/account/forms/${listId}`);
-  redirect(`/account/forms/${listId}`);
+
+  return { success: true };
 }
+
 
 export async function decreaseQuantity(itemId, listId) {
   // Fetch current quantity
@@ -210,25 +198,24 @@ export async function decreaseQuantity(itemId, listId) {
   redirect(`/account/forms/${listId}`);
 }
 
-export async function deleteItem(itemId, listId){
-  
-const { error } = await supabase
-  .from('list_items')
-  .delete()
-  .eq('id', itemId)
-      
-   if (error) {
-      console.error(error);
-      return { success: false, message: 'Item could not be deleted' };
-    }
+export async function deleteItem(itemId, listId) {
+  const { error } = await supabase
+    .from('list_items')
+    .delete()
+    .eq('id', itemId);
 
-    
-    // Revalidate path to reflect the change
+  if (error) {
+    console.error(error);
+    return { success: false, message: 'Item could not be deleted' };
+  }
+
+  // Revalidate path to reflect changes
   revalidatePath(`/account/forms/${listId}`);
-  
-  redirect(`/account/forms/${listId}`);
-  
+
+  return { success: true };
 }
+
+
 
 
 export async function updateItemPrice(itemId, price, item_name,is_checked, listId) {
