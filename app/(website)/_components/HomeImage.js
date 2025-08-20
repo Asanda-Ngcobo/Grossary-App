@@ -33,7 +33,7 @@ function HomeImage() {
             </ul>
           
 
-           <Link href='/signup'>
+           <Link href='/auth/signup'>
            <SignUpButton><span className="px-10
            ">Get Started</span></SignUpButton></Link></MainBunner>
                  <Image src={ListImage}  

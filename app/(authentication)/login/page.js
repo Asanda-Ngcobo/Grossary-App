@@ -98,7 +98,7 @@ export default function SignInForm() {
 
       <section className="text-center text-sm mt-[10vh]">
         <span className="font-semibold">You do not have an account? </span>
-        <Link href="/signup" className="text-[#5358BB] font-semibold underline">
+        <Link href="/auth/signup" className="text-[#5358BB] font-semibold underline">
           Sign up
         </Link>
       </section>
