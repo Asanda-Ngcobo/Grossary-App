@@ -142,7 +142,7 @@ useEffect(() => {
     </span>
   </div>
 <div className='flex justify-between w-full'>
-  <div>
+  <div className='text-sm'>
     {toBeShopped > 0 ? <p>{`${toBeShopped} of ${itemsLength} to be shopped`}</p>: <p>All Shopped</p>}
   </div>
  <HandleCategories

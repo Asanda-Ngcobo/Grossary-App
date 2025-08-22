@@ -27,7 +27,8 @@ function HandleCategories({ allItems, selectedCategory, setSelectedCategory }) {
   return (
     <select
       name="categories"
-      className="rounded px-2 py-1 bg-[#04284B] text-[#A2B06D] w-[150px]"
+      className="rounded px-2 py-1 bg-[#04284B] text-[#A2B06D]
+      text-sm w-[150px]"
       value={selectedCategory}
       onChange={(e) => setSelectedCategory(e.target.value)}
     >
