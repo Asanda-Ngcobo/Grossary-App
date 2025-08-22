@@ -10,7 +10,7 @@ import EditButton from "./EditButton";
 
 
 export default async function EditListPage({ params }) {
-  const { listId } = params
+  const { listId } = await params
   const list = await getList(listId)
 
   if (!list) {

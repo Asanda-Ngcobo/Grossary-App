@@ -125,13 +125,15 @@ useEffect(() => {
         </div>
 
         <div className="w-full bg-gray-700 rounded-full h-4 my-3">
-          <div className={`${progressColor} h-4 rounded-full transition-all duration-500`} style={{ width: `${spentPercent}%` }} />
+          <div className={`${progressColor} h-4 rounded-full transition-all 
+          duration-500`} style={{ width: `${spentPercent}%` }} />
         </div>
 
        <div className="flex flex-col items-center justify-center mt-4 space-y-4">
   <div className="text-gray-500">
     <span
-      className={`${MoneyFont.className} font-bold text-lg flex flex-row items-center justify-center gap-3`}
+      className={`${MoneyFont.className} font-bold text-lg 
+      flex flex-row items-center justify-center gap-3`}
     >
       <h5 className="text-center">Budget: {listBudget}</h5>
       <Link href={`/account/forms/${listId}/edit-list`}>
@@ -139,13 +141,18 @@ useEffect(() => {
       </Link>
     </span>
   </div>
-
-  <HandleCategories
+<div className='flex justify-between w-full'>
+  <div>
+    {toBeShopped > 0 ? <p>{`${toBeShopped} of ${itemsLength} to be shopped`}</p>: <p>All Shopped</p>}
+  </div>
+ <HandleCategories
     allItems={Object.values(groupedItems).flat()}
     selectedCategory={selectedCategory}
     setSelectedCategory={setSelectedCategory}
     sortedCategoryEntries={sortedCategoryEntries}
   />
+</div>
+ 
 </div>
 
 

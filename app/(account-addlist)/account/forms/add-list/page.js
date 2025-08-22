@@ -1,16 +1,18 @@
-import { Suspense } from "react"
+
 import AddListForm from "./AddListForm"
-import Loading from "./loading"
 
 
+export const dynamic = "force-static";
 
 
 
 function page() {
    
-    return <Suspense fallback={<Loading/>}>
-        <AddListForm/>
-    </Suspense>
+    return <main>
+<AddListForm/>
+    </main>
+        
+    
 }
 
 export default page

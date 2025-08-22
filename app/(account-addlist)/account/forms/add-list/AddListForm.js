@@ -21,6 +21,7 @@ function AddListForm() {
                     <input
                     id="list_name"
                     name="list_name"
+                    type="text"
                   
               
                     required
