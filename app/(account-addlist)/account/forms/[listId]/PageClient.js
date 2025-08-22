@@ -141,7 +141,7 @@ useEffect(() => {
       </Link>
     </span>
   </div>
-<div className='flex justify-between w-full'>
+<div className='flex justify-between items-center w-full'>
   <div className='text-sm'>
     {toBeShopped > 0 ? <p>{`${toBeShopped} of ${itemsLength} to be shopped`}</p>: <p>All Shopped</p>}
   </div>
