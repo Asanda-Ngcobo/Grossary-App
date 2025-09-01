@@ -102,7 +102,8 @@ useEffect(() => {
   return (
     <div>
       {/* Header Card */}
-      <div className="w-[90%]  mx-[5%] sm:w-[80%] sm:mx-[10%] md:w-[80%] md:mx-[10%] lg:w-[60%] lg:mx-[20%] mt-[5%] bg-[#04284B]
+      <div className="w-[90%]  mx-[5%] sm:w-[80%] sm:mx-[10%]
+       md:w-[80%] md:mx-[10%] lg:w-[60%] lg:mx-[20%] mt-[5%] bg-[#04284B]
        text-white rounded-md shadow-sm px-4 py-4">
         <div className="flex items-center justify-between mb-4">
           <Link href="/account/lists">
