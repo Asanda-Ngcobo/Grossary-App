@@ -54,7 +54,7 @@ export default function ListNavigation() {
                   items-center justify-center
                    cursor-pointer 
                   w-full text-center 
-                  lg:gap-2 hover:text-[#E32227] hover:rounded-[4px] p-3`}
+                  lg:gap-2 hover:bg-[#04284B] hover:rounded-[4px] p-3`}
               >
                 {link.icon}
                 <span className="cursor-pointer ">{link.name}</span>
