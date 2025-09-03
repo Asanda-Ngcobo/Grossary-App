@@ -51,11 +51,12 @@ export default async function Page() {
 
   return (
     <div className="bg-[#041527] mt-[5%] lg:mt-[6%]">
-      <Pages profile={profile}/>
+      {/* <Pages profile={profile}/> */}
+      
 
       {/* Desktop greeting */}
-      <section className="justify-between items-center hidden mx-3 lg:w-[60%] lg:ml-[15%] py-7 lg:flex">
-        <div className="hidden lg:block">
+      <section className="flex justify-between items-center  mx-3 lg:w-[60%] lg:ml-[15%] py-7 lg:flex">
+        <div className="">
           <div className="mx-4 font-bold text-[#8F8C8C] text-[18px]">
             <p className="flex gap-2">
               <Greeting /> {capitalizedFirstName},
@@ -79,7 +80,7 @@ export default async function Page() {
       </div>
 
       {/* Mobile CTA button */}
-      <button
+      {/* <button
         className={`${ButtonFont.className} bg-[#A2B06D] active:bg-gray-600
          w-[90%] mx-[5%] h-[50px] rounded-[10px] mt-20 text-white font-semibold cursor-pointer hover:bg-[#6f7a46] lg:hidden`}
       >
@@ -89,7 +90,7 @@ export default async function Page() {
         >
           Add New List <span className="ml-1"><ChevronRight width={20} /></span>
         </Link>
-      </button>
+      </button> */}
     </div>
   );
  }

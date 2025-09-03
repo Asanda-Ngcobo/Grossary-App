@@ -29,7 +29,7 @@ export default async function AppNavigation() {
 list.money_spent === 0 || list.money_spent === null)
    
   return (
-    <div className="fixed bottom-0 bg-[#011931] w-full hidden
+    <div className="fixed bottom-0 bg-[#011931] w-full 
      h-[110px]
      lg:flex
          lg:bg-white  lg:w-[20%] lg:left-0 lg:h-screen lg:bottom-auto

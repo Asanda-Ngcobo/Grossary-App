@@ -1,18 +1,5 @@
 
-// import SignUpForm from "./SignUpForm"
-// import AppPreview from "./AppPreview"
 
-
-// async function page() {
-//     return (
-//   <main className="lg:grid lg:grid-cols-[1fr_2fr] h-screen">
-//     <SignUpForm/>
-//    <AppPreview/>
-//   </main>
-//     )
-// }
-
-// export default page
 'use client';
 
 import { signUpUser } from '@/app/_lib/actions';

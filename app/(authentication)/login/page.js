@@ -88,7 +88,7 @@ export default function SignInForm() {
         <button
           type="submit"
           disabled={isPending}
-          className="bg-[#A2B06D] text-white px-4 py-2 w-full rounded disabled:opacity-50"
+          className="bg-[#A2B06D] text-white px-4 py-2 cursor-pointer w-full rounded disabled:opacity-50"
         >
           {isPending ? 'Signing in...' : 'Sign in'}
         </button>
