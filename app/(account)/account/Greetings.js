@@ -29,7 +29,7 @@ export default function Greeting() {
   
 
   return (
-    <span className=" font-bold text-[#8F8C8C] text-[16px]">
+    <span className=" font-bold text-[#8F8C8C] text-[14px]">
       {greeting}
     </span>
   )

@@ -57,7 +57,7 @@ export default async function Page() {
       {/* Desktop greeting */}
       <section className="flex justify-between items-center  mx-3 lg:w-[60%] lg:ml-[15%] py-7 lg:flex">
         <div className="">
-          <div className="mx-4 font-bold text-[#8F8C8C] text-[18px]">
+          <div className="mx-4 font-bold text-[#8F8C8C] text-[14px]">
             <p className="flex gap-2">
               <Greeting /> {capitalizedFirstName},
             </p>
@@ -67,7 +67,7 @@ export default async function Page() {
 
         <Link href="/account/forms/add-list">
           <MainAppButton>
-            <span className="flex justify-between items-center mx-3 active:bg-gray-600">
+            <span className="flex justify-between items-center text-[14px] mx-3 active:bg-gray-600">
               + New List
             </span>
           </MainAppButton>

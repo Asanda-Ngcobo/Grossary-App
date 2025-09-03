@@ -116,7 +116,7 @@ const navLinks = [
 
           {/* Profile */}
  <section className="py-6 px-4 rounded-md w-[90%] mt-[5%]
-  ml-[5%] xl:w-[60%] xl:ml-[15%] lg:mx-0 gap-6 bg-[#041527] shadow-sm">
+  ml-[5%] xl:w-[60%] xl:ml-[15%] lg:mx-0 gap-6 bg-[#041527] shadow-sm bottom-[100px]">
 
     {/* Profile Photo */}
   <div className="space-y-4  ">
