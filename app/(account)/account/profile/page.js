@@ -110,9 +110,9 @@ const navLinks = [
 
         <Suspense fallback={<Loading/>}>
         {/* back button */}
-       <div className="my-5 mx-[5%] bg-white active:bg-gray-600 rounded-full
+       {/* <div className="my-5 mx-[5%] bg-white active:bg-gray-600 rounded-full
         w-[40px] h-[40px] flex justify-center items-center lg:hidden"> 
-            <Link href='/account'><ChevronLeft color="black" size={30}/></Link> </div>   
+            <Link href='/account'><ChevronLeft color="black" size={30}/></Link> </div>    */}
 
           {/* Profile */}
  <section className="py-6 px-4 rounded-md w-[90%] mt-[5%]

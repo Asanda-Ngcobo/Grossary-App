@@ -27,13 +27,13 @@ export default function ListNavigation() {
     <nav className="fixed top-0 w-[90%] ml-[5%] 
     lg:w-[60%]  xl:ml-[10%]  mt-6 bg-[#041527] z-10  ">
 
-       <div className="my-5 mx-[5%] bg-white
+       {/* <div className="my-5 mx-[5%] bg-white
         active:bg-gray-600 rounded-full
         w-[40px] h-[40px] flex justify-center
          items-center lg:hidden"> 
 
             <Link href='/account'><ChevronLeft color="black" size={30}/></Link> 
-            </div>
+            </div> */}
             
       <ul className="flex flex-row justify-between
        gap-0 border-b border-[#D9D9D9]">
