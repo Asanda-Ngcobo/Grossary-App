@@ -116,7 +116,7 @@ const navLinks = [
 
           {/* Profile */}
  <section className="py-6 px-4 rounded-md w-[90%] mt-[5%]
-  ml-[5%] xl:w-[60%] xl:ml-[15%] lg:mx-0 gap-6 bg-[#041527] shadow-sm bottom-[100px]">
+  ml-[5%] xl:w-[60%] xl:ml-[15%] lg:mx-0 gap-6 bg-[#041527] shadow-sm ">
 
     {/* Profile Photo */}
   <div className="space-y-4  ">
@@ -174,7 +174,7 @@ const navLinks = [
   </div>
 </section>
 <section  className="py-3 rounded-md w-[90%] ml-[5%]
-        xl:w-[60%] xl:ml-[15%] lg:ml-0">
+        xl:w-[60%] xl:ml-[15%] lg:ml-0 bottom-[100px]">
   {navLinks.map(function(userInfo){
     return <ul key={userInfo.id} className="w-[90%] ml-[5%]">
       <li  className="border-b border-gray-300 p-6 flex justify-between  cursor-pointer">
