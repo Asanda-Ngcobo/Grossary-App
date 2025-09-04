@@ -41,7 +41,8 @@ list.money_spent === 0 || list.money_spent === null)
             {activeList.length === 0 ? (
                 
                 <p>You have no <span className="font-bold"> active lists</span> currently. Start adding your list by clicking 
-                <span className="italic"> Add New List</span> below or reuse your old lists under History.
+                <span className="italic"> Add New List</span> 
+                below or reuse your old lists.
                 <Link href='/account/forms/add-list'>   <span className="flex 
                 justify-between items-center 
                 mx-3

@@ -76,7 +76,7 @@ function Footer() {
         
 
         <p className="text-sm text-gray-400">
-            Copyright &copy; {new Date().getFullYear()} Disciplina labs Pty Ltd. All rights reserved.
+            Copyright &copy; {new Date().getFullYear()}, Disciplina labs Pty Ltd. All rights reserved.
           </p>
       </div>
      

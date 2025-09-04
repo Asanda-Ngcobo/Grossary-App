@@ -13,7 +13,7 @@ const navLinks = [
     
   },
   {
-    name: 'History',
+    name: 'Old Lists',
     href: '/account/lists/history',
     
   },
