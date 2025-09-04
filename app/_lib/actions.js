@@ -446,9 +446,9 @@ const email = formData.get('email')?.toString();
   });
 
 
-     if (error) {
-    redirect('/error')
-  }
+  //    if (error) {
+  //   redirect('/auth/error')
+  // }
 
   
 

@@ -35,9 +35,8 @@ export default function SignInForm() {
           }
         }, 1000);
       } catch (error) {
-        toast.error(`Error Occurred when trying to signin,
-           Please your connection or your login details`, {
-          duration: 4000,
+        toast.error(`The email or password you entered is incorrect.`, {
+          duration: 10000,
           style: {
             background: '#041527',
             color: '#fff',

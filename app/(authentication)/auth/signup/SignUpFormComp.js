@@ -3,6 +3,8 @@
 import GoogleAuthComp from './GoogleAuthComp'
 import Link from 'next/link'
 import Logo from '@/app/(website)/_components/Logo'
+import { useState } from 'react';
+import { Eye, EyeOff } from '@deemlol/next-icons';
 // import Image from 'next/image'
 // import { getGoogleSignInUrl, googleAuthLogin } from '@/app/_lib/actions'
 
@@ -13,6 +15,7 @@ function SignUpFormComp({handleSubmit, isPending}) {
   //     window.location.href = url;
   //   };
 
+  const [showPassword, setShowPassword] = useState(false);
   return (
     <div className="w-[90%] max-w-[500px] mx-auto py-6 text-[#041527] grid gap-4">
       {/* Header */}
@@ -28,10 +31,30 @@ function SignUpFormComp({handleSubmit, isPending}) {
     <h3 className="text-center text-xl font-extrabold">Sign Up</h3>
       <input type="text" name="fullName" placeholder="Full Name"
        required className="border p-2 w-full rounded-sm" />
+
       <input type="email" name="email" placeholder="Email" 
       required className="border p-2 w-full rounded-sm" />
-      <input type="password" name="password" placeholder="Password"
-       required className="border p-2 w-full rounded-sm" />
+
+      {/* <input type="password" name="password" placeholder="Password"
+       required className="border p-2 w-full rounded-sm" /> */}
+        <div className="relative">
+         
+          <input
+            type={showPassword ? 'text' : 'password'}
+            name="password"
+            placeholder="Password"
+            required
+            className="border p-2 w-full rounded-sm pr-10"
+          />
+          <button
+            type="button"
+            onClick={() => setShowPassword(!showPassword)}
+            className="absolute inset-y-0 right-2 flex items-center text-gray-600"
+            tabIndex={-1}
+          >
+            {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+          </button>
+        </div>
 
 {/* <input
   type="date"
