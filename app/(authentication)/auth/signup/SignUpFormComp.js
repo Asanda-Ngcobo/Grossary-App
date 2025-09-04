@@ -4,7 +4,7 @@ import GoogleAuthComp from './GoogleAuthComp'
 import Link from 'next/link'
 import Logo from '@/app/(website)/_components/Logo'
 import { useState } from 'react';
-import { Eye, EyeOff } from '@deemlol/next-icons';
+import { Check, Divide, Eye, EyeOff, X } from '@deemlol/next-icons';
 // import Image from 'next/image'
 // import { getGoogleSignInUrl, googleAuthLogin } from '@/app/_lib/actions'
 
@@ -16,6 +16,22 @@ function SignUpFormComp({handleSubmit, isPending}) {
   //   };
 
   const [showPassword, setShowPassword] = useState(false);
+  const [password, setPassword] = useState('')
+
+  const rules = [
+    {
+      label: "At least 1 uppercase letter",
+      valid: /[A-Z]/.test(password),
+    },
+    {
+      label: "At least 1 number",
+      valid: /[0-9]/.test(password),
+    },
+    {
+      label: "Minimum 8 characters",
+      valid: password.length >= 8,
+    },
+  ];
   return (
     <div className="w-[90%] max-w-[500px] mx-auto py-6 text-[#041527] grid gap-4">
       {/* Header */}
@@ -29,6 +45,14 @@ function SignUpFormComp({handleSubmit, isPending}) {
 {/* email SignUp  */}
  <form action={handleSubmit} className="space-y-4 mx-auto">
     <h3 className="text-center text-xl font-extrabold">Sign Up</h3>
+      {/* <div 
+        >{password.length > 0 && password.length < 8 &&
+         <p className='bg-[#e96c70] flex justify-center items-center'>
+          Password should have at least 8 characters, 
+          containing at least one Uppercase and Number.</p>
+         }
+
+         {password.length > 7 && <p className='bg-[#eff7d5] flex justify-center items-center'>You are good to go 😊</p> }</div> */}
       <input type="text" name="fullName" placeholder="Full Name"
        required className="border p-2 w-full rounded-sm" />
 
@@ -37,6 +61,8 @@ function SignUpFormComp({handleSubmit, isPending}) {
 
       {/* <input type="password" name="password" placeholder="Password"
        required className="border p-2 w-full rounded-sm" /> */}
+
+       
         <div className="relative">
          
           <input
@@ -44,8 +70,11 @@ function SignUpFormComp({handleSubmit, isPending}) {
             name="password"
             placeholder="Password"
             required
+            value={password}
+            onChange={(e)=> setPassword(e.target.value)}
             className="border p-2 w-full rounded-sm pr-10"
           />
+          
           <button
             type="button"
             onClick={() => setShowPassword(!showPassword)}
@@ -55,14 +84,27 @@ function SignUpFormComp({handleSubmit, isPending}) {
             {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
           </button>
         </div>
-
-{/* <input
-  type="date"
-  name="date_of_birth"
-  placeholder="Date Of Birth"
-  
-  className="border p-2 w-full rounded-sm"
-/> */}
+              {/* Password rules */}
+              {password.length > 0 && 
+                <ul className="mt-2 text-sm space-y-1">
+        {rules.map((rule, i) => (
+          <li
+            key={i}
+            className={`flex items-center gap-2 ${
+              rule.valid ? "text-green-600" : "text-gray-500"
+            }`}
+          >
+            {rule.valid ? (
+              <Check size={16} />
+            ) : (
+              <X size={16} className="text-red-500" />
+            )}
+            {rule.label}
+          </li>
+        ))}
+      </ul> }
+    
+      
       <button
         type="submit"
         disabled={isPending}
