@@ -9,7 +9,10 @@ import { toast } from 'react-hot-toast';
 import OneTapComponent from '@/app/(authentication)/auth/signup/AuthButton';
 import { Eye, EyeOff } from '@deemlol/next-icons';
 
-
+export const metadata = {
+  title: "Login | Grossary",
+  description: "Grossary - a simple, all-in-one grocery app that helps you",
+};
 export default function SignInForm() {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();

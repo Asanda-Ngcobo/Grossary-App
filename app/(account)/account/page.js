@@ -17,6 +17,10 @@ const ButtonFont = Lexend_Deca({
   display: 'swap',
 });
 
+export const metadata = {
+  title: "Account | Grossary",
+  description: "Grossary - a simple, all-in-one grocery app that helps you",
+};
 export default async function Page() {
    const supabase = await createClient()
   const { data, error } = await supabase.auth.getUser()

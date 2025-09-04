@@ -1,6 +1,10 @@
 import Link from "next/link"
 import AboutHero from "./AboutHero"
 
+export const metadata = {
+  title: "About Us | Grossary",
+  description: "Grossary - a simple, all-in-one grocery app that helps you",
+};
 function page() {
     return (
         <>
