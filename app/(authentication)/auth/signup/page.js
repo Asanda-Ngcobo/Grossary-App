@@ -10,10 +10,10 @@ import SignUpFormComp from './SignUpFormComp';
 import Link from 'next/link';
 import AppPreview from './AppPreview';
 
-export const metadata = {
-  title: "Sign Up | Grossary",
-  description: "Grossary - a simple, all-in-one grocery app that helps you",
-};
+// export const metadata = {
+//   title: "Sign Up | Grossary",
+//   description: "Grossary - a simple, all-in-one grocery app that helps you",
+// };
 export default function SignUpForm() {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
