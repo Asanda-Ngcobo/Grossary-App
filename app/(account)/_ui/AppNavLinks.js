@@ -47,11 +47,11 @@ function AppNavLinks({ userLists }) {
   const listCount = userLists?.length || 0;
 
   return (
-    <li key={link.name} className="flex flex-col items-center justify-center font-bold lg:justify-center lg:flex-row lg:gap-2">
+    <li key={link.name} className="flex flex-col items-center justify-center lg:justify-center lg:flex-row lg:gap-2">
       <Link
         className={`flex flex-col lg:flex-row items-center lg:gap-10 lg:text-[#04284B]
           lg:w-[90%] lg:ml-[5%] hover:bg-[#04284B] hover:text-gray-50
-          hover:rounded-[4px] lg:p-3 active:opacity-60
+          hover:rounded-[4px] lg:p-3 active:opacity-60 text-[10px] lg:text-[18px]
           ${isActive ? "text-[#E32227] lg:bg-[#041527] rounded-[4px] lg:text-gray-50" : ""}`}
         href={link.href}
       >

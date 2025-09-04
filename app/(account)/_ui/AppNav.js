@@ -30,12 +30,12 @@ list.money_spent === 0 || list.money_spent === null)
    
   return (
     <div className="fixed bottom-0 bg-[#011931] w-full 
-     h-[90px]
+     h-[80px]
      lg:flex
          lg:bg-white  lg:w-[20%] lg:left-0 lg:h-screen lg:bottom-auto
             lg:flex-col lg:justify-start">
  <AppNavLinks userLists={activeList}/>
- {/* <div className="w-[40%] ml-[30%] bg-gray-400 h-2 rounded-full lg:hidden  " ></div> */}
+
     </div>
    
   )

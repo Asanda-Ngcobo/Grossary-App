@@ -95,6 +95,7 @@ export default function SignInForm() {
       </form>
 
       <OneTapComponent />
+      
 
       <section className="text-center text-sm mt-[10vh]">
         <span className="font-semibold">You do not have an account? </span>
