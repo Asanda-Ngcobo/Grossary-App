@@ -46,22 +46,50 @@ const fullName = profile.fullName
 
 
   const numberOfLists = lists.length;
- const monthlySpend = new Intl.NumberFormat('en-ZA', {
+
+//Money Spent
+const { data: lists30Days } = await supabase
+  .from('user_lists')
+  .select('money_spent, created_at')
+  .eq('user_id', profile.id)
+  .gte('created_at', new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString());
+
+const moneySpent30Days = lists30Days?.reduce((sum, list) => sum + list.money_spent, 0) || 0;
+
+const moneySpentFormatted = new Intl.NumberFormat('en-ZA', {
   style: 'currency',
   currency: 'ZAR',
-  minimumFractionDigits: 2,
-}).format(profile.avg_monthly_spend || 0);
+}).format(moneySpent30Days);
 
-const monthlySave = new Intl.NumberFormat('en-ZA', {
+//Money Saved
+
+const { data: savings30Days } = await supabase
+  .from('user_lists')
+  .select('money_left, created_at')
+  .eq('user_id', profile.id)
+  .gte('created_at', new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString());
+
+const moneySaved30Days = savings30Days?.reduce((sum, list) => sum + list.money_left, 0) || 0;
+
+const moneySavedFormatted = new Intl.NumberFormat('en-ZA', {
   style: 'currency',
   currency: 'ZAR',
-  minimumFractionDigits: 2,
-}).format(profile.avg_monthly_savings || 0);
+}).format(moneySaved30Days);
 
 
-  // const monthlySave = Number(profile.avg_monthly_savings).toFixed(2);
-  const monthlyBudget = Number(profile.avg_monthly_savings) + Number(profile.avg_monthly_spend);
-  const savedPercentage = ((profile.avg_monthly_savings / monthlyBudget) * 100).toFixed(2);
+const { data: budget30Days } = await supabase
+  .from('user_lists')
+  .select('list_budget, created_at, money_spent')
+  .eq('user_id', profile.id)
+  .not('money_spent', 'is', null) // ✅ exclude active lists with no spend
+  .gte(
+    'created_at',
+    new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString()
+  );
+
+const Budget30Days = budget30Days?.reduce((sum, list) => sum + list.list_budget, 0) || 0;
+
+  const savedPercentage = ((Number(moneySaved30Days) / Number(Budget30Days)) * 100).toFixed(2);
   
 const navLinks = [
 
@@ -113,11 +141,7 @@ const navLinks = [
     return (
 
         <Suspense fallback={<Loading/>}>
-        {/* back button */}
-       {/* <div className="my-5 mx-[5%] bg-white active:bg-gray-600 rounded-full
-        w-[40px] h-[40px] flex justify-center items-center lg:hidden"> 
-            <Link href='/account'><ChevronLeft color="black" size={30}/></Link> </div>    */}
-
+       
           {/* Profile */}
  <section className="py-6 px-4 rounded-md w-[90%] mt-[5%]
   ml-[5%] xl:w-[60%] xl:ml-[15%] lg:mx-0 gap-6 bg-[#041527] shadow-sm ">
@@ -154,23 +178,23 @@ const navLinks = [
        <div className=" p-2 col-start-1 col-end-4 h-[120px] bg-[#04284B] 
        grid justify-center items-center rounded-lg">
         <h2 className={`${MoneyFont.className} text-4xl font-bold
-         text-center`}>{monthlySpend}</h2>
-        <p className="text-sm text-gray-500 text-center">Average Monthly Grocery Spend</p>
+         text-center`}>{moneySpentFormatted}</h2>
+        <p className="text-sm text-gray-500 text-center">Money Spent Last 30 Days</p>
       </div>
 {/* Money Saved Container */}
        <div className=" pb-2 col-start-1 col-end-3 h-[120px] bg-[#04284B] 
        grid justify-center items-center rounded-lg ">
         <h2 className={`${MoneyFont.className} text-4xl font-bold
-         text-center`}>{monthlySave} <span className="text-sm
+         text-center`}>{moneySavedFormatted} <span className="text-sm
          text-gray-600">({savedPercentage}%)</span></h2>
-        <p className="text-sm text-gray-500 text-center">Average Money Saved Per Month</p>
+        <p className="text-sm text-gray-500 text-center">Money Saved Last 30 Days</p>
       </div>
       {/* Lists Created Container */}
       <div className=" pb-2 h-[120px] bg-[#04284B] 
        grid justify-center items-center rounded-lg ">
         <h2 className={`${MoneyFont.className} text-4xl font-bold
          text-center`}>{numberOfLists}</h2>
-        <p className="text-sm text-gray-500 text-center">Lists Created</p>
+        <p className="text-sm text-gray-500 text-center">Lists Created </p>
       </div>
      
      
