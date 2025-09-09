@@ -3,7 +3,7 @@
 import { Carousel } from "react-responsive-carousel";
 import Image from "next/image";
 
-import ListImage1 from "@/public/List_MockUp.png";
+import ListImage1 from "@/public/List 2.png";
 import ListImage2 from "@/public/Old_lists.png";
 import ListImage3 from "@/public/Active_Lists.png";
 import ListImage4 from "@/public/Old_lists.png";
