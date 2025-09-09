@@ -5,7 +5,10 @@ import { Suspense } from "react"
 import { createClient } from "@/app/_utils/supabase/server"
 import Loading from "../../loading"
 
-
+export const metadata = {
+  title: "History | Grossary",
+  description: "Grossary - a simple, all-in-one grocery app that helps you",
+};
 async function page() {
      const supabase = await createClient()
          const { data, error } = await supabase.auth.getUser()

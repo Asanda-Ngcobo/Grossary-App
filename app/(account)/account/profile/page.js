@@ -16,6 +16,10 @@ const MoneyFont = Quicksand({
   display: 'swap',
 });
 
+export const metadata = {
+  title: "Profile | Grossary",
+  description: "Grossary - a simple, all-in-one grocery app that helps you",
+};
 
 async function page() {
    const supabase = await createClient()

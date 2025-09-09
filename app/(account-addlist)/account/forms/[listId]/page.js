@@ -2,6 +2,10 @@ import { getList, getListsItemsById } from "@/app/_lib/data-services";
 import PageClient from "./PageClient";
 import { createClient } from "@/app/_utils/supabase/server";
 
+export const metadata = {
+  title: "List | Grossary",
+  description: "Grossary - a simple, all-in-one grocery app that helps you",
+};
 export default async function Page({ params }) {
   const { listId } = await params;
 
