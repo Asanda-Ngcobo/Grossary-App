@@ -52,14 +52,14 @@ function AppNavLinks({ userLists }) {
         className={`flex flex-col lg:flex-row items-center lg:gap-10 lg:text-[#04284B]
           lg:w-[90%] lg:ml-[5%] hover:bg-[#04284B] hover:text-gray-50
           hover:rounded-[4px] lg:p-3 active:opacity-60 text-[10px] lg:text-[18px]
-          ${isActive ? "text-[#E32227] lg:bg-[#041527] rounded-[4px] lg:text-gray-50" : ""}`}
+          ${isActive ? "text-[#EDE734] lg:bg-[#041527] rounded-[4px] lg:text-gray-50" : ""}`}
         href={link.href}
       >
         {link.icon}
         <span>{link.name}</span>
 
         {isListsLink && (
-          <span className="text-xs absolute lg:text-sm bg-[#E32227] text-white px-2 py-0.5 rounded-full ml-4 -mt-3 lg:ml-25 lg:-mt-5">
+          <span className="text-xs absolute lg:text-sm bg-[#EDE734] text-[#041527] font-bold px-2 py-0.5 rounded-full ml-4 -mt-3 lg:ml-25 lg:-mt-5">
             {listCount}
           </span>
         )}

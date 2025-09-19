@@ -11,10 +11,7 @@ import ReportIssueButton from "@/app/(account-addlist)/account/forms/reports/Rep
 import { Quicksand } from "next/font/google";
 
 
-const MoneyFont = Quicksand({
-  subsets: ["latin"],
-  display: 'swap',
-});
+
 
 export const metadata = {
   title: "Profile | Grossary",
@@ -169,36 +166,8 @@ const navLinks = [
     </button>
     </div>
     
-  </div>
 
-  <div>
-    {/* Snap Shots Container */}
-    <div className="grid grid-cols-3 gap-2  ">
-   {/* Monthly Spending */}
-       <div className=" p-2 col-start-1 col-end-4 h-[120px] bg-[#04284B] 
-       grid justify-center items-center rounded-lg">
-        <h2 className={`${MoneyFont.className} text-4xl font-bold
-         text-center`}>{moneySpentFormatted}</h2>
-        <p className="text-sm text-gray-500 text-center">Money Spent Last 30 Days</p>
-      </div>
-{/* Money Saved Container */}
-       <div className=" pb-2 col-start-1 col-end-3 h-[120px] bg-[#04284B] 
-       grid justify-center items-center rounded-lg ">
-        <h2 className={`${MoneyFont.className} text-4xl font-bold
-         text-center`}>{moneySavedFormatted} <span className="text-sm
-         text-gray-600">({savedPercentage}%)</span></h2>
-        <p className="text-sm text-gray-500 text-center">Money Saved Last 30 Days</p>
-      </div>
-      {/* Lists Created Container */}
-      <div className=" pb-2 h-[120px] bg-[#04284B] 
-       grid justify-center items-center rounded-lg ">
-        <h2 className={`${MoneyFont.className} text-4xl font-bold
-         text-center`}>{numberOfLists}</h2>
-        <p className="text-sm text-gray-500 text-center">Lists Created </p>
-      </div>
-     
-     
-    </div>
+
   </div>
 </section>
 <section  className="py-3 rounded-md w-[90%] ml-[5%]
