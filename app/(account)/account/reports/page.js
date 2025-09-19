@@ -26,7 +26,7 @@ async function page() {
   // ✅ fetch all lists
   const { data: allLists } = await supabase
     .from("user_lists")
-    .select("id, money_spent, money_left, list_budget, created_at")
+    .select("id, money_spent, money_left, list_budget, shopped_at, created_at")
     .eq("user_id", profile.id);
 
   // ✅ fetch items joined with their list to filter by user_id

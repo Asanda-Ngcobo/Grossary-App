@@ -22,7 +22,7 @@ function ReportsWrapper({ allLists, allItems }) {
   const filteredLists = useMemo(() => {
     if (duration === "all") return allLists;
     const cutoffDate = new Date(Date.now() - duration * 24 * 60 * 60 * 1000);
-    return allLists.filter((list) => new Date(list.created_at) >= cutoffDate);
+    return allLists.filter((list) => new Date(list.shopped_at) >= cutoffDate);
   }, [allLists, duration]);
 
   // ✅ filter items
@@ -36,11 +36,11 @@ function ReportsWrapper({ allLists, allItems }) {
   const chartData = useMemo(() => {
     return filteredLists
       .map((list) => ({
-        date: new Date(list.created_at).toLocaleDateString("en-ZA", {
+        date: new Date(list.shopped_at).toLocaleDateString("en-ZA", {
           month: "short",
           day: "numeric",
         }),
-        spent: list.money_spent || 0,
+        spent: list.money_spent,
       }))
       .sort(
         (a, b) =>
