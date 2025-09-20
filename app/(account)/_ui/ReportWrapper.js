@@ -109,7 +109,7 @@ function ReportsWrapper({ allLists, allItems }) {
       {/* Stats */}
       <div className="grid grid-cols-3 gap-2">
         <div className="p-2 col-start-1 col-end-4 h-[120px] bg-[#04284B] grid justify-center items-center rounded-lg">
-          <h2 className="text-4xl font-bold text-center">{moneySpentFormatted}</h2>
+          <h2 className="text-4xl font-bold text-center">{moneySpentFormatted  || 0}</h2>
           <p className="text-sm text-gray-500 text-center">Money Spent</p>
         </div>
 
@@ -125,7 +125,7 @@ function ReportsWrapper({ allLists, allItems }) {
           <h2 className="text-4xl font-bold text-center">
             {filteredLists.length}
           </h2>
-          <p className="text-sm text-gray-500 text-center">Lists Created</p>
+          <p className="text-sm text-gray-500 text-center">Lists Shopped</p>
         </div>
       </div>
 

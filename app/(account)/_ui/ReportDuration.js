@@ -32,7 +32,7 @@ function ReportDuration({ onChange }) {
             key={time.id}
             onClick={() => handleClick(time.value)}
             className={`${ButtonFont.className} 
-              w-[120px] flex justify-center items-center py-3 rounded-[20px] shrink-0
+              w-[100px] text-sm flex justify-center items-center py-2 rounded-[50px] shrink-0
               ${active === time.value ? "bg-[#EDE734] text-black font-semibold" : "bg-amber-50 text-black"}
             `}
           >
