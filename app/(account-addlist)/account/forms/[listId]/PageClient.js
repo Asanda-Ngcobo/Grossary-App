@@ -93,10 +93,8 @@ useEffect(() => {
 
   const progressColor =
     spentPercent <= 60
-      ? "bg-[#A2B06D]"
-      : spentPercent <= 90
-      ? "bg-amber-500"
-      : "bg-[#F38A8C]";
+      ? "bg-[#EDE734]"
+           : "bg-[#F38A8C]";
 
 
   return (
@@ -104,7 +102,7 @@ useEffect(() => {
       {/* Header Card */}
       <div className="w-[90%]  mx-[5%] sm:w-[80%] sm:mx-[10%]
        md:w-[80%] md:mx-[10%] lg:w-[60%] lg:mx-[20%] mt-[5%] bg-[#04284B]
-       text-white rounded-md shadow-sm px-4 py-4">
+       text-white rounded-2xl shadow-sm px-4 py-4">
         <div className="flex items-center justify-between mb-4">
           <Link href="/account/lists">
             <button className="bg-white cursor-pointer active:bg-gray-600 text-black rounded-full w-10 h-10 flex items-center justify-center">
@@ -115,10 +113,10 @@ useEffect(() => {
         </div>
 
         <div className="flex justify-between font-bold">
-           <div className='text-[#F38A8C]'  ><p>Money Spent</p>
+           <div className='text-[#EDE734]'  ><p>Money Spent</p>
             <p className={`${MoneyFont.className}
            text-2xl`}>{moneySpent}</p></div>
-            <div className={`${money_left  > 0 ? 'text-green-400': 'text-[#E32227]'}`}  >
+            <div className={`text-[#A2B06D]`}  >
               <p>Money Left</p> <h1 className={`${MoneyFont.className}
            text-2xl`}>{moneyLeft}</h1></div>
 
@@ -172,7 +170,7 @@ useEffect(() => {
 
           return (
             <div key={category} className="bg-[#04284B] text-white w-[90%]  mx-[5%] sm:w-[80%]
-             sm:mx-[10%] md:w-[80%] md:mx-[10%] lg:w-[60%] lg:mx-[20%] p-4 rounded-md shadow-sm
+             sm:mx-[10%] md:w-[80%] md:mx-[10%] lg:w-[60%] lg:mx-[20%] p-4 rounded-2xl shadow-sm
             max-h-[550px] overflow-y-auto
 ">
               <div className="border-b border-gray-300 flex flex-row justify-between">
