@@ -149,6 +149,76 @@ redirect(`/account/forms/${list.id}`);
 }
 
 
+export async function updateItem(formData, itemId, listId) {
+  const item_name = formData.get("item_name");
+  const item_category = formData.get("item_category") || "Uncategorized";
+  const item_brand = formData.get("item_brand") || "";
+  const item_quantity = Number(formData.get("item_quantity")) || 1;
+  const item_volume_mass = formData.get("item_volume_mass") || null;
+  const item_unit = formData.get("item_unit") || null;
+
+  if (typeof item_name !== "string" || !item_name.trim()) {
+    throw new Error("Invalid item name");
+  }
+ const { data: existingItem, error: findError } = await supabaseServer
+    .from('grocery_items')
+    .select('id')
+    .ilike('item_name', item_name)
+    .maybeSingle();
+
+  let groceryItemId;
+
+  if (existingItem) {
+    groceryItemId = existingItem.id;
+  } else {
+    // 2️⃣ Insert into grocery_items
+    const { data: newGroceryItem, error: insertGroceryError } = await supabaseServer
+      .from('grocery_items')
+      .insert([{
+        item_name,
+        item_category,
+        item_brand: null,
+        item_quantity: 1,
+        item_volume_mass,
+        item_unit
+      }])
+      .select()
+      .single();
+
+    if (insertGroceryError) {
+      console.error("Error adding to grocery_items:", insertGroceryError.message);
+      throw new Error("Could not add new grocery item");
+    }
+    groceryItemId = newGroceryItem.id;
+  }
+
+
+  // 2️⃣ Update list_items (this is what the user actually edits)
+  const { error: listError } = await supabaseServer
+    .from("list_items")
+    .update({
+      item_name,
+      item_category,
+      item_brand,
+      item_quantity,
+      item_volume_mass,
+      item_unit,
+      
+    })
+    .eq("id", itemId);
+
+  if (listError) {
+    console.error("Supabase updateItem error:", listError.message);
+    throw new Error("The item could not be updated");
+  }
+
+  // 3️⃣ Revalidate
+  revalidatePath(`/account/forms/${listId}`);
+  return { success: true };
+}
+
+
+
 export async function updateQuantity(itemId, listId, newQuantity) {
   // Update quantity directly
   const { error: updateError } = await supabaseServer

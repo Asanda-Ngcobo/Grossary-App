@@ -5,7 +5,6 @@ import { useRouter } from 'next/navigation'
 import { updateItemPrice, getListItemById } from '@/app/_lib/actions'
 import Link from 'next/link';
 import { ChevronLeft } from '@deemlol/next-icons';
-import Spinner from '@/app/(website)/_components/Spinner';
 import { Lexend_Deca } from "next/font/google";
 import Loading from './loading';
 

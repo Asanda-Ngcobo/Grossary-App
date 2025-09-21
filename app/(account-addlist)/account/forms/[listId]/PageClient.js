@@ -3,11 +3,11 @@
 import { useEffect, useMemo, useState } from 'react';
 import HandleCategories from './add-price/HandleCategories';
 import Link from 'next/link';
-import { Check, ChevronLeft, Edit, Edit2, Plus, ShoppingCart } from '@deemlol/next-icons';
-import DecreaseQuantity from './add-item/DecreaseQuantity';
+import { Check, ChevronLeft, Edit2, Plus, ShoppingCart } from '@deemlol/next-icons';
+
 import DeleteItem from './add-item/DeleteItem';
 import IncreaseQuantity from './add-item/IncreaseQuantity';
-import FireworksComponent from './FireWorksComponent';
+
 import AccountModal from '@/app/(account)/_ui/AccountModal';
 import { Lexend_Deca, Quicksand } from 'next/font/google';
 
@@ -211,10 +211,13 @@ useEffect(() => {
                           itemName={item.item_name}
                           itemQuantity={item.item_quantity} listId={listId} />
                           
-                          <div>
+                          <div className='flex w-[200px] justify-between'>
                           
                               
                                <DeleteItem itemId={item.id} listId={listId} />
+                                <Link href={`/account/forms/${listId}/edit-item/${item.id}`}>
+                          <Edit2 size={20} className={ `text-[#A2B06D] active:text-gray-600`} />
+                        </Link>
                             
                           </div>
                           {/* <span className="font-bold text-lg">{item.item_quantity}</span> */}
