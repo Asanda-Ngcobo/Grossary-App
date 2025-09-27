@@ -49,6 +49,21 @@ export async function getLists(userId) {
   return data;
 }
 
+export async function getOldLists(userId) {
+  const { data, error } = await supabase
+    .from('user_lists')
+    .select('*')
+    .eq('user_id', userId)
+    .order('shopped_at', { ascending: false }); // descending = newest first
+
+  if (error) {
+    console.error("Supabase error loading lists:", error.message);
+    throw new Error('We couldn’t load your lists at this time. Please try again later.');
+  }
+
+  return data;
+}
+
 export async function getListsItemsById(listId) {
   const { data, error } = await supabase
     .from('list_items')

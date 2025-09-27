@@ -9,7 +9,7 @@
     width: 60px;
     aspect-ratio: 1;
     border-radius: 50%;
-    border: 8px solid #A2B06D;
+    border: 8px solid #EDE734;
     border-right-color: #041527;
     animation: rotate 1s infinite linear;
   }
@@ -19,7 +19,7 @@
     width: 20px;
     aspect-ratio: 1;
     border-radius: 50%;
-    border: 2px solid rgb(100, 103, 100);
+    border: 2px solid #EDE734;
     border-right-color: transparent;
     animation: rotate 1s infinite linear;
   }

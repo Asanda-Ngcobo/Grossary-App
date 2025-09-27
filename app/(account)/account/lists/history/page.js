@@ -1,5 +1,5 @@
 
-import { getLists } from "@/app/_lib/data-services"
+import { getLists, getOldLists } from "@/app/_lib/data-services"
 import HistoryClient from "./HistoryClient"
 import { Suspense } from "react"
 import { createClient } from "@/app/_utils/supabase/server"
@@ -23,7 +23,7 @@ async function page() {
            .select('*')
            .eq('id', data.user.id)
            .single();
-    const myLists = await getLists(profile.id)
+    const myLists = await getOldLists(profile.id)
     
    const History = myLists.filter((list)=>
 list.money_spent > 0 )
