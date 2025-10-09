@@ -19,7 +19,7 @@ export default function SignUpForm() {
     startTransition(async () => {
       try {
         const role = await signUpUser(formData);
-        toast.success('Signup successful! Redirecting...', 
+        toast.success('Signup successful! Check your emails', 
             {
   duration: 4000,
   style: {
