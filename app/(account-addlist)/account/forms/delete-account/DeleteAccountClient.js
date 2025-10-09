@@ -45,7 +45,7 @@ function DeleteAccountClient() {
     startTransition(async () => {
       try {
         await handleDeleteAccount(feedback)
-        router.push('/account-deleted')
+        router.push('/auth/account-deleted')
       } catch (err) {
         alert('Something went wrong.')
       }
