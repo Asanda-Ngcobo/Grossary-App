@@ -39,7 +39,7 @@ export default function SignUpForm() {
         router.push('/auth/signup-success')
 
       } catch (error) {
-        toast.error(error.message, {
+        toast.error('An error occured when signing up, Please try again!!', {
   duration: 4000,
   style: {
     background: '#041527',
