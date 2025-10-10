@@ -457,21 +457,45 @@ revalidatePath('/account/profile')
   redirect('/account/profile')
 }
 
-
 export async function signUpUser(formData) {
-  // const supabaseServer = createBrowserClient ({ cookies });
-   const supabase = await createClient()
+  const supabase = await createClient();
 
-  const fullName = formData.get('fullName').toString();
-  const email = formData.get('email').toString();
-  const password = formData.get('password').toString();
-// const dob = formData.get('date_of_birth').toString();
+  const fullName = formData.get('fullName')?.toString().trim();
+  const email = formData.get('email')?.toString().trim();
+  const password = formData.get('password')?.toString();
 
+  // ✅ Step 1: Validate required fields
+  if (!fullName || !email || !password) {
+    throw new Error('All fields are required.');
+  }
+
+  // ✅ Step 2: Validate full name
+  const isValidFullName = (name) => {
+    if (!name) return false;
+
+    // Letters, spaces, apostrophes, hyphens — 2–50 chars
+    const regex = /^[A-Za-z][A-Za-z\s'-]{1,49}$/;
+
+    // Simple gibberish detection: consonants/vowels ratio
+    const vowels = name.match(/[aeiou]/gi)?.length || 0;
+    const consonants = name.match(/[bcdfghjklmnpqrstvwxyz]/gi)?.length || 0;
+    const gibberish = consonants > vowels * 4;
+
+    return regex.test(name) && !gibberish;
+  };
+
+  if (!isValidFullName(fullName)) {
+    throw new Error(`Invalid name. 
+      Please use your real first and last name.`);
+  }
+
+  // ✅ Step 3: Create user in Supabase Auth
   const { data, error } = await supabase.auth.signUp({
     email,
     password,
-    fullName,
-    // dob
+    options: {
+      data: { fullName }, // stores it in user_metadata
+    },
   });
 
   if (error) throw new Error(error.message);
@@ -479,22 +503,26 @@ export async function signUpUser(formData) {
   const userId = data.user?.id;
   if (!userId) throw new Error('Signup failed: No user returned');
 
-  // Store additional user info
-const { error: profileError } = await supabaseServer.from('users_info').insert({
-  id: userId,
-  email: email,
-  fullName: fullName,
-  role: 'user',
-  // date_of_birth: dob, // ✅ storing DOB
-});
+  // ✅ Step 4: Store additional user info
+  const { error: profileError } = await supabaseServer
+    .from('users_info')
+    .insert({
+      id: userId,
+      email,
+      fullName: fullName,
+      role: 'user',
+    });
+
   if (profileError) throw new Error(profileError.message);
 
-  // Fetch role (ensure RLS allows this)
-  const { data: profile } = await supabaseServer
+  // ✅ Step 5: Fetch role (optional)
+  const { data: profile, error: roleError } = await supabaseServer
     .from('users_info')
     .select('role')
     .eq('id', userId)
     .single();
+
+  if (roleError) throw new Error(roleError.message);
 
   return profile?.role || 'user';
 }

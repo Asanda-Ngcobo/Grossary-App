@@ -18,27 +18,28 @@ export default function SignUpForm() {
   const handleSubmit = (formData) => {
     startTransition(async () => {
       try {
-        const role = await signUpUser(formData);
-        toast.success('Signup successful! Check your emails', 
-            {
-  duration: 4000,
-  style: {
-    background: '#041527',
-    color: '#fff',
-  },
-}
-        );
+         await signUpUser(formData);
+//         toast.success('Signup successful! Check your emails to confirm and sign in', 
+//             {
+//   duration: 4000,
+//   style: {
+//     background: '#041527',
+//     color: '#fff',
+//   },
+// }
+//         );
 
-        setTimeout(() => {
-          if (role === 'admin') {
-            router.push('/dashboard');
-          } else {
-            router.push('/account');
-          }
-        }, 1500);
+        // setTimeout(() => {
+        //   if (role === 'admin') {
+        //     router.push('/dashboard');
+        //   } else {
+        //     router.push('/account');
+        //   }
+        // }, 1000);
+        router.push('/auth/signup-success')
 
       } catch (error) {
-        toast.error('Error Occurred when trying to signup, please try again', {
+        toast.error(error.message, {
   duration: 4000,
   style: {
     background: '#041527',
