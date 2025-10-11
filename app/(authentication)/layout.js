@@ -33,7 +33,11 @@ export default async function AuthLayout({ children }) {
                 `}
               </Script>
 
-       
+       <Script
+          src="https://challenges.cloudflare.com/turnstile/v0/api.js"
+          async
+          defer
+        />
             </head>
       <body
         className={`${MainFont.className}`}

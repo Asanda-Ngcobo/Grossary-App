@@ -1,3 +1,4 @@
+
 import SignUpForm from "./SignUpform";
 
 
@@ -9,7 +10,7 @@ export const metadata = {
 export default function Page() {
   return (
     <div>
-    
+  
       <SignUpForm />
     </div>
   );

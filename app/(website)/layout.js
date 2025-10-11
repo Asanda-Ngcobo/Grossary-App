@@ -17,21 +17,9 @@ export default function RootLayout({ children }) {
   
   return (
     <html lang="en">
-      {/* <head>
-       
-  <Script
-          src="https://www.googletagmanager.com/gtag/js?id=G-JW5VT5KYJX"
-          strategy="afterInteractive"
-        />
-        <Script id="google-analytics" strategy="afterInteractive">
-          {`
-            window.dataLayer = window.dataLayer || [];
-            function gtag(){dataLayer.push(arguments);}
-            gtag('js', new Date());
-            gtag('config', 'G-JW5VT5KYJX');
-          `}
-        </Script>
-      </head> */}
+      <head>
+    
+      </head>
       <body
         className={`${MainFont.className} gap-6`}
       >
