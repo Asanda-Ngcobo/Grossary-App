@@ -28,7 +28,7 @@ export default function VerifyPage() {
 
     if (data.success) {
       // set cookie to allow access to /signup
-      const expires = new Date(Date.now() + 15 * 24 * 60 * 60 * 1000).toUTCString();// 15 DAYS FROM NOW
+      const expires = new Date(Date.now() + 2 * 60 * 1000).toUTCString(); // 2 min
       document.cookie = `verified=true; path=/; expires=${expires}`;
       router.push("/auth/signup");
     } else {
