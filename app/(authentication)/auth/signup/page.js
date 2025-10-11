@@ -1,15 +1,16 @@
-import SignUpForm from "./SignUpform"
+import SignUpForm from "./SignUpform";
+
 
 export const metadata = {
-  title: "Plan, Shop, Save more | Grossary",
+  title: "Sign Up | Grossary",
   description: "Grossary - a simple, all-in-one grocery app that helps you",
 };
-function page() {
+
+export default function Page() {
   return (
     <div>
-      <SignUpForm/>
+    
+      <SignUpForm />
     </div>
-  )
+  );
 }
-
-export default page

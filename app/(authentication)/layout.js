@@ -32,6 +32,8 @@ export default async function AuthLayout({ children }) {
                   gtag('config', 'G-JW5VT5KYJX');
                 `}
               </Script>
+
+       
             </head>
       <body
         className={`${MainFont.className}`}

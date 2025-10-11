@@ -17,7 +17,7 @@ export default function RootLayout({ children }) {
   
   return (
     <html lang="en">
-      <head>
+      {/* <head>
        
   <Script
           src="https://www.googletagmanager.com/gtag/js?id=G-JW5VT5KYJX"
@@ -31,7 +31,7 @@ export default function RootLayout({ children }) {
             gtag('config', 'G-JW5VT5KYJX');
           `}
         </Script>
-      </head>
+      </head> */}
       <body
         className={`${MainFont.className} gap-6`}
       >
