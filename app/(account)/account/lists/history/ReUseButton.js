@@ -13,7 +13,9 @@ export function SubmitButton() {
   return (
     <button
       type="submit"
-      className={`${ButtonFont.className} bg-[#A2B06D] min-w-[100px] h-[40px] rounded-[5px] text-white font-semibold hover:bg-[#6f7a46]`}
+      disabled={pending}
+      className={`${ButtonFont.className}
+       bg-[#A2B06D] min-w-[100px] h-[40px] rounded-[5px] text-white font-semibold hover:bg-[#6f7a46]`}
     >
       {pending ? <span className="flex justify-center items-center"><SpinnerMini/></span> : (
         <span className="text-md flex justify-center gap-2">

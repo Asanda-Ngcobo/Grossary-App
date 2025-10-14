@@ -36,7 +36,7 @@ function AppNavLinks({ userLists }) {
 
   return (
     <nav className='h-[115px] text-white
-     w-full z-50 flex items-center justify-center
+     w-full z-40 flex items-center justify-center
 '>
       
       <ul className="grid grid-cols-4 gap-2 text-center w-full

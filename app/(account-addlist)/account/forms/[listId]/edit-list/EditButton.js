@@ -1,6 +1,7 @@
 'use client'
 
 
+import SpinnerMini from "@/app/(website)/_components/SpinnerMini";
 import { Lexend_Deca } from "next/font/google";
 import { useFormStatus } from "react-dom";
 
@@ -26,7 +27,7 @@ function EditButton({children}) {
          hover
          hover:bg-[#6f7a46]`}
          >
-            {pending? 'Saving Your Changes...' : children}
+            {pending? <SpinnerMini/> : children}
             
         </button>
     )

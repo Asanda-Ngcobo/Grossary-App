@@ -15,8 +15,8 @@ export default function Page() {
        Check your inbox to confirm your email.
       </h1>
 
-      <h2 className="text-lg mb-4">Supabase Auth have sent you a confirmation link — once you verify your email address, 
-        you’ll be able to sign in and access your account.</h2>
+      <h2 className="text-lg mb-4">Supabase Auth have sent you a confirmation link. Click the confirmation link to verify your email address, 
+        then you can sign in to access your account.</h2>
 
       
     </div>
