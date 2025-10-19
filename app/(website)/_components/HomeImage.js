@@ -18,11 +18,11 @@ function HomeImage() {
          lg:h-[100vh] mb-3">
 
 <PrimaryBunner>
-      <MainBunner>   <h1 className={`text-[#041527] text-[24px]
+      <MainBunner>   <h1 className={`text-black text-[24px]
        font-extrabold text-left
          pb-2 xl:text-[60px]  ${HeaderFont.className}  `}>
             No more till surprices, no more asking for void.</h1>
-            <ul className="py-2 text-[#04284B]">
+            <ul className="py-2 text-black ">
                 <h2 className={`${HeaderFont.className} font-semibold`}>Try Grossary
                      </h2>
                      <p>A  simple, all-in-one grocery app that helps you:</p>
