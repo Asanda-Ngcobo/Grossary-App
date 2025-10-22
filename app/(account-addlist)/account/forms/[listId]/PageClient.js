@@ -113,12 +113,13 @@ useEffect(() => {
         </div>
 
         <div className="flex justify-between font-bold">
-           <div className='text-[#EDE734]'  ><p>Money Spent</p>
-            <p className={`${MoneyFont.className}
-           text-2xl`}>{moneySpent}</p></div>
-            <div className={`text-[#A2B06D]`}  >
+           <div className=''  ><p>Money Spent</p>
+          <p className={`${MoneyFont.className}
+           text-2xl text-[#E32227]`}>-{moneySpent}</p>
+            </div>
+            <div   >
               <p>Money Left</p> <h1 className={`${MoneyFont.className}
-           text-2xl`}>{moneyLeft}</h1></div>
+           text-2xl text-[#A2B06D]`}>{moneyLeft}</h1></div>
 
          
         </div>
@@ -226,7 +227,7 @@ useEffect(() => {
 
                         <div>
                           {item.price && <p className="text-sm font-bold text-gray-400">R{item.price}</p>}
-                          {item.price && <p className="text-sm font-bold">Total: R{item.total_price}</p>}
+                          {item.price && <p className="text-sm font-bold text-[#E32227]"> -R{item.total_price}</p>}
                         </div>
 
                         <Link href={`/account/forms/${listId}/add-price/${item.id}`}>

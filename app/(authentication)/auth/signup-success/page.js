@@ -1,10 +1,16 @@
 import { Quicksand } from "next/font/google"
-import Link from "next/link"
+
+
 
 const LogoFont = Quicksand({
   subsets: ["latin"],
   display: 'swap',
 })
+
+export const metadata = {
+  title: "Sign Up Success | Grossary",
+  description: "Grossary - a simple, all-in-one grocery app that helps you",
+};
 
 export default function Page() {
   return (
