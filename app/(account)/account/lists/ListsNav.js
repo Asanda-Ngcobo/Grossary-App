@@ -13,7 +13,7 @@ const navLinks = [
     
   },
   {
-    name: 'Old Lists',
+    name: 'Shopped Lists',
     href: '/account/lists/history',
     
   },
@@ -25,7 +25,7 @@ export default function ListNavigation() {
 
   return (
     <nav className="fixed top-0 w-[90%] ml-[5%] 
-    lg:w-[60%]  xl:ml-[10%]  mt-6 bg-[#041527] z-10  ">
+    lg:w-[60%]  xl:ml-[10%]  mt-2 bg-[#041527] z-10  ">
 
        {/* <div className="my-5 mx-[5%] bg-white
         active:bg-gray-600 rounded-full

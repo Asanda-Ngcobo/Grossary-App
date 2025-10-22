@@ -39,7 +39,7 @@ list.money_spent === 0 || list.money_spent === null)
 
         <>
         
-             <div className="w-[90%] ml-[5%] lg:w-[60%] lg:mx-[20%] lg:mt-20 mt-40 ">
+             <div className="w-[90%] ml-[5%] lg:w-[60%] lg:mx-[20%] lg:mt-20 mt-15 ">
             
             
             {activeList.length === 0 ? (
