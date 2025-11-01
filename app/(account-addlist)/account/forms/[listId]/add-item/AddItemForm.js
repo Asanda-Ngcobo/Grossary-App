@@ -181,7 +181,7 @@ export default function AddItemForm({ listId }) {
       required
     >
       <option value="">Select Unit</option>
-         <option value="unit">bag</option>
+         <option value="Bag">Bag</option>
       <option value="g">g</option>
       <option value="kg">kg</option>
       <option value="ml">ml</option>
@@ -189,6 +189,7 @@ export default function AddItemForm({ listId }) {
       <option value="Pack">Pack</option>
       <option value="Pair">Pair</option>
        <option value="unit">Unit</option>
+          <option value="Set">Set</option>
     
        
     </select>

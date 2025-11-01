@@ -93,8 +93,8 @@ useEffect(() => {
 
   const progressColor =
     spentPercent <= 60
-      ? "bg-[#EDE734]"
-           : "bg-[#F38A8C]";
+      ? "bg-[#ACF532]"
+           : "bg-[#ACF532]";
 
 
   return (
@@ -119,7 +119,7 @@ useEffect(() => {
             </div>
             <div   >
               <p>Money Left</p> <h1 className={`${MoneyFont.className}
-           text-2xl text-[#A2B06D]`}>{moneyLeft}</h1></div>
+           text-2xl text-[#ACF532]`}>{moneyLeft}</h1></div>
 
          
         </div>

@@ -25,7 +25,8 @@ function EditButton({children}) {
          cursor-pointer
          font-semibold
          hover
-         hover:bg-[#6f7a46]`}
+         flex justify-center items-center
+         hover:bg-[#ACF532]`}
          >
             {pending? <SpinnerMini/> : children}
             

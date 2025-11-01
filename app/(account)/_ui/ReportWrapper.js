@@ -100,7 +100,7 @@ function ReportsWrapper({ allLists, allItems }) {
 
   return (
     <section className="py-6 px-4 rounded-md w-[90%] mt-[5%]
-      ml-[5%] xl:w-[60%] xl:ml-[15%] lg:mx-0 gap-6 bg-[#041527] shadow-sm">
+      ml-[5%] xl:w-[80%] xl:ml-[5%] lg:mx-0 gap-6 bg-[#041527] shadow-sm">
       
       <h1 className="text-[#8F8C8C] text-[24px]">Reports</h1>
 
@@ -139,7 +139,7 @@ function ReportsWrapper({ allLists, allItems }) {
             <YAxis stroke="#8F8C8C" />
             <Tooltip
               contentStyle={{ backgroundColor: "#041527", border: "none" }}
-              labelStyle={{ color: "#EDE734" }}
+              labelStyle={{ color: "#ACF532" }}
               formatter={(value) =>
                 new Intl.NumberFormat("en-ZA", {
                   style: "currency",
@@ -150,9 +150,9 @@ function ReportsWrapper({ allLists, allItems }) {
             <Line
               type="monotone"
               dataKey="spent"
-              stroke="#EDE734"
+              stroke="#ACF532"
               strokeWidth={3}
-              dot={{ r: 4, fill: "#EDE734" }}
+              dot={{ r: 4, fill: "#ACF532" }}
               activeDot={{ r: 6, fill: "#FFD700" }}
             />
           </LineChart>

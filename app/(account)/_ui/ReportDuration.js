@@ -16,7 +16,7 @@ const durationOptions = [
   { id: 6, value: "all", label: "All Time" },
 ];
 
-function ReportDuration({ onChange }) {
+function  ReportDuration({ onChange }) {
   const [active, setActive] = useState(30); // ✅ default to 30 days
 
   const handleClick = (value) => {
@@ -33,7 +33,7 @@ function ReportDuration({ onChange }) {
             onClick={() => handleClick(time.value)}
             className={`${ButtonFont.className} 
               w-[100px] text-sm flex justify-center items-center py-2 rounded-[50px] shrink-0
-              ${active === time.value ? "bg-[#EDE734] text-black font-semibold" : "bg-amber-50 text-black"}
+              ${active === time.value ? "bg-[#ACF532] text-black font-semibold" : "bg-[#04284B] text-white"}
             `}
           >
             {time.label}

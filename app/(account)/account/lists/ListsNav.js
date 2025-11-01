@@ -46,7 +46,7 @@ export default function ListNavigation() {
               className={`flex flex-col items-center justify-center 
                 lg:flex-row lg:gap-2 w-full
                  
-                ${isActive ? "border-b-2 border-[#EDE734]" : "border-b-2 border-transparent"}`}
+                ${isActive ? "border-b-2 border-[#ACF532]" : "border-b-2 border-transparent"}`}
             >
               <Link
                 href={link.href}

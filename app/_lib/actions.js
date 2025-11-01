@@ -289,10 +289,13 @@ export async function deleteItem(itemId, listId) {
 
 
 
-export async function updateItemPrice(itemId, price, item_name,is_checked, listId) {
+export async function updateItemPrice(itemId, price, item_name, is_checked, listId) {
+  const purchased_at = price !== null ? new Date().toISOString() : null
+
+  // Update item details including purchased_at
   const { error } = await supabase
     .from('list_items')
-    .update({ price, item_name, is_checked })
+    .update({ price, item_name, is_checked, purchased_at })
     .eq('id', itemId)
 
   if (error) {
@@ -300,22 +303,21 @@ export async function updateItemPrice(itemId, price, item_name,is_checked, listI
     throw new Error('Price update failed')
   }
 
-const checked = price !== null;
+  const checked = price !== null
 
-// Update is_checked in the database
-const { error: updateError } = await supabaseServer
-  .from('list_items')
-  .update({ is_checked: checked })
-  .eq('id', itemId);
+  // Update is_checked in the database (if you need a separate update)
+  const { error: updateError } = await supabase
+    .from('list_items')
+    .update({ is_checked: checked })
+    .eq('id', itemId)
 
-if (updateError) {
-  console.error(updateError);
-  throw new Error('Could not update is_checked');
-}
+  if (updateError) {
+    console.error(updateError)
+    throw new Error('Could not update is_checked')
+  }
 
   revalidatePath(`/account/forms/${listId}`)
 }
-
 export async function getListItemById(itemId) {
   const { data, error } = await supabaseServer
     .from('list_items')

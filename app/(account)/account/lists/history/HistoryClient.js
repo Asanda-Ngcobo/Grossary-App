@@ -27,9 +27,9 @@ function HistoryClient({ History, userId }) {
   }, {});
 
   return (
-    <div className="w-[90%] ml-[5%] lg:w-[60%] lg:ml-[20%] mt-40 ">
+    <div className="w-[90%] ml-[5%] lg:w-[60%] lg:ml-[20%] mt-20 ">
       {History.length === 0 ? (
-        <p>You have no History Lists yet.</p>
+        <p>You have no Shopped Lists yet.</p>
       ) : (
         <div>
           {Object.entries(groupedHistory).map(([monthYear, data]) => (
@@ -38,9 +38,9 @@ function HistoryClient({ History, userId }) {
 <h2 className="text-lg font-bold text-gray-400 mb-2 w-2/3">{monthYear}</h2>
 
               {/* Monthly totals */}
-              <div className="mb-2 ml-1 text-xs text-gray-600 flex gap-2">
-                <p>Total Spent: <span className="font-extrabold">R{data.totalSpent.toFixed(2)}</span></p>
-                <p>Total Saved: <span className="font-extrabold text-green-600">R{data.totalSaved.toFixed(2)}</span></p>
+              <div className="mb-2 ml-1  text-xs  text-gray-600  flex gap-2">
+                <p>Total Spent: <span className="font-extrabold text-[#ACF532]">R{data.totalSpent.toFixed(2)}</span></p>
+                <p>Total Saved: <span className="font-extrabold ">R{data.totalSaved.toFixed(2)}</span></p>
               </div>
               
               </div>

@@ -1,9 +1,16 @@
+
+
 function Loading() {
-    return (
-         <div className="flex justify-center items-center p-8 mt-[50%]  xl:mt-[20%] lg:mt-[20%]">
-      <div className="animate-spin rounded-full h-12 w-12 border-t-4 border-[#A2B06D]"></div>
+  return (
+    <div className="flex flex-col justify-center items-center absolute inset-0 z-50 bg-[#04284B] w-full h-full">
+     
+     
+      <div className="animate-spin rounded-full
+       h-20 w-20 border-t-4 border-[#ACF532]">
+
+      </div>
     </div>
-    )
+  )
 }
 
 export default Loading

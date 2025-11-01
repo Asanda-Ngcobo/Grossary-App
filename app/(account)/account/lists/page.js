@@ -45,12 +45,13 @@ list.money_spent === 0 || list.money_spent === null)
             {activeList.length === 0 ? (
                 
                 <p>You have no <span className="font-bold"> active lists</span> currently. Start adding your list by clicking 
-                <span className="italic"> Add New List</span> 
-                below or reuse your old lists.
+                <span className="italic mx-1 text-[#ACF532]"> Add New List</span> 
+                 below or <span className="italic  mx-1 text-[#ACF532]"> Reuse your Shopped Lists</span> .
                 <Link href='/account/forms/add-list'>   <span className="flex 
                 justify-between items-center 
                 mx-3
-                text-[#A2B06D]">
+                text-[#A2B06D] 
+                my-6">
                 &#43; New List</span></Link></p>
             ): (
                 <Suspense fallback={<Loading/>}>
