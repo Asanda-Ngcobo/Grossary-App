@@ -17,7 +17,7 @@ export default function AppNavLinks({ userLists = [] }) {
 
   return (
     <nav className="h-[115px] text-white
-     w-full z-40 flex items-center justify-center lg:mt-60 px-3">
+     w-full z-40 flex items-center justify-center lg:mt-60 pl-3">
       <ul
         className="grid grid-cols-4 gap-2 text-center w-full
         lg:grid-cols-1 lg:grid-rows-4 lg:gap-10 "

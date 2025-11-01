@@ -37,8 +37,8 @@ export default async function AppNavigation() {
 
   return (
     <div
-      className="fixed bottom-4 bg-[#011931] w-[80%] 
-      mx-[10%] rounded-full h-[80px]
+      className="fixed bottom-0 bg-[#011931] w-full 
+        h-[80px]
       border border-[#04284B] flex justify-center items-center
       lg:bg-[#04284B] lg:rounded-none
        lg:w-[20%] lg:mx-0 lg:h-screen 

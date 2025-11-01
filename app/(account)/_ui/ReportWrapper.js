@@ -99,7 +99,7 @@ function ReportsWrapper({ allLists, allItems }) {
   const COLORS = ["#EDE734", "#FF8042", "#0088FE", "#00C49F", "#FFBB28", "#A569BD"];
 
   return (
-    <section className="py-6 px-4 rounded-md w-[90%] mt-[5%]
+    <section className="py-6 px-4 rounded-md w-[90%] mt-[5%] mb-[80px]
       ml-[5%] xl:w-[80%] xl:ml-[5%] lg:mx-0 gap-6 bg-[#041527] shadow-sm">
       
       <h1 className="text-[#8F8C8C] text-[24px]">Reports</h1>
