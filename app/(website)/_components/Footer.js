@@ -72,7 +72,7 @@ function Footer() {
         <div className="flex flex-row gap-3">
         
         <Link href='https://www.instagram.com/grossary.shop/'><Image src={InstagramIcon} width={50} alt="instagram icon"></Image></Link>
-         <Link href='hhttps://www.tiktok.com/@grossary.shop'><Image src={TikTokIcon} width={50} alt="tiktok icon"></Image></Link>
+         <Link href='https://www.tiktok.com/@grossary.shop'><Image src={TikTokIcon} width={50} alt="tiktok icon"></Image></Link>
           <Link href='https://www.linkedin.com/company/grossarydotshop/'><Image src={LinkedInIcon} width={50} alt="LinkedIn icon"></Image></Link>
         
         </div>
