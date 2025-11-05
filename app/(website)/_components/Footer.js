@@ -1,8 +1,10 @@
 'use client'
 import Link from "next/link";
+import InstagramIcon from '@/public/icons8-instagram-96.png'
+import TikTokIcon from '@/public/icons8-tiktok-96.png'
+import LinkedInIcon from '@/public/icons8-linkedin-96.png'
 
-import SignInButton from "./SignInButton";
-import { Facebook, Instagram, Linkedin, X } from "@deemlol/next-icons";
+import Image from "next/image";
 
 function Footer() {
   return (
@@ -69,14 +71,15 @@ function Footer() {
       <div className="md:flex flex-row justify-between">
         <div className="flex flex-row gap-3">
         
-        <Link href=''><Instagram/></Link>
-        {/* <TikTok/> */}
-        <Linkedin/>
+        <Link href='https://www.instagram.com/grossary.shop/'><Image src={InstagramIcon} width={50} alt="instagram icon"></Image></Link>
+         <Link href='hhttps://www.tiktok.com/@grossary.shop'><Image src={TikTokIcon} width={50} alt="tiktok icon"></Image></Link>
+          <Link href='https://www.linkedin.com/company/grossarydotshop/'><Image src={LinkedInIcon} width={50} alt="LinkedIn icon"></Image></Link>
+        
         </div>
         
 
         <p className="text-sm text-gray-400">
-            Copyright &copy; {new Date().getFullYear()}, Disciplina labs Pty Ltd. All rights reserved.
+            Copyright &copy; {new Date().getFullYear()}, Grossary. All rights reserved.
           </p>
       </div>
      

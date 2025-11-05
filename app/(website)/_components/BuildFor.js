@@ -32,7 +32,7 @@ const HeaderFont = Quicksand({
 });
 function BuildFor() {
   return (
-    <div className="px-4 py-8 max-w-6xl mx-auto">
+    <div className="px-4 py-8 max-w-7xl mx-auto">
       <h1 className={`text-[20px] font-bold mb-8 text-center ${HeaderFont.className}`}>
         Built for Busy Professionals, Parents & Students
       </h1>
