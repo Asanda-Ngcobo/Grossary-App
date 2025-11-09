@@ -16,9 +16,9 @@ function HomeImage() {
        <div className="h-[100vh]  text-white ">
                   <Image src={HeroPic} fill alt="" 
                    className="object-cover -z-10 brightness-30"/>
-                   <div className="flex-col justify-center pt-[20%] lg:pt-[5%]">
+                   <div className="flex-col justify-center pt-[10%] lg:pt-[5%]">
                     <div className={`${HeaderFont.className}
-                    text-[80px] flex-col justify-center
+                    text-[60px] flex-col justify-center
                    p-0 `}>
                       <h1 className="text-center">Plan.</h1>
                       <h1 className="text-center">Shop.</h1>
