@@ -20,7 +20,6 @@ export default function Home() {
            <HomeImage/>
    <PlanningAhead/>
    {/* <HomeGrossaryPlus/> */}
-   <BuildFor/>
    <Testimonials/>
    <ShoppingReimagined/>
 

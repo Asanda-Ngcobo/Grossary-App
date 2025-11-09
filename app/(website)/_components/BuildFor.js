@@ -1,66 +1,17 @@
-import Image from "next/image";
-import Organizing from "@/public/Organizing.jpg";
-import SaveTime from "@/public/Save time.jpg";
-import Smart from "@/public/Smart budgeting.jpg";
-import { Quicksand } from "next/font/google";
+'use client'
 
+export default function BuildFor({ potentials }) {
+  if (!potentials) return <p>No User found</p>; // safeguard
 
-const contents = [
-  {
-    id: 1,
-    image: Smart,
-    heading: "Smart Budgeting",
-    description: "Avoid end-of-month and till surprises.",
-  },
-  {
-    id: 3,
-    image: Organizing,
-    heading: "Effortless Organization",
-    description: "Keep your list clear, neat, and always accessible",
-  },
-  {
-    id: 2,
-    image: SaveTime,
-    heading: "Save Time",
-    description: "No more wandering store aisles or second guessing yourself.",
-  },
-];
-
-const HeaderFont = Quicksand({
-  subsets: ["latin"],
-  display: 'swap',
-});
-function BuildFor() {
   return (
-    <div className="px-4 py-8 max-w-7xl mx-auto">
-      <h1 className={`text-[20px] font-bold mb-8 text-center ${HeaderFont.className}`}>
-        Built for Busy Professionals, Parents & Students
-      </h1>
-
-      <div className="grid gap-10 lg:grid-cols-3">
-        {contents.map((content) => (
-          <div
-            key={content.id}
-            className="flex flex-row lg:flex-col items-center gap-4"
-          >
-            <div className="w-full lg:h-[200px] lg:w-[200px]">
-              <Image
-                src={content.image}
-                alt={content.heading}
-                className="w-full h-auto object-cover"
-              />
-            </div>
-
-            <div className="w-full ">
-              <h2 className={`text-[16px] font-bold mb-1 ${HeaderFont.className}`}>{content.heading}</h2>
-              <p className="text-[14px] text-gray-700">{content.description}</p>
-            </div>
-          </div>
-        ))}
-      </div>
-      
+    <div className="text-white h-[100vh] flex flex-col justify-center items-center">
+      <p className="text-2xl font-semibold">{potentials.name}</p>
+      {/* <p className="text-gray-400">{userinfo.age} years old</p>
+      <div
+        className="border-l-4 border-[#A2B06D] pl-4 italic text-gray-300 text-lg mt-2"
+      >
+        {userinfo.occupation}
+      </div> */}
     </div>
   );
 }
-
-export default BuildFor;
