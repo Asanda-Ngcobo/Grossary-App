@@ -1,6 +1,6 @@
 
 
-import BuildFor from "@/app/(website)/_components/BuildFor";
+
 
 import HomeGrossaryPlus from "@/app/(website)/_components/HomeGrossaryPlus";
 import HomeImage from "@/app/(website)/_components/HomeImage";
@@ -8,6 +8,8 @@ import HomeImage from "@/app/(website)/_components/HomeImage";
 import PlanningAhead from "@/app/(website)/_components/PlanningAhead";
 import ShoppingReimagined from "@/app/(website)/_components/ShoppingReimagined";
 import Testimonials from "@/app/(website)/_components/Testimonials";
+import Finances from "./_components/Finances";
+import BuiltForWho from "./_components/BuiltForWho";
 
 export const metadata = {
   title: "Plan, Shop, Save more | Grossary",
@@ -19,7 +21,9 @@ export default function Home() {
     <main className="pt-35">
            <HomeImage/>
    <PlanningAhead/>
-   {/* <HomeGrossaryPlus/> */}
+   <Finances/>
+    {/* <HomeGrossaryPlus/> */}
+    <BuiltForWho/>
    <Testimonials/>
    <ShoppingReimagined/>
 
