@@ -5,11 +5,14 @@ import HandleCategories from './add-price/HandleCategories';
 import Link from 'next/link';
 import { Check, ChevronLeft, Edit2, Plus, ShoppingCart } from '@deemlol/next-icons';
 
-import DeleteItem from './add-item/DeleteItem';
-import IncreaseQuantity from './add-item/IncreaseQuantity';
+import DeleteItem from './_listcomponents/DeleteItem';
+import IncreaseQuantity from './_listcomponents/IncreaseQuantity';
 
 import AccountModal from '@/app/(account)/_ui/AccountModal';
 import { Lexend_Deca, Quicksand } from 'next/font/google';
+import ParentFormBackground from '@/app/(account)/account/ParentFormBackground';
+import AddItemForm from './_listcomponents/AddItemForm';
+import AddPriceForm from './add-price/[itemId]/AddPriceForm';
 
 
 const ButtonFont = Lexend_Deca({
@@ -24,6 +27,12 @@ const MoneyFont = Quicksand({
 export default function PageClient({ listId, list_name, list_budget, listitems, groupedItems, profile }) {
  const [selectedCategory, setSelectedCategory] = useState('');
  const [isOpenModal, setIsOpenModal] = useState(false)
+
+ const [showForm, setShowForm] = useState(false)
+
+    function HandleShowForm (){
+        setShowForm(def => !def)
+    }
 
   // Load selected category from localStorage on mount
   useEffect(() => {
@@ -104,18 +113,25 @@ useEffect(() => {
        md:w-[80%] md:mx-[10%] lg:w-[60%] lg:mx-[20%] mt-[5%] bg-[#04284B]
        text-white rounded-2xl shadow-sm px-4 py-4">
         <div className="flex items-center justify-between mb-4">
-          <Link href="/account/lists">
-            <button className="bg-white cursor-pointer active:bg-gray-600 text-black rounded-full w-10 h-10 flex items-center justify-center">
-              <ChevronLeft />
+    
+            <button className="bg-white
+            cursor-pointer active:bg-gray-600
+             text-black rounded-full w-10 h-10
+              flex items-center justify-center"
+              >
+                <Link href={`/account/lists`}>
+    <ChevronLeft />
+      </Link>
+              
             </button>
-          </Link>
+      
           <h1 className="text-xl font-bold text-[#8F8C8C]">{list_name}</h1>
         </div>
 
         <div className="flex justify-between font-bold">
            <div className=''  ><p>Money Spent</p>
-          <p className={`${MoneyFont.className}
-           text-2xl text-[#D96A6D]`}>-{moneySpent}</p>
+          <h1 className={`${MoneyFont.className}
+           text-2xl text-[#D96A6D]`}>-{moneySpent}</h1>
             </div>
             <div   >
               <p>Money Left</p> <h1 className={`${MoneyFont.className}
@@ -156,9 +172,11 @@ useEffect(() => {
 </div>
 
 
-        <Link href={`/account/forms/${listId}/add-item`} className="bg-[#A2B06D] active:bg-gray-600 w-[40px] h-[40px] rounded-full flex justify-center items-center -mb-8 ml-[90%]">
-          <button className="cursor-pointer"><Plus /></button>
-        </Link>
+     
+          <button className="bg-[#A2B06D] active:bg-gray-600 w-[40px] h-[40px] rounded-full
+           flex justify-center items-center -mb-8 ml-[90%] cursor-pointer"
+           onClick={HandleShowForm}><Plus /></button>
+       
       </div>
 
       {/* Items List */}
@@ -230,10 +248,11 @@ useEffect(() => {
                           {item.price && <p className="text-sm font-bold text-[#D96A6D]"> -R{item.total_price}</p>}
                         </div>
 
-                        <Link href={`/account/forms/${listId}/add-price/${item.id}`}>
+                           <Link href={`/account/forms/${listId}/add-price/${item.id}`}>
                           <ShoppingCart className={!item.price ? `text-[#A2B06D] active:text-gray-600`: 'text-gray-500 active:text-[#A2B06D]'} />
                         </Link>
                       </form>
+                    
                     </div>
                   ))}
               </div>
@@ -331,7 +350,17 @@ useEffect(() => {
     </AccountModal> 
  }
 
-   
+    {showForm && (
+  <ParentFormBackground 
+    openform={HandleShowForm}
+    setShowForm={setShowForm}
+    listId={listId}
+  >
+    <AddItemForm setShowForm={setShowForm}
+    listId={listId} />
+  </ParentFormBackground>
+)}
+
 
     </div>
     

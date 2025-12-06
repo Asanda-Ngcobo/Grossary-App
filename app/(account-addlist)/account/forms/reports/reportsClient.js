@@ -3,7 +3,7 @@
 import { startTransition, useState } from "react";
 import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
-import AddItemButton from "../[listId]/add-item/AddItemButton";
+import AddItemButton from "../[listId]/_listcomponents/AddItemButton";
 import { ChevronLeft } from "@deemlol/next-icons";
 import Link from "next/link";
 import { ReportIssue } from "@/app/_lib/actions";

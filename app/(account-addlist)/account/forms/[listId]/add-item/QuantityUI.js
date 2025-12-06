@@ -1,8 +1,8 @@
 'use client'
 import SpinnerMini from "@/app/(website)/_components/SpinnerMini"
-import DecreaseQuantity from "./DecreaseQuantity"
-import DeleteItem from "./DeleteItem"
-import IncreaseQuantity from "./IncreaseQuantity"
+import DecreaseQuantity from "../_listcomponents/DecreaseQuantity"
+import DeleteItem from "../_listcomponents/DeleteItem"
+import IncreaseQuantity from "../_listcomponents/IncreaseQuantity"
 import Link from "next/link"
 import { ShoppingCart } from "@deemlol/next-icons"
 import { useFormStatus } from "react-dom"

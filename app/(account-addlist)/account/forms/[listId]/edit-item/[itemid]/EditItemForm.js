@@ -7,7 +7,7 @@ import { ChevronLeft } from "@deemlol/next-icons";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
-import AddItemButton from "../../add-item/AddItemButton";
+import AddItemButton from "../../_listcomponents/AddItemButton";
 
 
 export default function EditItemForm({ listId, itemid }) {
