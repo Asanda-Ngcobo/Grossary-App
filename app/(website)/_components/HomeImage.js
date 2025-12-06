@@ -5,6 +5,8 @@ import { Quicksand } from "next/font/google";
 import Image from "next/image";
 import HeroPic from '@/public/shopping with phone.jpg'
 import { Video } from "./video";
+import { Suspense } from "react";
+import Loading from "../loading";
 
 const HeaderFont = Quicksand({
   variable: "--font-geist-sans",
@@ -14,8 +16,8 @@ const HeaderFont = Quicksand({
 function HomeImage() {
   return (
     <div className="h-[100vh] text-white relative -mt-20 overflow-hidden">
-
-      {/* Desktop Image */}
+ <Suspense fallback={<Loading/>}>
+       {/* Desktop Image */}
       <Image
         src={HeroPic}
         fill
@@ -25,6 +27,9 @@ function HomeImage() {
 
       {/* Mobile Video */}
       <Video />
+
+ </Suspense>
+ 
 
       {/* Text Content */}
       <div className="flex-col justify-center pt-[75%] lg:pt-[15%]
