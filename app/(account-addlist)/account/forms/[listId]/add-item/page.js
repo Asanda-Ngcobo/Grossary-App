@@ -1,7 +1,8 @@
 // 
 import { Suspense } from 'react';
-import AddItemForm from './AddItemForm'; // this will be the client component
+
 import Loading from '../../add-list/loading';
+import AddItemForm from '../_listcomponents/AddItemForm';
 
 export const metadata = {
   title: "Add Item | Grossary",
