@@ -34,10 +34,18 @@ await deleteList(listId)
            
            {!active &&     <ul className=''>
 
-               {activeList === 0 && <p className='lg:w-[80%] mx-[10%]'>You have no <span className="font-bold"> active lists</span> currently. Start adding your list by clicking 
-                            <span className="italic mx-1 text-[#ACF532]"> Add New List</span> 
-                             below or <span className="italic  mx-1 text-[#ACF532]"> Reuse your Shopped Lists</span> .
+               {activeList.length === 0 && myLists.length > 0 &&  <p className='lg:w-[80%] mx-[10%]'>You have no <span className="font-bold">
+                 active lists</span> currently. Start adding your list by clicking 
+                            button
+                             below or  Reuse your Shopped Lists.
                             </p>} 
+
+                                {activeList.length === 0 && myLists.length === 0 &&  <p className='lg:w-[80%] mx-[10%]'>You have no <span className="font-bold">
+                 active lists</span> currently. Start adding your list by clicking 
+                            button
+                             below.
+                            </p>} 
+        
         
           
             {optimisticLists.map(function(list){
@@ -45,9 +53,13 @@ await deleteList(listId)
                 onDelete={handleDelete}/>
             })}
         </ul>}
-          {active && <HistoryClient
+
+          {active && 
+          <div className='max-h-[400px] md:max-h-[500px] overflow-y-auto'>
+            <HistoryClient
           History={History}
-          userId={userId}/>}
+          userId={userId}/>
+            </div>}
           
           <div className='bottom-1 right-2 fixed '>
             <button className="flex 

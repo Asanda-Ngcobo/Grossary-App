@@ -1,8 +1,7 @@
 "use client";
 
 import { Suspense } from "react";
-import Image from "next/image";
-import Link from "next/link";
+
 import { User } from "@deemlol/next-icons";
 
 import Lists from "../_ui/Lists";
@@ -11,13 +10,12 @@ import ReportsWrapper from "../_ui/ReportWrapper";
 import ParentFormBackground from "./ParentFormBackground";
 import AddListForm from "./AddListForm";
 import { useForm } from "@/app/providers/Provider";
-import Menu from "./Menu";
+
 
 export default function Home({ profile, myLists, allItems }) {
   const { formOpen, toggleForm, menuOpen, toggleMenu,
      active, toggleActive } = useForm();
 
-     const {fullName, email} = {profile}
 
   const firstName =
     profile?.fullName?.split(" ")[0]?.[0]?.toUpperCase() +
@@ -44,7 +42,11 @@ export default function Home({ profile, myLists, allItems }) {
       </div>
 
       {/* REPORTS */}
-      <ReportsWrapper allItems={allItems} allLists={myLists || []} />
+      {myLists.length > 0 && (
+         <ReportsWrapper allItems={allItems} allLists={myLists || []} />
+
+      )}
+     
 
       {/* TOGGLE BUTTONS */}
       <div className="flex justify-between items-center
