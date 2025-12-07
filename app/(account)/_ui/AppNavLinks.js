@@ -7,12 +7,12 @@ import { usePathname } from "next/navigation";
 
 const navLinks = [
   { name: "Home", href: "/account", exact: true, icon: <House /> },
-  { name: "Lists", href: "/account/lists", exact: false, icon: <List /> },
+  // { name: "Lists", href: "/account/lists", exact: false, icon: <List /> },
   { name: "Reports", href: "/account/reports", exact: false, icon: <BarChart /> },
   { name: "Profile", href: "/account/profile", exact: false, icon: <User /> },
 ];
 
-export default function AppNavLinks({ userLists = [] }) {
+export default function AppNavLinks( ) {
   const pathname = usePathname();
 
   return (
@@ -26,8 +26,8 @@ export default function AppNavLinks({ userLists = [] }) {
           const isActive = link.exact
             ? pathname === link.href
             : pathname.startsWith(link.href);
-          const isListsLink = link.name === "Lists";
-          const listCount = userLists.length;
+          // const isListsLink = link.name === "Lists";
+          // const listCount = userLists.length;
 
           return (
             <li
@@ -50,14 +50,9 @@ export default function AppNavLinks({ userLists = [] }) {
                 {link.icon}
                 <span>{link.name}</span>
 
-                {isListsLink && (
-                  <span
-                    className="text-xs border border-[#04284B] absolute lg:text-sm bg-[#ACF532] text-[#041527] font-bold
-                    px-2 py-0.5 rounded-full ml-12 -mt-8 lg:ml-24 lg:-mt-5"
-                  >
-                    {listCount}
-                  </span>
-                )}
+              
+                  
+          
               </Link>
             </li>
           );

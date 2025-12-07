@@ -9,7 +9,8 @@ const LogoFont = Quicksand({
 });
 function Logo() {
     return (
-      <Link href='/' className={`${LogoFont.className} text-[24px] font-semibold ml-3.5`}>Grossary</Link>
+      <Link href='/' className={`${LogoFont.className}
+       text-[24px] font-semibold ml-3.5`}>Grossary</Link>
     
     )
 }

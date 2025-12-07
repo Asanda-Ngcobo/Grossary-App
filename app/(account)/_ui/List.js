@@ -14,7 +14,7 @@ function List({ list, onDelete }) {
    }
 
   return (
-    <main>
+    <main className="lg:w-[80%] lg:ml-[5%]">
 <li className="border-b border-b-[#8F8C8C] py-4 px-2 flex items-center gap-4">
       {/* Left: Icon */}
       <div className="w-[60px] flex justify-center items-center">
@@ -30,7 +30,7 @@ function List({ list, onDelete }) {
       </div>
 
       {/* Right: Buttons */}
-      <div className="flex gap-2">
+      <div className="flex gap-2 items-center">
         <EditList id={id} />
         <DeleteList handleModal={handleModal}/>
       </div>

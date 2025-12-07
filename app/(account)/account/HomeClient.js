@@ -46,9 +46,7 @@ export default function HomeClient({name}) {
         <Image src={ShoppingPic} alt="Shopping" height={400} width={319} />
       </div>
 
-  {showForm && <ParentFormBackground openform={HandleShowForm}>
-  <AddListForm/>
-    </ParentFormBackground>}
+ 
     </div>
     )
 }

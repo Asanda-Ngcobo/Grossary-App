@@ -16,6 +16,9 @@ async function page() {
 
      const supabase = await createClient()
       const { data, error } = await supabase.auth.getUser()
+        if (error || !data?.user) {
+          redirect('/auth/login')
+        }
      
     
     // Get additional profile info
@@ -32,7 +35,7 @@ async function page() {
       const activeList = myLists.filter((list)=>
 list.money_spent === 0 || list.money_spent === null)
 
-
+console.log(myLists)
 
 
     return (
@@ -55,7 +58,8 @@ list.money_spent === 0 || list.money_spent === null)
                 &#43; New List</span></Link></p>
             ): (
                 <Suspense fallback={<Loading/>}>
-<Lists myLists={activeList}/>
+<Lists myLists={myLists}
+userId={profile.id}/>
                 </Suspense>
                 
             )}

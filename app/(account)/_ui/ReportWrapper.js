@@ -14,6 +14,8 @@ import {
   Cell,
   Legend,
 } from "recharts";
+import MoneySpent from "./MoneySpent";
+import MoneySaved from "../MoneySaved";
 
 function ReportsWrapper({ allLists, allItems }) {
   const [duration, setDuration] = useState(30);
@@ -86,11 +88,6 @@ function ReportsWrapper({ allLists, allItems }) {
     ? ((moneySaved / totalBudget) * 100).toFixed(2)
     : 0;
 
-  const moneySpentFormatted = new Intl.NumberFormat("en-ZA", {
-    style: "currency",
-    currency: "ZAR",
-  }).format(moneySpent);
-
   const moneySavedFormatted = new Intl.NumberFormat("en-ZA", {
     style: "currency",
     currency: "ZAR",
@@ -99,27 +96,18 @@ function ReportsWrapper({ allLists, allItems }) {
   const COLORS = ["#EDE734", "#FF8042", "#0088FE", "#00C49F", "#FFBB28", "#A569BD"];
 
   return (
-    <section className="py-6 px-4 rounded-md w-[90%] mt-[5%] mb-[80px]
-      ml-[5%] xl:w-[80%] xl:ml-[5%] lg:mx-0 gap-6 bg-[#041527] shadow-sm">
+    <section className="py-2 px-4 rounded-md w-[90%] mt-2 
+      ml-[5%] lg:w-[80%] lg:ml-[5%] lg:mx-0 gap-6 bg-[#041527] shadow-sm">
       
-      <h1 className="text-[#8F8C8C] text-[24px]">Reports</h1>
 
       <ReportDuration onChange={(val) => setDuration(val)} />
 
       {/* Stats */}
       <div className="grid grid-cols-3 gap-2">
-        <div className="p-2 col-start-1 col-end-4 h-[120px] bg-[#04284B] grid justify-center items-center rounded-lg">
-          <h2 className="text-4xl font-bold text-center">{moneySpentFormatted  || 0}</h2>
-          <p className="text-sm text-gray-500 text-center">Money Spent</p>
-        </div>
+     <MoneySpent moneySpent={moneySpent}/>
 
-        <div className="pb-2 col-start-1 col-end-3 h-[120px] bg-[#04284B] grid justify-center items-center rounded-lg">
-          <h2 className="text-4xl font-bold text-center">
-            {moneySavedFormatted}{" "}
-            <span className="text-sm text-gray-600">({savedPercentage}%)</span>
-          </h2>
-          <p className="text-sm text-gray-500 text-center">Money Saved</p>
-        </div>
+        <MoneySaved moneySaved={moneySaved}
+        savedPercentage={savedPercentage}/>
 
         <div className="pb-2 h-[120px] bg-[#04284B] grid justify-center items-center rounded-lg">
           <h2 className="text-4xl font-bold text-center">
@@ -129,7 +117,7 @@ function ReportsWrapper({ allLists, allItems }) {
         </div>
       </div>
 
-      {/* Line Chart */}
+      {/* Line Chart
       <div className="mt-6 bg-[#04284B] p-4 rounded-lg">
         <h2 className="text-[#8F8C8C] text-lg mb-2">Money Spent Trend</h2>
         <ResponsiveContainer width="100%" height={300}>
@@ -157,7 +145,7 @@ function ReportsWrapper({ allLists, allItems }) {
             />
           </LineChart>
         </ResponsiveContainer>
-      </div>
+      </div> */}
 
       {/* Pie Chart */}
       {/* <div className="mt-6 bg-[#04284B] p-4 rounded-lg">

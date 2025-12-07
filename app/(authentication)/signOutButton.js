@@ -22,7 +22,7 @@ function SignOutButton() {
         className="flex items-center gap-2  py-2
         cursor-pointer  rounded 
          disabled:opacity-50
-         text-[#04284B]
+         text-black
          font-bold"
       >
         {isPending ? (

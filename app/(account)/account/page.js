@@ -1,56 +1,49 @@
-
 import { redirect } from "next/navigation";
-
-
-import { Lexend_Deca } from "next/font/google";
 import { createClient } from "@/app/_utils/supabase/server";
-import HomeClient from "./HomeClient";
-
-
-
-const ButtonFont = Lexend_Deca({
-  subsets: ["latin"],
-  display: 'swap',
-});
+import { getLists } from "@/app/_lib/data-services";
+import Home from "./Home";
 
 export const metadata = {
-  title: "Account | Grossary",
+  title: "Grossary",
   description: "Grossary - a simple, all-in-one grocery app that helps you",
 };
+
 export default async function Page() {
-   const supabase = await createClient()
-  const { data, error } = await supabase.auth.getUser()
-  if (error || !data?.user) {
-    redirect('/auth/login')
-  }
+  const supabase = await createClient();
 
-// Get additional profile info
- // Get additional profile info
+  // Get user
+  const { data: authData, error: authError } = await supabase.auth.getUser();
+  if (authError || !authData?.user) redirect("/auth/login");
+
+  const userId = authData.user.id;
+
+  // Get profile
   const { data: profile } = await supabase
-    .from('users_info')
-    .select('*')
-    .eq('id', data.user.id)
+    .from("users_info")
+    .select("*")
+    .eq("id", userId)
     .single();
-  
-  
 
 
- 
+  // Get user's lists
+  const myLists = await getLists(userId);
 
-  if (!profile) {
-    return (
-      <div className="text-center mt-10 text-white">
-        Unable to load user profile.
-      </div>
-    );
-  }
+  // Get all items with prices and related list user_id
+  const { data: allItemsRaw } = await supabase
+    .from("list_items")
+    .select(
+      "id, total_price, item_category, shopped_at, list_id, user_lists(user_id)"
+    )
+    .not("total_price", "is", null);
 
-  const firstName = profile.fullName?.split(" ")[0] || "there";
-  const capitalizedFirstName =
-    firstName.charAt(0).toUpperCase() + firstName.slice(1).toLowerCase();
+  // Only include items that belong to this user
+  const allItems = (allItemsRaw || []).filter(
+    (item) => item.user_lists?.user_id === userId
+  );
 
   return (
-    <HomeClient name={capitalizedFirstName}/>
-   
+    <div className="w-screen min-h-screen lg:w-[60%] lg:mx-[20%]">
+      <Home profile={profile} myLists={myLists} allItems={allItems} />
+    </div>
   );
- }
+}

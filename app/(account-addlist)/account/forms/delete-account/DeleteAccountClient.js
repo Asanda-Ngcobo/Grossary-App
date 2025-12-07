@@ -57,7 +57,7 @@ function DeleteAccountClient() {
 
       <section className="flex gap-20 mx-[5%] my-5">
         <div className="bg-white active:bg-gray-600 rounded-full w-[50px] h-[50px] flex justify-center items-center"> 
-          <Link href='/account/profile'><ChevronLeft color="black" size={40} /></Link>
+          <Link href='/account'><ChevronLeft color="black" size={40} /></Link>
         </div>
         <h1 className={`${LogoFont.className} text-[18px] font-semibold`}>Delete Account</h1>
       </section>

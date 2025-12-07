@@ -14,13 +14,13 @@ function EditList({id}) {
   
   return (
     <Link href={`/account/forms/${id}`} className={`${ButtonFont.className}group
-      bg-[#A2B06D] min-w-[100px]
+      bg-amber-700 min-w-[100px]
       flex justify-center items-center
        active:bg-gray-600
-         h-auto rounded-[5px]
-         text-white
+         h-[30px] rounded-[10px]
+         text-gray-500
          cursor-pointer
-         font-semibold
+         font-bold
          hover
          hover:bg-[#6f7a46]
          py-1`}>

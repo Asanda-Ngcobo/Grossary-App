@@ -13,6 +13,9 @@ import { Lexend_Deca, Quicksand } from 'next/font/google';
 import ParentFormBackground from '@/app/(account)/account/ParentFormBackground';
 import AddItemForm from './_listcomponents/AddItemForm';
 import AddPriceForm from './add-price/[itemId]/AddPriceForm';
+import ListMoneyLeft from '@/app/(account)/_ui/ListMoneyLeft';
+import ListMoneySpent from '@/app/(account)/_ui/ListMoneySpent';
+import Budget from '@/app/(account)/_ui/Budget';
 
 
 const ButtonFont = Lexend_Deca({
@@ -71,20 +74,12 @@ const firstName = profile.fullName?.split(" ")[0] || "there";
 //Display Money Spent
 
   const money_spent = listitems.reduce((acc, item) => acc + (item.total_price || 0), 0);
-  const moneySpent =    new Intl.NumberFormat('en-ZA', {
-  style: 'currency',
-  currency: 'ZAR',
-  minimumFractionDigits: 2,
-}).format(money_spent);
+  
 
   //display money left
   
   const money_left = list_budget - money_spent;
-  const moneyLeft =   new Intl.NumberFormat('en-ZA', {
-  style: 'currency',
-  currency: 'ZAR',
-  minimumFractionDigits: 2,
-}).format(money_left);
+ 
   const spentPercent = (money_spent / list_budget) * 100;
 
   const overallShopped = listitems.filter(item => item.is_checked).length;
@@ -119,7 +114,7 @@ useEffect(() => {
              text-black rounded-full w-10 h-10
               flex items-center justify-center"
               >
-                <Link href={`/account/lists`}>
+                <Link href={`/account`}>
     <ChevronLeft />
       </Link>
               
@@ -129,13 +124,8 @@ useEffect(() => {
         </div>
 
         <div className="flex justify-between font-bold">
-           <div className=''  ><p>Money Spent</p>
-          <h1 className={`${MoneyFont.className}
-           text-2xl text-[#D96A6D]`}>-{moneySpent}</h1>
-            </div>
-            <div   >
-              <p>Money Left</p> <h1 className={`${MoneyFont.className}
-           text-2xl text-[#ACF532]`}>{moneyLeft}</h1></div>
+           <ListMoneySpent money_spent={money_spent}/>
+           <ListMoneyLeft money_left={money_left}/>
 
          
         </div>
@@ -151,9 +141,9 @@ useEffect(() => {
       className={`${MoneyFont.className} font-bold text-lg 
       flex flex-row items-center justify-center gap-3`}
     >
-      <h5 className="text-center">Budget: {listBudget}</h5>
+    <Budget list_budget={list_budget}/>
       <Link href={`/account/forms/${listId}/edit-list`}>
-        <Edit2 size={20} color="#A2B06D" />
+        <Edit2 size={20} className='text-gray-500' />
       </Link>
     </span>
   </div>
@@ -173,7 +163,8 @@ useEffect(() => {
 
 
      
-          <button className="bg-[#A2B06D] active:bg-gray-600 w-[40px] h-[40px] rounded-full
+          <button className="bg-amber-700
+          text-gray-500 active:bg-gray-600 w-[40px] h-[40px] rounded-full
            flex justify-center items-center -mb-8 ml-[90%] cursor-pointer"
            onClick={HandleShowForm}><Plus /></button>
        
@@ -235,7 +226,7 @@ useEffect(() => {
                               
                                <DeleteItem itemId={item.id} listId={listId} />
                                 <Link href={`/account/forms/${listId}/edit-item/${item.id}`}>
-                          <Edit2 size={20} className={ `text-[#A2B06D] active:text-gray-600`} />
+                          <Edit2 size={20} className={ `text-gray-500 active:text-gray-600`} />
                         </Link>
                             
                           </div>
@@ -249,7 +240,7 @@ useEffect(() => {
                         </div>
 
                            <Link href={`/account/forms/${listId}/add-price/${item.id}`}>
-                          <ShoppingCart className={!item.price ? `text-[#A2B06D] active:text-gray-600`: 'text-gray-500 active:text-[#A2B06D]'} />
+                          <ShoppingCart className={!item.price ? `text-amber-700 active:text-gray-600`: 'text-gray-500 active:text-[#A2B06D]'} />
                         </Link>
                       </form>
                     

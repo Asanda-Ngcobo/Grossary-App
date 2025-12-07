@@ -40,7 +40,7 @@ function ReportsClient({profile}) {
         );
 
         setTimeout(() => {
-          router.push(`/account/profile`);
+          router.push(`/account`);
         }, 2000);
       }
     } catch (error) {
@@ -58,7 +58,7 @@ function ReportsClient({profile}) {
     return (
           <main>
       <button className="my-5 mx-[5%] bg-white active:bg-gray-600 rounded-full w-[50px] h-[50px] flex justify-center items-center">
-        <Link href={`/account/profile`}>
+        <Link href={`/account`}>
           <ChevronLeft color="black" size={40} />
         </Link>
       </button>

@@ -4,6 +4,8 @@ import "@/app/globals.css";
 import AppNav from '@/app/(account)/_ui/AppNav'
 import { Analytics } from "@vercel/analytics/next";
 import Script from "next/script";
+import { FormProvider } from "@/app/providers/Provider";
+import Menu from "./Menu";
 
 
 
@@ -35,11 +37,16 @@ export default function WebAppLayout({ children }) {
         </Script>
       </head>
  <body
-        className={`${MainFont.className} bg-[#041527] text-white lg:grid grid-cols-[16rem_1fr] h-screen 
+        className={`${MainFont.className} bg-[#041527]
+         text-white lg:grid grid-cols-[16rem_1fr] h-screen 
         gap-12`}
       >
-        <div><AppNav/></div>
+        <FormProvider>
+            <Menu/>
         <div>{children}</div>
+
+        </FormProvider>
+     
         
           <Analytics/>
         

@@ -59,7 +59,7 @@ async function Slip({list,listItems, listId}) {
       className="h-10 min-w-[300px] px-2  bg-[#A2B06D] active:bg-gray-600 cursor-pointer  rounded-lg text-[#04284B]
       font-semibold hover:bg-[#041527] transition-colors"
     >
-      <Link href={`/account/lists/history`}>  Finish Shopping</Link>
+      <Link href={`/account`}>  Finish Shopping</Link>
     
     </button>
     <button

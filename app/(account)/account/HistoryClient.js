@@ -27,7 +27,7 @@ function HistoryClient({ History, userId }) {
   }, {});
 
   return (
-    <div className="w-[90%] ml-[5%] lg:w-[60%] lg:ml-[20%] mt-20 ">
+    <div className="w-[90%] ml-[5%] lg:w-[60%] lg:ml-[20%] mt-10 ">
       {History.length === 0 ? (
         <p>You have no Shopped Lists yet.</p>
       ) : (

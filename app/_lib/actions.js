@@ -432,8 +432,8 @@ if (insertItemsError) {
 
 // console.log(newItems)
   // Step 5: Redirect or return new list ID
-   revalidatePath('/account/lists')
-  redirect(`/account/lists`)
+   revalidatePath('/account')
+  redirect(`/account`)
  
 }
 export async function updateProfile(id, formData) {

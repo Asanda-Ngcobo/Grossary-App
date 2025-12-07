@@ -4,9 +4,10 @@ export default function ParentFormBackground({children, openform}) {
     return (
          <main className="bg-[#04284B]
           w-screen h-[150vh] z-20 top-0 bottom-0 absolute left-0 transition-all
-           duration-500" >
+           duration-500
+           overflow-x-hidden" >
               <button
-               className="my-5 mx-[5%]
+               className="my-8 mx-[5px]
                 active:bg-gray-600 rounded-full w-[50px]
                  h-[50px] flex justify-center items-center" onClick={openform}> 
            <X color="black" size={40}/> </button>

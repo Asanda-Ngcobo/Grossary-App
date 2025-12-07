@@ -4,36 +4,7 @@ import { createClient } from "@/app/_utils/supabase/server";
 import AppNavLinks from "./AppNavLinks";
 
 export default async function AppNavigation() {
-  const supabase = await createClient();
-  const {
-    data: { user },
-    error: userError,
-  } = await supabase.auth.getUser();
-
-  if (userError || !user) {
-    console.error("Failed to fetch authenticated user:", userError);
-    return null;
-  }
-
-  // Fetch additional profile info
-  const { data: profile, error: profileError } = await supabase
-    .from("users_info")
-    .select("*")
-    .eq("id", user.id)
-    .single();
-
-  if (profileError || !profile) {
-    console.error("Failed to fetch user profile:", profileError);
-    return null;
-  }
-
-  // Fetch user lists
-  const userLists = await getLists(profile.id);
-
-  // Filter only active lists (unspent or empty)
-  const activeLists = userLists?.filter(
-    (list) => list.money_spent === 0 || list.money_spent === null
-  );
+      
 
   return (
     <div
@@ -45,7 +16,7 @@ export default async function AppNavigation() {
        lg:bottom-auto lg:flex-col
         lg:justify-start"
     >
-      <AppNavLinks userLists={activeLists} />
+      <AppNavLinks/>
     </div>
   );
 }

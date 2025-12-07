@@ -1,6 +1,6 @@
 
 import { getLists, getOldLists } from "@/app/_lib/data-services"
-import HistoryClient from "./HistoryClient"
+import HistoryClient from "../HistoryClient"
 import { Suspense } from "react"
 import { createClient } from "@/app/_utils/supabase/server"
 import Loading from "../../loading"
