@@ -1,13 +1,14 @@
 'use client'
 
 import Link from "next/link"
-import { SubmitButton } from "./ReUseButton"
+
 import { FileText, ShoppingBag } from "@deemlol/next-icons"
 import { reuseList } from "@/app/_lib/actions";
+import { SubmitButton } from "./lists/ReUseButton";
 
-function HistoryClient({ History, userId }) {
+function HistoryClient({ History, topHistory, userId }) {
   // Group history items by "Month Year" and calculate totals
-  const groupedHistory = History.reduce((acc, item) => {
+  const groupedHistory = topHistory.reduce((acc, item) => {
     const date = new Date(item.shopped_at);
     const key = date.toLocaleString('en-GB', { month: 'long', year: 'numeric' });
 
@@ -27,7 +28,7 @@ function HistoryClient({ History, userId }) {
   }, {});
 
   return (
-    <div className="w-[90%] ml-[5%] lg:w-[60%] lg:ml-[20%] mt-10 ">
+    <div className="w-[90%] ml-[5%] lg:w-[60%] lg:ml-[10%] mt-10 ">
       {History.length === 0 ? (
         <p>You have no Shopped Lists yet.</p>
       ) : (
@@ -73,11 +74,20 @@ function HistoryClient({ History, userId }) {
                     </form>
 
                     {/* Link button */}
-                    <div className="flex gap-2 active:bg-gray-600">
-                      <Link href={`/account/forms/${history.id}/list-summary`}>
-                        <FileText color="#6f7a46" />
+                         <button >
+                      <Link href={`/account/forms/${history.id}/list-summary`}
+                      className='group
+     flex justify-center items-center 
+     h-[40px] w-[40px] bg-gray-600
+     rounded-full
+       gap-2 uppercase text-xs cursor-pointer
+      font-bold text-gray-500 flex-grow px-3 
+      hover:bg-accent-600 transition-colors hover:text-primary-900'>
+                        <FileText className=' 
+      absolute
+      '  />
                       </Link>
-                    </div>
+                    </button>
                   </li>
                 ))}
               </ul>

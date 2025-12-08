@@ -5,6 +5,9 @@ import { Suspense } from "react"
 import { createClient } from "@/app/_utils/supabase/server"
 import Loading from "../../loading"
 
+import { ChevronLeft } from "@deemlol/next-icons"
+import Link from "next/link"
+
 export const metadata = {
   title: "History | Grossary",
   description: "Grossary - a simple, all-in-one grocery app that helps you",
@@ -35,11 +38,26 @@ list.money_spent > 0 )
 
 
     return (
-      <Suspense fallback={<Loading/>}>
+      <div className="w-[90%] ml-[5%] lg:w-[80%] lg:ml-[5%] mt-5">
+        
+         <button className="bg-white
+            cursor-pointer active:bg-gray-600
+             text-black rounded-full w-10 h-10
+              flex items-center justify-center"
+              >
+                <Link href={`/account`}>
+    <ChevronLeft />
+      </Link>
+              
+            </button>
+             <Suspense fallback={<Loading/>}>
+        
  <HistoryClient 
             userId={profile.id}
             History={History}/>
       </Suspense>
+      </div>
+     
       
     )
 }

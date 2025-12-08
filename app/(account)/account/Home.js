@@ -22,9 +22,9 @@ export default function Home({ profile, myLists, allItems }) {
     profile?.fullName?.split(" ")[0]?.slice(1)?.toLowerCase();
 
   return (
-    <div className="w-screen pt-4">
+    <div className="w-screen pt-4 ">
       {/* HEADER */}
-      <div className="flex justify-between w-[80%] mx-[10%]">
+      <div className="flex justify-between w-[80%] mx-[10%]  ">
         <div className="flex gap-2">
           <div className="flex justify-center items-center
            bg-amber-700 w-[60px] h-[60px] rounded-full text-gray-500"
@@ -53,7 +53,7 @@ export default function Home({ profile, myLists, allItems }) {
         w-[90%] mx-[5%] bg-gray-600 text-gray-500 
         h-8 my-4 rounded-2xl
         font-bold
-        lg:w-[80%] lg:ml-[5%]
+        lg:w-[30%] lg:ml-[10%]
         
      ">
         <button onClick={toggleActive}
@@ -66,15 +66,6 @@ export default function Home({ profile, myLists, allItems }) {
           }`}>Shopped Lists</button>
       </div>
 
-      {/* ACTIVE INDICATOR */}
-      <div className="flex justify-between w-[90%] mx-auto">
-        <div
-         
-        />
-        <div
-       
-        />
-      </div>
 
       {/* LISTS */}
       <Suspense fallback={<Loading />}>

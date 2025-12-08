@@ -2,9 +2,11 @@
 import List from '@/app/(account)/_ui/List'
 import { deleteList } from '@/app/_lib/actions';
 import { useOptimistic, useState } from 'react';
-import HistoryClient from '../account/lists/HistoryClient';
+
 import { useForm } from '@/app/providers/Provider';
-import { Plus } from '@deemlol/next-icons';
+import { ArrowLeft, ArrowRight, Plus } from '@deemlol/next-icons';
+import Link from 'next/link';
+import HistoryClient from '../account/HistoryClient';
 
 
 function Lists({myLists, userId}) {
@@ -17,6 +19,10 @@ list.money_spent === 0 || list.money_spent === null)
 
             const History = myLists.filter((list)=>
 list.money_spent > 0 )
+
+            const topHistory = History.slice(0, 3)
+
+            //Delete Ui
 
        const [optimisticLists, optimisticDelete] = useOptimistic(activeList,
          (currentLists, listId)=>{
@@ -56,7 +62,16 @@ await deleteList(listId)
 
           {active && 
           <div className='max-h-[400px] md:max-h-[500px] overflow-y-auto'>
+            {History.length > 3  && (
+              
+              <Link href='/account/lists/history' alt='' className='ml-[70%] lg:hidden'>
+                <button className='text-sm cursor-pointer underline text-gray-500'>
+                Show more 
+              </button>
+                </Link>
+            )}
             <HistoryClient
+          topHistory={topHistory}
           History={History}
           userId={userId}/>
             </div>}
@@ -70,6 +85,7 @@ await deleteList(listId)
                             rounded-full
                             bg-amber-700 
                             text-gray-500
+                            cursor-pointer
                             my-6" onClick={toggleForm}>
                             <Plus></Plus></button>
           </div>

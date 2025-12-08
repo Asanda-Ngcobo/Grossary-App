@@ -27,7 +27,7 @@ function HistoryClient({ History, userId }) {
   }, {});
 
   return (
-    <div className="w-[90%] ml-[5%] lg:w-[80%] lg:ml-[5%] mt-10 ">
+    <div className="w-[90%] ml-[5%] lg:w-[80%] lg:ml-[10%] mt-5 ">
       {History.length === 0 ? (
         <p>You have no Shopped Lists yet.</p>
       ) : (
@@ -73,15 +73,18 @@ function HistoryClient({ History, userId }) {
                     </form>
 
                     {/* Link button */}
-                    <button className='group
+                    <button >
+                      <Link href={`/account/forms/${history.id}/list-summary`}
+                      className='group
      flex justify-center items-center 
      h-[40px] w-[40px] bg-gray-600
      rounded-full
        gap-2 uppercase text-xs cursor-pointer
       font-bold text-gray-500 flex-grow px-3 
       hover:bg-accent-600 transition-colors hover:text-primary-900'>
-                      <Link href={`/account/forms/${history.id}/list-summary`}>
-                        <FileText className="text-gray-500" />
+                        <FileText className=' 
+      absolute
+      '  />
                       </Link>
                     </button>
                   </li>

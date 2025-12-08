@@ -9,7 +9,8 @@ export default function ParentFormBackground({children, openform}) {
               <button
                className="my-8 mx-[5px]
                 active:bg-gray-600 rounded-full w-[50px]
-                 h-[50px] flex justify-center items-center" onClick={openform}> 
+                 h-[50px] flex justify-center
+                 cursor-pointer items-center" onClick={openform}> 
            <X color="black" size={40}/> </button>
             <section>
                      
