@@ -56,7 +56,7 @@ async function Slip({list,listItems, listId}) {
    grid gap-6 mt-11 mx-4 `}>
      <button
      
-      className="h-10 min-w-[300px] px-2  bg-[#A2B06D] active:bg-gray-600 cursor-pointer  rounded-lg text-[#04284B]
+      className="h-10 min-w-[300px] px-2  bg-amber-700 active:bg-gray-600 cursor-pointer  rounded-lg text-[#04284B]
       font-semibold hover:bg-[#041527] transition-colors"
     >
       <Link href={`/account`}>  Finish Shopping</Link>

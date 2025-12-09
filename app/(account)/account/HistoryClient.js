@@ -80,6 +80,7 @@ function HistoryClient({ History, topHistory, userId }) {
      flex justify-center items-center 
      h-[40px] w-[40px] bg-gray-600
      rounded-full
+     active:bg-gray-900
        gap-2 uppercase text-xs cursor-pointer
       font-bold text-gray-500 flex-grow px-3 
       hover:bg-accent-600 transition-colors hover:text-primary-900'>
