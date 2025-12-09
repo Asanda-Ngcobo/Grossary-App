@@ -76,7 +76,8 @@ await deleteList(listId)
           userId={userId}/>
             </div>}
           
-          <div className='bottom-1 right-2 fixed '>
+          {!active && (
+            <div className='bottom-1 right-2 fixed '>
             <button className="flex 
                             justify-center items-center 
                             mx-3
@@ -90,6 +91,7 @@ await deleteList(listId)
                             <Plus></Plus></button>
           </div>
        
+          )}
         </div>
       
         
