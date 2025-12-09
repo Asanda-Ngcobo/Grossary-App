@@ -21,11 +21,11 @@ function ShoppingReimagined() {
         </div>
         <div className="absolute w-[80%] ml-[10%] items-center lg:w-[40%] lg:mx-[30%]">
             <h1 className="text-[20px] font-bold mb-8
-             text-center text-[#A2B06D]">Re-imagine Grocery Shopping</h1>
+             text-center text-[#ACF532]">Re-imagine Grocery Shopping</h1>
              <div className="flex flex-col gap-20 items-center ">
              <p className=" text-white text-[18px] ">Grossary is your no-fuss, no cluster tool for weekly or monthly grocery runs. 
              Whether youre budgeting for one, meal prepping for two, or hosting dinner with friends.</p>
-             <Link href='/auth/signup' className="text-[#A2B06D] underline flex items-center">
+             <Link href='/auth/signup' className="text-amber-700 underline flex items-center">
           Get started &rarr;
         </Link>
              </div>

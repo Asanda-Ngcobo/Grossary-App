@@ -68,7 +68,7 @@ function Footer() {
         </div>
         
       </div>
-      <div className="md:flex flex-row justify-between">
+      <div className="md:flex flex-row justify-between w-[80%] mx-[10%]">
         <div className="flex flex-row gap-3">
         
         <Link href='https://www.instagram.com/grossary.shop/'><Image src={InstagramIcon} width={50} alt="instagram icon"></Image></Link>

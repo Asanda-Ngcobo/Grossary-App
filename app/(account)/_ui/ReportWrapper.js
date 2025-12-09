@@ -96,11 +96,13 @@ function ReportsWrapper({ allLists, allItems }) {
   const COLORS = ["#EDE734", "#FF8042", "#0088FE", "#00C49F", "#FFBB28", "#A569BD"];
 
   return (
-    <section className="py-2 px-4 rounded-md w-[90%] mt-2 
-      ml-[5%] lg:w-[80%] lg:ml-[5%] lg:mx-0 gap-6 bg-[#041527] shadow-sm">
+    <div className="py-2 px-4 rounded-md w-[90%] mt-2 
+      ml-[5%] lg:w-[80%] lg:ml-[5%] lg:mx-0 gap-6">
+      <ReportDuration onChange={(val) => setDuration(val)} />
+         <section className=" rounded-2xl border-2 border-gray-600 shadow-sm">
       
 
-      <ReportDuration onChange={(val) => setDuration(val)} />
+      
 
       {/* Stats */}
       <div className="grid grid-cols-3 gap-2">
@@ -109,11 +111,11 @@ function ReportsWrapper({ allLists, allItems }) {
         <MoneySaved moneySaved={moneySaved}
         savedPercentage={savedPercentage}/>
 
-        <div className="pb-2 h-[120px] bg-[#04284B] grid justify-center items-center rounded-lg">
+        <div className="pb-2 h-[80px]  grid justify-center items-center rounded-lg">
           <h2 className="text-4xl font-bold text-center">
             {filteredLists.length}
           </h2>
-          <p className="text-sm text-gray-500 text-center">Lists Shopped</p>
+          <p className="text-sm text-gray-600 font-semibold text-center">Lists Shopped</p>
         </div>
       </div>
 
@@ -178,6 +180,8 @@ function ReportsWrapper({ allLists, allItems }) {
         </ResponsiveContainer>
       </div> */}
     </section>
+    </div>
+   
   );
 }
 

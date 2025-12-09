@@ -9,14 +9,16 @@ const ButtonFont = Lexend_Deca({
 });
 function SignUpButton({children}) {
     return (
-        <button className={`${ButtonFont.className} bg-[#A2B06D] min-w-[100px]
+        <button className={`${ButtonFont.className}
+         bg-amber-700 min-w-[100px]
        
          h-[40px] rounded-[20px]
-         text-white
+         text-gray-900
          cursor-pointer
          font-semibold
          hover
-         hover:bg-[#6f7a46]`}>
+         hover:opacity-60
+         `}>
             {children}
         </button>
     )

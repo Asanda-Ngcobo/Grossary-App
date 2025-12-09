@@ -14,13 +14,14 @@ export default function MoneySpent({ moneySpent }) {
   }, [moneySpent])
 
   return (
-    <div className="p-2 col-start-1 col-end-4 h-[120px] bg-[#04284B] grid justify-center items-center rounded-lg">
+    <div className="p-2 col-start-1 col-end-4 h-[80px]
+     grid justify-center items-center rounded-lg">
           
-<h2 className="text-4xl font-bold text-center">
+<h2 className="text-3xl md:text-4xl font-bold text-center">
   {formatted}
 </h2>
 
-          <p className="text-sm text-gray-500 text-center">Money Spent</p>
+          <p className="text-sm text-gray-600 font-bold text-center">Money Spent</p>
         </div>
   )
 }

@@ -18,12 +18,12 @@ function FinishedShoppingBunner() {
       "
     >
       <div className="w-10 h-10 flex justify-center
-       items-center rounded-full bg-green-500 shadow-md animate-pulse mb-2">
+       items-center rounded-full bg-[#ACF532] shadow-md animate-pulse mb-2">
         <Check className="text-white text-md" width={15} />
       </div>
 
       <div className="text-md font-bold
-       text-green-400 animate-bounce text-center leading-tight">
+       text-[#ACF532] animate-bounce text-center leading-tight">
         Well Done
         <div className="mt-1">
           <NamesCarousel />
@@ -33,12 +33,12 @@ function FinishedShoppingBunner() {
 
       <p className="text-xs text-center text-white mt-2">
         Your shopping is done and you managed to stay&nbsp;
-        <span className="font-bold text-green-300">11.7%</span> under budget. 🎉😊
+        <span className="font-bold text-[#ACF532]">11.7%</span> under budget. 🎉😊
       </p>
 
       <div className={`${ButtonFont.className} gap-2 mt-4 hidden sm:grid`}>
         <button
-          className="h-8 w-[200px] px-2 bg-[#A2B06D] 
+          className="h-8 w-[200px] px-2 bg-amber-700 
           rounded-lg text-[#04284B] font-semibold 
           
           transition-colors text-xs"

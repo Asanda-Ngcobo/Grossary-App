@@ -20,6 +20,7 @@ export default function Home({ profile, myLists, allItems }) {
   const firstName =
     profile?.fullName?.split(" ")[0]?.[0]?.toUpperCase() +
     profile?.fullName?.split(" ")[0]?.slice(1)?.toLowerCase();
+    const initials = firstName.slice(0, 1)
 
   return (
     <div className="w-screen pt-4 ">
@@ -29,7 +30,7 @@ export default function Home({ profile, myLists, allItems }) {
           <div className="flex justify-center items-center
            bg-amber-700 w-[60px] h-[60px] rounded-full text-gray-500"
            onClick={toggleMenu}>
-            <User />
+            <h1 className="text-xl">{initials}</h1>
           </div>
 
           <div className="flex items-center font-bold">
@@ -50,18 +51,18 @@ export default function Home({ profile, myLists, allItems }) {
 
       {/* TOGGLE BUTTONS */}
       <div className="flex justify-between items-center
-        w-[90%] mx-[5%] bg-gray-600 text-gray-500 
-        h-8 my-4 rounded-2xl
+        w-[80%] mx-[10%] bg-gray-600 text-gray-500 
+        h-10 my-4 rounded-3xl
         font-bold
         lg:w-[30%] lg:ml-[10%]
         
      ">
         <button onClick={toggleActive}
-         className={`w-[50%]  h-8  rounded-2xl cursor-pointer   ${
+         className={`w-[50%] ml-1  h-8  rounded-3xl cursor-pointer   ${
             !active ? "bg-[#ACF532]" : "bg-gray-600"
           }`}>Active Lists</button>
         <button onClick={toggleActive}
-           className={`w-[50%]  h-8  rounded-2xl cursor-pointer  ${
+           className={`w-[50%] mr-1  h-8  rounded-3xl cursor-pointer  ${
             active ? "bg-[#ACF532] w-[55%]" : "bg-gray-600"
           }`}>Shopped Lists</button>
       </div>

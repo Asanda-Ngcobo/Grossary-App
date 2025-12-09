@@ -88,7 +88,7 @@ function Menu() {
       `}
      
     >
-        <div className="bg-gray-200
+        <div className="bg-[#04284B]
          w-[80%] h-screen
 
          lg:w-[30%]
