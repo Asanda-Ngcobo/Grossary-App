@@ -16,7 +16,8 @@ function Content({ content}) {
   const isOdd = content.id === 1 || content.id === 3; // target the second object
 
   return (
-    <div className={`p-4 sm:flex sm:gap-30 lg:gap-40 xl:gap-30 items-center ${isOdd ? 'sm:flex-row-reverse' : ''}`}>
+    <div className={`p-4 sm:flex sm:gap-30 lg:gap-40 xl:gap-30
+     items-center ${isOdd ? 'sm:flex-row-reverse' : ''}`}>
       {/* Image section */}
       <div className="sm:w-1/2">
         <Image src={content.image} alt="shopping list" className="
@@ -31,7 +32,8 @@ function Content({ content}) {
 
       {/* Text section */}
       <div className="sm:w-1/2">
-        <h2 className={`font-semibold text-[30px] py-2 ${HeaderFont.className}`}>{content.heading}</h2>
+        <h2 className={`font-semibold text-[30px] py-2 ${HeaderFont.className}`}>
+          {content.heading}</h2>
         <p className="mb-2 w-[full] md:w-[50%]">{content.description}</p>
         {/* <Link href={content.link} className="text-[#A2B06D] flex items-center ">
         <button className={`${ButtonFont.className} border border-[#041527] p-2 cursor-pointer hover:bg-gray-300`}>

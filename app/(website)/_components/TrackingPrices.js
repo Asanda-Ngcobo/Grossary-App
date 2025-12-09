@@ -43,7 +43,7 @@ function TrackingPrices() {
                        
 
                 
-                          <ShoppingCart className='text-[#A2B06D]' />
+                          <ShoppingCart className='text-amber-700' />
                       
                       </form>
                     </div>
