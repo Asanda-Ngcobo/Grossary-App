@@ -111,8 +111,8 @@ function ReportsWrapper({ allLists, allItems }) {
         <MoneySaved moneySaved={moneySaved}
         savedPercentage={savedPercentage}/>
 
-        <div className="pb-2 h-[80px]  grid justify-center items-center rounded-lg">
-          <h2 className="text-4xl font-bold text-center">
+        <div className="pb-2 h-[80px]  grid justify-center items-center">
+          <h2 className="text-2xl md:text-4xl font-bold text-center">
             {filteredLists.length}
           </h2>
           <p className="text-sm text-gray-600 font-semibold text-center">Lists Shopped</p>
