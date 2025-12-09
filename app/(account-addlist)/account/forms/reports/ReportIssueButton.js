@@ -6,7 +6,8 @@ export default function ReportIssueButton() {
         <div className="flex items-center gap-2  py-2
         cursor-pointer  text-black">
             <Link href='/account/forms/reports'>
-             <span className='flex gap-2'><AlertCircle/> Report Issue or Suggestion</span></Link>
+             <span className='flex gap-2'><AlertCircle/> 
+             Report Issue</span></Link>
            
         </div>
     )

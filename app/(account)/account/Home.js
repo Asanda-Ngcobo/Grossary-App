@@ -20,7 +20,24 @@ export default function Home({ profile, myLists, allItems }) {
   const firstName =
     profile?.fullName?.split(" ")[0]?.[0]?.toUpperCase() +
     profile?.fullName?.split(" ")[0]?.slice(1)?.toLowerCase();
-    const initials = firstName.slice(0, 1)
+    const nameParts = profile?.fullName
+  ?.trim()
+  ?.split(/\s+/) // handles multiple spaces
+  .filter(Boolean) || [];
+
+let initials = "";
+
+if (nameParts.length >= 2) {
+  // First + last name
+  initials =
+    nameParts[0][0].toUpperCase() +
+    nameParts[1][0].toUpperCase();
+} else if (nameParts.length === 1) {
+  // Only first name
+  initials = nameParts[0][0].toUpperCase();
+} else {
+  initials = "";
+}
 
   return (
     <div className="w-screen pt-4 ">
