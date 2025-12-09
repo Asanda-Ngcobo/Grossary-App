@@ -8,8 +8,8 @@ export default function ParentFormBackground({children, openform}) {
            duration-500
            overflow-x-hidden" >
 
-                   <button className="bg-white
-            cursor-pointer active:bg-gray-600
+                   <button className="
+            cursor-pointer bg-gray-600
              text-black rounded-full w-10 h-10 mt-8 ml-4
               flex items-center justify-center"
               onClick={openform}>

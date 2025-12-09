@@ -91,7 +91,7 @@ function Menu() {
     >
         <div className="bg-[#04284B]
          w-[80%] h-screen
-
+          flex flex-col items-center
          lg:w-[30%]
          rounded-r-lg">
             <div className="top-1 ml-[90%] text-gray-600 flex"
