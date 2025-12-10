@@ -38,11 +38,11 @@ function HistoryClient({ History, topHistory, userId }) {
               <div className="flex flex-row justify-between ">
 <h2 className="text-lg font-bold text-gray-400 mb-2 ">{monthYear}</h2>
 
-              {/* Monthly totals */}
+              {/* Monthly totals
               <div className="mb-2 ml-1  text-xs  text-gray-600  flex gap-2">
                 <p>Total Spent: <span className="font-extrabold text-[#ACF532]">R{data.totalSpent.toFixed(2)}</span></p>
                 <p>Total Saved: <span className="font-extrabold ">R{data.totalSaved.toFixed(2)}</span></p>
-              </div>
+              </div> */}
               
               </div>
 
