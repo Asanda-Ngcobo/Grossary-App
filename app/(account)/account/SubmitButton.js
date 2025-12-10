@@ -13,18 +13,19 @@ const ButtonFont = Lexend_Deca({
 function SubmitButton({children}) {
     const { pending } = useFormStatus();
     return (
-        <button className={`${ButtonFont.className} bg-[#A2B06D]
+        <button className={`${ButtonFont.className}
+         bg-amber-700
         
         w-[60%]
         mx-[20%]
         mt-10
         lg:w-[60%] lg:ml-[20%]
          h-[50px] rounded-[10px]
-         text-white
+         text-gray-900
          cursor-pointer
          font-semibold
          hover
-         hover:bg-[#6f7a46]
+         hover:bg-amber-400
          flex justify-center items-center`}
          
          disabled={pending}

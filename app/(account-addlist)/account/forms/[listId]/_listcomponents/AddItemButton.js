@@ -21,18 +21,18 @@ export default function AddItemButton({ children}) {
       type="submit"
     
       disabled={pending}
-    className={`${ButtonFont.className} bg-[#A2B06D]
+    className={`${ButtonFont.className} bg-amber-700
         
         w-[80%]
         mx-[10%]
         mt-[80%]
         lg:w-[30%] lg:ml-[35%] lg:mt-[25%]
          h-[50px] rounded-[10px]
-         text-white
+         text-gray-950
          cursor-pointer
          font-semibold
          hover
-         hover:bg-[#6f7a46]
+         hover:bg-amber-500
          flex justify-center items-center`}
     >
       {pending ? <SpinnerMini/> : children}
