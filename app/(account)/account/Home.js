@@ -10,8 +10,12 @@ import ReportsWrapper from "../_ui/ReportWrapper";
 import ParentFormBackground from "./ParentFormBackground";
 import AddListForm from "./AddListForm";
 import { useForm } from "@/app/providers/Provider";
+import { Lexend_Deca } from "next/font/google";
 
-
+const ButtonFont = Lexend_Deca({
+  subsets: ["latin"],
+  display: 'swap',
+});
 export default function Home({ profile, myLists, allItems }) {
   const { formOpen, toggleForm, menuOpen, toggleMenu,
      active, toggleActive } = useForm();
@@ -75,11 +79,11 @@ if (nameParts.length >= 2) {
         
      ">
         <button onClick={toggleActive}
-         className={`w-[50%] ml-1  h-8  rounded-3xl cursor-pointer   ${
+         className={`w-[50%] ml-1  h-8  rounded-3xl cursor-pointer ${ButtonFont.className}   ${
             !active ? "bg-[#ACF532]" : "bg-gray-600"
           }`}>Active Lists</button>
         <button onClick={toggleActive}
-           className={`w-[50%] mr-1  h-8  rounded-3xl cursor-pointer  ${
+           className={`w-[50%] mr-1  h-8  rounded-3xl cursor-pointer  ${ButtonFont.className}  ${
             active ? "bg-[#ACF532] w-[55%]" : "bg-gray-600"
           }`}>Shopped Lists</button>
       </div>
