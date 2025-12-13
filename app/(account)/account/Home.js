@@ -19,7 +19,8 @@ const ButtonFont = Lexend_Deca({
 export default function Home({ profile, myLists, allItems }) {
   const { formOpen, toggleForm, menuOpen, toggleMenu,
      active, toggleActive } = useForm();
-
+      const activeList = myLists.filter((list)=>
+list.money_spent === 0 || list.money_spent === null)
 
   const firstName =
     profile?.fullName?.split(" ")[0]?.[0]?.toUpperCase() +
@@ -81,7 +82,9 @@ if (nameParts.length >= 2) {
         <button onClick={toggleActive}
          className={`w-[50%] ml-1  h-8  rounded-3xl cursor-pointer ${ButtonFont.className}   ${
             !active ? "bg-[#ACF532]" : "bg-gray-600"
-          }`}>Active Lists</button>
+          }`}>Active Lists <span className={`absolute rounded-full
+            text-gray-900 -mt-0.5 w-4 h-4 text-[10px] ${!active ? 
+          'bg-gray-600': 'bg-[#ACF532]'}`}>{activeList.length}</span></button>
         <button onClick={toggleActive}
            className={`w-[50%] mr-1  h-8  rounded-3xl cursor-pointer  ${ButtonFont.className}  ${
             active ? "bg-[#ACF532] w-[55%]" : "bg-gray-600"

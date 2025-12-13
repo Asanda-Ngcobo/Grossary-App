@@ -7,11 +7,10 @@ import Greeting from "./Greetings";
 // import Link from "next/link";
 import { useState } from "react";
 
-import ParentFormBackground from "./ParentFormBackground";
-import AddListForm from "./AddListForm";
+
 
 export default function HomeClient({name}) {
-    const [showForm, setShowForm] = useState(false)
+    const [ setShowForm] = useState(false)
 
     function HandleShowForm (){
         setShowForm(def => !def)
