@@ -22,7 +22,8 @@ export default function HomeClient({name}) {
       
 
       {/* Desktop greeting */}
-      <section className="flex justify-between items-center  mx-3 lg:w-[60%] lg:ml-[15%] py-7 lg:flex">
+      <section className="flex justify-between
+       items-center  mx-3 lg:w-[60%] lg:ml-[15%] py-7 lg:flex">
         <div className="">
           <div className="mx-4 font-bold text-[#8F8C8C] text-[14px]">
             <p className="flex gap-2">

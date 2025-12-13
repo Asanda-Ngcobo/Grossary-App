@@ -61,14 +61,19 @@ await deleteList(listId)
         </ul>}
 
           {active && 
-          <div className='max-h-[400px] md:max-h-[500px] overflow-y-auto'>
+          <div className=''>
             {History.length > 3  && (
-              
-              <Link href='/account/lists/history' alt='' className='ml-[70%] lg:hidden'>
-                <button className='text-sm cursor-pointer underline text-gray-500'>
+
+              <div className='flex justify-between lg:hidden text-gray-500 text-sm'>
+                <p>Last 3 Shopped lists</p>
+                 <Link href='/account/lists/history' alt='' >
+                <button className=' cursor-pointer underline '>
                 Show more 
               </button>
                 </Link>
+              </div>
+              
+             
             )}
             <HistoryClient
           topHistory={topHistory}
@@ -77,7 +82,7 @@ await deleteList(listId)
             </div>}
           
           {!active && (
-            <div className='bottom-1 right-2 fixed '>
+            <div className='bottom-0 right-2 fixed '>
             <button className="flex 
                             justify-center items-center 
                             mx-3
