@@ -81,7 +81,8 @@ export default function AddPricePage({ params }) {
 
         <button
           type="submit"
-   className={`${ButtonFont.className} bg-[#A2B06D] min-w-[100px] h-[40px] rounded-[5px] text-white font-semibold hover:bg-[#6f7a46]`}
+   className={`${ButtonFont.className} bg-amber-700 min-w-[100px]
+    h-[40px] rounded-[5px] text-gray-800 font-semibold hover:bg-amber-600`}
           disabled={loading}
         >
           {loading ? 'Saving...' : 'Save Price'}
