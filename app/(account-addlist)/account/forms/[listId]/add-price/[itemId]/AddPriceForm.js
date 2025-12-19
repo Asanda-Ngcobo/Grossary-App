@@ -74,9 +74,9 @@ export default function AddPriceForm({ itemId, listId }) {
         <button
           type="submit"
    className={`${ButtonFont.className}
-    bg-[#A2B06D] min-w-[100px] h-[40px]
+    bg-amber-700 min-w-[100px] h-[40px]
      rounded-[5px] text-white font-semibold
-      hover:bg-[#6f7a46]
+      hover:bg-amber-600
       flex justify-center items-center`}
           disabled={loading}
         >

@@ -14,7 +14,7 @@ const ButtonFont = Lexend_Deca({
 function EditButton({children}) {
     const { pending } = useFormStatus();
     return (
-        <button className={`${ButtonFont.className} bg-[#A2B06D]
+        <button className={`${ButtonFont.className} bg-amber-700
         
         w-[60%]
         mx-[20%]
@@ -26,7 +26,7 @@ function EditButton({children}) {
          font-semibold
          hover
          flex justify-center items-center
-         hover:bg-[#ACF532]`}
+         hover:bg-amber-600`}
          >
             {pending? <SpinnerMini/> : children}
             

@@ -29,7 +29,8 @@ function DeleteAccountForm({onDelete, isPending}) {
   flex justify-between gap-6 mt-11 mx-4 `}>
     <button
      onClick={onDelete}
-      className="min-h-10 w-auto px-2 rounded-lg cursor-pointer border bg-transparent
+      className="min-h-10 w-auto px-2 rounded-lg cursor-pointer
+       border bg-transparent
        text-gray-400 border-[#041527]  font-semibold 
        hover:opacity-70 transition-all
        active:bg-[#A2B06D]"
@@ -38,8 +39,9 @@ function DeleteAccountForm({onDelete, isPending}) {
     </button>
     <button
      
-      className="min-h-10 w-auto px-2 active:bg-gray-600  bg-[#A2B06D]  cursor-pointer  rounded-lg text-[#04284B]
-      font-semibold hover:bg-[#041527] transition-colors"
+      className="min-h-10 w-auto px-2 active:bg-gray-600  bg-amber-700
+        cursor-pointer  rounded-lg text-[#04284B]
+      font-semibold hover:bg-amber-600 transition-colors"
     >
         <Link href='/account/profile'>  Keep Account</Link>
     
