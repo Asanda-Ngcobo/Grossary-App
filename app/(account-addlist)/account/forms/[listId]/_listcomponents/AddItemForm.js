@@ -52,7 +52,11 @@ export default function AddItemForm({ listId, setShowForm }) {
           );
 
          
-          setQuery('')
+          setQuery('');
+          setSelectedCategory('');
+          setSelectedBrand('');
+         setSelectedNumber('');
+           setSelectedUnit('');
          
         }
       } catch {
@@ -170,7 +174,7 @@ export default function AddItemForm({ listId, setShowForm }) {
               required
               className="rounded-lg p-2 bg-[#04284B] text-white"
             >
-              <option value="">Unit</option>
+              <option value="pair">Pair</option>
               <option value="g">g</option>
               <option value="kg">kg</option>
               <option value="ml">ml</option>
