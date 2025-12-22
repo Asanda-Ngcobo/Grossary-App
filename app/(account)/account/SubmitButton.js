@@ -16,17 +16,18 @@ function SubmitButton({children}) {
         <button className={`${ButtonFont.className}
          bg-amber-700
         
-        w-[60%]
-        mx-[20%]
+        w-[90%]
+        mx-auto
         mt-10
         lg:w-[60%] lg:ml-[20%]
-         h-[50px] rounded-[10px]
+         h-[50px] rounded-4xl
          text-gray-900
          cursor-pointer
          font-semibold
          hover
          hover:bg-amber-400
-         flex justify-center items-center`}
+         flex justify-center items-center
+         text-xl`}
          
          disabled={pending}
          >

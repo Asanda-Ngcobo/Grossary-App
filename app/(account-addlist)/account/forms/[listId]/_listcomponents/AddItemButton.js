@@ -23,17 +23,18 @@ export default function AddItemButton({ children}) {
       disabled={pending}
     className={`${ButtonFont.className} bg-amber-700
         
-        w-[80%]
-        mx-[10%]
-        mt-[80%]
+        w-[90%]
+        mx-auto
+        mt-[90%]
         lg:w-[30%] lg:ml-[35%] lg:mt-[25%]
-         h-[50px] rounded-[10px]
+         p-3 rounded-4xl
          text-gray-950
          cursor-pointer
          font-semibold
          hover
          hover:bg-amber-500
-         flex justify-center items-center`}
+         flex justify-center items-center
+         text-xl`}
     >
       {pending ? <SpinnerMini/> : children}
     </button>
