@@ -41,14 +41,13 @@ await deleteList(listId)
            {!active &&     <ul className=''>
 
                {activeList.length === 0 && myLists.length > 0 &&  <p className='lg:w-[80%] mx-[10%]'>You have no <span className="font-bold">
-                 active lists</span> currently. Start adding your list by clicking 
-                            button
-                             below or  Reuse your Shopped Lists.
+                 active lists</span> currently. Create your new list by clicking the bottom right
+                            button below or  Reuse your Shopped Lists.
                             </p>} 
 
                                 {activeList.length === 0 && myLists.length === 0 &&  <p className='lg:w-[80%] mx-[10%]'>You have no <span className="font-bold">
-                 active lists</span> currently. Start adding your list by clicking 
-                            button
+                 active lists</span> currently. Create your first list by clicking 
+                          the bottom right button
                              below.
                             </p>} 
         
