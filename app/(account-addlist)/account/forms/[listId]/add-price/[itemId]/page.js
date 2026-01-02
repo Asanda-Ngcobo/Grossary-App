@@ -82,7 +82,7 @@ useEffect(() => {
         <label className="text-white text-xl">Item Price</label>
    <input
   ref={priceInputRef}
-  type="number"
+  // type="number"
   step="0.01"
   name="price"
   inputMode="decimal"
