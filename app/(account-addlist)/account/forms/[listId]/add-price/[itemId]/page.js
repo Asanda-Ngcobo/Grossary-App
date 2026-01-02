@@ -35,6 +35,8 @@ const priceInputRef = useRef(null)
     fetchItem()
   }, [itemId])
 
+
+
   const handleSubmit = async (e) => {
     e.preventDefault()
     setLoading(true)
@@ -78,19 +80,23 @@ useEffect(() => {
         />
 
         <label className="text-white text-xl">Item Price</label>
-        <input
-          type="number"
-          step="0.01"
-          name="price"
-            ref={priceInputRef}
-          placeholder='e.g. 24.99'
-          className="bg-white
-          border-0
-          focus focus:outline-2 focus:outline-lime-400 text-black text-xl p-3 rounded-md w-full"
-          value={price}
-          onChange={(e) => setPrice(e.target.value)}
-          required
-        />
+   <input
+  ref={priceInputRef}
+  type="number"
+  step="0.01"
+  name="price"
+  inputMode="decimal"
+  placeholder="e.g. 24,99"
+  className="bg-white border-0 focus:outline-2 focus:outline-lime-400 text-black text-xl p-3 rounded-md w-full"
+  value={price}
+  onChange={(e) => {
+    //allowing users to press the comma into keyboard but the comma changes to dot which is sql friendly
+    const value = e.target.value.replace(',', '.')
+    setPrice(value)
+  }}
+  required
+/>
+
 
         <button
           type="submit"
