@@ -1,6 +1,6 @@
 'use client'
 
-import { use, useEffect, useState } from 'react'
+import { use, useEffect, useRef, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { updateItemPrice, getListItemById } from '@/app/_lib/actions'
 import Link from 'next/link';
@@ -14,7 +14,11 @@ export default function AddPricePage({ params }) {
     const listId = unwrappedParams.listId;
     const itemId = unwrappedParams.itemId;
   
-  
+ 
+    //For activating the keyboard as  soon as the page is visited
+const priceInputRef = useRef(null)
+
+
 
   const router = useRouter()
   const [price, setPrice] = useState('')
@@ -45,6 +49,11 @@ export default function AddPricePage({ params }) {
       setLoading(false)
     }
   }
+useEffect(() => {
+  if (item && priceInputRef.current) {
+    priceInputRef.current.focus()
+  }
+}, [item])
 
   if (!item) {
     return <div className="
@@ -71,10 +80,13 @@ export default function AddPricePage({ params }) {
         <label className="text-white text-xl">Item Price</label>
         <input
           type="number"
+          step="0.01"
           name="price"
-            inputMode="decimal"
-            placeholder="e.g. 24.99"
-          className="bg-white text-black text-xl p-3 rounded-md w-full"
+            ref={priceInputRef}
+          placeholder='e.g. 24.99'
+          className="bg-white
+          border-0
+          focus focus:outline-2 focus:outline-lime-400 text-black text-xl p-3 rounded-md w-full"
           value={price}
           onChange={(e) => setPrice(e.target.value)}
           required

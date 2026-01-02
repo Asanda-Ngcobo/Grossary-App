@@ -51,8 +51,6 @@ export default function AddPricePage({ itemId, itemName, itemBrand, itemNumber,
           type="number"
           id="price"
           name="price"
-          inputMode="decimal"
-            placeholder="e.g. 24.99"
           className="bg-white text-black text-xl p-3 rounded-md w-full"
           value={price}
           onChange={(e) => setPrice(e.target.value)}
