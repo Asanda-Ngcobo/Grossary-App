@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import HandleCategories from './add-price/HandleCategories';
 import Link from 'next/link';
-import { Check, ChevronLeft, Edit2, Plus, ShoppingCart } from '@deemlol/next-icons';
+import { Check, ChevronLeft, Edit, Edit2, Plus, ShoppingCart } from '@deemlol/next-icons';
 
 import DeleteItem from './_listcomponents/DeleteItem';
 import IncreaseQuantity from './_listcomponents/IncreaseQuantity';
@@ -216,7 +216,54 @@ useEffect(() => {
                         <span>{item.item_volume_mass}{item.item_unit}</span>
                       </div>
                       <form className="flex items-center gap-4 justify-between">
-                        <div className="flex flex-row w-[40%] justify-between">
+<Link href={`/account/forms/${listId}/add-price/${item.id}`}>
+  <label className="relative flex items-center cursor-pointer">
+    <input
+      type="checkbox"
+      checked={item.price !== null}
+      readOnly
+      className="peer hidden"
+    />
+
+    <span
+      className="
+        w-8 h-8
+        rounded-full
+        border-2 border-amber-700
+        flex items-center justify-center
+        peer-checked:bg-amber-700
+        transition
+      "
+    >
+      {/* Check mark */}
+      {item.price !== null && (
+        <svg
+          className="w-4 h-4 text-white"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="3"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        >
+          <polyline points="20 6 9 17 4 12" />
+        </svg>
+      )}
+    </span>
+  </label>
+</Link>
+
+
+
+                        <div>
+                          {item.price && <p className="text-sm font-bold text-gray-400">R{item.price}</p>}
+                          {item.price && <p className="text-sm font-bold
+                           text-amber-700"> -R{item.total_price}</p>}
+                        </div>
+
+                          
+
+                            <div className="flex flex-row w-[40%] justify-between">
                             <IncreaseQuantity itemId={item.id}
                           itemName={item.item_name}
                           itemQuantity={item.item_quantity} listId={listId} />
@@ -226,22 +273,14 @@ useEffect(() => {
                               
                                <DeleteItem itemId={item.id} listId={listId} />
                                 <Link href={`/account/forms/${listId}/edit-item/${item.id}`}>
-                          <Edit2 size={20} className={ `text-gray-500 active:text-gray-600`} />
+                          <Edit size={25} className={ `text-gray-500
+                             active:text-gray-600`} />
                         </Link>
                             
                           </div>
                           {/* <span className="font-bold text-lg">{item.item_quantity}</span> */}
                         
                         </div>
-
-                        <div>
-                          {item.price && <p className="text-sm font-bold text-gray-400">R{item.price}</p>}
-                          {item.price && <p className="text-sm font-bold text-[#D96A6D]"> -R{item.total_price}</p>}
-                        </div>
-
-                           <Link href={`/account/forms/${listId}/add-price/${item.id}`}>
-                          <ShoppingCart className={!item.price ? `text-amber-700 active:text-gray-600`: 'text-gray-500 active:text-[#A2B06D]'} />
-                        </Link>
                       </form>
                     
                     </div>
