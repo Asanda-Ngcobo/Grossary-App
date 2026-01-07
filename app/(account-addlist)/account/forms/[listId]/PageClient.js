@@ -184,15 +184,15 @@ useEffect(() => {
             max-h-[550px] overflow-y-auto
 ">
               <div className="border-b border-gray-300 flex flex-row justify-between">
-                <h2 className="text-md font-bold">{category}</h2>
+                <h2 className="text-sm font-bold">{category}</h2>
               
                   {itemsLeft === totalNumberOfItems  && <h2>{totalNumberOfItems} items</h2>}
               
-                <h2>
+                {/* <h2 className='text-xs'>
                   
                   {!itemsLeft ? 'All Shopped 🎉' : (shoppedNumber > 0 ? `${itemsLeft} of ${totalNumberOfItems} left` : '')}
-                </h2>
-                <h2 className="text-md font-bold">
+                </h2> */}
+                <h2 className="text-sm font-bold">
                   {categoryTotal > 0 && <span>R{categoryTotal}</span>}
                 </h2>
               </div>
@@ -210,7 +210,7 @@ useEffect(() => {
                   })
                   .map((item) => (
                     <div key={item.id} className="border-b border-gray-300 pb-3">
-                      <div className="flex justify-between text-sm font-semibold mb-2">
+                      <div className="flex justify-between text-xs font-semibold mb-2">
                         <span>{item.item_quantity} × {item.item_name}</span>
                         <span>{item.item_brand}</span>
                         <span>{item.item_volume_mass}{item.item_unit}</span>
