@@ -49,7 +49,7 @@ export default function AddPricePage({ itemId, itemName, itemBrand, itemNumber,
         <label className="text-white text-xl">Item Price</label>
         <input
           type="number"
-          step="0.01"
+          id="price"
           name="price"
           className="bg-white text-black text-xl p-3 rounded-md w-full"
           value={price}
