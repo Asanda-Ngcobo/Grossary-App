@@ -169,6 +169,14 @@ useEffect(() => {
            onClick={HandleShowForm}><Plus /></button>
        
       </div>
+      {listitems.length === 0 ? 
+      <div className='flex justify-center items-center mt-10'>
+        <p className='text-amber-700 text-center
+bottom-5'>Add Your Grocery list items using the Plus button above</p>
+
+      </div> : ''}
+      
+
 
       {/* Items List */}
       <div className="mt-6 space-y-6">
