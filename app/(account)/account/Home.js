@@ -16,12 +16,13 @@ const ButtonFont = Lexend_Deca({
   subsets: ["latin"],
   display: 'swap',
 });
-export default function Home({ profile, myLists, allItems }) {
+export default function Home({ profile, myLists, allItems, data }) {
   const { formOpen, toggleForm, menuOpen, toggleMenu,
      active, toggleActive } = useForm();
       const activeList = myLists.filter((list)=>
 list.money_spent === 0 || list.money_spent === null)
 
+      //Email & Password
   const firstName =
     profile?.fullName?.split(" ")[0]?.[0]?.toUpperCase() +
     profile?.fullName?.split(" ")[0]?.slice(1)?.toLowerCase();
@@ -29,6 +30,24 @@ list.money_spent === 0 || list.money_spent === null)
   ?.trim()
   ?.split(/\s+/) // handles multiple spaces
   .filter(Boolean) || [];
+
+//Google auth
+   const {email} = data?.claims;
+
+   const Name = email
+  ? email
+      .split('@')[0]
+      .split(/[._]/)[0]
+      .replace(/\d+/g, '')
+      .replace(/\b\w/g, c => c.toUpperCase())
+  : 'User'
+
+
+// await supabase.from('profiles').upsert({
+//   id: data.claims.sub,
+//   email,
+//   first_name: firstName,
+// })
 
 let initials = "";
 
@@ -58,7 +77,7 @@ if (nameParts.length >= 2) {
           <div className="flex items-center font-bold">
             <div className="lg:flex">
               <h1>Hello,</h1>
-              <h1 className="lg:px-2">{firstName} 👋</h1>
+              <h1 className="lg:px-2">{firstName || Name} 👋</h1>
             </div>
           </div>
         </div>

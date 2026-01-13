@@ -24,7 +24,23 @@ async function page() {
        if (error || !data?.user) {
          redirect('/login')
        }
-     
+     //Google auth
+         
+        const { data:EmailUser, EmailError } = await supabase.auth.getClaims()
+        if (EmailError || !EmailUser?.claims) {
+         redirect('/login')
+        }
+
+         const {email} = EmailUser?.claims;
+        
+         const Name = email
+         ? email
+             .split('@')[0]
+             .split(/[._]/)[0]
+             .replace(/\d+/g, '')
+             .replace(/\b\w/g, c => c.toUpperCase())
+         : 'User'
+       
      // Get additional profile info
      
        const { data: profile } = await supabase
@@ -36,10 +52,11 @@ async function page() {
   
   
 
-const fullName = profile.fullName
-  .split(' ')
+const fullName = profile?.fullName
+  ?.split(' ')
   .map(part => part.charAt(0).toUpperCase() + part.slice(1).toLowerCase())
   .join(' ');
+
 
 
 
@@ -75,7 +92,7 @@ const fullName = profile.fullName
  
 
     <div className="flex flex-row gap-2 justify-center items-center my-4">
-      <h1 className="text-lg flex gap-2"> <User/>{fullName}</h1>
+      <h1 className="text-lg flex gap-2"> <User/>{fullName || Name}</h1>
       <button
       type="button"
       className="p-2 rounded-full  bg-accent-100 hover:bg-accent-200 transition cursor-pointer"

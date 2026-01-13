@@ -18,20 +18,36 @@ export default async function Page() {
            .select('*')
            .eq('id', data.user.id)
            .single();
-console.log(profile)
+
+
+//Google auth
+   
+ const { data:EmailUser, EmailError } = await supabase.auth.getClaims()
+ if (EmailError || !EmailUser?.claims) {
+  redirect('/login')
+ }
  
+ const {email} = EmailUser?.claims;
+  const Name = email
+  ? email
+      .split('@')[0]
+      .split(/[._]/)[0]
+      .replace(/\d+/g, '')
+      .replace(/\b\w/g, c => c.toUpperCase())
+  : 'User'
+
   const { fullName, id } = profile;
 
   async function handleUpdate(formData) {
     "use server";
     await updateProfile(id, formData);
-    redirect("/account/profile");
+    redirect("/account");
   }
 
   return (
     <div>
       <button className="m-5 bg-white rounded-full w-[50px] h-[50px] flex justify-center items-center">
-        <Link href="/account/profile">
+        <Link href="/account">
           <ChevronLeft color="black" size={40} />
         </Link>
       </button>
@@ -49,7 +65,7 @@ console.log(profile)
           <input
           id="fullName"
             name="fullName"
-            defaultValue={fullName}
+            defaultValue={fullName || Name}
             className="bg-white text-black text-2xl p-3 rounded-md"
             required
           />

@@ -1,4 +1,5 @@
 
+import SocialAuth from "../../SocialAuth";
 import SignUpForm from "./SignUpform";
 
 
@@ -9,9 +10,13 @@ export const metadata = {
 
 export default function Page() {
   return (
-    <div>
+    <div className="w-screen h-screen flex justify-center items-center">
+     
+        <SocialAuth/>
+
+      </div>
   
-      <SignUpForm />
-    </div>
+      
+   
   );
 }

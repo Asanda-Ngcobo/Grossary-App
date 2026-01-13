@@ -10,7 +10,15 @@ export const metadata = {
 
 export default async function Page() {
   const supabase = await createClient();
+  
+  //Oauth
 
+  const { data, error } = await supabase.auth.getClaims()
+ if (error || !data?.claims) {
+  redirect('/login')
+ }
+
+  //Email & Password
   // Get user
   const { data: authData, error: authError } = await supabase.auth.getUser();
   if (authError || !authData?.user) redirect("/auth/login");
@@ -43,7 +51,8 @@ export default async function Page() {
 
   return (
     <div className="w-screen min-h-screen lg:w-[60%] lg:mx-[20%]">
-      <Home profile={profile} myLists={myLists} allItems={allItems} />
+      <Home profile={profile}
+      data={data} myLists={myLists} allItems={allItems} />
     </div>
   );
 }

@@ -455,8 +455,8 @@ export async function updateProfile(id, formData) {
     console.error('Supabase updateProfile error:', error.message)
     throw new Error('The name could not be updated.')
   }
-revalidatePath('/account/profile')
-  redirect('/account/profile')
+revalidatePath('/account')
+  redirect('/account')
 }
 
 export async function signUpUser(formData) {
