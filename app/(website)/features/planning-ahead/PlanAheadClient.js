@@ -22,7 +22,7 @@ const content = [
     heading: 'Add Items as You Remember',
     text: `You don’t always sit down and plan a full grocery list. With Grossary, you can add items as they come to mind — whether you’re in res, at home, or on campus. From basics like bread, rice,
      and toiletries to small treats, everything stays in one place.` ,
-    icon: [<Plus/>, '']
+    icon: <Plus/>
   },
 
     {
@@ -31,7 +31,7 @@ const content = [
     heading: 'Re-use Your Old Lists with a Single Tap',
     text: `Most of us buy the same groceries every month. With that in mind, Grossary lets you re-use your previous lists with just one tap 
     saving you time and helping you plan faster without starting from scratch.` ,
-    icon: [<RotateCcw/>, '']
+    icon: <RotateCcw/>
   },
     
 ]
@@ -67,11 +67,13 @@ function PlanAheadClient() {
     
         </section>
  {content.map(function(cont){
-          return <div className={`flex ${cont.id === 2 ? 'flex-row-reverse':
+          return <div 
+           key={cont.id}
+           className={`flex ${cont.id === 2 ? 'flex-row-reverse':
             'flex-row'
           }
         py-10 w-[80%] mx-auto h-fit justify-between items-center`}
-         key={cont.id}>
+        >
           <Image src={cont.image} alt=""
           className="rounded-2xl w-[150px] lg:w-[300px]"/>
          <div className="w-[50%]">
@@ -81,8 +83,8 @@ function PlanAheadClient() {
              w-10 h-10
             lg:w-15 lg:h-15 rounded-lg">
               <div className="w-6">
-                {cont.icon[0]}
-                {cont.icon[1]}
+                {cont.icon}
+                
               </div>
             </div>
              <h1 className={` lg:text-[24px] font-semibold text-center

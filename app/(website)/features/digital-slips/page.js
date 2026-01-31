@@ -21,7 +21,7 @@ const content = [
     text: `Why go through the trouble of
     keep your store slips, if you can just 
     access them digitally from Grossary anywhere, anytime.` ,
-    icon: [<FileText/>, '']
+    icon: <FileText/>
   },
 
   
@@ -59,11 +59,13 @@ function page() {
     
         </section>
  {content.map(function(cont){
-          return <div className={`flex ${cont.id === 2 ? 'flex-row-reverse':
+          return <div
+           key={cont.id}
+            className={`flex ${cont.id === 2 ? 'flex-row-reverse':
             'flex-row'
           }
         py-10 w-[80%] mx-auto h-fit justify-between items-center`}
-         key={cont.id}>
+        >
           <Image src={cont.image} alt=""
           className="rounded-2xl w-[150px] lg:w-[300px]"/>
          <div className="w-[50%]">
@@ -73,8 +75,8 @@ function page() {
              w-10 h-10
             lg:w-15 lg:h-15 rounded-lg">
               <div className="w-6">
-                {cont.icon[0]}
-                {cont.icon[1]}
+                {cont.icon}
+                
               </div>
             </div>
              <h1 className={` lg:text-[24px] font-semibold text-center

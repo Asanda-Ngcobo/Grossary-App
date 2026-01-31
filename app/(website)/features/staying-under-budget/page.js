@@ -22,7 +22,7 @@ const content = [
     heading: 'Track Spending',
     text: `Add Prices as you shop to keep track of your spending in real-time
         to avoid till surprises, asking for void or going over your budget.` ,
-    icon: [<Circle/>, '']
+    icon: <Circle/>
   },
 
     {
@@ -30,7 +30,7 @@ const content = [
       image: Navigate,
     heading: 'Navigate The Store Better',
     text: `Stores are designed to encourage impulse buying. Grossary organises your items by store aisle, so you know exactly where to go and what to grab.` ,
-    icon: [<Navigation/>, '']
+    icon: <Navigation/>
   },
     {
     id: 3,
@@ -38,7 +38,7 @@ const content = [
     heading: 'Use Categories Dropdown List',
     text: `Select an aisle from the dropdown to
      bring the relevant items to the top of your list.` ,
-    icon: [<ChevronUp/>, <ChevronDown/>]
+    icon: <ChevronDown/>
   },
 ]
 function page() {
@@ -73,11 +73,13 @@ function page() {
         </section>
 
         {content.map(function(cont){
-          return <div className={`flex ${cont.id === 2 ? 'flex-row-reverse':
+          return <div
+          key={cont.id}
+           className={`flex ${cont.id === 2 ? 'flex-row-reverse':
             'flex-row'
           }
         py-10 w-[80%] mx-auto h-fit justify-between items-center`}
-         key={cont.id}>
+         >
           <Image src={cont.image} alt=""
           className="rounded-2xl w-[150px] lg:w-[300px]"/>
          <div className="w-[50%]">
@@ -87,9 +89,9 @@ function page() {
              w-10 h-10
             lg:w-15 lg:h-15 rounded-lg">
               <div>
-                {cont.icon[0]}
-                {cont.icon[1]}
-              </div>
+  {cont.icon}
+</div>
+
             </div>
              <h1 className={` lg:text-[24px] font-semibold text-center
          pb-2 sm:text-[16px] sm:font-medium ${HeaderFont.className}  `}>
