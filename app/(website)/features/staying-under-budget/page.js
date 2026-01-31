@@ -27,14 +27,14 @@ const content = [
 
     {
     id: 2,
-      image: Navigate,
+      image: Categories,
     heading: 'Navigate The Store Better',
     text: `Stores are designed to encourage impulse buying. Grossary organises your items by store aisle, so you know exactly where to go and what to grab.` ,
     icon: <Navigation/>
   },
     {
     id: 3,
-      image: Categories,
+      image: Navigate,
     heading: 'Use Categories Dropdown List',
     text: `Select an aisle from the dropdown to
      bring the relevant items to the top of your list.` ,
