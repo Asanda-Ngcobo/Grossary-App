@@ -51,7 +51,7 @@ function page() {
           Sign up on the web and start managing your grocery list like a pro.
           It is free to get started, and you will save more than just money.
         </p>
-        <Link href="/signup" className="inline-block bg-[#A2B06D] text-white px-6 py-3 rounded hover:bg-green-700">
+        <Link href="/auth/signup" className="inline-block bg-amber-700 text-white px-6 py-3 rounded hover:bg-amber-500">
           Get Started
         </Link>
       </section>

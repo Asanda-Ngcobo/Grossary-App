@@ -56,27 +56,7 @@ setError(error instanceof Error ? error.message : 'An error occurred')
      </header>
 
         {error && <p className="text-sm text-destructive-500">{error}</p>}
-         <button
-          
-        
-          className="w-[80%] mx-[10%] border border-gray-400 hover:bg-gray-200 cursor-pointer flex justify-center items-center rounded-sm py-3 my-2"
-        >
-          <Link href='/login/email'>
-          
-                  <p className="flex gap-2">
-             <span>
-               <Image src={EmailIcon} alt="email icon" width={20} />
-              </span>
-          Continue with Email & Password
-  
-
-          </p>
-          
-     </Link>
-         
-          
-        </button>
-        <div><p>OR</p></div>
+           
 
         <button
           type="submit"
@@ -97,6 +77,28 @@ setError(error instanceof Error ? error.message : 'An error occurred')
             </p>
           )}
         </button>
+         <div><p>OR</p></div>
+         <button
+          
+        
+          className="w-[80%] mx-[10%] border border-gray-400 hover:bg-gray-200 cursor-pointer flex justify-center items-center rounded-sm py-3 my-2"
+        >
+          <Link href='/login/email'>
+          
+                  <p className="flex gap-2">
+             <span>
+               <Image src={EmailIcon} alt="email icon" width={20} />
+              </span>
+          Continue with Email & Password
+  
+
+          </p>
+          
+     </Link>
+         
+          
+        </button>
+    
         
              
       </div>

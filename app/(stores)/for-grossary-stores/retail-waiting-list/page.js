@@ -21,14 +21,14 @@ export default function RetailerWaitlistPage() {
       </p>
 
       {submitted ? (
-        <div className="bg-green-100 p-6 rounded text-[#A2B06D] text-center">
+        <div className="bg-green-100 p-6 rounded text-amber-700 text-center">
           ✅ Thanks for joining the Grossary Retail Network. We’ll be in touch shortly!
         </div>
       ) : (
         <form onSubmit={handleSubmit} className="space-y-4 bg-white shadow p-6 ">
           <div>
             <label className="block font-semibold">Store Name *</label>
-            <input required type="text" className="w-full border px-3 py-2 rounded" />
+            <input  type="text" className="w-full border px-3 py-2 rounded" />
           </div>
           <div>
             <label className="block font-semibold">Contact Person *</label>
@@ -52,7 +52,8 @@ export default function RetailerWaitlistPage() {
           </div>
           <button
             type="submit"
-            className="w-full bg-[#A2B06D] text-white py-2 px-4 rounded hover:bg-green-700 transition"
+            className="w-full bg-amber-700
+             text-white py-2 px-4 rounded hover:bg-green-700 transition"
           >
             Join the Network
           </button>

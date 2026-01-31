@@ -21,7 +21,7 @@ export default function ListMoneyLeft({ money_left }) {
   return (
    
         <div   >
-              <p>Money Left</p> <h1 className={`${MoneyFont.className}
+              <p>Over/Under Budget</p> <h1 className={`${MoneyFont.className}
            text-2xl text-[#ACF532]`}>{formatted}</h1></div>
 
         

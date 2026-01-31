@@ -21,7 +21,7 @@ export default async function Page() {
   //Email & Password
   // Get user
   const { data: authData, error: authError } = await supabase.auth.getUser();
-  if (authError || !authData?.user) redirect("/auth/login");
+  if (authError || !authData?.user) redirect("/login");
 
   const userId = authData.user.id;
 

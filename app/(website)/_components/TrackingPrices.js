@@ -52,7 +52,7 @@ function TrackingPrices() {
      
     </span>
   </label>
-                        <div className="flex flex-row w-[30%] justify-between">
+                        <div className="flex flex-row w-[40%] justify-between">
                           <div>
                        
                              
@@ -142,39 +142,80 @@ function TrackingPrices() {
                     </div>
                   
               </div>
-              {/* <div className="space-y-2">
+
+               <div className="space-y-2">
              
                
-                    <div className=" pb-1 md:border-b border-gray-300">
-                      <div className="flex justify-between font-semibold mb-2">
+                    <div className="border-b border-gray-300 pb-1">
+                   
+                         <div className="flex justify-between font-semibold mb-2">
                         <span>1 × Apples</span>
                        
                         <span>1.5kg</span>
                       </div>
-                     <form className=" items-center gap-2 justify-between
-                     hidden sm:flex">
-                        <div className="flex flex-row w-[30%] justify-between">
+                      
+                      <form className="
+                      hidden lg:flex items-center gap-2 justify-between">
+                                              <label className="relative flex items-center cursor-pointer">
+    <input
+      type="checkbox"
+     
+      readOnly
+      className="peer hidden"
+    />
+
+    <span
+      className="
+        w-6 h-6
+        rounded-full
+        border-2 border-amber-700
+        flex items-center justify-center
+        bg-amber-700
+        transition
+      "
+    >
+      {/* Check mark */}
+      
+        <svg
+          className="w-4 h-4 text-white"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="3"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        >
+          <polyline points="20 6 9 17 4 12" />
+        </svg>
+     
+    </span>
+  </label>
+                        <div className="flex flex-row w-[70%] justify-between">
+                            <div>
+                          <p className=" font-bold text-gray-400">R39.99</p>
+                          <p className=" font-bold 
+                          text-amber-700">Total: R39.99</p>
+                        </div>
+
+                          
                           <div>
                        
-                            <Trash2 width={10}  />
+                            <Minus width={10}  />
                              
                           </div>
                           <span className="font-bold text-sm">1</span>
                           <Plus width={10}  />
                         </div>
 
-                        <div>
-                          <p className=" font-bold text-gray-400">R39.99</p>
-                          <p className=" font-bold text-white">Total: R39.99</p>
-                        </div>
-
+                      
                        
-                          <ShoppingCart className='text-gray-500 text-[15px]'/>
+                       
                         
                       </form>
                     </div>
                   
-              </div> */}
+              </div>
+              
             </div>
           );
        

@@ -14,7 +14,7 @@ function page() {
             <ForStoresHero>
             <Image src={HeroPic}  alt=""  className="object-cover -z-10 brightness-50 h-[70vh]"/>
             <div className="absolute mt-[300px] w-[80%] ml-[10%] lg:w-[30%] lg:ml-[35%]">  
-               <h1 className={` text-[#A2B06D] text-[24px] text-center `}>What is Grossary</h1>
+               <h1 className={` text-amber-700 text-[24px] text-center `}>What is Grossary</h1>
             <p className="text-[16px] text-white">            Grossary is a smart grocery-listing and budgeting app that helps everyday shoppers manage their spending and shop more intentionally. But it’s more than just a tool for customers, 
             it’s an opportunity for retailers like you to boost visibility and grow sales.</p>
         </div>

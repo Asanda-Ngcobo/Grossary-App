@@ -22,7 +22,7 @@ function SignInButton() {
          hover:border-gray-400
          justify-center items-center
          hidden lg:flex`}>
-            Account
+            Sign In
             
         </button>
 

@@ -4,6 +4,7 @@ import Logo from "./Logo";
 import SignUpButton from "./SignUpButton";
 import SignInButton from "./SignInButton";
 import NavigationButtons from "./NavigationButtons"
+import { DollarSign, FastForward, FileText, List, ShoppingBag, Tag } from "@deemlol/next-icons";
 
 
 
@@ -35,7 +36,7 @@ export default async function Navigation() {
             <Logo/>
          
          
-            {/* <ul className=" flex gap-10 list-none mx-3.5 ">
+             <ul className=" flex gap-10 list-none mx-3.5 ">
          
             <li className="relative hidden lg:flex group">
   <NavigationButtons>Features</NavigationButtons>
@@ -44,13 +45,20 @@ export default async function Navigation() {
    w-[500px] h-fit border border-gray-300 cursor-pointer">
     <ul >
       <li className="p-3 hover:bg-[#f1f0f0] rounded-xl ">
-        <Link href="/features/planning-ahead" ><span className="flex flex-row gap-2"><FastForward width={20}/> Planning Ahead</span>
+        <Link href="/features/planning-ahead" >
+        <span className="flex flex-row gap-2 w-[40px] h-[40px]
+        justify-center items-center rounded-sm bg-amber-700">
+          <FastForward width={20}/> </span>
+          Plan Ahead
               <p className="text-xs text-gray-400">Add everything you need as you remember, from staples to treats.</p></Link>
   
       </li>
       <li className="p-3 hover:bg-[#f1f0f0] rounded-xl ">
-        <Link href="/features/planning-ahead" ><span className="flex flex-row gap-2"><ShoppingBag width={20}/>Tracking Prices</span>
-        <p className="text-xs text-gray-400">Add everything you need as you remember, from staples to treats.</p>
+        <Link href="/features/digital-slips" >
+        <span className="flex flex-row gap-2 w-[40px] h-[40px]
+        justify-center items-center rounded-sm bg-amber-700"><FileText width={20}/>
+        </span>Never lose your Slips
+        <p className="text-xs text-gray-400">Do not worry about keeping your slip, because grossary keeps them for you</p>
         </Link>
         
       </li>
@@ -58,17 +66,20 @@ export default async function Navigation() {
     </ul>
     <ul>
       <li className="p-3 hover:bg-[#f1f0f0] rounded-xl  ">
-        <Link href="/features/staying-under-budget"><span className="flex flex-row gap-2"><DollarSign width={20}/> Staying under Budget</span>
+        <Link href="/features/staying-under-budget">
+        <span className="flex flex-row gap-2 w-[40px] h-[40px]
+        justify-center items-center rounded-sm bg-amber-700"><DollarSign width={20}/> </span>
+        Stay Within Budget
                 <p className="text-xs text-gray-400">Grossary can help you stay within your budget without sacrificing essentials.</p>
         </Link>
 
       </li>
-      <li className="p-3 hover:bg-[#f1f0f0] rounded-xl">
+      {/* <li className="p-3 hover:bg-[#f1f0f0] rounded-xl">
         <Link href="/features/grossaryplus" ><span className="flex flex-row gap-2"><Tag/> Grossary Plus</span>
         <p className="text-xs text-gray-400 mx-2">  No more flipping through ClicFlyer or chasing random deals.</p>
         </Link>
          
-      </li> 
+      </li>  */}
     </ul>
     
   </div>
@@ -86,7 +97,11 @@ export default async function Navigation() {
         <Link href="/company/blog">Blog</Link>
       </li>
       <li className="p-3 hover:bg-[#f1f0f0] rounded-xl">
-        <Link href="/company/help-center">Help Center</Link>
+        <Link href="/company/privacy-policy">Privacy Policy</Link>
+      </li>
+
+       <li className="p-3 hover:bg-[#f1f0f0] rounded-xl">
+        <Link href="/company/terms">Terms of Service</Link>
       </li>
     </ul>
   </div>
@@ -99,10 +114,10 @@ export default async function Navigation() {
          hover
          hover:bg-[#f1f0f0]
          min-w-[130px]">For Stores</button></Link></li>
-            </ul> */}
+            </ul> 
             <ul className=" flex lg:flex-row-reverse gap-10 list-none mx-3.5">
                 
-                <li><Link href='/auth/signup'><SignUpButton>Sign Up</SignUpButton></Link></li>
+                {/* <li><Link href='/auth/signup'><SignUpButton>Sign Up</SignUpButton></Link></li> */}
                 {/* <li className="lg:hidden"><Menu/></li> */}
                 <li className=" lg:flex"><Link href='/account'>
                 <SignInButton/></Link></li>

@@ -27,7 +27,8 @@ const MoneyFont = Quicksand({
   subsets: ["latin"],
   display: 'swap',
 });
-export default function PageClient({ listId, list_name, list_budget, listitems, groupedItems, profile }) {
+export default function PageClient({ listId, list_name, 
+  list_budget, listitems, groupedItems, profile }) {
  const [selectedCategory, setSelectedCategory] = useState('');
  const [isOpenModal, setIsOpenModal] = useState(false)
 
