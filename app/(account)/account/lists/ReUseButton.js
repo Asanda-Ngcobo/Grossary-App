@@ -30,9 +30,9 @@ export function SubmitButton() {
       type="submit"
       disabled={pending}
       className={`${ButtonFont.className}
-        bg-amber-700 min-w-[100px]
+        bg-amber-700 h-[40px] w-[40px] 
         flex justify-center items-center
-        h-[30px] rounded-[10px]
+         rounded-[10px]
         text-gray-900
         cursor-pointer
         font-bold
@@ -52,7 +52,7 @@ export function SubmitButton() {
         </AccountModal>
       ) : (
         <span className="text-md flex items-center gap-2">
-          Reuse <RotateCcw size={20} />
+           <RotateCcw size={20} />
         </span>
       )}
     </button>

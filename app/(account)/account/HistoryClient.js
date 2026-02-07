@@ -50,10 +50,11 @@ function HistoryClient({ History, topHistory, userId }) {
                 {data.items.map((history) => (
                   <li
                     key={history.id}
-                    className="border-b border-b-[#8F8C8C] py-4 px-2 flex items-center gap-4"
+                    className="border-b border-b-[#8F8C8C] "
                   >
-                    {/* Left: Icon */}
-                    <div className="w-[60px] flex justify-center items-center">
+                        <h1 className="font-bold text-xs">{history.list_name}</h1>
+                        <div className="py-3 px-2 flex items-center gap-4">
+ <div className="w-[60px] flex justify-center items-center">
                       <div className="bg-[#E2F3F4] w-[50px] h-[50px] rounded-full flex justify-center items-center">
                         <ShoppingBag color="#8F8C8C" />
                       </div>
@@ -61,7 +62,7 @@ function HistoryClient({ History, topHistory, userId }) {
 
                     {/* Middle: Info */}
                     <div className="flex-1">
-                      <h1 className="font-bold text-base">{history.list_name}</h1>
+                  
                       <p className="text-xs font-semibold">
                         {new Date(history.shopped_at).toLocaleDateString('en-GB')},{" "}
                         R{history.money_spent}
@@ -69,7 +70,8 @@ function HistoryClient({ History, topHistory, userId }) {
                     </div>
 
                     {/* ReUse Button */}
-                    <form action={reuseList.bind(null, history.id, userId)} className="flex gap-2">
+                    <form action={reuseList.bind(null, history.id, userId)}
+                     className="flex gap-2">
                       <SubmitButton />
                     </form>
 
@@ -89,6 +91,9 @@ function HistoryClient({ History, topHistory, userId }) {
       '  />
                       </Link>
                     </button>
+                        </div>
+                    {/* Left: Icon */}
+                   
                   </li>
                 ))}
               </ul>

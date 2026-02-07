@@ -11,9 +11,9 @@ const durationOptions = [
   { id: 1, value: 30, label: "Last 30 Days" },
   { id: 2, value: 60, label: "2 Months" },
   { id: 3, value: 90, label: "3 Months" },
-  { id: 4, value: 180, label: "6 Months" },
-  { id: 5, value: 365, label: "1 Year" },
-  { id: 6, value: "all", label: "All Time" },
+  // { id: 4, value: 180, label: "6 Months" },
+  // { id: 5, value: 365, label: "1 Year" },
+  // { id: 6, value: "all", label: "All Time" },
 ];
 
 function  ReportDuration({ onChange }) {

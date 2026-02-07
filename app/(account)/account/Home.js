@@ -12,10 +12,7 @@ import AddListForm from "./AddListForm";
 import { useForm } from "@/app/providers/Provider";
 import { Lexend_Deca } from "next/font/google";
 
-const ButtonFont = Lexend_Deca({
-  subsets: ["latin"],
-  display: 'swap',
-});
+
 export default function Home({ profile, myLists, allItems, data }) {
   const { formOpen, toggleForm, menuOpen, toggleMenu,
      active, toggleActive } = useForm();
@@ -85,36 +82,16 @@ if (nameParts.length >= 2) {
 
       {/* REPORTS */}
       {myLists.length > 0 && (
-         <ReportsWrapper allItems={allItems} allLists={myLists || []} />
+         <ReportsWrapper allItems={allItems} allLists={myLists || []}
+        myLists={myLists} userId={profile.id} active={active}
+        activeList={activeList} />
 
       )}
      
 
-      {/* TOGGLE BUTTONS */}
-      <div className="flex justify-between items-center
-        w-[80%] mx-[10%] bg-gray-600 text-gray-500 
-        h-10 my-4 rounded-3xl
-        font-bold
-        lg:w-[30%] lg:ml-[10%]
-        
-     ">
-        <button onClick={toggleActive}
-         className={`w-[50%] ml-1  h-8  rounded-3xl cursor-pointer ${ButtonFont.className}   ${
-            !active ? "bg-[#ACF532]" : "bg-gray-600"
-          }`}>Active Lists <span className={`absolute rounded-full
-            text-gray-900 -mt-0.5 w-4 h-4 text-[10px] ${!active ? 
-          'bg-gray-600': 'bg-[#ACF532]'}`}>{activeList.length}</span></button>
-        <button onClick={toggleActive}
-           className={`w-[50%] mr-1  h-8  rounded-3xl cursor-pointer  ${ButtonFont.className}  ${
-            active ? "bg-[#ACF532] w-[55%]" : "bg-gray-600"
-          }`}>Shopped Lists</button>
-      </div>
 
 
-      {/* LISTS */}
-      <Suspense fallback={<Loading />}>
-        <Lists myLists={myLists} userId={profile.id} active={active} />
-      </Suspense>
+   
 
       {/* ADD LIST FORM */}
       {formOpen && (

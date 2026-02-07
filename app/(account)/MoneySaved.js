@@ -13,14 +13,14 @@ export default function MoneySaved({ moneySaved, savedPercentage }) {
   }, [moneySaved])
 
   return (
-    <div className="pb-2 col-start-1 col-end-3 h-[80px] grid justify-center items-center rounded-lg">
-          <h2 className="md:text-4xl text-2xl font-bold text-center">
+    <div className="pb-2 ">
+          <h2 className="md:text-4xl text-xl font-bold ">
             {formatted}{" "}
-            <span className={`text-xs ${moneySaved > 0 ? 'text-[#ACF532]': 'text-amber-700'}`}>({savedPercentage}%)</span>
+            <span className={`text-[10px] ${moneySaved > 0 ? 'text-[#ACF532]': 'text-amber-700'}`}>({savedPercentage}%)</span>
           </h2>
           <p className="text-sm font-bold text-gray-600 text-center">
-            <span className='text-[#ACF532]'>Under</span>/<spanb className='
-            text-amber-700'>Over</spanb> Budget
+            <span className='text-[#ACF532]'>Under</span>/<span className='
+            text-amber-700'>Over</span> Budget
           </p>
         </div>
   )

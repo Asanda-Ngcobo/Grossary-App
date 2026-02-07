@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/app/_utils/supabase/server";
-import { getLists } from "@/app/_lib/data-services";
+import { getLists, getListsItemsById } from "@/app/_lib/data-services";
 import Home from "./Home";
 
 export const metadata = {
@@ -36,11 +36,13 @@ export default async function Page() {
   // Get user's lists
   const myLists = await getLists(userId);
 
+
+
   // Get all items with prices and related list user_id
   const { data: allItemsRaw } = await supabase
     .from("list_items")
     .select(
-      "id, total_price, item_category, shopped_at, list_id, user_lists(user_id)"
+      "id, total_price, item_category, purchased_at, list_id, user_lists(user_id)"
     )
     .not("total_price", "is", null);
 
@@ -52,7 +54,8 @@ export default async function Page() {
   return (
     <div className="w-screen min-h-screen lg:w-[60%] lg:mx-[20%]">
       <Home profile={profile}
-      data={data} myLists={myLists} allItems={allItems} />
+      data={data} myLists={myLists} 
+      allItems={allItems} />
     </div>
   );
 }

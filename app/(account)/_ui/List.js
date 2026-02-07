@@ -4,6 +4,7 @@ import EditList from "./EditList";
 import DeleteList from "./DeleteList";
 import DeleteModal from "../account/lists/DeleteModal";
 import { useState } from "react";
+import Link from "next/link";
 
 
 function List({ list, onDelete }) {
@@ -18,9 +19,10 @@ function List({ list, onDelete }) {
 <li className="border-b border-b-[#8F8C8C] py-4 px-2 flex items-center gap-4">
       {/* Left: Icon */}
       <div className="w-[60px] flex justify-center items-center">
-        <div className="bg-[#E2F3F4] w-[50px] h-[50px] rounded-full flex justify-center items-center">
+       <Link  href={`/account/forms/${id}`}>
+       <div className="bg-amber-600 w-[50px] h-[50px] rounded-full flex justify-center items-center">
           <ShoppingBag color="#8F8C8C" />
-        </div>
+        </div></Link> 
       </div>
 
       {/* Middle: Info */}
@@ -31,7 +33,7 @@ function List({ list, onDelete }) {
 
       {/* Right: Buttons */}
       <div className="flex gap-2 items-center">
-        <EditList id={id} />
+        {/* <EditList id={id} /> */}
         <DeleteList handleModal={handleModal}/>
       </div>
     </li>
