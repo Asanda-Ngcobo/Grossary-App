@@ -142,7 +142,7 @@ const categoryData = useMemo(() => {
 
        {/* Total Budget */}
           <h2 className="text-2xl md:text-4xl font-bold text-center">
-            {totalBudget}
+            R{totalBudget}
           </h2>
          
           <p className="text-sm text-gray-600 font-semibold text-center">Total Budget</p>
