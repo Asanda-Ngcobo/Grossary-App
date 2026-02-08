@@ -81,15 +81,12 @@ if (nameParts.length >= 2) {
       </div>
 
       {/* REPORTS */}
-      {myLists.length > 0 && (
+      
          <ReportsWrapper allItems={allItems} allLists={myLists || []}
         myLists={myLists} userId={profile.id} active={active}
         activeList={activeList} />
 
-      )}
-     
-
-
+      
 
    
 
