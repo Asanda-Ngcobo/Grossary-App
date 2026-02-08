@@ -37,7 +37,7 @@ function ReportsWrapper({ allLists, allItems, myLists, userId,
   const filteredLists = useMemo(() => {
     if (duration === "all") return allLists;
     const cutoffDate = new Date(Date.now() - duration * 24 * 60 * 60 * 1000);
-    return allLists.filter((list) => new Date(list.shopped_at) >= cutoffDate);
+    return allLists.filter((list) => new Date(list.created_at) >= cutoffDate);
   }, [allLists, duration]);
 
   // ✅ filter items
