@@ -37,7 +37,7 @@ function ReportsWrapper({ allLists, allItems, myLists, userId,
   const filteredLists = useMemo(() => {
     if (duration === "all") return allLists;
     const cutoffDate = new Date(Date.now() - duration * 24 * 60 * 60 * 1000);
-    return allLists.filter((list) => new Date(list.created_at) >= cutoffDate);
+    return allLists.filter((list) => new Date(list.shopped_at) >= cutoffDate);
   }, [allLists, duration]);
 
   // ✅ filter items
@@ -111,7 +111,9 @@ const categoryData = useMemo(() => {
 
 
   // ✅ totals
-  const moneySpent = filteredItems.reduce((sum, l) => sum + (l.total_price || 0), 0);
+  const moneySpent = filteredLists.reduce((sum, l) => sum + (l.money_spent || 0), 0);
+
+
   
   const totalBudget = filteredLists.reduce((sum, l) => sum + (l.list_budget || 0), 0);
   const moneySaved = totalBudget - moneySpent;
