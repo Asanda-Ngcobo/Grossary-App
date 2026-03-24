@@ -2,7 +2,7 @@
 
 import { Suspense } from "react";
 
-import { User } from "@deemlol/next-icons";
+import { CreditCard, User } from "@deemlol/next-icons";
 
 import Lists from "../_ui/Lists";
 import Loading from "./loading";
@@ -11,6 +11,7 @@ import ParentFormBackground from "./ParentFormBackground";
 import AddListForm from "./AddListForm";
 import { useForm } from "@/app/providers/Provider";
 import { Lexend_Deca } from "next/font/google";
+import Link from "next/link";
 
 
 export default function Home({ profile, myLists, allItems, data }) {
@@ -63,7 +64,7 @@ if (nameParts.length >= 2) {
   return (
     <div className="w-screen pt-4 ">
       {/* HEADER */}
-      <div className="flex justify-between w-[80%] mx-[10%]  ">
+      <div className="flex justify-between w-[90%] mx-auto  ">
         <div className="flex gap-2">
           <div className="flex justify-center items-center
            bg-amber-700 w-[60px] h-[60px] rounded-full text-gray-500"
@@ -77,7 +78,16 @@ if (nameParts.length >= 2) {
               <h1 className="lg:px-2">{firstName || Name} 👋</h1>
             </div>
           </div>
+         
         </div>
+        <Link href='/account/cards'>
+          <div className="flex justify-center items-center
+           bg-[#E2F3F4] w-[60px] h-[60px] rounded-full text-gray-500"
+           >
+         <CreditCard/>
+          </div>
+        </Link>
+          
       </div>
 
       {/* REPORTS */}

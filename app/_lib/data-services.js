@@ -50,6 +50,20 @@ export async function getLists(userId) {
 }
 
 
+export async function getCards(userId) {
+  const { data, error } = await supabase
+    .from('cards')
+    .select('*')
+    .eq('user_id', userId)
+    .order('created_at', { ascending: false }); // descending = newest first
+
+  if (error) {
+    console.error("Supabase error loading Cards:", error.message);
+    throw new Error('We couldn’t load your Cards at this time. Please try again later.');
+  }
+
+  return data;
+}
 
 export async function getOldLists(userId) {
   const { data, error } = await supabase
