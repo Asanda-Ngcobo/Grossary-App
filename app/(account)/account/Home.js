@@ -20,6 +20,8 @@ export default function Home({ profile, myLists, allItems, data }) {
       const activeList = myLists.filter((list)=>
 list.money_spent === 0 || list.money_spent === null)
 
+      const poweruser = myLists.length > 20;
+
       //Email & Password
   const firstName =
     profile?.fullName?.split(" ")[0]?.[0]?.toUpperCase() +
@@ -80,13 +82,15 @@ if (nameParts.length >= 2) {
           </div>
          
         </div>
-        <Link href='/account/cards'>
+       {poweruser && (
+<Link href='/account/cards'>
           <div className="flex justify-center items-center
            bg-[#E2F3F4] w-[60px] h-[60px] rounded-full text-gray-500"
            >
          <CreditCard/>
           </div>
         </Link>
+       )} 
           
       </div>
 
