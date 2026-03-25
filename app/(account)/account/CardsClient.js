@@ -23,9 +23,15 @@ function CardsClient({cards}) {
             </Link>
                     
                   </button></div>
-         <div>                  <h1 className="text-xl font-bold my-4">My Cards</h1></div>
+         <div>                  <h1 className="text-xl
+          font-bold my-4">My Loyalty Cards</h1></div>
 </div>
-
+ {cards.length === 0 &&  <p className='lg:w-[80%] mx-[10%]'>
+    You have no <span className="font-bold">
+                 cards added</span> currently.
+                  Add your cards by clicking the bottom right
+                            button below. 
+                            </p>} 
   
 
       {/* Card List */}
