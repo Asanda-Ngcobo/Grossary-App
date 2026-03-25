@@ -29,7 +29,7 @@ function CardsClient({cards}) {
  {cards.length === 0 &&  <p className='lg:w-[80%] mx-[10%]'>
     You have no <span className="font-bold">
                  cards added</span> currently.
-                  Add your cards by clicking the bottom right
+                  Add your loyalty cards by clicking the bottom right
                             button below. 
                             </p>} 
   

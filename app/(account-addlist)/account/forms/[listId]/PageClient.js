@@ -330,14 +330,28 @@ bottom-5'>Add Your Grocery list items using the Plus button above</p>
       </p>
        <div className={`${ButtonFont.className} 
    grid gap-6 mt-11 mx-4 `}>
-     <button
+
+        <button
      
-      className="h-10 min-w-[300px] px-2 active:bg-gray-600 bg-[#A2B06D]  cursor-pointer  rounded-lg text-[#04284B]
+      className="h-10 min-w-[300px] px-2 active:bg-gray-600
+       bg-amber-700  cursor-pointer  rounded-lg text-[#04284B]
+      font-semibold hover:bg-[#041527] transition-colors"
+    >
+      <Link href={`/account/cards`}>Go To cards</Link>
+    
+    </button>
+       <button
+     
+      className="h-10 min-w-[300px] px-2
+      active:bg-gray-600 bg-[#E2F3F4]  cursor-pointer  
+      rounded-lg text-[#04284B]
       font-semibold hover:bg-[#041527] transition-colors"
     >
       <Link href={`/account/forms/${listId}/list-summary`}>  View Virtual Slip</Link>
     
     </button>
+
+   
     <button
     onClick={() => setIsOpenModal(false)}
 
@@ -365,10 +379,22 @@ bottom-5'>Add Your Grocery list items using the Plus button above</p>
    grid gap-6 mt-11 mx-4 `}>
      <button
      
-      className="h-10 min-w-[300px] px-2 active:bg-gray-600 bg-[#A2B06D]  cursor-pointer  rounded-lg text-[#04284B]
+      className="h-10 min-w-[300px] px-2
+      active:bg-gray-600 bg-[#E2F3F4]  cursor-pointer  
+      rounded-lg text-[#04284B]
       font-semibold hover:bg-[#041527] transition-colors"
     >
       <Link href={`/account/forms/${listId}/list-summary`}>  View Virtual Slip</Link>
+    
+    </button>
+
+       <button
+     
+      className="h-10 min-w-[300px] px-2 active:bg-gray-600
+       bg-amber-700  cursor-pointer  rounded-lg text-[#04284B]
+      font-semibold hover:bg-[#041527] transition-colors"
+    >
+      <Link href={`/account/cards`}>Go To cards</Link>
     
     </button>
     <button
