@@ -82,15 +82,15 @@ if (nameParts.length >= 2) {
           </div>
          
         </div>
-       {poweruser && (
+      
 <Link href='/account/cards'>
           <div className="flex justify-center items-center
-           bg-[#E2F3F4] w-[60px] h-[60px] rounded-full text-gray-500"
+           bg-[#E2F3F4] w-[60px] h-[60px] lg:hidden rounded-full text-gray-500"
            >
          <CreditCard/>
           </div>
         </Link>
-       )} 
+    
           
       </div>
 

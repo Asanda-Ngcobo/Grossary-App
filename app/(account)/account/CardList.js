@@ -47,15 +47,41 @@ export default function CardList({ cards }) {
     setExpandedId((prev) => (prev === id ? null : id));
   }
 
-  function getCardStyle(name) {
-    const n = name?.toLowerCase() ?? "";
-    if (n.includes("Shoprite"))                          return { tw: "from-purple-700 to-purple-500",    style: {} };
-    if (n.includes("Checkers"))                          return { tw: "",                                  style: { background: "linear-gradient(135deg, #38A8AE, #2d8f94)" } };
-    if (n.includes("Pick n pay") || n.includes("pnp"))  return { tw: "from-blue-700 to-blue-500",         style: {} };
-    if (n.includes("Woolworths"))                        return { tw: "from-zinc-900 to-zinc-700",         style: {} };
-    if (n.includes("Spar"))                              return { tw: "",                                  style: { background: "linear-gradient(135deg, #157946, #0f5c36)" } };
-    return { tw: "from-zinc-800 to-zinc-600",            style: {} };
-  }
+function getCardStyle(name) {
+  const n = name?.toLowerCase() ?? "";
+
+  const stores = {
+    shoprite: ["shoprite"],
+    checkers: ["checkers"],
+    pnp: ["pick n pay", "pnp"],
+    woolworths: ["woolworths", "woolies"],
+    spar: ["spar"],
+  };
+
+  if (stores.shoprite.some(s => n.includes(s)))
+    return { tw: "from-purple-700 to-purple-500", style: {} };
+
+  if (stores.checkers.some(s => n.includes(s)))
+    return {
+      tw: "",
+      style: { background: "linear-gradient(135deg, #38A8AE, #2d8f94)" },
+    };
+
+  if (stores.pnp.some(s => n.includes(s)))
+    return { tw: "from-blue-700 to-blue-500", style: {} };
+
+  if (stores.woolworths.some(s => n.includes(s)))
+    return { tw: "from-zinc-900 to-zinc-700", style: {} };
+
+  if (stores.spar.some(s => n.includes(s)))
+    return {
+      tw: "",
+      style: { background: "linear-gradient(135deg, #157946, #0f5c36)" },
+    };
+
+
+  return { tw: "from-zinc-800 to-zinc-600", style: {} };
+}
 
   const gradients = [
     "from-zinc-900 to-zinc-700",
@@ -71,7 +97,9 @@ export default function CardList({ cards }) {
         const isExpanded = expandedId === card.id;
         const gradient = gradients[index % gradients.length];
         const { tw, style } = getCardStyle(card.name);
-
+    function formatCardNumber(number) {
+  return number.replace(/\D/g, '').replace(/(.{4})/g, '$1 ').trim();
+}
         return (
           <div
             key={card.id}
@@ -96,13 +124,17 @@ export default function CardList({ cards }) {
 
                 {/* Top: store name + close */}
                 <div className="flex flex-col items-start justify-between h-3/4 rotate-90">
-                  <p className="text-4xl font-extrabold tracking-tight drop-shadow">
+                 
                     
-                  </p>
+                    <p className="text-xs opacity-40 tracking-widest uppercase mt-2">
+                      Tap to close
+                    </p>
+                  
                       {/* Middle: barcode */}
                 <div className="flex flex-col items-center gap-3">
-                  <p className="text-4xl font-extrabold tracking-tight drop-shadow ">
-                    {card.name}
+                  <p className="text-4xl
+                  capitalize font-extrabold tracking-tight drop-shadow ">
+                   {card.name}
                   </p>
                   <div className="bg-white rounded-md px-5 py-4 shadow-2xl">
                     <svg
@@ -111,7 +143,7 @@ export default function CardList({ cards }) {
                     />
                   </div>
                   <p className="text-lg font-mono tracking-widest opacity-60">
-                    {card.card_number}
+                     {formatCardNumber(card.card_number)}
                   </p>
                 </div>
                   <p className="text-xs opacity-40 tracking-widest uppercase mt-2">

@@ -87,6 +87,7 @@ export async function addCard(formData){
   }
 
   revalidatePath(`/account/cards`)
+  
 }
  export async function deleteList(listId) {
     const supabase = await createClient()
@@ -113,7 +114,7 @@ export async function addCard(formData){
   }
   
     revalidatePath('/account/lists')
-    redirect('/account/lists')
+    
     }
 
     export async function addItem(formData, listId) {
