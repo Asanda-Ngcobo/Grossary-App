@@ -17,6 +17,12 @@ const nextConfig = {
         pathname: '/a/**',
         search: '',
       },
+
+        {
+        protocol: 'https',
+        hostname: 'www.checkers.co.za',
+        pathname: '/qr/**',
+      },
     ],
  
 }

@@ -9,21 +9,24 @@ export default function CardList({ cards }) {
   const [expandedId, setExpandedId] = useState(null);
   const barcodeRefs = useRef({});
 
-  useEffect(() => {
-    if (!cards || cards.length === 0) return;
+ useEffect(() => {
+  if (!cards || cards.length === 0) return;
 
-    async function generateAllQRs() {
-      const entries = await Promise.all(
-        cards.map(async (card) => {
+  async function generateAllQRs() {
+    const entries = await Promise.all(
+      cards
+        .filter(card => !card.name?.toLowerCase().includes('checkers')) // skip checkers
+        .map(async (card) => {
           const qrImage = await QRCode.toDataURL(card.card_number);
           return [card.id, qrImage];
         })
-      );
-      setQrMap(Object.fromEntries(entries));
-    }
+    );
 
-    generateAllQRs();
-  }, [cards]);
+    setQrMap(Object.fromEntries(entries));
+  }
+
+  generateAllQRs();
+}, [cards]);
 
   useEffect(() => {
     if (!expandedId) return;
@@ -80,6 +83,9 @@ function getCardStyle(name) {
     };
 
 
+
+
+
   return { tw: "from-zinc-800 to-zinc-600", style: {} };
 }
 
@@ -91,6 +97,7 @@ function getCardStyle(name) {
     "from-red-950 to-red-600",
   ];
 
+
   return (
     <div className="space-y-4 px-4">
       {cards.map((card, index) => {
@@ -100,6 +107,9 @@ function getCardStyle(name) {
     function formatCardNumber(number) {
   return number.replace(/\D/g, '').replace(/(.{4})/g, '$1 ').trim();
 }
+// const isCheckers = card.name?.toLowerCase().includes('checkers');
+// const qrUrl = `https://www.checkers.co.za/qr/?cardno=${card.card_number}`;
+
         return (
           <div
             key={card.id}
@@ -153,24 +163,7 @@ function getCardStyle(name) {
 
             
 
-                {/* Bottom: QR + scan label */}
-                <div className="flex flex-col items-center gap-5 rotate-90">
-                  {qrMap[card.id] && (
-                    <div className="bg-white rounded-md p-3 shadow-2xl shrink-0">
-                      <Image
-                        src={qrMap[card.id]}
-                        alt="QR Code"
-                        width={180}
-                        height={180}
-                      />
-                    </div>
-                  )}
-                  <div className="flex flex-col gap-2">
-                    <p className="text-lg font-bold tracking-wide">Scan Here</p>
-                 
-                  </div>
-                </div>
-
+  
               </div>
             ) : (
               <div className="p-5 flex items-center justify-between">
