@@ -107,8 +107,7 @@ function getCardStyle(name) {
     function formatCardNumber(number) {
   return number.replace(/\D/g, '').replace(/(.{4})/g, '$1 ').trim();
 }
-// const isCheckers = card.name?.toLowerCase().includes('checkers');
-// const qrUrl = `https://www.checkers.co.za/qr/?cardno=${card.card_number}`;
+
 
         return (
           <div

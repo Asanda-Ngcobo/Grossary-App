@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useOptimistic, useState } from 'react';
 import HandleCategories from './add-price/HandleCategories';
 import Link from 'next/link';
 import { Check, ChevronLeft, Edit, Edit2, Plus, ShoppingCart } from '@deemlol/next-icons';
@@ -17,6 +17,9 @@ import ListMoneyLeft from '@/app/(account)/_ui/ListMoneyLeft';
 import ListMoneySpent from '@/app/(account)/_ui/ListMoneySpent';
 import Budget from '@/app/(account)/_ui/Budget';
 
+import DeleteModal from "@/app/(account)/account/lists/DeleteModal";
+import DeleteList from '@/app/(account)/_ui/DeleteList';
+import { deleteList } from '@/app/_lib/actions';
 
 const ButtonFont = Lexend_Deca({
   subsets: ["latin"],
@@ -31,13 +34,25 @@ export default function PageClient({ listId, list_name,
   list_budget, listitems, groupedItems, profile }) {
  const [selectedCategory, setSelectedCategory] = useState('');
  const [isOpenModal, setIsOpenModal] = useState(false)
-
  const [showForm, setShowForm] = useState(false)
 
     function HandleShowForm (){
         setShowForm(def => !def)
     }
 
+      const [isDeleteModal, setIsDeleteModal] = useState(false)
+   function handleModal(){
+    setIsDeleteModal((isDeleteModal) => !isDeleteModal)
+   }
+
+   
+               //Delete Ui
+   
+      
+       async  function handleDelete(listId){
+          
+   await deleteList(listId)
+       }
   // Load selected category from localStorage on mount
   useEffect(() => {
     const stored = localStorage.getItem('selectedCategory');
@@ -83,8 +98,9 @@ const firstName = profile.fullName?.split(" ")[0] || "there";
  
   const spentPercent = (money_spent / list_budget) * 100;
 
-  const overallShopped = listitems.filter(item => item.is_checked).length;
+  const overallShopped = listitems.filter(item => item.total_price !== null).length;
   const itemsLength = listitems.length;
+  const doneShopping = overallShopped === itemsLength;
  
   const toBeShopped = itemsLength - overallShopped;
 
@@ -106,8 +122,8 @@ useEffect(() => {
     <div>
       {/* Header Card */}
       <div className="w-[90%]  mx-[5%] sm:w-[80%] sm:mx-[10%]
-       md:w-[80%] md:mx-[10%] lg:w-[60%] lg:mx-[20%] mt-[5%] bg-[#04284B]
-       text-white rounded-2xl shadow-sm px-4 py-4">
+       md:w-[80%] md:mx-[10%] lg:w-[60%] lg:mx-[20%] mt-[5%] bg-white
+       text-black rounded-md shadow-lg px-4 py-4">
         <div className="flex items-center justify-between mb-4">
     
             <button className="bg-white
@@ -122,22 +138,27 @@ useEffect(() => {
             </button>
       
           <h1 className="text-xl font-bold text-[#8F8C8C]">{list_name}</h1>
+            {/* Right: Buttons */}
+      <div className="flex gap-2 items-center w-1/5">
+        {/* <EditList id={id} /> */}
+        <DeleteList handleModal={handleModal}/>
+      </div>
         </div>
 
         <div className="flex justify-between font-bold">
            <ListMoneySpent money_spent={money_spent}/>
-           <ListMoneyLeft money_left={money_left}/>
+           {/* <ListMoneyLeft money_left={money_left}/> */}
 
          
         </div>
 
-        <div className="w-full bg-gray-700 rounded-full h-4 my-3">
+        {/* <div className="w-full bg-gray-700 rounded-full h-4 my-3">
           <div className={`${progressColor} h-4 rounded-full transition-all 
           duration-500`} style={{ width: `${spentPercent}%` }} />
-        </div>
+        </div> */}
 
        <div className="flex flex-col items-center justify-center mt-4 space-y-4">
-  <div className="text-gray-500">
+  {/* <div className="text-gray-500">
     <span
       className={`${MoneyFont.className} font-bold text-lg 
       flex flex-row items-center justify-center gap-3`}
@@ -147,7 +168,7 @@ useEffect(() => {
         <Edit2 size={20} className='text-gray-500' />
       </Link>
     </span>
-  </div>
+  </div> */}
 <div className='flex justify-between items-center w-full'>
   <div className='text-sm'>
     {toBeShopped > 0 ? <p>{`${toBeShopped} of ${itemsLength} to be shopped`}</p>: <p>All Shopped</p>}
@@ -164,7 +185,7 @@ useEffect(() => {
 
 
      
-          <button className="bg-amber-700
+          <button className="bg-[#1EC677]
           text-gray-500 active:bg-gray-600 w-[40px] h-[40px] rounded-full
            flex justify-center items-center -mb-8 ml-[90%] cursor-pointer"
            onClick={HandleShowForm}><Plus /></button>
@@ -188,8 +209,8 @@ bottom-5'>Add Your Grocery list items using the Plus button above</p>
           const itemsLeft = totalNumberOfItems - shoppedNumber;
 
           return (
-            <div key={category} className="bg-[#04284B] text-white w-[90%]  mx-[5%] sm:w-[80%]
-             sm:mx-[10%] md:w-[80%] md:mx-[10%] lg:w-[60%] lg:mx-[20%] p-4 rounded-2xl shadow-sm
+            <div key={category} className="bg-white text-black w-[90%]  mx-[5%] sm:w-[80%]
+             sm:mx-[10%] md:w-[80%] md:mx-[10%] lg:w-[60%] lg:mx-[20%] p-4 rounded-md shadow-md
             max-h-[550px] overflow-y-auto
 ">
               <div className="border-b border-gray-300 flex flex-row justify-between">
@@ -238,10 +259,11 @@ bottom-5'>Add Your Grocery list items using the Plus button above</p>
       className="
         w-8 h-8
         rounded-full
-        border-2 border-amber-700
+        border-2 border-[#1EC677]
         flex items-center justify-center
-        peer-checked:bg-amber-700
+        peer-checked:bg-[#1EC677]
         transition
+        active:w-10 active:h-10
       "
     >
       {/* Check mark */}
@@ -315,19 +337,19 @@ bottom-5'>Add Your Grocery list items using the Plus button above</p>
     <Check className="text-white text-4xl" />
   </div>
 
-  {money_left > 0 ? (
+  {doneShopping > 0 && (
     <>
     
       {/* <FireworksComponent /> */}
       <h1 className="text-2xl font-bold text-green-400 animate-bounce">
         Well Done {capitalizedFirstName}!
       </h1>
-      <p className="text-base">
+      {/* <p className="text-base">
         Your shopping is done and you managed to stay&nbsp;
         <span className="font-bold text-green-300">
           {(money_left / list_budget * 100).toFixed(2)}%
         </span> under budget. 🎉😊
-      </p>
+      </p> */}
        <div className={`${ButtonFont.className} 
    grid gap-6 mt-11 mx-4 `}>
 
@@ -364,51 +386,6 @@ bottom-5'>Add Your Grocery list items using the Plus button above</p>
     
   </div>
     </>
-  ) : (
-    <>
-      <h1 className="text-2xl font-bold text-red-400 animate-bounce">
-        Well Done!
-      </h1>
-      <p className="text-base">
-        Your shopping is done. However, you went&nbsp;
-        <span className="font-bold text-red-300">
-          {(money_left / list_budget * 100 ).toFixed(2)}%
-        </span> over budget. 😞
-      </p>
-       <div className={`${ButtonFont.className} 
-   grid gap-6 mt-11 mx-4 `}>
-     <button
-     
-      className="h-10 min-w-[300px] px-2
-      active:bg-gray-600 bg-[#E2F3F4]  cursor-pointer  
-      rounded-lg text-[#04284B]
-      font-semibold hover:bg-[#041527] transition-colors"
-    >
-      <Link href={`/account/forms/${listId}/list-summary`}>  View Virtual Slip</Link>
-    
-    </button>
-
-       <button
-     
-      className="h-10 min-w-[300px] px-2 active:bg-gray-600
-       bg-amber-700  cursor-pointer  rounded-lg text-[#04284B]
-      font-semibold hover:bg-[#041527] transition-colors"
-    >
-      <Link href={`/account/cards`}>Go To cards</Link>
-    
-    </button>
-    <button
-    onClick={() => setIsOpenModal(false)}
-
-      className="h-10 min-w-[300px] px-2 rounded-lg 
-      cursor-pointer border bg-transparent active:bg-[#A2B06D] text-gray-400 border-[#04284B]  font-semibold hover:opacity-70 transition-all"
-    >
-     Continue Shopping
-    </button>
-   
-    
-  </div>
-    </>
   )}
 </div>
 
@@ -426,7 +403,12 @@ bottom-5'>Add Your Grocery list items using the Plus button above</p>
   </ParentFormBackground>
 )}
 
-
+  {/* Delete List Modal */}
+    {isDeleteModal && <DeleteModal listId={listId} 
+    onDelete={handleDelete}
+    handleModal={handleModal}
+    listname={list_name}
+    />}
     </div>
     
   );

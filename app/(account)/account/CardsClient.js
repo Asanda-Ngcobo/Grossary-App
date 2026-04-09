@@ -71,7 +71,7 @@ function CardsClient({ cards }) {
             {!active && (
                 <div className='bottom-0 right-2 fixed'>
                     <button
-                        className="flex justify-center items-center mx-3 w-[40px] h-[40px] rounded-full bg-amber-700 text-gray-500 cursor-pointer my-6"
+                        className="flex justify-center items-center mx-3 w-[40px] h-[40px] rounded-full bg-[#1EC677] text-gray-500 cursor-pointer my-6"
                         onClick={toggleForm}
                     >
                         <Plus />

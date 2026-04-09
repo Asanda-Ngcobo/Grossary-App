@@ -50,9 +50,9 @@ function HistoryClient({ History, topHistory, userId }) {
                 {data.items.map((history) => (
                   <li
                     key={history.id}
-                    className="border-b border-b-[#8F8C8C] "
+                    className=" "
                   >
-                        <h1 className="font-bold text-xs">{history.list_name}</h1>
+                        
                         <div className="py-3 px-2 flex items-center gap-4">
                                    
                       <Link href={`/account/forms/${history.id}/list-summary`}
@@ -68,10 +68,10 @@ function HistoryClient({ History, topHistory, userId }) {
 
                     {/* Middle: Info */}
                     <div className="flex-1">
-                  
+                  <h1 className="font-bold text-xs">{history.list_name}</h1>
                       <p className="text-xs font-semibold">
                         {new Date(history.shopped_at).toLocaleDateString('en-GB')},{" "}
-                        R{history.money_spent}
+                        <span className="text-red-900 font-extrabold text-xs">-R{history.money_spent}</span>
                       </p>
                     </div>
 

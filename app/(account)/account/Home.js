@@ -20,7 +20,7 @@ export default function Home({ profile, myLists, allItems, data }) {
       const activeList = myLists.filter((list)=>
 list.money_spent === 0 || list.money_spent === null)
 
-      const poweruser = myLists.length > 20;
+    
 
       //Email & Password
   const firstName =
@@ -64,12 +64,12 @@ if (nameParts.length >= 2) {
 }
 
   return (
-    <div className="w-screen pt-4 ">
+    <div className="w-full pt-4 ">
       {/* HEADER */}
       <div className="flex justify-between w-[90%] mx-auto  ">
         <div className="flex gap-2">
           <div className="flex justify-center items-center
-           bg-amber-700 w-[60px] h-[60px] rounded-full text-gray-500"
+           bg-[#1EC677] w-[60px] h-[60px] rounded-full text-gray-500"
            onClick={toggleMenu}>
             <h1 className="text-xl">{initials}</h1>
           </div>
@@ -83,13 +83,7 @@ if (nameParts.length >= 2) {
          
         </div>
       
-<Link href='/account/cards'>
-          <div className="flex justify-center items-center
-           bg-[#E2F3F4] w-[60px] h-[60px] lg:hidden rounded-full text-gray-500"
-           >
-         <CreditCard/>
-          </div>
-        </Link>
+
     
           
       </div>

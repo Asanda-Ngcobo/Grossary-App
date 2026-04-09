@@ -43,8 +43,7 @@ export default async function Page() {
     .from("list_items")
     .select(
       "id, total_price, item_category, purchased_at, list_id, user_lists(user_id)"
-    )
-    .not("total_price", "is", null);
+    );
 
   // Only include items that belong to this user
   const allItems = (allItemsRaw || []).filter(
@@ -52,7 +51,7 @@ export default async function Page() {
   );
 
   return (
-    <div className="w-screen min-h-screen lg:w-[60%] lg:mx-[20%]">
+    <div className="w-full min-h-full">
       <Home profile={profile}
       data={data} myLists={myLists} 
       allItems={allItems} />

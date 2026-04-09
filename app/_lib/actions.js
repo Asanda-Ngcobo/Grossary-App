@@ -29,7 +29,7 @@ const supabase = await createClient()
   const list_name = formData.get('list_name');
   const list_budget = formData.get('list_budget');
 
-  if (typeof list_name !== 'string' || typeof list_budget !== 'string') {
+  if (typeof list_name !== 'string') {
     throw new Error('Invalid form data');
   }
 
@@ -113,7 +113,8 @@ export async function addCard(formData){
     throw new Error('Item could not be deleted');
   }
   
-    revalidatePath('/account/lists')
+    revalidatePath('/account')
+    redirect('/account')
     
     }
 

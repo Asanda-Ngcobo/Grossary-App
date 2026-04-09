@@ -34,7 +34,7 @@ export default function FormsLayout({ children }) {
         </Script>
       </head>
        <body
-        className={`${MainFont.className} bg-[#041527] text-white h-screen 
+        className={`${MainFont.className} bg-[#e7eeea] text-white h-screen 
         gap-12`}
       >
          <Toaster position="top-center" 

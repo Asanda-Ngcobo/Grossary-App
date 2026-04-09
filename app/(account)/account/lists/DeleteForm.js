@@ -19,7 +19,7 @@ function DeleteForm({ listId, onDelete,listname, handleModal}) {
     return (
      <div className="w-[90%] mx-auto mt-[50%] h-[40%] md:mt-[20%] md:w-[50%]
      md-[25%]
-      bg-[#04284B] text-white rounded-2xl z-50 flex flex-col justify-between p-6">
+      bg-[#0B2E1E] text-white rounded-2xl z-50 flex flex-col justify-between p-6">
   {/* Confirmation Text */}
   <div className="text-center">
     <h2 className="text-3xl font-semibold mb-2">Are you sure you want to delete this list?</h2>
@@ -30,13 +30,13 @@ function DeleteForm({ listId, onDelete,listname, handleModal}) {
   <div className={`${ButtonFont.className} flex justify-center gap-6 `}>
     <button
       onClick={handleModal}
-      className="h-10 w-32 border border-[#041527] cursor-pointer text-gray-400 rounded-lg bg-transparent hover:bg-[#041527] transition-colors"
+      className="h-10 w-32 border border-[#041527] cursor-pointer text-gray-400 rounded-lg bg-transparent hover:opacity-50 transition-colors"
     >
       Cancel
     </button>
     <button
       onClick={handleDelete}
-      className="h-10 w-32 rounded-lg cursor-pointer bg-[#A2B06D] text-[#04284B] font-semibold hover:opacity-70 transition-all"
+      className="h-10 w-32 rounded-lg cursor-pointer flex justify-center items-center bg-[#1EC677] text-black font-semibold hover:opacity-70 transition-all"
     >
       {isPending ? <SpinnerMini /> : 'Delete'}
     </button>

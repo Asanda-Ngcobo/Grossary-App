@@ -26,38 +26,38 @@ const navLinks = [
    {
     name: <Profile/>,
     id: 1,
-      icon: <ChevronRight/>
+      // icon: <ChevronRight/>
   
     
     
   },
 
-   {
-    name: <Privacy/>,
-    id: 2,
-      icon: <ChevronRight/>
+  //  {
+  //   name: <Privacy/>,
+  //   id: 2,
+  //     icon: <ChevronRight/>
   
     
     
-  },
-   {
-    name: <ReportIssueButton/>,
-    id: 3,
-      icon: <ChevronRight/>
+  // },
+  //  {
+  //   name: <ReportIssueButton/>,
+  //   id: 3,
+  //     icon: <ChevronRight/>
   
     
     
-  },
+  // },
    
-    {
-    name: <DeleteAccount/>,
-    id: 4,
-    icon: <ChevronRight/>
+  //   {
+  //   name: <DeleteAccount/>,
+  //   id: 4,
+  //   icon: <ChevronRight/>
     
   
    
     
-  },
+  // },
 
     {
     name: <SignOutButton/>,
@@ -83,24 +83,22 @@ function Menu() {
       className={`
         fixed inset-0 z-30
         bg-black/40 backdrop-blur-sm
-        transition-opacity duration-300
+        transition-opacity duration-300 flex justify-center items-center
         ${menuOpen ? "opacity-100 pointer-events-auto" 
             : "opacity-0 pointer-events-none"}
       `}
      
     >
-        <div className="bg-[#04284B]
-         w-[80%] h-screen
+        <div className="bg-[#e7eeea]
+         w-[80%] h-[20vh] mx-auto
           flex flex-col items-center
          lg:w-[30%]
-         rounded-r-lg">
+         rounded-lg">
             <div className="top-1 ml-[90%] text-gray-600 flex"
                   onClick={toggleMenu} >
    <X />
             </div>
-      <h1 className={`text-center
-        text-[24px] text-black
-        font-bold ${LogoFont.className}`}>Grossary</h1>
+     
       
 <section  className="py-1 rounded-md w-[90%] ml-[5%]
         xl:w-[60%] xl:ml-[15%] lg:ml-0 bottom-[300px]">
@@ -109,7 +107,7 @@ function Menu() {
       <li  className={` p-1 flex
        justify-between  cursor-pointer
        active:text-[#ACF532]
-        ${userInfo.id === 1 ? 'border-t border-gray-700': ''}`}>
+        ${userInfo.id === 1 ? '': ''}`}>
        
  <span className="flex gap-2.5">
 {userInfo.name}</span>

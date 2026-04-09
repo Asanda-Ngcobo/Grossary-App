@@ -51,7 +51,7 @@ function QuantitySelector({ itemId, itemName, itemQuantity, listId }) {
       onChange={handleChange}
       defaultValue={itemQuantity}
       className="cursor-pointer 
-       px-2 py-1 bg-[#04284B] text-white font-bold"
+       px-2 py-1 bg-white text-black font-bold"
     >
       {Array.from({ length: 10 }, (_, i) => i + 1).map(num => (
         <option key={num} value={num}>

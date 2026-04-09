@@ -9,8 +9,10 @@ import Link from 'next/link';
 import HistoryClient from '../account/HistoryClient';
 
 
-function Lists({myLists, userId}) {
+function Lists({myLists, userId, allItems}) {
      const { toggleForm, active} = useForm();
+
+  
     //Active Lists
          const activeList = myLists.filter((list)=>
 list.money_spent === 0 || list.money_spent === null)
@@ -35,7 +37,7 @@ await deleteList(listId)
     }
  
     return (
-        <div className='w-[90%] mx-[5%] '>
+        <div className='w-full rounded-2xl h-[50vh] overflow-y-auto no-scrollbar '>
          
            
            {!active &&     <ul className=''>
@@ -54,33 +56,14 @@ await deleteList(listId)
         
           
             {optimisticLists.map(function(list){
-                return <List key={list.id} list={list}
+                return <List key={list.id} list={list} allitems={allItems}
                 onDelete={handleDelete}/>
             })}
         </ul>}
 
-          {active && 
-          <div className=''>
-            {History.length > 3  && (
-
-              <div className='flex justify-between lg:hidden text-gray-500 text-sm'>
-                <p>Last 3 Shopped lists</p>
-                 <Link href='/account/lists/history' alt='' >
-                <button className=' cursor-pointer underline '>
-                Show more 
-              </button>
-                </Link>
-              </div>
-              
-             
-            )}
-            <HistoryClient
-          topHistory={topHistory}
-          History={History}
-          userId={userId}/>
-            </div>}
           
-          {!active && (
+          
+           
             <div className='bottom-0 right-2 fixed '>
             <button className="flex 
                             justify-center items-center 
@@ -88,14 +71,14 @@ await deleteList(listId)
                             w-[40px]
                             h-[40px]
                             rounded-full
-                            bg-amber-700 
+                            bg-[#1EC677]
                             text-gray-500
                             cursor-pointer
                             my-6" onClick={toggleForm}>
                             <Plus></Plus></button>
           </div>
        
-          )}
+          
         </div>
       
         

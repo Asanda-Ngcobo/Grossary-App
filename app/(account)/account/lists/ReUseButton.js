@@ -30,7 +30,7 @@ export function SubmitButton() {
       type="submit"
       disabled={pending}
       className={`${ButtonFont.className}
-        bg-amber-700 h-[40px] w-[40px] 
+        bg-[#1EC677] h-[40px] w-[40px] 
         flex justify-center items-center
          rounded-[10px]
         text-gray-900
@@ -44,7 +44,7 @@ export function SubmitButton() {
         <AccountModal>
           <div className="fixed inset-0 flex justify-center items-center">
             <div className="w-[70%] max-w-sm rounded-2xl
-             bg-gray-950 flex-col justify-center items-center p-6">
+             bg-white flex-col justify-center items-center p-6">
               <Spinner />
               <p>Recreating your list...</p>
             </div>
