@@ -9,20 +9,13 @@ import ParentFormBackground from "./ParentFormBackground"
 function CardsClient({ cards }) {
     const { formOpen, toggleForm, active } = useForm();
 
-    // Dummy placeholder cards when none exist
-    const placeholderCards = [
-        { id: 1, name: "Checkers Xtra Savings", number: "•••• 9012", color: "bg-[#38A8AE]" },
-        { id: 3, name: "SPAR Rewards", number: "•••• 1234", color: "bg-red-500" },
-        { id: 2, name: "Pick n Pay Smart Shopper", number: "•••• 5678", color: "bg-blue-500" },
-        
-    ];
 
     return (
         <div className="p-4 max-w-md mx-auto">
             {/* Header */}
             <div className='flex flex-row justify-between w-full'> 
                 <div>
-                    <button className="bg-white cursor-pointer active:bg-gray-600 text-black rounded-full w-10 h-10 flex items-center justify-center">
+                    <button className=" cursor-pointer active:bg-gray-600 text-black rounded-full w-10 h-10 flex items-center justify-center">
                         <Link href={`/account`}>
                             <ChevronLeft />
                         </Link>

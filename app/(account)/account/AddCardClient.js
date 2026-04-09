@@ -11,9 +11,9 @@ export default function AddCardClient({ toggleForm }) {
           await addCard(formData)
           toggleForm()
         }}
-        className="w-full max-w-md bg-[#04284B] rounded-2xl p-6 shadow-md space-y-5"
+        className="w-full max-w-md bg-[#F8FAF9] rounded-2xl text-black p-6 shadow-md space-y-5"
       >
-        <label className="text-lg font-medium text-white">Store Name</label>
+        <label className="text-lg font-medium">Store Name</label>
         <input
           name="name"
           type="text"
@@ -21,7 +21,7 @@ export default function AddCardClient({ toggleForm }) {
           required
         />
 
-        <label className="text-2xl text-white">Card Number</label>
+        <label className="text-2xl">Card Number</label>
         <input
           name="card_number"
           type="text"
