@@ -198,7 +198,7 @@ const categoryList = useMemo(() => {
         
         {/* Top row */}
         <div className="flex justify-between items-center">
-          <span className="text-white text-sm">
+          <span className="text-black text-sm">
             {cat.name}
           </span>
 
