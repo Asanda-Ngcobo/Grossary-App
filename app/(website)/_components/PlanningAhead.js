@@ -34,16 +34,16 @@ const contents = [
         </TertiaryBunner>
     },
     
-    {id: 3,
-        image: Budgeting,
-        heading: 'Set Your Budget & Stick to it',
-        description: `Choose your weekly or monthly grocery limit. 
-        Grossary can help you stay within your budget without sacrificing essentials`,
-        link: '/staying-under-budget',
-        bunner: <TertiaryBunner>
-            <FinishedShoppingBunner/>
-        </TertiaryBunner>
-    },
+    // {id: 3,
+    //     image: Budgeting,
+    //     heading: 'Set Your Budget & Stick to it',
+    //     description: `Choose your weekly or monthly grocery limit. 
+    //     Grossary can help you stay within your budget without sacrificing essentials`,
+    //     link: '/staying-under-budget',
+    //     bunner: <TertiaryBunner>
+    //         <FinishedShoppingBunner/>
+    //     </TertiaryBunner>
+    // },
     
 ]
 function PlanningAhead() {

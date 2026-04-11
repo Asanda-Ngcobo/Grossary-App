@@ -47,7 +47,7 @@ function LoginFormComp({handleSubmit, isPending}) {
         <button
           type="submit"
           disabled={isPending}
-          className="bg-amber-700 text-white px-4 py-2 cursor-pointer w-full rounded disabled:opacity-50"
+          className="bg-[#1EC677] text-white px-4 py-2 cursor-pointer w-full rounded disabled:opacity-50"
         >
           {isPending ? 'Signing in...' : 'Sign in'}
         </button>

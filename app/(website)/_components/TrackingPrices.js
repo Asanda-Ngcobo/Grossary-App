@@ -1,11 +1,11 @@
 
-import { Minus, Plus, ShoppingCart, Trash2 } from "@deemlol/next-icons";
+import { Minus, Plus, Trash2 } from "@deemlol/next-icons";
 
 function TrackingPrices() {
     return (
-         <div className="w-[90%] h-fit text-white text-[8px] mx-2 mt-2
+         <div className="w-[90%] h-fit text-black text-[8px] mx-2 mt-2
 ">
-              <div className="border-b border-gray-300 flex
+              <div className="border-b border-gray-700 flex
               h-[30px] flex-row justify-between">
                 <h2 className="text-md font-bold">Fruir, veg & Salad</h2>
               
@@ -40,7 +40,7 @@ function TrackingPrices() {
       className="
         w-6 h-6
         rounded-full
-        border-2 border-amber-700
+        border-2 border-[#1EC677]
         flex items-center justify-center
       
         transition
@@ -95,9 +95,9 @@ function TrackingPrices() {
       className="
         w-6 h-6
         rounded-full
-        border-2 border-amber-700
+        border-2 border-[#1EC677]
         flex items-center justify-center
-        bg-amber-700
+        bg-[#1EC677]
         transition
       "
     >
@@ -168,9 +168,9 @@ function TrackingPrices() {
       className="
         w-6 h-6
         rounded-full
-        border-2 border-amber-700
+        border-2 border-[#1EC677]
         flex items-center justify-center
-        bg-amber-700
+        bg-[#1EC677]
         transition
       "
     >
