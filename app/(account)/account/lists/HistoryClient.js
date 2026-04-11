@@ -57,9 +57,7 @@ function HistoryClient({ History, userId }) {
                      <Link href={`/account/forms/${history.id}/list-summary`}
                     className="w-[80%] flex justify-between items-center gap-2"> 
                    
-                      <div className="bg-[#E2F3F4] w-[50px] h-[50px] rounded-full flex justify-center items-center">
-                        <ShoppingBag color="#8F8C8C" />
-                      </div>
+                     
 
                              <div className="flex flex-col items-center py-4 px-2">
                       

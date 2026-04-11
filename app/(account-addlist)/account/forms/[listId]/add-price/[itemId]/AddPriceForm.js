@@ -46,7 +46,8 @@ export default function AddPriceForm({ itemId, listId }) {
   return (
      <form
         onSubmit={handleSubmit}
-        className="py-2 px-4 rounded-md w-[90%] mt-[5%] ml-[5%] md:w-[40%] md:ml-[25%] grid grid-rows-2 gap-2 bg-[#041527] shadow-sm"
+        className="py-2 px-4 rounded-md w-[90%] mt-[5%]
+         ml-[5%] md:w-[40%] md:ml-[25%] grid grid-rows-2 gap-2  shadow-sm"
       >
          <button className="my-5 mx-[5%] bg-white active:bg-gray-600 rounded-full w-[50px] h-[50px] flex justify-center items-center"> 
                     <Link href={`/account/forms/${listId}`}><ChevronLeft color="black" size={40}/></Link> </button>
@@ -55,11 +56,11 @@ export default function AddPriceForm({ itemId, listId }) {
           type="text"
           name="name"
           className="bg-white text-gray-400 text-xl p-3 rounded-md w-full"
-          value={`${item.item_name} ${item.item_brand} ${item.item_volume_mass}${item.item_unit}`}
+          value={`$`}
           readOnly
         />
 
-        <label className="text-white text-xl">Item Price</label>
+        <label className="text-black text-xl">{item.item_name} {item.item_brand} {item.item_volume_mass} {item.item_unit} Price</label>
         <input
           type="number"
           step="0.01"

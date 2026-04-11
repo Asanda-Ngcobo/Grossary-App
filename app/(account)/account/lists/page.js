@@ -42,7 +42,8 @@ console.log(myLists)
 
         <>
         
-             <div className="w-[90%] ml-[5%] lg:w-[60%] lg:mx-[20%] lg:mt-20 mt-15 ">
+             <div className="w-[90%] ml-[5%]
+              lg:w-[60%] lg:mx-[20%] lg:mt-20 mt-15 ">
             
             
             {activeList.length === 0 ? (

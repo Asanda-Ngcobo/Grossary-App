@@ -16,8 +16,8 @@ export default function MoneySpent({ moneySpent }) {
   return (
     <div 
     className="p-2 h-[15vh] w-full mx-auto justify-center items-center ">
-            <p className="text-lg text-gray-900 font-bold text-left">Money Spent</p>
-<h2 className="text-6xl md:text-6xl font-bold text-left text-[#1EC677]">
+            <p className="text-lg text-black font-bold text-left">Money Spent</p>
+<h2 className="text-6xl md:text-6xl font-bold text-left text-black">
   {formatted}
 </h2>
 

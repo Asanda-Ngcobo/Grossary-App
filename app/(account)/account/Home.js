@@ -2,7 +2,7 @@
 
 import { Suspense } from "react";
 
-import { CreditCard, User } from "@deemlol/next-icons";
+import { Bell, CreditCard, User } from "@deemlol/next-icons";
 
 import Lists from "../_ui/Lists";
 import Loading from "./loading";
@@ -12,6 +12,7 @@ import AddListForm from "./AddListForm";
 import { useForm } from "@/app/providers/Provider";
 import { Lexend_Deca } from "next/font/google";
 import Link from "next/link";
+import Logo from "@/app/(website)/_components/Logo";
 
 
 export default function Home({ profile, myLists, allItems, data }) {
@@ -67,21 +68,19 @@ if (nameParts.length >= 2) {
     <div className="w-full pt-4 ">
       {/* HEADER */}
       <div className="flex justify-between w-[90%] mx-auto  ">
-        <div className="flex gap-2">
+       
           <div className="flex justify-center items-center
-           bg-[#1EC677] w-[60px] h-[60px] rounded-full text-gray-500"
+           text-gray-500"
            onClick={toggleMenu}>
-            <h1 className="text-xl">{initials}</h1>
+            <User/>
+            {/* <h1 className="text-xl">{initials}</h1> */}
           </div>
 
-          <div className="flex items-center font-bold">
-            <div className="lg:flex">
-              <h1>Hello,</h1>
-              <h1 className="lg:px-2">{firstName || Name} 👋</h1>
-            </div>
-          </div>
-         
-        </div>
+          
+         <Logo/>
+
+          <div><Bell/></div>
+      
       
 
     
@@ -92,7 +91,7 @@ if (nameParts.length >= 2) {
       
          <ReportsWrapper allItems={allItems} allLists={myLists || []}
         myLists={myLists} userId={profile.id} active={active}
-        activeList={activeList} />
+        activeList={activeList} userName={firstName || Name} />
 
       
 

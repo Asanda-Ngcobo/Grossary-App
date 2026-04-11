@@ -103,7 +103,7 @@ export default function AddItemForm({ listId, setShowForm }) {
     <main className="min-h-screen flex items-center justify-center px-4">
       <form
         action={handleSubmit}
-        className="relative w-full max-w-md bg-[#04284B] rounded-2xl p-6 shadow-md space-y-4"
+        className="relative w-full max-w-md bg-[#0B2E1E] rounded-2xl p-6 shadow-md space-y-4"
       >
         <h1
           className={`text-2xl text-center text-white ${HeadingFont.className}`}

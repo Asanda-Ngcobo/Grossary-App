@@ -29,7 +29,7 @@ const ButtonFont = Lexend_Deca({
 });
 
 function ReportsWrapper({ allLists, allItems, myLists, userId,
-  activeList
+  userName
  }) {
   const [duration, setDuration] = useState(30);
   const { 
@@ -133,8 +133,14 @@ const categoryData = useMemo(() => {
     <div className="py-2 px-4 rounded-md  mt-2 
        lg:w-[80%] lg:ml-[10%] lg:mx-0 gap-6">
 
-        <div className="flex flex-col w-full h-[30vh] rounded-md bg-[]">
-            
+        <div className="flex flex-col w-full h-[40vh]
+      rounded-md ">
+            <div className="w-full h-20 flex justify-center items-center
+             font-bold">
+            <div className="lg:flex">
+              <h1 >Hello, {userName}</h1>
+            </div>
+          </div>
           {/* Stats */}
       <div className=" gap-4 rounded-2xl w-full h-fit flex flex-col justify-center items-center ">
     
@@ -143,23 +149,31 @@ const categoryData = useMemo(() => {
 
    
     
-         <ul className="flex flex-row gap-5 w-[90%] justify-between  mx-auto text-gray-200">
+         <ul className="flex flex-row gap-5 w-[90%] justify-between  mx-auto
+          text-[#1EC677]">
 
-            <li className=" w-[30%] flex justify-center items-center gap-1 border-r  ">
-              <Link href='/account/cards' className="flex flex-col justify-center active:text-[#ACF532] active:text-2xl items-center"
+            <li className=" flex w-20 h-20 bg-[#0B2E1E] rounded-2xl
+            justify-center items-center gap-1 border-r  ">
+              <Link href='/account/cards' className="flex
+               flex-col justify-center h-full w-full
+                active:text-[#ACF532] active:text-2xl items-center"
              >
           <div className=""><CreditCard width={50}/></div>
-           <div className="text-[10px]">Cards</div></Link></li>
-          <li className=" w-[30%] flex justify-center items-center gap-1 border-r ">
-            <Link href='/account/reports'  className="flex flex-col justify-center active:text-[#ACF532] active:text-2xl items-center" >
+           <div className="text-[12px] font-bold">Cards</div></Link>
+           </li>
+
+          <li className="  flex w-20 h-20 bg-[#0B2E1E] rounded-2xl justify-center items-center gap-1 border-r ">
+            <Link href='/account/reports'  className="flex flex-col
+             justify-center h-full w-full active:text-[#ACF532] active:text-2xl items-center" >
           <div className=""><BarChart className="text-3xl"/></div>
-           <div className="text-[10px]">Charts</div></Link></li>
+           <div className="text-[12px] font-bold">Charts</div></Link></li>
           
-               <li className=" w-[30%] flex  justify-center items-center gap-1 ">
+               <li className="  flex w-20 h-20 bg-[#0B2E1E] rounded-2xl  justify-center items-center gap-1 ">
                 <Link href='/account/lists/history'  className="
-                 flex flex-col justify-center items-center active:text-[#ACF532] active:text-2xl">
+                 flex flex-col justify-center items-center
+                 h-full w-full active:text-[#ACF532] active:text-2xl">
           <div className=""><FileText width={50}/></div>
-           <div className="text-[10px]">Shopped Lists</div></Link></li>
+           <div className="text-[12px] font-bold">Shopped</div></Link></li>
          </ul>
      
       </div>
@@ -171,7 +185,8 @@ const categoryData = useMemo(() => {
 
          {/* LISTS */}
       <Suspense fallback={<Loading />}>
-        <Lists myLists={myLists} allItems={allItems} userId={userId} active={active} />
+        <Lists myLists={myLists} allItems={allItems}
+         userId={userId} active={active} />
       </Suspense>
 
     </div>

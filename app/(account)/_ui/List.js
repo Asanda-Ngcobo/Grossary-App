@@ -29,22 +29,20 @@ acc + (cur.total_price|| 0), 0)
 <li className="  my-4 py-3  px-2 flex items-center active:mx-5   ">
       {/* Left: Icon */}
      
-       <Link  href={`/account/forms/${id}`} className="w-full   text-white flex justify-between items-center">
+       <Link  href={`/account/forms/${id}`} className="w-full   text-black flex justify-between items-center">
        <div className="flex gap-2">
-    <div className=" w-[40px] h-[40px] bg-[#e7eeea] rounded-full flex justify-center items-center">
-          <ShoppingBag color="#8F8C8C" />
-        </div>
+    
           {/* Middle: Info */}
       <div className="flex flex-col">
-        <h1 className="font-bold text-base">{list_name}</h1>
-         <h5 className="text-xs text-gray-400">{unShoppedItems.length} of {listitems.length} left</h5>
+        <h1 className="font-bold text-3xl">{list_name}</h1>
+         <h5 className="text-md ">{unShoppedItems.length} of {listitems.length} items still to shop</h5>
          
       </div>
        </div>
    
       <div className="flex flex-col">
-        <span className="text-[#ACF532] font-extrabold">R{ListMoneySpent}</span>
-        <span className="text-[10px] text-gray-400">Current Total</span>
+        <span className="text-[#ACF532] font-extrabold text-3xl">R{ListMoneySpent}</span>
+        <span className="text-md text-gray-400">Current Total</span>
       </div>
      </Link> 
       {/* Right: Money Spent */}

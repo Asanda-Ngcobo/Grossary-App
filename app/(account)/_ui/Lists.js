@@ -9,7 +9,7 @@ import Link from 'next/link';
 import HistoryClient from '../account/HistoryClient';
 
 
-function Lists({myLists, userId, allItems}) {
+function Lists({myLists, allItems}) {
      const { toggleForm, active} = useForm();
 
   
@@ -37,7 +37,8 @@ await deleteList(listId)
     }
  
     return (
-        <div className='w-full rounded-2xl h-[50vh] overflow-y-auto no-scrollbar '>
+        <div className='
+         h-[50vh] overflow-y-auto no-scrollbar '>
          
            
            {!active &&     <ul className=''>
