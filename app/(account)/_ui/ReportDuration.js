@@ -26,14 +26,14 @@ function  ReportDuration({ onChange }) {
 
   return (
     <div className="overflow-x-auto no-scrollbar m-2">
-      <div className="flex gap-2 w-max">
+      <div className="flex gap-2 w-[90%] mx-auto">
         {durationOptions.map((time) => (
           <button
             key={time.id}
             onClick={() => handleClick(time.value)}
             className={`${ButtonFont.className} 
-              w-[100px] text-sm flex justify-center items-center py-2 rounded-[50px] shrink-0
-              ${active === time.value ? "bg-[#ACF532] text-black font-semibold" : "bg-gray-600 text-gray-500"}
+              w-[70px] text-[10px] flex justify-center text-black items- font-semibold py-2 shrink-0
+              ${active === time.value ? "underline  " : " "}
             `}
           >
             {time.label}

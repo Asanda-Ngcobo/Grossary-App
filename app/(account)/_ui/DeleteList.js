@@ -9,7 +9,7 @@ function DeleteList({handleModal}) {
   return (
     <button onClick={handleModal} className='group
      flex justify-center items-center 
-     h-[40px] w-[40px] bg-gray-600
+     h-[40px] w-[40px] 
      rounded-full
        gap-2 uppercase text-xs cursor-pointer
       font-bold text-gray-500 flex-grow px-3 

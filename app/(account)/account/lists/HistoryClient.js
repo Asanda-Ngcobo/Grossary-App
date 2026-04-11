@@ -40,7 +40,7 @@ function HistoryClient({ History, userId }) {
               {/* Monthly totals */}
               <div className="mb-2 ml-1  text-xs  text-gray-600  flex gap-2">
                 <p>Total Spent: <span className="font-extrabold text-[#ACF532]">R{data.totalSpent.toFixed(2)}</span></p>
-                <p>Total Saved: <span className="font-extrabold ">R{data.totalSaved.toFixed(2)}</span></p>
+             
               </div>
               
               </div>
@@ -48,19 +48,22 @@ function HistoryClient({ History, userId }) {
               <ul>
                 {data.items.map((history) => (
                   <li
-                    key={history.id}
-                    className="border-b border-b-[#8F8C8C] 
-                     "
+                    key={history.id} className=" 
+                     w-full flex justify-center items-center"
                   >
 
-                     <h1 className="font-bold text-xs">{history.list_name}</h1>
                     {/* Left: Icon */}
-                    <div className="flex items-center gap-4 py-4 px-2">
-                       <div className="w-[60px] flex justify-center items-center">
+
+                     <Link href={`/account/forms/${history.id}/list-summary`}
+                    className="w-[80%] flex justify-between items-center gap-2"> 
+                   
                       <div className="bg-[#E2F3F4] w-[50px] h-[50px] rounded-full flex justify-center items-center">
                         <ShoppingBag color="#8F8C8C" />
                       </div>
-                    </div>
+
+                             <div className="flex flex-col items-center py-4 px-2">
+                      
+                     <h1 className="font-bold text-xs">{history.list_name}</h1>
 
                     {/* Middle: Info */}
                     <div className="flex-1">
@@ -71,28 +74,21 @@ function HistoryClient({ History, userId }) {
                       </p>
                     </div>
 
-                    {/* ReUse Button */}
-                    <form action={reuseList.bind(null, history.id, userId)} className="flex gap-2">
-                      <SubmitButton />
-                    </form>
+                  
 
-                    {/* Link button */}
-                    <button >
-                      <Link href={`/account/forms/${history.id}/list-summary`}
-                      className='group
-     flex justify-center items-center 
-     h-[40px] w-[40px] bg-gray-600
-     rounded-full
-       gap-2 uppercase text-xs cursor-pointer
-      font-bold text-gray-500 flex-grow px-3 
-      hover:bg-accent-600 transition-colors hover:text-primary-900'>
-                        <FileText className=' 
-      absolute
-      '  />
-                      </Link>
-                    </button>
+           
+                   
+                     
+                    
 
                     </div>
+                  
+            
+                      </Link>
+               {/* ReUse Button */}
+                    <form action={reuseList.bind(null, history.id, userId)} className="flex gap-2 w-[20%]">
+                      <SubmitButton />
+                    </form>
                    
                   </li>
                 ))}

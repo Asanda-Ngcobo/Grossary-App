@@ -14,7 +14,7 @@ function SubmitButton({children}) {
     const { pending } = useFormStatus();
     return (
         <button className={`${ButtonFont.className}
-         bg-amber-700
+         bg-[#1EC677]
         
         w-[90%]
         mx-auto

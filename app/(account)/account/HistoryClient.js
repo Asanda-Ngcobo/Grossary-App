@@ -50,22 +50,28 @@ function HistoryClient({ History, topHistory, userId }) {
                 {data.items.map((history) => (
                   <li
                     key={history.id}
-                    className="border-b border-b-[#8F8C8C] "
+                    className=" "
                   >
-                        <h1 className="font-bold text-xs">{history.list_name}</h1>
+                        
                         <div className="py-3 px-2 flex items-center gap-4">
- <div className="w-[60px] flex justify-center items-center">
+                                   
+                      <Link href={`/account/forms/${history.id}/list-summary`}
+                    >
+                       <div className="w-[60px] flex justify-center items-center">
                       <div className="bg-[#E2F3F4] w-[50px] h-[50px] rounded-full flex justify-center items-center">
                         <ShoppingBag color="#8F8C8C" />
                       </div>
                     </div>
+         
+                      </Link>
+
 
                     {/* Middle: Info */}
                     <div className="flex-1">
-                  
+                  <h1 className="font-bold text-xs">{history.list_name}</h1>
                       <p className="text-xs font-semibold">
                         {new Date(history.shopped_at).toLocaleDateString('en-GB')},{" "}
-                        R{history.money_spent}
+                        <span className="text-red-900 font-extrabold text-xs">-R{history.money_spent}</span>
                       </p>
                     </div>
 
@@ -76,21 +82,8 @@ function HistoryClient({ History, topHistory, userId }) {
                     </form>
 
                     {/* Link button */}
-                         <button >
-                      <Link href={`/account/forms/${history.id}/list-summary`}
-                      className='group
-     flex justify-center items-center 
-     h-[40px] w-[40px] bg-gray-600
-     rounded-full
-     active:bg-gray-900
-       gap-2 uppercase text-xs cursor-pointer
-      font-bold text-gray-500 flex-grow px-3 
-      hover:bg-accent-600 transition-colors hover:text-primary-900'>
-                        <FileText className=' 
-      absolute
-      '  />
-                      </Link>
-                    </button>
+               
+                    
                         </div>
                     {/* Left: Icon */}
                    

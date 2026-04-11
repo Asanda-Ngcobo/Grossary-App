@@ -29,7 +29,7 @@ const supabase = await createClient()
   const list_name = formData.get('list_name');
   const list_budget = formData.get('list_budget');
 
-  if (typeof list_name !== 'string' || typeof list_budget !== 'string') {
+  if (typeof list_name !== 'string') {
     throw new Error('Invalid form data');
   }
 
@@ -52,6 +52,42 @@ const supabase = await createClient()
 
 redirect(`/account/forms/${list.id}`);
 
+}
+
+export async function addCard(formData){
+  const supabase = await createClient()
+      const { data } = await supabase.auth.getUser()
+    
+     if (!data) throw new Error('You must be logged in to add a list');
+    const { data: profile } = await supabase
+        .from('users_info')
+        .select('*')
+        .eq('id', data.user.id)
+        .single();
+       
+  const storeName = formData.get('name');
+  const cardNumber = formData.get('card_number');
+
+    const newCard = {
+    user_id: profile.id,
+    name: storeName,
+    card_number: cardNumber,
+    barcode_value: cardNumber,
+  };
+
+  const { data: list, error } = await supabaseServer
+    .from('cards')
+    .insert([newCard])
+    .select()
+    .single();
+
+  if (error) {
+    console.error("Supabase addCard error:", error.message);
+    throw new Error("The card could not be added");
+  }
+
+  revalidatePath(`/account/cards`)
+  
 }
  export async function deleteList(listId) {
     const supabase = await createClient()
@@ -77,7 +113,9 @@ redirect(`/account/forms/${list.id}`);
     throw new Error('Item could not be deleted');
   }
   
-    revalidatePath('/account/lists')
+    revalidatePath('/account')
+    redirect('/account')
+    
     }
 
     export async function addItem(formData, listId) {

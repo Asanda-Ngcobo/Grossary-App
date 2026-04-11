@@ -10,7 +10,7 @@ export default function AddListForm() {
         action={createList}
         className="
           w-full max-w-md
-          bg-[#04284B]
+          bg-[#e7eeea]
           rounded-2xl
           p-6
           shadow-md
@@ -20,7 +20,7 @@ export default function AddListForm() {
         <div className="space-y-2">
           <label
             htmlFor="list_name"
-            className="text-lg font-medium text-white"
+            className="text-lg font-medium text-black"
           >
             List Name
           </label>
@@ -28,22 +28,23 @@ export default function AddListForm() {
             id="list_name"
             name="list_name"
             type="text"
-            placeholder="e.g. Monthly Groceries"
+            
             required
             className="
               w-full
-              rounded-xl
-              bg-gray-200
+              bg-[#e7eeea]
               px-4 py-3
-              text-lg
+              text-2xl
+              font-extrabold
               text-black
+              border-b
               outline-none
-              focus:ring-2 focus:ring-lime-400
+              
             "
           />
         </div>
 
-        <div className="space-y-2">
+        {/* <div className="space-y-2">
           <label
             htmlFor="list_budget"
             className="text-lg font-medium text-white"
@@ -68,7 +69,7 @@ export default function AddListForm() {
               focus:ring-2 focus:ring-lime-400
             "
           />
-        </div>
+        </div> */}
 
         <SubmitButton>Create List</SubmitButton>
       </form>

@@ -37,8 +37,8 @@ export default function WebAppLayout({ children }) {
         </Script>
       </head>
  <body
-        className={`${MainFont.className} bg-[#041527]
-         text-white lg:grid grid-cols-[16rem_1fr] h-screen 
+        className={`${MainFont.className}  bg-linear-to-r from-[#0B2E1E] to-[#074b2b]
+         text-white w-full h-screen 
         gap-12`}
       >
         <FormProvider>

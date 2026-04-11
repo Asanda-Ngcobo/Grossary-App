@@ -13,7 +13,7 @@ export default function ListsLayout({ children }) {
   return (
    
       <div
-        className={`${MainFont.className} bg-[#041527] text-white h-screen`}
+        className={`${MainFont.className} text-white h-screen`}
       >
 
         <div>{children}</div>
