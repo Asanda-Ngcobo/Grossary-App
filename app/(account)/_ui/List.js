@@ -25,8 +25,9 @@ acc + (cur.total_price|| 0), 0)
    }
 
   return (
-    <main className="lg:w-[90%] lg:ml-[5%]  ">
-<li className="  my-4 py-3  px-2 flex items-center active:mx-5   ">
+    <main className="lg:w-[90%] lg:ml-[5%] bg-white shadow rounded-lg  ">
+<li className="  my-4 py-3 
+ px-2 flex items-center active:mx-5   ">
       {/* Left: Icon */}
      
        <Link  href={`/account/forms/${id}`} className="w-full   text-black flex justify-between items-center">
@@ -39,11 +40,13 @@ acc + (cur.total_price|| 0), 0)
          
       </div>
        </div>
-   
-      <div className="flex flex-col">
-        <span className="text-[#ACF532] font-extrabold text-3xl">R{ListMoneySpent}</span>
-        <span className="text-md text-gray-400">Current Total</span>
+      {ListMoneySpent !== 0 && (
+          <div className="flex flex-col">
+        <span className="text-[#ACF532] font-extrabold text-xl">R{ListMoneySpent}</span>
+     <span className="text-md text-gray-400">Current Total</span>
       </div>
+       )}
+    
      </Link> 
       {/* Right: Money Spent */}
      

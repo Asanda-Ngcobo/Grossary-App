@@ -121,7 +121,7 @@ const categoryData = useMemo(() => {
     <div className="py-2 px-4 rounded-md  mt-2 
        lg:w-[80%] lg:ml-[10%] lg:mx-0 gap-6">
 
-        <div className="flex flex-col w-full h-[40vh]
+        <div className="flex flex-col w-full h-[45vh]
       rounded-md ">
             <div className="w-full h-20 flex justify-center items-center
              font-bold">
