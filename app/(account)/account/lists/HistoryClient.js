@@ -2,7 +2,7 @@
 
 import Link from "next/link"
 import { SubmitButton } from "./ReUseButton"
-import { FileText, ShoppingBag } from "@deemlol/next-icons"
+
 import { reuseList } from "@/app/_lib/actions";
 
 function HistoryClient({ History, userId }) {
@@ -49,27 +49,28 @@ function HistoryClient({ History, userId }) {
                 {data.items.map((history) => (
                   <li
                     key={history.id} className=" 
-                     w-full flex justify-center items-center"
+                     w-full flex justify-center items-center text-black"
                   >
 
                     {/* Left: Icon */}
 
                      <Link href={`/account/forms/${history.id}/list-summary`}
-                    className="w-[80%] flex justify-between items-center gap-2"> 
+                    className="w-full flex justify-between items-center gap-2"> 
                    
                      
 
                              <div className="flex flex-col items-center py-4 px-2">
                       
-                     <h1 className="font-bold text-xs">{history.list_name}</h1>
+                     <h1 className="font-bold text-md ">{history.list_name}</h1>
 
                     {/* Middle: Info */}
-                    <div className="flex-1">
+                    <div className="flex justify-between">
                      
-                      <p className="text-xs font-semibold">
+                      <p className="text-sm font-semibold">
                         {new Date(history.shopped_at).toLocaleDateString('en-GB')},{" "}
-                        R{history.money_spent}
+                        
                       </p>
+                      <p className="text-sm">R{history.money_spent}</p>
                     </div>
 
                   
