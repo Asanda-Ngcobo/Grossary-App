@@ -1,17 +1,14 @@
 "use client";
 
-import { Suspense } from "react";
 
-import { Bell, CreditCard, User } from "@deemlol/next-icons";
 
-import Lists from "../_ui/Lists";
-import Loading from "./loading";
+import { Bell, User } from "@deemlol/next-icons";
+
+
 import ReportsWrapper from "../_ui/ReportWrapper";
 import ParentFormBackground from "./ParentFormBackground";
 import AddListForm from "./AddListForm";
 import { useForm } from "@/app/providers/Provider";
-import { Lexend_Deca } from "next/font/google";
-import Link from "next/link";
 import Logo from "@/app/(website)/_components/Logo";
 
 

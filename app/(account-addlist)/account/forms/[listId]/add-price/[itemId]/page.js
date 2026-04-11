@@ -92,8 +92,8 @@ useEffect(() => {
   }}
   required
 />
+    </div>
 
-   </div>
 
         <button
           type="submit"

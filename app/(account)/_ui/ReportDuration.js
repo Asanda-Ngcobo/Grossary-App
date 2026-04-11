@@ -32,8 +32,8 @@ function  ReportDuration({ onChange }) {
             key={time.id}
             onClick={() => handleClick(time.value)}
             className={`${ButtonFont.className} 
-              w-[70px] text-[10px] flex justify-center text-black items- font-semibold py-2 shrink-0
-              ${active === time.value ? "underline  " : " "}
+              w-[80px] text-[12px] flex justify-center items- font-semibold py-2 shrink-0
+              ${active === time.value ? " text-[#1EC677] underline " : "text-black "}
             `}
           >
             {time.label}

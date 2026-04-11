@@ -4,9 +4,8 @@ import { deleteList } from '@/app/_lib/actions';
 import { useOptimistic, useState } from 'react';
 
 import { useForm } from '@/app/providers/Provider';
-import { ArrowLeft, ArrowRight, Plus } from '@deemlol/next-icons';
-import Link from 'next/link';
-import HistoryClient from '../account/HistoryClient';
+import {  Plus } from '@deemlol/next-icons';
+
 
 
 function Lists({myLists, allItems}) {

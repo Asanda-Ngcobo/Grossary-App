@@ -1,27 +1,15 @@
 "use client";
 import { useState, useMemo, Suspense } from "react";
 import ReportDuration from "./ReportDuration";
-import {
-  LineChart,
-  Line,
-  CartesianGrid,
-  XAxis,
-  YAxis,
-  Tooltip,
-  ResponsiveContainer,
-  PieChart,
-  Pie,
-  Cell,
-  Legend,
-} from "recharts";
+
 import MoneySpent from "./MoneySpent";
-import MoneySaved from "../MoneySaved";
+
 import Loading from "@/app/(account-addlist)/account/forms/add-list/loading";
 import Lists from "./Lists";
 import { useForm } from "@/app/providers/Provider";
 import { Lexend_Deca } from "next/font/google";
 import Link from "next/link";
-import { BarChart, CreditCard, FastForward, FileText, Rewind } from "@deemlol/next-icons";
+import { BarChart, CreditCard, FileText } from "@deemlol/next-icons";
 
 const ButtonFont = Lexend_Deca({
   subsets: ["latin"],
@@ -137,7 +125,7 @@ const categoryData = useMemo(() => {
       rounded-md ">
             <div className="w-full h-20 flex justify-center items-center
              font-bold">
-            <div className="lg:flex">
+            <div className="lg:flex text-2xl">
               <h1 >Hello, {userName}</h1>
             </div>
           </div>
