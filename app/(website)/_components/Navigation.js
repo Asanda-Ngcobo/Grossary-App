@@ -47,7 +47,7 @@ export default async function Navigation() {
       <li className="p-3 hover:bg-[#f1f0f0] rounded-xl ">
         <Link href="/features/planning-ahead" >
         <span className="flex flex-row gap-2 w-[40px] h-[40px]
-        justify-center items-center rounded-sm bg-amber-700">
+        justify-center items-center rounded-sm bg-[#1EC677]">
           <FastForward width={20}/> </span>
           Plan Ahead
               <p className="text-xs text-gray-400">Add everything you need as you remember, from staples to treats.</p></Link>
@@ -56,7 +56,7 @@ export default async function Navigation() {
       <li className="p-3 hover:bg-[#f1f0f0] rounded-xl ">
         <Link href="/features/digital-slips" >
         <span className="flex flex-row gap-2 w-[40px] h-[40px]
-        justify-center items-center rounded-sm bg-amber-700"><FileText width={20}/>
+        justify-center items-center rounded-sm bg-[#1EC677]"><FileText width={20}/>
         </span>Never lose your Slips
         <p className="text-xs text-gray-400">Do not worry about keeping your slip, because grossary keeps them for you</p>
         </Link>
@@ -68,7 +68,7 @@ export default async function Navigation() {
       <li className="p-3 hover:bg-[#f1f0f0] rounded-xl  ">
         <Link href="/features/staying-under-budget">
         <span className="flex flex-row gap-2 w-[40px] h-[40px]
-        justify-center items-center rounded-sm bg-amber-700"><DollarSign width={20}/> </span>
+        justify-center items-center rounded-sm bg-[#1EC677]"><DollarSign width={20}/> </span>
         Stay Within Budget
                 <p className="text-xs text-gray-400">Grossary can help you stay within your budget without sacrificing essentials.</p>
         </Link>

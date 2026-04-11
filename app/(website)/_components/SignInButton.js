@@ -16,24 +16,17 @@ function SignInButton() {
          text-[14px]
          font-semibold
          cursor-pointer
-         border
-         border-gray-300
+         border-2
+         border-[#0B2E1E]
          hover
          hover:border-gray-400
          justify-center items-center
-         hidden lg:flex`}>
+          lg:flex`}>
             Sign In
             
         </button>
 
-        <button className="lg:hidden h-[40px] w-[40px]
-        flex justify-center items-center
-        rounded-full bg-white
-         border
-         border-gray-300
-         active:bg-gray-400">
-<User/>
-        </button></>
+   </>
       
     )
 }

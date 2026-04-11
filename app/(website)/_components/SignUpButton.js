@@ -10,7 +10,7 @@ const ButtonFont = Lexend_Deca({
 function SignUpButton({children}) {
     return (
         <button className={`${ButtonFont.className}
-         bg-amber-700 min-w-[100px]
+         bg-[#1EC677] min-w-[100px]
        
          h-[40px] rounded-[20px]
          text-gray-900

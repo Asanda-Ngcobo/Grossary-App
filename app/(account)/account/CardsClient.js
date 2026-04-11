@@ -11,7 +11,7 @@ function CardsClient({ cards }) {
 
 
     return (
-        <div className="p-4 max-w-md mx-auto">
+        <div className="p-4 max-w-md mx-auto text-black">
             {/* Header */}
             <div className='flex flex-row justify-between w-full'> 
                 <div>

@@ -8,7 +8,7 @@ import Image from "next/image";
 
 function Footer() {
   return (
-    <footer className="bg-[#041527] shadow-lg px-6 py-10 align-bottom  ">
+    <footer className="bg-[#0B2E1E] shadow-lg px-6 py-10 align-bottom  ">
       <div className=" w-[80%] mx-[10%] grid gap-10 grid-cols-2
        lg:grid-cols-4 min-h-[40vh] items-center  ">
         {/* Features Section */}

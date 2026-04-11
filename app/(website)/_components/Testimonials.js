@@ -41,7 +41,7 @@ const HeaderFont = Quicksand({
 });
 function Testimonials() {
     return (
-        <div className="w-full bg-[#041527] h-[70vh]  ">
+        <div className="w-full bg-[#0B2E1E] h-[70vh]  ">
             <h1 className={`text-[20px] font-bold mb-8 text-center text-[#ACF532]
                 ${HeaderFont.className}`}>What Are Our users Saying?</h1>
               <Carousel showThumbs={false}

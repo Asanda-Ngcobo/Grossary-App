@@ -36,7 +36,7 @@ acc + (cur.total_price|| 0), 0)
           {/* Middle: Info */}
       <div className="flex flex-col">
         <h1 className="font-bold text-2xl">{list_name}</h1>
-         <h5 className="text-md ">{unShoppedItems.length} of {listitems.length} items still to shop</h5>
+         <h5 className="text-md text-gray-400 ">{unShoppedItems.length} of {listitems.length} items still to shop</h5>
          
       </div>
        </div>
