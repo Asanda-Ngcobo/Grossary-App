@@ -18,6 +18,7 @@ function SignInButton() {
          cursor-pointer
          border-2
          border-[#0B2E1E]
+         active:border-[#1EC677]
          hover
          hover:border-gray-400
          justify-center items-center

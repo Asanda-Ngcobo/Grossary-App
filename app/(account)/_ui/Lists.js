@@ -53,7 +53,7 @@ await deleteList(listId)
                              below.
                             </p>} 
         
-        
+        {active && <p>{active.length} active lists</p>}
           
             {optimisticLists.map(function(list){
                 return <List key={list.id} list={list} allitems={allItems}
