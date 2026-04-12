@@ -192,8 +192,8 @@ useEffect(() => {
        
       </div>
       {listitems.length === 0 ? 
-      <div className='flex justify-center items-center mt-10'>
-        <p className='text-amber-700 text-center
+      <div className='flex justify-center w-[80%] mx-auto items-center mt-10'>
+        <p className=' text-center
 bottom-5'>Add Your Grocery list items using the Plus button above</p>
 
       </div> : ''}
