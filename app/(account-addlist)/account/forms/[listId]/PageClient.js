@@ -344,12 +344,10 @@ bottom-5'>Add Your Grocery list items using the Plus button above</p>
       <h1 className="text-2xl font-bold text-green-400 animate-bounce">
         Well Done {capitalizedFirstName}!
       </h1>
-      {/* <p className="text-base">
-        Your shopping is done and you managed to stay&nbsp;
-        <span className="font-bold text-green-300">
-          {(money_left / list_budget * 100).toFixed(2)}%
-        </span> under budget. 🎉😊
-      </p> */}
+      <p className="text-base">
+        Your shopping is done, you can now select the relevant 
+        loyalty card and go pay.
+      </p>
        <div className={`${ButtonFont.className} 
    grid gap-6 mt-11 mx-4 `}>
 
