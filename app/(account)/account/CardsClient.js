@@ -6,6 +6,26 @@ import CardList from "./CardList"
 import { useForm } from "@/app/providers/Provider"
 import ParentFormBackground from "./ParentFormBackground"
 
+const placeholderCards = [
+  {
+    id: 1,
+    name: "Grocery Rewards",
+    number: "**** **** 4821",
+    color: "bg-gradient-to-r from-green-400 to-green-600"
+  },
+  {
+    id: 2,
+    name: "Fuel Saver",
+    number: "**** **** 1934",
+    color: "bg-gradient-to-r from-blue-400 to-blue-600"
+  },
+  {
+    id: 3,
+    name: "Pharmacy Points",
+    number: "**** **** 7728",
+    color: "bg-gradient-to-r from-purple-400 to-purple-600"
+  }
+]
 function CardsClient({ cards }) {
     const { formOpen, toggleForm, active } = useForm();
 
