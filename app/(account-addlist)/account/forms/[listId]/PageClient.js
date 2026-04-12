@@ -294,7 +294,7 @@ bottom-5'>Add Your Grocery list items using the Plus button above</p>
 
                           
 
-                            <div className="flex flex-row w-[40%] justify-between">
+                            <div className="flex flex-row w-[40%] gap-4 justify-between">
                             <IncreaseQuantity itemId={item.id}
                           itemName={item.item_name}
                           itemQuantity={item.item_quantity} listId={listId} />
