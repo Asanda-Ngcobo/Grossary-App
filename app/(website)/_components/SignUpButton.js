@@ -11,7 +11,7 @@ function SignUpButton({children}) {
     return (
         <button className={`${ButtonFont.className}
          bg-[#1EC677] min-w-[100px]
-       active:bg-[#1EC677]
+       active:bg-[#111827]
          h-[40px] rounded-[20px]
          text-gray-900
          cursor-pointer
