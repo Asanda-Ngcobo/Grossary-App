@@ -56,7 +56,7 @@ function DeleteAccountClient() {
     
 
       <section className="flex gap-20 mx-[5%] my-5">
-        <div className="bg-white active:bg-gray-600 rounded-full w-[50px] h-[50px] flex justify-center items-center"> 
+        <div className=" active:bg-gray-600 rounded-full w-[50px] h-[50px] flex justify-center items-center"> 
           <Link href='/account'><ChevronLeft color="black" size={40} /></Link>
         </div>
         <h1 className={`${LogoFont.className} text-[18px] font-semibold`}>Delete Account</h1>
@@ -64,8 +64,8 @@ function DeleteAccountClient() {
 
       <h2 className="text-xl font-bold text-center">Why are you deleting your account?</h2>
 
-      <div className="py-2 px-4 rounded-md w-[90%] mt-[5%] ml-[5%] md:w-[40%] md:ml-[25%] bg-[#04284B] shadow-sm">
-        <form className="text-lg py-5 text-white">
+      <div className="py-2 px-4 rounded-md w-[90%] mt-[5%] ml-[5%] md:w-[40%] md:ml-[25%]  shadow-sm">
+        <form className="text-lg py-5 ">
           {reasons.map((r, i) => (
             <label key={i} className="block cursor-pointer py-3">
               <input
@@ -93,7 +93,7 @@ function DeleteAccountClient() {
       </div>
 
       {reason && (
-        <button className={`${ButtonFont.className} bg-[#A2B06D]
+        <button className={`${ButtonFont.className} bg-[#1EC677]
           w-[60%] mx-[20%] mt-10
           lg:w-[60%] lg:ml-[20%]
           h-[50px] rounded-[10px]

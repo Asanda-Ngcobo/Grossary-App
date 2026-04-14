@@ -69,7 +69,7 @@ function ReportsClient({profile}) {
         {/* Item Name with Autocomplete */}
       <div className="py-2 px-4 rounded-md w-[90%] mt-[2%]
   ml-[5%] md:w-[40%] md:ml-[25%] lg:w-[40%] 
-  lg:ml-[30%] grid grid-rows-2 gap-2 bg-[#041527]
+  lg:ml-[30%] grid grid-rows-2 gap-2 
    shadow-sm">
        
         {/* User Name */}

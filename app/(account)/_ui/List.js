@@ -92,9 +92,9 @@ const shoppedPercentage = (Number(shoppedItems.length/listitems.length)) * 100 |
 
     {/* Optional future: items count */}
     
-    <span className="text-xs text-gray-400">
+    {/* <span className="text-xs text-gray-400">
       {unShoppedItems.length} left
-    </span> 
+    </span>  */}
    
   </div>
 </Link>

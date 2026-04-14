@@ -20,7 +20,7 @@ export default function ReportButton({ children}) {
       type="submit"
     
       disabled={pending}
-    className={`${ButtonFont.className} bg-[#A2B06D]
+    className={`${ButtonFont.className} bg-[#1EC677]
         
         w-[80%]
         mx-[10%]

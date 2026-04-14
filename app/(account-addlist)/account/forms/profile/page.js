@@ -1,5 +1,5 @@
 import SignOutButton from "@/app/(authentication)/signOutButton";
-import {  ChevronLeft, Edit,    Edit2,    Email,    LogOut,  Mail, Trash2, User } from "@deemlol/next-icons";
+import {  ChevronLeft, ChevronRight, Edit,    Edit2,    Email,    LogOut,  Mail, Trash2, User } from "@deemlol/next-icons";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -7,6 +7,9 @@ import Link from "next/link";
 import { Suspense } from "react";
 import Loading from "../add-list/loading";
 import { createClient } from "@/app/_utils/supabase/server";
+import Privacy from "@/app/(account)/_ui/Privacy";
+import ReportIssueButton from "../reports/ReportIssueButton";
+import DeleteAccount from "./DeleteAccount";
 
 
 
@@ -58,16 +61,45 @@ const fullName = profile?.fullName
   .join(' ');
 
 
+const profileLinks = [
+  
+   {
+    name: <Privacy/>,
+    id: 2,
+      icon: <ChevronRight/>
+  
+    
+    
+  },
+   {
+    name: <ReportIssueButton/>,
+    id: 3,
+      icon: <ChevronRight/>
+  
+    
+    
+  },
+   
+    {
+    name: <DeleteAccount/>,
+    id: 4,
+    icon: <ChevronRight/>
+    
+  
+   
+    
+  },
 
+]
 
     return (
 
         <Suspense fallback={<Loading/>}>
        
           {/* Profile */}
- <section className="py-6 px-4 rounded-md w-[90%] mt-[5%]
-  ml-[5%] xl:w-[60%] xl:ml-[15%] lg:mx-0 gap-6 shadow-sm ">
-       <button className="bg-white
+ <section className="py-6 px-4 w-[90%] mt-[5%]
+  ml-[5%] xl:w-[60%] xl:ml-[15%] lg:mx-0 gap-6  ">
+       <button className="
             cursor-pointer active:bg-gray-600
              text-black rounded-full w-10 h-10
               flex items-center justify-center"
@@ -109,9 +141,30 @@ const fullName = profile?.fullName
 
 
   </div>
-</section>
 
   
+</section>
+
+{/* Links */}
+  <section  className="py-1 rounded-md w-[90%] ml-[5%]
+        xl:w-[60%] xl:ml-[15%] lg:ml-0 bottom-[300px]">
+  {profileLinks.map(function(proflinks){
+    return <ul key={proflinks.id} className="w-[90%] ml-[5%]">
+      <li  className={` px-1 py-3 flex
+       justify-between  cursor-pointer border-b-1 border-b-gray-400
+       active:text-[#ACF532]
+        ${proflinks.id === 1 ? '': ''}`}>
+       
+ <span className="flex gap-2.5">
+{proflinks.name}</span>
+        <span className="text-black">{proflinks.icon}</span>
+       
+       </li>
+
+    </ul>
+  })}
+
+</section>
           
 </Suspense>
         

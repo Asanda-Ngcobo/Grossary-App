@@ -16,7 +16,7 @@ function DeleteAccountForm({onDelete, isPending}) {
     return (
         <div className=" w-[90%] mx-auto mt-[50%] min-h-[40%] md:mt-[20%] md:w-[50%]
      md-[25%]
-      bg-[#04284B] text-white rounded-2xl z-10  shadow-2xl p-6">
+       rounded-2xl z-10  shadow-2xl p-6">
         <div className="flex justify-center">  <AlertTriangle color="red" width={50} height={50} className="text-center "/></div>
           
             <h1 className="text-xl text-center font-extrabold">Are You Sure?</h1>
@@ -31,7 +31,7 @@ function DeleteAccountForm({onDelete, isPending}) {
      onClick={onDelete}
       className="min-h-10 w-auto px-2 rounded-lg cursor-pointer
        border bg-transparent
-       text-gray-400 border-[#041527]  font-semibold 
+       text-gray-400   font-semibold 
        hover:opacity-70 transition-all
        active:bg-[#A2B06D]"
     >
@@ -39,7 +39,7 @@ function DeleteAccountForm({onDelete, isPending}) {
     </button>
     <button
      
-      className="min-h-10 w-auto px-2 active:bg-gray-600  bg-amber-700
+      className="min-h-10 w-auto px-2 active:bg-gray-600  bg-[#1EC677]
         cursor-pointer  rounded-lg text-[#04284B]
       font-semibold hover:bg-amber-600 transition-colors"
     >

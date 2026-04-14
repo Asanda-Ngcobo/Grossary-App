@@ -32,33 +32,6 @@ const navLinks = [
     
   },
 
-  //  {
-  //   name: <Privacy/>,
-  //   id: 2,
-  //     icon: <ChevronRight/>
-  
-    
-    
-  // },
-  //  {
-  //   name: <ReportIssueButton/>,
-  //   id: 3,
-  //     icon: <ChevronRight/>
-  
-    
-    
-  // },
-   
-  //   {
-  //   name: <DeleteAccount/>,
-  //   id: 4,
-  //   icon: <ChevronRight/>
-    
-  
-   
-    
-  // },
-
     {
     name: <SignOutButton/>,
     id: 5,
@@ -93,7 +66,7 @@ function Menu() {
          w-[80%] h-[20vh] mx-auto
           flex flex-col items-center
          lg:w-[30%]
-         rounded-lg">
+         rounded-xl">
             <div className="top-1 ml-[90%] text-gray-600 flex"
                   onClick={toggleMenu} >
    <X />
@@ -105,11 +78,11 @@ function Menu() {
   {navLinks.map(function(userInfo){
     return <ul key={userInfo.id} className="w-[90%] ml-[5%]">
       <li  className={` p-1 flex
-       justify-between  cursor-pointer
-       active:text-[#ACF532]
+       justify-between  cursor-pointer 
+     
         ${userInfo.id === 1 ? '': ''}`}>
        
- <span className="flex gap-2.5">
+ <span className="flex gap-2.5 active:text-[#1EC677]">
 {userInfo.name}</span>
         <span className="text-black">{userInfo.icon}</span>
        

@@ -5,7 +5,7 @@ export default function Privacy() {
     return (
         <div className="flex items-center gap-2  py-2
         cursor-pointer  text-black">
-            <Link href='/privacy-policy'>
+            <Link href='/company/privacy-policy'>
              <span className='flex gap-2'><ShieldOff/> Privacy</span></Link>
            
         </div>
