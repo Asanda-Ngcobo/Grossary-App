@@ -146,44 +146,6 @@ const categoryList = useMemo(() => {
          
       
 
-      
-
-     
-       {/* Bar Chart */}
-<div className="mt-6 p-4 rounded-lg">
-  <h2 className="text-[#8F8C8C] text-lg mb-2">
-    Monthly Spending
-  </h2>
-
-  <ResponsiveContainer width="100%" height={300}>
-    <BarChart data={chartData}>
-      <CartesianGrid strokeDasharray="3 3" stroke="" />
-
-      <XAxis dataKey="month" stroke="#8F8C8C" />
-      <YAxis stroke="#8F8C8C" />
-
-      <Tooltip
-        contentStyle={{ backgroundColor: "#041527", border: "none" }}
-        labelStyle={{ color: "#ACF532" }}
-        formatter={(value) =>
-          new Intl.NumberFormat("en-ZA", {
-            style: "currency",
-            currency: "ZAR",
-          }).format(value)
-        }
-      />
-
-      <Bar
-        dataKey="total"
-        fill="#ACF532"
-        radius={[6, 6, 0, 0]} // rounded top bars 🔥
-      />
-    </BarChart>
-  </ResponsiveContainer>
-</div>
-      
-
-
       {/* Spend Per  Cat */}
 
       
@@ -226,6 +188,44 @@ const categoryList = useMemo(() => {
     ))}
   </div>
 </div>
+      
+
+     
+       {/* Bar Chart */}
+<div className="mt-6 p-4 rounded-lg">
+  <h2 className="text-[#8F8C8C] text-lg mb-2">
+    Monthly Spending
+  </h2>
+
+  <ResponsiveContainer width="100%" height={300}>
+    <BarChart data={chartData}>
+      <CartesianGrid strokeDasharray="3 3" stroke="" />
+
+      <XAxis dataKey="month" stroke="#8F8C8C" />
+      <YAxis stroke="#8F8C8C" />
+
+      <Tooltip
+        contentStyle={{ backgroundColor: "#041527", border: "none" }}
+        labelStyle={{ color: "#ACF532" }}
+        formatter={(value) =>
+          new Intl.NumberFormat("en-ZA", {
+            style: "currency",
+            currency: "ZAR",
+          }).format(value)
+        }
+      />
+
+      <Bar
+        dataKey="total"
+        fill="#ACF532"
+        radius={[6, 6, 0, 0]} // rounded top bars 🔥
+      />
+    </BarChart>
+  </ResponsiveContainer>
+</div>
+      
+
+
     
     </div>
    
