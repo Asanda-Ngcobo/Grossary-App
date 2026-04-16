@@ -396,7 +396,7 @@ bottom-5'>Add Your Grocery list items using the Plus button above</p>
     setShowForm={setShowForm}
     listId={listId}
   >
-    <AddItemForm setShowForm={setShowForm}
+    <AddItemForm  openform={HandleShowForm}
     listId={listId} />
   </ParentFormBackground>
 )}

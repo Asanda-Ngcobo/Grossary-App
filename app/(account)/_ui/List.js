@@ -19,7 +19,7 @@ item.total_price !== null)
 const ListMoneySpent = shoppedItems.reduce((acc, cur)=>
 acc + (cur.total_price|| 0), 0)
 
-const shoppedPercentage = (Number(shoppedItems.length/listitems.length)) * 100 || 0;
+const shoppedPercentage = ((Number(shoppedItems.length/listitems.length)) * 100).toFixed(2) || 0;
   
    const [isOpenModal, setIsOpenModal] = useState(false)
    function handleModal(){
@@ -92,9 +92,9 @@ const shoppedPercentage = (Number(shoppedItems.length/listitems.length)) * 100 |
 
     {/* Optional future: items count */}
     
-    {/* <span className="text-xs text-gray-400">
+    <span className="text-xs text-gray-400">
       {unShoppedItems.length} left
-    </span>  */}
+    </span> 
    
   </div>
 </Link>

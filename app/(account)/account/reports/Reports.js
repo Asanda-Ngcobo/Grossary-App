@@ -23,7 +23,7 @@ import Link from "next/link";
 
 import MoneySpent from "../../_ui/MoneySpent";
 import ReportDuration from "../../_ui/ReportDuration";
-import { ChevronLeft } from "@deemlol/next-icons";
+import { ChevronLeft, Maximize, Maximize2, Minimize2 } from "@deemlol/next-icons";
 
 const ButtonFont = Lexend_Deca({
   subsets: ["latin"],
@@ -33,8 +33,11 @@ const ButtonFont = Lexend_Deca({
 function Reports({ allLists, allItems
  }) {
   const [duration, setDuration] = useState(30);
-  const { 
-       active, toggleActive } = useForm();
+ const [expand, setExpand] = useState(false)
+
+ function handleExpand(){
+  setExpand(prev=> !prev)
+ }
 
   // // ✅ filter lists
   const filteredLists = useMemo(() => {
@@ -129,7 +132,7 @@ const categoryList = useMemo(() => {
                             <ChevronLeft />
                         </Link>
                     </button>
-        <div className="flex flex-col w-full h-[30vh] rounded-md bg-[]">
+        <div className="flex flex-col w-full h-[30vh] rounded-md">
             
           {/* Stats */}
       <div className=" gap-4 rounded-2xl w-full h-fit flex flex-col justify-center items-center ">
@@ -149,10 +152,37 @@ const categoryList = useMemo(() => {
       {/* Spend Per  Cat */}
 
       
-       <div className="mt-6 p-4 rounded-lg">
-  <h2 className="text-[#8F8C8C] text-sm md:text-lg mb-4">
+{/* Backdrop */}
+{expand && (
+  <div
+    className="fixed inset-0 bg-black/30 backdrop-blur-sm z-20"
+    onClick={handleExpand}
+  />
+)}
+
+{/* Bottom Sheet */}
+<div
+  className={`
+    mt-4 p-4 bg-white shadow-2xl rounded-2xl 
+    transition-all duration-300 ease-in-out
+    ${expand ? "h-[90vh] fixed bottom-0 z-30 left-0 w-full" : "h-[40vh]"}
+  `}
+>
+  <div className="flex justify-end"> <button
+    onClick={handleExpand}
+    className="h-8 w-8 rounded-full flex items-center justify-center active:bg-gray-200"
+  >
+    {expand ? <Minimize2 size={16} /> : <Maximize2 size={16} />}
+  </button></div>
+        {expand && <ReportDuration onChange={(val) => setDuration(val)} />}
+   <div className="flex justify-between items-center px-4">
+  <h2 className="text-[#8F8C8C] text-sm md:text-lg">
     Spending by Category
   </h2>
+
+ 
+</div>
+  
 
   <div className="space-y-4">
     {categoryList.map((cat, index) => (
@@ -192,8 +222,8 @@ const categoryList = useMemo(() => {
 
      
        {/* Bar Chart */}
-<div className="mt-6 p-4 rounded-lg">
-  <h2 className="text-[#8F8C8C] text-lg mb-2">
+<div className="mt-2 bg-white rounded-lg shadow-2xl w-full h-[50hv]">
+  <h2 className="text-[#8F8C8C] text-sm md:text-lg m-4">
     Monthly Spending
   </h2>
 

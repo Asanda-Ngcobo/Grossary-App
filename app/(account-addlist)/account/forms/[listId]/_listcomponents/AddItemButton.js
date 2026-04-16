@@ -21,7 +21,7 @@ export default function AddItemButton({ children}) {
       type="submit"
     
       disabled={pending}
-    className={`${ButtonFont.className} bg-amber-700
+    className={`${ButtonFont.className} bg-[#1EC677]
         
         w-[90%]
         mx-auto

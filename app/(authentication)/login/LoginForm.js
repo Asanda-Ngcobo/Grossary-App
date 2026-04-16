@@ -19,10 +19,10 @@ export default function LoginForm() {
     startTransition(async () => {
       try {
         const role = await login(formData);
-        toast.success('Signin successful! Redirecting...', {
+        toast.success('Signin successful!!', {
           duration: 4000,
           style: {
-            background: '#041527',
+            background: '#0B2E1E',
             color: '#fff',
           },
         });
@@ -38,7 +38,7 @@ export default function LoginForm() {
         toast.error(`The email or password you entered is incorrect.`, {
           duration: 10000,
           style: {
-            background: '#041527',
+            background: '#0B2E1E',
             color: '#fff',
           },
         });
