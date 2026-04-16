@@ -168,7 +168,7 @@ export default function AddItemForm({ listId, openform }) {
               />
 
               {suggestions.length > 0 && (
-                <ul className="absolute z-10 mt-2 w-full rounded-xl bg-white text-black shadow-lg">
+                <ul className="absolute  z-10 mt-4 w-full rounded-xl bg-white text-black shadow-lg">
                   {suggestions
                     .filter(
                       (item) =>
@@ -178,7 +178,7 @@ export default function AddItemForm({ listId, openform }) {
                       <li
                         key={item.id}
                         onClick={() => handleSuggestionClick(item)}
-                        className="px-3 py-2 border-b cursor-pointer hover:bg-gray-100"
+                        className="px-3 py-2 border-b cursor-pointer border-gray-300"
                       >
                         <div className="flex justify-between">
                           <span>
