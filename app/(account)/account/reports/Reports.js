@@ -185,7 +185,7 @@ const categoryList = useMemo(() => {
   
 
   <div className="space-y-4">
-    {categoryList.map((cat, index) => (
+    {(expand ? categoryList : categoryList.slice(0, 4)).map((cat, index) => (
       <div key={index} className="flex flex-col gap-1">
         
         {/* Top row */}
