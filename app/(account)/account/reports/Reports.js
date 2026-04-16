@@ -165,7 +165,7 @@ const categoryList = useMemo(() => {
   className={`
     mt-4 p-4 bg-white shadow-2xl rounded-2xl 
     transition-all duration-300 ease-in-out
-    ${expand ? "h-[90vh] fixed bottom-0 z-30 left-0 w-full" : "h-[40vh]"}
+    ${expand ? "h-[90vh] fixed bottom-0 z-30 left-0 w-full" : "h-fit"}
   `}
 >
   <div className="flex justify-end"> <button

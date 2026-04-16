@@ -25,7 +25,7 @@ function  ReportDuration({ onChange }) {
   };
 
   return (
-    <div className="overflow-x-auto no-scrollbar m-2">
+    <div className="overflow-x-auto no-scrollbar ">
       <div className="flex gap-2 w-[90%] mx-auto">
         {durationOptions.map((time) => (
           <button
