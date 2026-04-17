@@ -52,7 +52,7 @@ function ReportsWrapper({ allLists, allItems, myLists, userId,
           new Date(a.date).getTime() - new Date(b.date).getTime()
       );
   }, [filteredItems]);
-// ✅ pie chart data with "Other" grouping (2 decimal places)
+// ✅ category data with "Other" grouping (2 decimal places)
 const categoryData = useMemo(() => {
   const categoryTotals = {};
   let totalSpending = 0;
@@ -104,7 +104,6 @@ const categoryData = useMemo(() => {
   const moneySpent = filteredItems.reduce((sum, l) => sum + (l.total_price || 0), 0);
 
 
-  
   // const totalBudget = filteredLists.reduce((sum, l) => sum + (l.list_budget || 0), 0);
   // const moneySaved = totalBudget - moneySpent;
 

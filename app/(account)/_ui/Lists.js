@@ -21,7 +21,7 @@ list.money_spent === 0 || list.money_spent === null)
             const History = myLists.filter((list)=>
 list.money_spent > 0 )
 
-            const topHistory = History.slice(0, 3)
+   
 
             //Delete Ui
 

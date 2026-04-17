@@ -23,7 +23,7 @@ export default async function Page() {
   const { data: authData, error: authError } = await supabase.auth.getUser();
   if (authError || !authData?.user) redirect("/login");
 
-  const userId = authData.user.id;
+  const userId = authData.user.id || data.user.id;
 
   // Get profile
   const { data: profile } = await supabase
@@ -35,20 +35,25 @@ export default async function Page() {
 
   // Get user's lists
   const myLists = await getLists(userId);
-
+console.log(myLists.length)
 
 
   // Get all items with prices and related list user_id
   const { data: allItemsRaw } = await supabase
     .from("list_items")
     .select(
-      "id, total_price, item_category, purchased_at, list_id, user_lists(user_id)"
+      "*, user_lists(user_id)"
     );
 
   // Only include items that belong to this user
   const allItems = (allItemsRaw || []).filter(
     (item) => item.user_lists?.user_id === userId
   );
+
+
+  console.log(allItems)
+  
+  console.log(allItems.length)
 
   return (
     <div className="w-full min-h-full">

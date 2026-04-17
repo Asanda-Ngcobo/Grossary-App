@@ -35,7 +35,7 @@ async function page() {
       const activeList = myLists.filter((list)=>
 list.money_spent === 0 || list.money_spent === null)
 
-console.log(myLists)
+
 
 
     return (
