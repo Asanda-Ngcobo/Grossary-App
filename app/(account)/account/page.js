@@ -39,11 +39,13 @@ console.log(myLists.length)
 
 
   // Get all items with prices and related list user_id
-  const { data: allItemsRaw } = await supabase
-    .from("list_items")
-    .select(
-      "*, user_lists(user_id)"
-    );
+  const { data:allItemsRaw, error:AllItemsError } = await supabase
+  .from("list_items")
+  .select(`
+    *,
+    user_lists!inner(user_id)
+  `)
+  .eq("user_lists.user_id", userId);
 
   // Only include items that belong to this user
   const allItems = (allItemsRaw || []).filter(
