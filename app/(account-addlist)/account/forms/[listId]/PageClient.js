@@ -20,6 +20,7 @@ import Budget from '@/app/(account)/_ui/Budget';
 import DeleteModal from "@/app/(account)/account/lists/DeleteModal";
 import DeleteList from '@/app/(account)/_ui/DeleteList';
 import { deleteList } from '@/app/_lib/actions';
+import AddPriceSheet from '../AddPriceSheet';
 
 const ButtonFont = Lexend_Deca({
   subsets: ["latin"],
@@ -45,6 +46,12 @@ export default function PageClient({ listId, list_name,
     setIsDeleteModal((isDeleteModal) => !isDeleteModal)
    }
 
+   //Handle Form
+   const [activeItemId, setActiveItemId] = useState(null);
+
+function openPrice(id) {
+  setActiveItemId(id);
+}
    
                //Delete Ui
    
@@ -246,8 +253,11 @@ bottom-5'>Add Your Grocery list items using the Plus button above</p>
                         <span>{item.item_volume_mass}{item.item_unit}</span>
                       </div>
                       <form className="flex items-center gap-4 justify-between">
-<Link href={`/account/forms/${listId}/add-price/${item.id}`}>
-  <label className="relative flex items-center cursor-pointer">
+
+<label
+  onClick={() => openPrice(item.id)}
+  className="relative flex items-center cursor-pointer"
+>
     <input
       type="checkbox"
       checked={item.price !== null}
@@ -282,7 +292,7 @@ bottom-5'>Add Your Grocery list items using the Plus button above</p>
       )}
     </span>
   </label>
-</Link>
+
 
 
 
@@ -407,8 +417,15 @@ bottom-5'>Add Your Grocery list items using the Plus button above</p>
     handleModal={handleModal}
     listname={list_name}
     />}
+
+    {activeItemId && (
+  <AddPriceSheet
+    itemId={activeItemId}
+    listId={listId}
+    onClose={() => setActiveItemId(null)}
+  />
+)}
     </div>
     
   );
 }
-

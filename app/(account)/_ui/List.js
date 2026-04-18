@@ -17,7 +17,7 @@ const shoppedItems = listitems.filter((item)=>
 item.total_price !== null)
 
 const ListMoneySpent = shoppedItems.reduce((acc, cur)=>
-acc + (cur.total_price|| 0), 0)
+acc + (cur.total_price|| 0), 0).toFixed(2)
 
 const shoppedPercentage = ((Number(shoppedItems.length/listitems.length)) * 100).toFixed(2) || 0;
   
