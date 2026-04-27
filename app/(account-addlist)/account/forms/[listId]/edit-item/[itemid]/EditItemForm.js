@@ -88,7 +88,7 @@ export default function EditItemForm({ listId, itemid }) {
             </p>,
             {
               duration: 5000,
-              style: { background: "#041527", color: "#fff" },
+              style: { background: "#0B2E1E", color: "#fff" },
             }
           );
 
@@ -99,7 +99,7 @@ export default function EditItemForm({ listId, itemid }) {
       } catch (error) {
         toast.error("Something went wrong, check your connection!", {
           duration: 5000,
-          style: { background: "#041527", color: "#fff" },
+          style: { background: "#0B2E1E", color: "#fff" },
         });
       }
     });
@@ -108,14 +108,18 @@ export default function EditItemForm({ listId, itemid }) {
   return (
     <main>
       {/* Back Button */}
-      <button className="my-5 mx-[5%] bg-white active:bg-gray-600 rounded-full w-[50px] h-[50px] flex justify-center items-center">
+      <button className="my-5 mx-[5%] bg-white
+       active:bg-gray-600 rounded-full w-[50px] h-[50px]
+        flex justify-center items-center">
         <Link href={`/account/forms/${listId}`}>
           <ChevronLeft color="black" size={40} />
         </Link>
       </button>
 
       <form action={handleSubmit}>
-        <div className="py-2 px-4 rounded-md w-[90%] mt-[2%] ml-[5%] md:w-[40%] md:ml-[25%] lg:w-[40%] lg:ml-[30%] grid gap-2 bg-[#041527] shadow-sm">
+        <div className="py-2 px-4 rounded-md w-[90%] 
+        mt-[2%] ml-[5%] md:w-[40%] md:ml-[25%] lg:w-[40%] 
+        lg:ml-[30%] grid gap-2 ">
           <label htmlFor="name" className="text-2xl text-center">
             Edit Item
           </label>
@@ -129,12 +133,12 @@ export default function EditItemForm({ listId, itemid }) {
             onChange={(e) => setQuery(e.target.value)}
             required
             autoComplete="on"
-            className="bg-white text-black text-2xl p-3 rounded-4xl w-full"
+            className="bg-white text-black text-2xl p-3 rounded-xl w-full"
           />
 
           {/* Autocomplete suggestions */}
           {suggestions.length > 0 && (
-            <ul className="absolute bg-[#041527] border text-white shadow-xl w-[80%] z-10 rounded mt-[35%] overflow-y-auto lg:mt-[15%] lg:w-[40%]">
+            <ul className="absolute bg-white  text-black shadow-xl w-[80%] z-10 rounded mt-[35%] overflow-y-auto lg:mt-[15%] lg:w-[40%]">
               {suggestions.map((item, index) => (
                 <li
                   key={index}

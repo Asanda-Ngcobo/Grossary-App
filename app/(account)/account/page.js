@@ -35,7 +35,7 @@ export default async function Page() {
 
   // Get user's lists
   const myLists = await getLists(userId);
-console.log(myLists.length)
+
 
 
   // Get all items with prices and related list user_id
@@ -53,9 +53,7 @@ console.log(myLists.length)
   );
 
 
-  console.log(allItems)
-  
-  console.log(allItems.length)
+ 
 
   return (
     <div className="w-full min-h-full">
