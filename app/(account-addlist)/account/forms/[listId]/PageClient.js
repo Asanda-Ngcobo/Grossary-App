@@ -129,7 +129,7 @@ useEffect(() => {
     <div>
       {/* Header Card */}
       <div className="w-[90%]  mx-[5%] sm:w-[80%] sm:mx-[10%]
-       md:w-[80%] md:mx-[10%] lg:w-[60%] lg:mx-[20%] mt-[5%] bg-white top-1 sticky z-10
+       md:w-[80%] md:mx-[10%] lg:w-[60%] lg:mx-[20%] mt-[5%] bg-white
        text-black rounded-md shadow-lg px-4 py-4 mb-2">
         <div className="flex items-center justify-between mb-4">
     
