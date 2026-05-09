@@ -168,7 +168,7 @@ export default function AddItemForm({ listId, openform }) {
               />
 
               {suggestions.length > 0 && (
-                <ul className="absolute h-full  z-10 mt-4 w-full rounded-xl bg-white text-black shadow-lg">
+                <ul className=" h-full mt-10 w-full rounded-xl bg-white text-black shadow-lg">
                   {suggestions
                     .filter(
                       (item) =>
