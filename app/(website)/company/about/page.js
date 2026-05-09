@@ -1,9 +1,80 @@
 import Link from "next/link"
 import AboutHero from "./AboutHero"
 
+
+
 export const metadata = {
-  title: "About Us | Grossary",
-  description: "Grossary - a simple, all-in-one grocery app that helps you",
+  title: "About Us",
+
+  description:
+    "Learn more about Grossary, the South African grocery shopping app helping people track spending, create smarter shopping lists, and shop within budget.",
+
+  keywords: [
+    "About Grossary",
+    "Grossary team",
+    "South African startup",
+    "grocery shopping app",
+    "budget shopping app",
+    "shopping list app",
+    "grocery budget tracker",
+    "fintech grocery app",
+    "student grocery app",
+    "smart grocery shopping",
+  ],
+
+  alternates: {
+    canonical: "/about",
+  },
+
+  openGraph: {
+    title: "About Grossary",
+
+    description:
+      "Discover the mission behind Grossary and how we're making grocery shopping smarter and more affordable in South Africa.",
+
+    url: "https://grossary.shop/about",
+
+    siteName: "Grossary",
+
+    locale: "en_ZA",
+
+    type: "website",
+
+    images: [
+      {
+        url: "/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "About Grossary",
+      },
+    ],
+  },
+
+  twitter: {
+    card: "summary_large_image",
+
+    title: "About Grossary",
+
+    description:
+      "Learn more about Grossary and our mission to simplify grocery shopping and budgeting.",
+
+    images: ["/og-image.png"],
+  },
+
+  robots: {
+    index: true,
+    follow: true,
+
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-snippet": -1,
+      "max-image-preview": "large",
+      "max-video-preview": -1,
+    },
+  },
+
+  category: "shopping",
 };
 function page() {
     return (

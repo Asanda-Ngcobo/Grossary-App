@@ -1,62 +1,72 @@
-'use client'
-import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
-import { Carousel } from 'react-responsive-carousel';
+"use client";
+
+import "react-responsive-carousel/lib/styles/carousel.min.css";
+import { Carousel } from "react-responsive-carousel";
 import TestimonialBunner from "./TestimonialBunner";
 import { Quicksand } from "next/font/google";
+
 const testimonials = [
-    {testimonial: `Meal prep used to be chaos. 
-        Now i stay on top of my list and budget every week`,
-        name: 'Lerato',
-        age: 25,
-        occupation: 'Digital Marketer',
-        id:1
-    },
-    {testimonial: `I love how simple it is, 
-        it keeps me within budget, even during tight month`,
-        name: 'Sibusiso',
-        age: 27,
-        occupation: 'Electrical Engineer',
-        id:2
-    },
-    {testimonial: `Between school lunches, weekend meals and snacks, my grocery list is always long.
-         Grossary makes it easy to keep track of everything when every cent counts`,
-        name: 'Thandi',
-        age: 36,
-        occupation: 'Mother of 2, Project Manager',
-        id:3
-    },
-//     {testimonial: `As a university student on a tight NSFAS budget, Grossary has become my weekly lifesaver.
-//           I just input my list, and it tells me where to shop without going over budget.
-//           It’s like having a personal shopper that actually understands my financial situation.`,
-//        name: 'Zanele M',
-//        age: 21,
-//        occupation: 'Third year Student, UKZN',
-//        id:3
-//    },
-]
+  {
+    testimonial:
+      "Meal prep used to feel chaotic. Now I track everything in Grossary and stay within budget every week without thinking about it.",
+    name: "Lerato",
+    occupation: "Digital Marketer",
+    id: 1,
+  },
+  {
+    testimonial:
+      "It’s simple but powerful. I always know exactly how much I’m spending before I even get to the till.",
+    name: "Sibusiso",
+    occupation: "Electrical Engineer",
+    id: 2,
+  },
+  {
+    testimonial:
+      "Between school lunches and household groceries, things add up fast. Grossary helps me stay in control of every rand.",
+    name: "Thandi",
+    occupation: "Mother of 2 · Project Manager",
+    id: 3,
+  },
+];
 
 const HeaderFont = Quicksand({
   subsets: ["latin"],
-  display: 'swap',
+  display: "swap",
 });
+
 function Testimonials() {
-    return (
-        <div className="w-full bg-[#0B2E1E] h-[70vh]  ">
-            <h1 className={`text-[20px] font-bold mb-8 text-center text-[#ACF532]
-                ${HeaderFont.className}`}>What Are Our users Saying?</h1>
-              <Carousel showThumbs={false}
-              autoPlay
-              infiniteLoop
-              interval={10000}
-              showArrows={false}
-              showStatus={false}>
-                {testimonials.map(function(testimonial){
-                    return <TestimonialBunner usertestimonial={testimonial} key={testimonial.id}/>
-                })}
-               
-            </Carousel>
-        </div>
-    )
+  return (
+    <section className="w-full py-16 px-4 flex flex-col items-center bg-gradient-to-b from-white to-gray-50">
+      
+      <h2
+        className={`text-2xl md:text-3xl font-semibold text-center text-gray-900 mb-10 ${HeaderFont.className}`}
+      >
+        Trusted by everyday shoppers
+      </h2>
+
+      <p className="text-center text-gray-500 max-w-xl mb-10 text-sm md:text-base">
+        From students to professionals, Grossary helps people take control of
+        grocery spending without overthinking it.
+      </p>
+
+      <div className="w-full max-w-2xl">
+        <Carousel
+          showThumbs={false}
+          autoPlay
+          infiniteLoop
+          interval={8000}
+          showArrows={false}
+          showStatus={false}
+          swipeable
+          emulateTouch
+        >
+          {testimonials.map((t) => (
+            <TestimonialBunner usertestimonial={t} key={t.id} />
+          ))}
+        </Carousel>
+      </div>
+    </section>
+  );
 }
 
-export default Testimonials
+export default Testimonials;

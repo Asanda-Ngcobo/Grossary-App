@@ -2,6 +2,7 @@
 import ShoppingList from "@/public/shopping list.jpg"
 import Budgeting from "@/public/budgeting.jpg"
 import Shopping from "@/public/Student medium.jpg"
+import Cards from '@/public/Loyality-programs-in-South-Africa.jpg'
 
 import Content from "./Content";
 import TertiaryBunner from "./TertiaryBunner";
@@ -9,6 +10,7 @@ import TertiaryBunner from "./TertiaryBunner";
 import AddListMockUp from "./AddListMockUp";
 import FinishedShoppingBunner from "./FinishedShoppingBunner";
 import TrackingPrices from "./TrackingPrices";
+import LoyaltyCardsClient from "./LoyaltyCardsClient";
 
 
 const contents = [
@@ -28,23 +30,32 @@ const contents = [
         heading: 'Track Prices as You Shop',
         description: `Input item prices on the go and see your total update in real-time. 
         Know what you’re spend before you hit the till.`,
-        link: '/staying-under-budget',
+        link: '/features/staying-under-budget',
         bunner: <TertiaryBunner>
             <TrackingPrices/>
         </TertiaryBunner>
     },
     
-    // {id: 3,
-    //     image: Budgeting,
-    //     heading: 'Set Your Budget & Stick to it',
-    //     description: `Choose your weekly or monthly grocery limit. 
-    //     Grossary can help you stay within your budget without sacrificing essentials`,
-    //     link: '/staying-under-budget',
-    //     bunner: <TertiaryBunner>
-    //         <FinishedShoppingBunner/>
-    //     </TertiaryBunner>
-    // },
-    
+    {id: 3,
+        image: Budgeting,
+        heading: 'Set Your Budget & Stick to it',
+        description: `You know your weekly or monthly grocery budget limit. 
+        Grossary can help you stay within your budget for every grocery trip`,
+        link: '/features/staying-under-budget',
+        bunner: <TertiaryBunner>
+            <FinishedShoppingBunner/>
+        </TertiaryBunner>
+    },
+       {id: 4,
+        image: Cards,
+       heading: "All Your Loyalty Cards, Always Within Reach",
+description:
+  "Never lose out on savings again. Access your loyalty cards instantly in Grossary and make sure every shop counts toward your rewards.",
+        link: '/features/loyalty-cards',
+        bunner: <TertiaryBunner>
+            <LoyaltyCardsClient/>
+        </TertiaryBunner>
+    },
 ]
 function PlanningAhead() {
     return (

@@ -4,7 +4,7 @@ import Logo from "./Logo";
 import SignUpButton from "./SignUpButton";
 import SignInButton from "./SignInButton";
 import NavigationButtons from "./NavigationButtons"
-import { DollarSign, FastForward, FileText, List, ShoppingBag, Tag } from "@deemlol/next-icons";
+import { CreditCard, DollarSign, FastForward, FileText, List, ShoppingBag, Tag } from "@deemlol/next-icons";
 
 
 
@@ -38,7 +38,7 @@ export default async function Navigation() {
          
              <ul className=" flex gap-10 list-none mx-3.5 ">
          
-            <li className="relative hidden lg:flex group">
+            {/* <li className="relative hidden lg:flex group">
   <NavigationButtons>Features</NavigationButtons>
   <div className="absolute top-full mt-0 hidden group-hover:flex flex-row
    bg-white shadow-md p-2 rounded-2xl z-50
@@ -74,16 +74,27 @@ export default async function Navigation() {
         </Link>
 
       </li>
+
+         <li className="p-3 hover:bg-[#f1f0f0] rounded-xl  ">
+        <Link href="/features/loyalty-cards">
+        <span className="flex flex-row gap-2 w-[40px] h-[40px]
+        justify-center items-center rounded-sm bg-[#1EC677]"><CreditCard width={20}/> </span>
+        Store Your Loyalty Cards
+                <p className="text-xs text-gray-400">Never miss loyalty specials because you forgot your loyalty card at home</p>
+        </Link>
+
+      </li>
+
       {/* <li className="p-3 hover:bg-[#f1f0f0] rounded-xl">
         <Link href="/features/grossaryplus" ><span className="flex flex-row gap-2"><Tag/> Grossary Plus</span>
         <p className="text-xs text-gray-400 mx-2">  No more flipping through ClicFlyer or chasing random deals.</p>
         </Link>
          
-      </li>  */}
+      </li>  
     </ul>
     
   </div>
-</li> 
+</li>  */}
 <li className="relative hidden lg:flex group">
   <NavigationButtons>Company</NavigationButtons>
   <div className="absolute top-full mt-0 hidden group-hover:flex flex-col
@@ -107,13 +118,13 @@ export default async function Navigation() {
   </div>
 </li>
       
-            <li className="hidden lg:flex"><Link href='/for-grossary-stores'><button className="  h-[40px] rounded-[20px]
+            {/* <li className="hidden lg:flex"><Link href='/for-grossary-stores'><button className="  h-[40px] rounded-[20px]
          text-black
          font-semibold
         cursor-pointer
          hover
          hover:bg-[#f1f0f0]
-         min-w-[130px]">For Stores</button></Link></li>
+         min-w-[130px]">For Stores</button></Link></li> */}
             </ul> 
             <ul className=" flex lg:flex-row-reverse gap-10 list-none mx-3.5">
                 

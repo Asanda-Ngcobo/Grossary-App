@@ -1,62 +1,58 @@
 'use client'
 
-import { Check } from "@deemlol/next-icons";
+import { Check, ChevronLeft } from "@deemlol/next-icons";
 import { Lexend_Deca } from 'next/font/google';
 import NamesCarousel from "./NamesCorousel"; // fixed typo
+import DeleteList from "@/app/(account)/_ui/DeleteList";
 
 const ButtonFont = Lexend_Deca({
   subsets: ["latin"],
   display: 'swap',
 });
 
-function FinishedShoppingBunner() {
+export default function FinishedShoppingBunner() {
   return (
-    <div
-      className="
-        w-full max-w-[300px] flex flex-col justify-center items-center
-        p-2 bg-[#041527] rounded-xl shadow-lg
-      "
-    >
-      <div className="w-10 h-10 flex justify-center
-       items-center rounded-full bg-[#ACF532] shadow-md animate-pulse mb-2">
-        <Check className="text-white text-md" width={15} />
+    <div className="w-[90%] mx-auto mt-[5%] bg-white
+       text-black rounded-md shadow-lg px-4 py-4 mb-2">
+        <div className="flex items-center justify-between mb-4">
+    
+            <button className="bg-white
+            cursor-pointer active:bg-gray-600
+             text-black rounded-full w-10 h-10
+              flex items-center justify-center"
+              >
+             
+    <ChevronLeft />
+  
+              
+            </button>
+      
+          <h1 className="text-xs lg:text-xl font-bold text-[#8F8C8C]">Monthly Groceries</h1>
+            {/* Right: Buttons */}
+      <div className="flex gap-2 items-center w-1/5">
+        {/* <EditList id={id} /> */}
+        <DeleteList/>
       </div>
-
-      <div className="text-md font-bold
-       text-[#ACF532] animate-bounce text-center leading-tight">
-        Well Done
-        <div className="mt-1">
-          <NamesCarousel />
         </div>
-        
-      </div>
 
-      <p className="text-xs text-center text-white mt-2">
-        Your shopping is done and you managed to stay&nbsp;
-        <span className="font-bold text-[#ACF532]">11.7%</span> under budget. 🎉😊
-      </p>
+        <div className="flex lg:text-2xl text-md  justify-between font-bold">
+      
+          R 562, 89
+         
+        </div>
 
-      <div className={`${ButtonFont.className} gap-2 mt-4 hidden sm:grid`}>
-        <button
-          className="h-8 w-[200px] px-2 bg-amber-700 
-          rounded-lg text-[#04284B] font-semibold 
-          
-          transition-colors text-xs"
-        >
-          View Virtual Slip
-        </button>
+      
 
-        <button
-          className="h-8 w-[200px] px-2 rounded-lg 
-          border border-[#04284B] bg-transparent 
-          text-gray-400 font-semibold 
-          transition-all text-xs"
-        >
-          Continue Shopping
-        </button>
-      </div>
+       <div className="flex flex-col items-center justify-center mt-4 space-y-4">
+ 
+<div className='flex justify-between items-center w-full'>
+  <div className='text-sm'>
+    { <p>{`14 of 28 to be shopped`}</p>}
+  </div>
+    </div>
+    </div>
     </div>
   );
 }
 
-export default FinishedShoppingBunner;
+
