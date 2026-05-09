@@ -1,5 +1,5 @@
 export default function sitemap() {
-  const baseURL = 'grossary.shop'
+  const baseURL = 'www.grossary.shop'
   return [
     {
       url: baseURL,
