@@ -128,7 +128,7 @@ export default function AddItemForm({ listId, openform }) {
       {/* Bottom Sheet */}
       <main
         className={`
-          fixed left-0 bottom-0 w-full z-50
+          fixed left-0 bottom-0 w-screen z-50
           transition-transform duration-300 ease-in-out
           ${isVisible ? "translate-y-0" : "translate-y-full"}
         `}
@@ -168,7 +168,7 @@ export default function AddItemForm({ listId, openform }) {
               />
 
               {suggestions.length > 0 && (
-                <ul className="absolute h-fit  z-10 mt-4 w-full rounded-xl bg-white text-black shadow-lg">
+                <ul className="absolute h-full  z-10 mt-4 w-full rounded-xl bg-white text-black shadow-lg">
                   {suggestions
                     .filter(
                       (item) =>
