@@ -3,7 +3,7 @@ import SignUpButton from "./SignUpButton";
 import Link from "next/link";
 import { Quicksand } from "next/font/google";
 import Image from "next/image";
-import HeroPic from '@/public/Home image.png'
+import HeroPic from '@/public/Home image.jpg'
 import { Video } from "./video";
 import { Suspense } from "react";
 import Loading from "../loading";
