@@ -44,7 +44,7 @@ function HomeImage() {
 
         <div className="text-center w-[90%] mx-[5%] lg:w-[25%]  lg:mx-[15%]">
           <p className="lg:text-xl text-lg py-2">
-            Forgetting the small stuff and always going budget?
+            Forgetting the small stuff and always going over budget?
             Not with Grossary. Remember every item and stay on budget, every trip.
           </p>
            <div className="flex justify-center py-7">
