@@ -97,7 +97,7 @@ export default function AddItemForm({ listId, openform }) {
         .from("grocery_items")
         .select("*")
         .ilike("item_name", `${query}%`)
-        .limit(5);
+        .limit(10);
 
       setSuggestions(data ?? []);
     };

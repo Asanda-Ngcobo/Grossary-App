@@ -148,8 +148,9 @@ const categoryList = useMemo(() => {
     
          
       
-
-      {/* Spend Per  Cat */}
+{!moneySpent ? <p> No Charts Yet</p>: (
+  <div>
+ {/* Spend Per  Cat */}
 
       
 {/* Backdrop */}
@@ -256,6 +257,9 @@ const categoryList = useMemo(() => {
       
 
 
+  </div>
+)}
+     
     
     </div>
    

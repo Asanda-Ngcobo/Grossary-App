@@ -2,14 +2,16 @@
 
 
 
-import { Bell, User } from "@deemlol/next-icons";
+import { Bell, CreditCard, List, PieChart, User } from "@deemlol/next-icons";
 
 
-import ReportsWrapper from "../_ui/ReportWrapper";
+
 import ParentFormBackground from "./ParentFormBackground";
 import AddListForm from "./AddListForm";
 import { useForm } from "@/app/providers/Provider";
-import Logo from "@/app/(website)/_components/Logo";
+
+import OnboardingCards from "./onboardingCards";
+import Link from "next/link";
 
 
 export default function Home({ profile, myLists, allItems, data }) {
@@ -18,7 +20,7 @@ export default function Home({ profile, myLists, allItems, data }) {
       const activeList = myLists.filter((list)=>
 list.money_spent === 0 || list.money_spent === null)
 
-    
+    console.log(activeList.length)
 
       //Email & Password
   const firstName =
@@ -61,12 +63,36 @@ if (nameParts.length >= 2) {
   initials = "";
 }
 
+
+const pages = [
+  {
+    id: 1,
+    name: 'Lists',
+    icon: <List/>,
+    href: "/account/lists"
+  },
+    {
+    id: 2,
+    name: 'Lists',
+    icon: <CreditCard/>,
+    href: "/account/cards"
+  },
+    {
+    id: 3,
+    name: 'Lists',
+    icon: <PieChart/>,
+    href: "/account/reports"
+  }
+]
   return (
-    <div className="w-full pt-4 ">
+    <div className="w-full ">
       {/* HEADER */}
-      <div className="flex justify-between w-[90%] mx-auto  ">
+      <div className="flex items-center w-screen
+       bg-[#F8F8F8] top-0 h-20 z-10 sticky  ">
        
-          <div className="flex justify-center items-center
+       {/* HEADER CHILDREN */}
+       <div className="flex justify-between w-[90%] mx-auto">
+  <div className="flex justify-center items-center
            text-gray-500"
            onClick={toggleMenu}>
             <User/>
@@ -74,21 +100,86 @@ if (nameParts.length >= 2) {
           </div>
 
           
-         <Logo/>
+         {/* Links */}
 
-          <div><Bell/></div>
+         <ul className="w-[50%] flex justify-between">
+
+  
+    <li
       
+      className="
+        flex items-center justify-center
+        w-[50px] h-[50px]
+        rounded-full bg-white border border-gray-200
+      "
+    >
+      <Link
+        href='/account/lists'
+        className="flex flex-col items-center justify-center relative"
+      >
+       <List/>
+       <span className="   absolute
+              bottom-3
+              -right-5
+              w-5
+              h-5
+              rounded-full
+              bg-[#ACF532]
+              flex justify-center items-center
+            ">{activeList.length}</span>
+
+      </Link>
+    </li>
+
+        <li
+      
+      className="
+        flex items-center justify-center
+        w-[50px] h-[50px] active:text-[#ACF532]
+        rounded-full bg-white border border-gray-200
+      "
+    >
+      <Link
+        href='/account/cards'
+        className="flex flex-col items-center justify-center relative"
+      >
+       <CreditCard/>
+      
+
+      </Link>
+    </li>
+        <li
+      
+      className="
+        flex items-center justify-center
+        w-[50px] h-[50px]
+        rounded-full bg-white border border-gray-200
+      "
+    >
+      <Link
+        href='/account/reports'
+        className="flex flex-col items-center justify-center relative"
+      >
+       <PieChart/>
+      
+
+      </Link>
+    </li>
+ 
+         </ul>
+       
+       </div>
+        
       
 
     
           
       </div>
 
-      {/* REPORTS */}
+      {/* LIST TEMPLATES */}
       
-         <ReportsWrapper allItems={allItems} allLists={myLists || []}
-        myLists={myLists} userId={profile.id} active={active}
-        activeList={activeList} userName={firstName || Name} />
+      <OnboardingCards userName={firstName || Name}/> 
+        
 
       
 

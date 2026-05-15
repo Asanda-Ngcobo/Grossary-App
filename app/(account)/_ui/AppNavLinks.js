@@ -38,8 +38,11 @@ export default function AppNavLinks( ) {
             >
               <Link
                 href={link.href}
-                className={`flex flex-col lg:flex-row items-center lg:gap-10 lg:text-white
-                lg:w-[90%] lg:ml-[5%] hover:bg-[#04284B] hover:text-gray-50 hover:rounded-[4px] lg:p-3 active:opacity-60
+                className={`flex flex-col lg:flex-row items-center
+                   lg:gap-10 lg:text-white
+                lg:w-[90%] lg:ml-[5%] hover:bg-[#04284B]
+                 hover:text-gray-50 hover:rounded-[4px]
+                  lg:p-3 active:opacity-60
                 text-[10px] lg:text-[18px]
                 ${
                   isActive

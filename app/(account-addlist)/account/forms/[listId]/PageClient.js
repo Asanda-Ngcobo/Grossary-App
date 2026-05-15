@@ -12,8 +12,7 @@ import AccountModal from '@/app/(account)/_ui/AccountModal';
 import { Lexend_Deca, Quicksand } from 'next/font/google';
 import ParentFormBackground from '@/app/(account)/account/ParentFormBackground';
 import AddItemForm from './_listcomponents/AddItemForm';
-import AddPriceForm from './add-price/[itemId]/AddPriceForm';
-import ListMoneyLeft from '@/app/(account)/_ui/ListMoneyLeft';
+
 import ListMoneySpent from '@/app/(account)/_ui/ListMoneySpent';
 import Budget from '@/app/(account)/_ui/Budget';
 
@@ -21,6 +20,8 @@ import DeleteModal from "@/app/(account)/account/lists/DeleteModal";
 import DeleteList from '@/app/(account)/_ui/DeleteList';
 import { deleteList } from '@/app/_lib/actions';
 import AddPriceSheet from '../AddPriceSheet';
+import StarterItemsModal from './startItemsModel';
+import { createClient } from '@/app/_utils/supabase/client';
 
 const ButtonFont = Lexend_Deca({
   subsets: ["latin"],
@@ -99,14 +100,10 @@ const firstName = profile.fullName?.split(" ")[0] || "there";
   const money_spent = listitems.reduce((acc, item) => acc + (item.total_price || 0), 0);
   
 
-  //display money left
-  
-  const money_left = list_budget - money_spent;
- 
-  const spentPercent = (money_spent / list_budget) * 100;
 
   const overallShopped = listitems.filter(item => item.total_price !== null).length;
   const itemsLength = listitems.length;
+  console.log('length', itemsLength)
   const doneShopping = overallShopped === itemsLength;
  
   const toBeShopped = itemsLength - overallShopped;
@@ -118,11 +115,6 @@ useEffect(() => {
   }
 }, [overallShopped, itemsLength])
 
-
-  const progressColor =
-    spentPercent <= 60
-      ? "bg-[#ACF532]"
-           : "bg-[#ACF532]";
 
 
   return (
@@ -138,7 +130,7 @@ useEffect(() => {
              text-black rounded-full w-10 h-10
               flex items-center justify-center"
               >
-                <Link href={`/account`}>
+                <Link href={`/account/lists`}>
     <ChevronLeft />
       </Link>
               
@@ -159,23 +151,10 @@ useEffect(() => {
          
         </div>
 
-        {/* <div className="w-full bg-gray-700 rounded-full h-4 my-3">
-          <div className={`${progressColor} h-4 rounded-full transition-all 
-          duration-500`} style={{ width: `${spentPercent}%` }} />
-        </div> */}
+   
 
        <div className="flex flex-col items-center justify-center mt-4 space-y-4">
-  {/* <div className="text-gray-500">
-    <span
-      className={`${MoneyFont.className} font-bold text-lg 
-      flex flex-row items-center justify-center gap-3`}
-    >
-    <Budget list_budget={list_budget}/>
-      <Link href={`/account/forms/${listId}/edit-list`}>
-        <Edit2 size={20} className='text-gray-500' />
-      </Link>
-    </span>
-  </div> */}
+  
 <div className='flex justify-between items-center w-full'>
   <div className='text-sm'>
     {toBeShopped > 0 ? <p>{`${toBeShopped} of ${itemsLength} to be shopped`}</p>: <p>All Shopped</p>}
@@ -200,8 +179,8 @@ useEffect(() => {
       </div>
       {listitems.length === 0 ? 
       <div className='flex justify-center text-[#0B2E1E] font-bold text-2xl  w-[80%] mx-auto items-center mt-10'>
-        <p className=' text-center
-bottom-5'>Add Your Grocery list items using the Plus button above</p>
+        {/* <p className=' text-center
+bottom-5'>Add Your Grocery list items using the Plus button above</p> */}
 
       </div> : ''}
       
@@ -400,7 +379,7 @@ bottom-5'>Add Your Grocery list items using the Plus button above</p>
     </AccountModal> 
  }
 
-    {showForm && (
+    {/* {showForm && (
   <ParentFormBackground 
     openform={HandleShowForm}
     setShowForm={setShowForm}
@@ -409,7 +388,7 @@ bottom-5'>Add Your Grocery list items using the Plus button above</p>
     <AddItemForm  openform={HandleShowForm}
     listId={listId} />
   </ParentFormBackground>
-)}
+)} */}
 
   {/* Delete List Modal */}
     {isDeleteModal && <DeleteModal listId={listId} 
@@ -425,6 +404,15 @@ bottom-5'>Add Your Grocery list items using the Plus button above</p>
     onClose={() => setActiveItemId(null)}
   />
 )}
+
+{itemsLength === 0 || showForm ? <StarterItemsModal
+        listId={listId}
+        list_name={list_name}
+        openform={HandleShowForm}
+        itemsLength={itemsLength}
+     
+      />: ''}
+ 
     </div>
     
   );

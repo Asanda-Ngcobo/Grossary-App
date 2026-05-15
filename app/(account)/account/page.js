@@ -3,6 +3,7 @@ import { createClient } from "@/app/_utils/supabase/server";
 import { getLists, getListsItemsById } from "@/app/_lib/data-services";
 import Home from "./Home";
 
+
 export const metadata = {
   title: "Grossary",
   description: "Grossary - a simple, all-in-one grocery app that helps you",
@@ -60,6 +61,7 @@ export default async function Page() {
       <Home profile={profile}
       data={data} myLists={myLists} 
       allItems={allItems} />
+    
     </div>
   );
 }

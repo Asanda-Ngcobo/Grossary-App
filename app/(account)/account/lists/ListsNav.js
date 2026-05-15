@@ -24,8 +24,8 @@ export default function ListNavigation() {
  
 
   return (
-    <nav className="fixed top-0 w-[90%] ml-[5%] 
-    lg:w-[60%]  xl:ml-[10%]  mt-2 bg-[#041527] z-10  ">
+    <nav className="fixed top-4 w-[90%] mx-auto
+    lg:w-[60%]  xl:ml-[10%]  mt-2  z-10  ">
 
        {/* <div className="my-5 mx-[5%] bg-white
         active:bg-gray-600 rounded-full
@@ -36,7 +36,7 @@ export default function ListNavigation() {
             </div> */}
             
       <ul className="flex flex-row justify-between
-       gap-0 border-b border-[#D9D9D9]">
+       gap-0 border-b border-[#D9D9D9] text-black">
         {navLinks.map((link) => {
           const isActive = pathname === link.href;
 

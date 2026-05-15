@@ -7,6 +7,9 @@ import { Suspense } from "react"
 
 import { createClient } from "@/app/_utils/supabase/server"
 import Loading from "./loading"
+import ListNavigation from "./ListsNav"
+import { ChevronLeft } from "@deemlol/next-icons"
+
 
 export const metadata = {
   title: "Lists | Grossary",
@@ -35,16 +38,33 @@ async function page() {
       const activeList = myLists.filter((list)=>
 list.money_spent === 0 || list.money_spent === null)
 
+      console.log(activeList)
 
+const { data:allItemsRaw, error:AllItemsError } = await supabase
+  .from("list_items")
+  .select(`
+    *,
+    user_lists!inner(user_id)
+  `)
+  .eq("user_lists.user_id", profile.id);
 
+  // Only include items that belong to this user
+  const allItems = (allItemsRaw || []).filter(
+    (item) => item.user_lists?.user_id === profile.id
+  );
+
+  console.log(allItems)
 
     return (
 
         <>
         
-             <div className="w-[90%] ml-[5%]
+             <div className="w-[90%] mx-auto
               lg:w-[60%] lg:mx-[20%] lg:mt-20 mt-15 ">
-            
+                
+       
+
+         <ListNavigation/>
             
             {activeList.length === 0 ? (
                 
@@ -59,7 +79,7 @@ list.money_spent === 0 || list.money_spent === null)
                 &#43; New List</span></Link></p>
             ): (
                 <Suspense fallback={<Loading/>}>
-<Lists myLists={myLists}
+<Lists myLists={myLists} allItems={allItems}
 userId={profile.id}/>
                 </Suspense>
                 

@@ -37,7 +37,7 @@ await deleteList(listId)
  
     return (
         <div className='
-         h-[50vh] overflow-y-auto no-scrollbar '>
+         h-screen overflow-y-auto no-scrollbar '>
          
            
            {!active &&     <ul className=''>
@@ -68,7 +68,7 @@ await deleteList(listId)
           
           
            
-            <div className='bottom-0 right-2 fixed '>
+            {/* <div className='bottom-0 right-2 fixed '>
             <button className="flex 
                             justify-center items-center 
                             mx-3
@@ -80,7 +80,7 @@ await deleteList(listId)
                             cursor-pointer
                             my-6" onClick={toggleForm}>
                             <Plus></Plus></button>
-          </div>
+          </div> */}
        
           
         </div>

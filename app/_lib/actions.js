@@ -113,8 +113,8 @@ export async function addCard(formData){
     throw new Error('Item could not be deleted');
   }
   
-    revalidatePath('/account')
-    redirect('/account')
+    revalidatePath('/account/lists')
+    redirect('/account/lists')
     
     }
 

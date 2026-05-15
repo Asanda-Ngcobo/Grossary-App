@@ -4,6 +4,7 @@ import Link from "next/link"
 import { SubmitButton } from "./ReUseButton"
 
 import { reuseList } from "@/app/_lib/actions";
+import ListNavigation from "./ListsNav";
 
 function HistoryClient({ History, userId }) {
   // Group history items by "Month Year" and calculate totals
@@ -27,7 +28,8 @@ function HistoryClient({ History, userId }) {
   }, {});
 
   return (
-    <div className="w-[90%] ml-[5%] lg:w-[80%] lg:ml-[5%] mt-5 ">
+    <div className="w-[90%] mx-auto lg:w-[80%] lg:ml-[5%] mt-5 ">
+      <ListNavigation/>
       {History.length === 0 ? (
         <p>You have no Shopped Lists yet.</p>
       ) : (

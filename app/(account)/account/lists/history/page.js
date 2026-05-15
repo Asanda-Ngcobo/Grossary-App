@@ -40,16 +40,7 @@ list.money_spent > 0 )
     return (
       <div className="w-[90%] ml-[5%] lg:w-[80%] lg:ml-[5%] mt-5">
         
-         <button className="
-            cursor-pointer active:bg-gray-600
-             text-black rounded-full w-10 h-10
-              flex items-center justify-center"
-              >
-                <Link href={`/account`}>
-    <ChevronLeft />
-      </Link>
-              
-            </button>
+            
              <Suspense fallback={<Loading/>}>
         
  <HistoryClient 

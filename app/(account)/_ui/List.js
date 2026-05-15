@@ -7,6 +7,7 @@ import Link from "next/link";
 
 function List({ list, onDelete, allitems }) {
   const { id, list_name, created_at } = list;
+
   const listitems = allitems.filter((item)=>
   item.list_id === list.id)
   
@@ -39,7 +40,7 @@ const shoppedPercentage = ((Number(shoppedItems.length/listitems.length)) * 100)
 >
   {/* Top Row */}
   <div className="flex justify-between items-start">
-    <h1 className="font-bold text-lg">{list_name}</h1>
+    <h1 className="font-bold text-lg text-[#0B2E1E]">{list_name}</h1>
 
     <span className="text-xs text-gray-400">
       {key}
