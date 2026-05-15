@@ -54,12 +54,23 @@ async function Slip({list,listItems, listId}) {
             </div>
                   <div className={`${ButtonFont.className} 
    grid gap-6 mt-11 mx-4 `}>
-     <button
+
+       <button
      
-      className="h-10 min-w-[300px] px-2  bg-[#1EC677]  active:bg-gray-600 cursor-pointer  rounded-lg text-[#04284B]
+      className="h-10 min-w-[300px] px-2 active:bg-gray-600
+        bg-[#1EC677]  cursor-pointer  rounded-lg text-[#04284B]
       font-semibold hover:bg-[#041527] transition-colors"
     >
-      <Link href={`/account`}>  Finish Shopping</Link>
+      <Link href={`/account/cards`}>Go To cards</Link>
+    
+    </button>
+
+     <button
+     
+      className="h-10 min-w-[300px] px-2 bg-[#E2F3F4]   active:bg-gray-600 cursor-pointer  rounded-lg text-[#04284B]
+      font-semibold hover:bg-[#041527] transition-colors"
+    >
+      <Link href={`/account/lists/history`}>  Finish Shopping</Link>
     
     </button>
     <button

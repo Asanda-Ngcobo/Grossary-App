@@ -22,7 +22,7 @@ export default function ListMoneySpent({ money_spent }) {
    
         <div   >
               <p>Money Spent</p> <h1 className={`${MoneyFont.className}
-           text-6xl text-black`}>{formatted}</h1></div>
+           text-6xl text-[#1EC677]`}>{formatted}</h1></div>
 
         
   )

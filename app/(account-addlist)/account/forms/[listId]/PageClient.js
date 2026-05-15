@@ -22,6 +22,7 @@ import { deleteList } from '@/app/_lib/actions';
 import AddPriceSheet from '../AddPriceSheet';
 import StarterItemsModal from './startItemsModel';
 import { createClient } from '@/app/_utils/supabase/client';
+import EditItem from '../EditItem';
 
 const ButtonFont = Lexend_Deca({
   subsets: ["latin"],
@@ -37,11 +38,20 @@ export default function PageClient({ listId, list_name,
  const [selectedCategory, setSelectedCategory] = useState('');
  const [isOpenModal, setIsOpenModal] = useState(false)
  const [showForm, setShowForm] = useState(false)
+ const [editingItem, setEditingItem] = useState(null);
 
     function HandleShowForm (){
         setShowForm(def => !def)
     }
 
+    
+    function openEditItem(item) {
+  setEditingItem(item);
+}
+
+function closeEditItem() {
+  setEditingItem(null);
+}
       const [isDeleteModal, setIsDeleteModal] = useState(false)
    function handleModal(){
     setIsDeleteModal((isDeleteModal) => !isDeleteModal)
@@ -171,7 +181,7 @@ useEffect(() => {
 
 
      
-          <button className="bg-[#1EC677]
+          <button className="bg-[#0B2E1E]
           text-gray-500 active:bg-gray-600 w-[40px] h-[40px] rounded-full
            flex justify-center items-center -mb-8 ml-[90%] cursor-pointer"
            onClick={HandleShowForm}><Plus /></button>
@@ -248,9 +258,9 @@ bottom-5'>Add Your Grocery list items using the Plus button above</p> */}
       className="
         w-8 h-8
         rounded-full
-        border-2 border-[#1EC677]
+        border-2 border-[#0B2E1E]
         flex items-center justify-center
-        peer-checked:bg-[#1EC677]
+        peer-checked:bg-[#0B2E1E]
         transition
         active:w-10 active:h-10
       "
@@ -288,18 +298,41 @@ bottom-5'>Add Your Grocery list items using the Plus button above</p> */}
                           itemName={item.item_name}
                           itemQuantity={item.item_quantity} listId={listId} />
                           
-                          <div className='flex w-[200px] justify-between'>
-                          
-                              
-                               <DeleteItem itemId={item.id} listId={listId} />
-                                <Link href={`/account/forms/${listId}/edit-item/${item.id}`}>
-                          <Edit size={25} className={ `text-gray-500
-                             active:text-gray-600`} />
-                        </Link>
-                            
-                          </div>
-                          {/* <span className="font-bold text-lg">{item.item_quantity}</span> */}
-                        
+                       <button
+                        type="button"
+  onClick={() => openEditItem(item)}
+  className="
+    w-8 h-8 rounded-full
+    flex items-center justify-center
+    active:scale-95
+    transition-all
+  "
+>
+  <Edit2 size={18} />
+</button>
+
+ {editingItem && (
+  <ParentFormBackground
+    openform={closeEditItem}
+    setEditForm={setEditingItem}
+    listId={listId}
+    itemId={editingItem.id}
+    itemName={editingItem.item_name}
+    itemBrand={editingItem.item_brand}
+    itemMass={editingItem.item_volume_mass}
+    itemUnit={editingItem.item_unit}
+  >
+    <EditItem
+      openform={closeEditItem}
+      listId={listId}
+      itemId={editingItem.id}
+      itemName={editingItem.item_name}
+      itemBrand={editingItem.item_brand}
+      itemMass={editingItem.item_volume_mass}
+      itemUnit={editingItem.item_unit}
+    />
+  </ParentFormBackground>
+)}
                         </div>
                       </form>
                     
@@ -315,7 +348,7 @@ bottom-5'>Add Your Grocery list items using the Plus button above</p> */}
       <div
   className="
     fixed mt-[50%] left-1/2 -translate-x-1/2 z-50
-    w-[90%] max-w-lg bg-[#041527] text-white
+    w-[90%] max-w-lg bg-white text-black
     rounded-2xl shadow-lg px-6 py-8
     flex flex-col items-center text-center space-y-4
     animate-fade-in
@@ -330,15 +363,19 @@ bottom-5'>Add Your Grocery list items using the Plus button above</p> */}
     <>
     
       {/* <FireworksComponent /> */}
-      <h1 className="text-2xl font-bold text-green-400 animate-bounce">
+      <h1 className="text-2xl font-bold text-[[#1EC677] animate-bounce">
         Well Done {capitalizedFirstName}!
       </h1>
       <p className="text-base">
-        Your shopping is done, you can now select the relevant 
-        loyalty card and go pay.
+        Your shopping is done and your total is <span className={`text-2xl font-bold
+        
+          ${MoneyFont.className}`}>
+          R{money_spent.toFixed(2)}</span>. 
       </p>
+      <p>You can now select the relevant 
+        loyalty card and go pay.</p>
        <div className={`${ButtonFont.className} 
-   grid gap-6 mt-11 mx-4 `}>
+   grid gap-6 mt-5 mx-4 `}>
 
         <button
      
@@ -379,16 +416,7 @@ bottom-5'>Add Your Grocery list items using the Plus button above</p> */}
     </AccountModal> 
  }
 
-    {/* {showForm && (
-  <ParentFormBackground 
-    openform={HandleShowForm}
-    setShowForm={setShowForm}
-    listId={listId}
-  >
-    <AddItemForm  openform={HandleShowForm}
-    listId={listId} />
-  </ParentFormBackground>
-)} */}
+  
 
   {/* Delete List Modal */}
     {isDeleteModal && <DeleteModal listId={listId} 

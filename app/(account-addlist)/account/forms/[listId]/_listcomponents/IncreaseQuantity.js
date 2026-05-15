@@ -15,8 +15,9 @@ function QuantitySelector({ itemId, itemName, itemQuantity, listId }) {
           {
             duration: 5000,
             style: {
-              background: '#041527',
+              background: '#0B2E1E',
               color: '#fff',
+              padding: '20px'
             },
           }
         );
@@ -26,8 +27,9 @@ function QuantitySelector({ itemId, itemName, itemQuantity, listId }) {
           {
             duration: 5000,
             style: {
-              background: '#041527',
+              background: '#0B2E1E',
               color: '#fff',
+              padding: '20px'
             },
           }
         );

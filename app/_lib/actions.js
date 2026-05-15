@@ -320,6 +320,7 @@ export async function deleteItem(itemId, listId) {
 
   // Revalidate path to reflect changes
   revalidatePath(`/account/forms/${listId}`);
+  
 
   return { success: true };
 }
@@ -470,8 +471,8 @@ if (insertItemsError) {
 
 // console.log(newItems)
   // Step 5: Redirect or return new list ID
-   revalidatePath('/account')
-  redirect(`/account`)
+   revalidatePath('/account/lists')
+  redirect(`/account/lists`)
  
 }
 export async function updateProfile(id, formData) {

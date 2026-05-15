@@ -3,6 +3,7 @@
 import { Eye, EyeOff } from "@deemlol/next-icons"
 import Link from "next/link"
 import { useState, useTransition } from "react";
+import Loading from "./loading";
 
 function LoginFormComp({handleSubmit, isPending}) {
      
@@ -49,7 +50,7 @@ function LoginFormComp({handleSubmit, isPending}) {
           disabled={isPending}
           className="bg-[#1EC677] text-white px-4 py-2 cursor-pointer w-full rounded disabled:opacity-50"
         >
-          {isPending ? 'Signing in...' : 'Sign in'}
+          {isPending ? <Loading/> : 'Sign in'}
         </button>
       </form>
 

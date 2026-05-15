@@ -102,7 +102,7 @@ const pages = [
           
          {/* Links */}
 
-         <ul className="w-[50%] flex justify-between">
+         <ul className="w-[50%] lg:w-[15%] flex justify-between">
 
   
     <li

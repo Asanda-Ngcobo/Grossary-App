@@ -28,7 +28,7 @@ function HistoryClient({ History, userId }) {
   }, {});
 
   return (
-    <div className="w-[90%] mx-auto lg:w-[80%] lg:ml-[5%] mt-5 ">
+    <div className="w-full mx-auto lg:w-[80%] lg:ml-[5%] mt-5 ">
       <ListNavigation/>
       {History.length === 0 ? (
         <p>You have no Shopped Lists yet.</p>

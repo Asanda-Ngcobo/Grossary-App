@@ -24,6 +24,7 @@ export default function LoginForm() {
           style: {
             background: '#0B2E1E',
             color: '#fff',
+            zIndex: 20
           },
         });
 
@@ -40,6 +41,7 @@ export default function LoginForm() {
           style: {
             background: '#0B2E1E',
             color: '#fff',
+            zIndex: 20
           },
         });
       }

@@ -24,8 +24,8 @@ export default function ListNavigation() {
  
 
   return (
-    <nav className="fixed top-4 w-[90%] mx-auto
-    lg:w-[60%]  xl:ml-[10%]  mt-2  z-10  ">
+    <nav className="fixed top-4 w-[90%] 
+    lg:w-[60%]   mt-2  z-10 mx-auto ">
 
        {/* <div className="my-5 mx-[5%] bg-white
         active:bg-gray-600 rounded-full
@@ -46,7 +46,8 @@ export default function ListNavigation() {
               className={`flex flex-col items-center justify-center 
                 lg:flex-row lg:gap-2 w-full
                  
-                ${isActive ? "border-b-2 border-[#ACF532]" : "border-b-2 border-transparent"}`}
+                ${isActive ? "border-b-2 border-[#ACF532]"
+                   : "border-b-2 border-transparent"}`}
             >
               <Link
                 href={link.href}
@@ -54,7 +55,7 @@ export default function ListNavigation() {
                   items-center justify-center
                    cursor-pointer 
                   w-full text-center 
-                  lg:gap-2 hover:bg-[#04284B] hover:rounded-[4px] p-3`}
+                  lg:gap-2 hover:text-2xl hover:rounded-[4px] p-3`}
               >
                 {link.icon}
                 <span className="cursor-pointer ">{link.name}</span>

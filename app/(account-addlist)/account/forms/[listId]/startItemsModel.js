@@ -2,6 +2,7 @@
 
 import { ChevronLeft } from "@deemlol/next-icons";
 import { createClient } from "@supabase/supabase-js";
+import { Lexend_Deca } from "next/font/google";
 import { useEffect, useRef, useState } from "react";
 
 const supabase = createClient(
@@ -23,6 +24,10 @@ const categoryTabs = [
   "Medication",
 ];
 
+const ButtonFont = Lexend_Deca({
+  subsets: ["latin"],
+  display: 'swap',
+});
 
 export default function StarterItemsModal({
   listId,
@@ -77,11 +82,12 @@ export default function StarterItemsModal({
     if (!observerRef.current) return;
 
     const observer = new IntersectionObserver((entries) => {
-      if (
-        entries[0].isIntersecting &&
-        hasMore &&
-        !loading
-      ) {
+    if (
+  entries[0].isIntersecting &&
+  hasMore &&
+  !loading &&
+  items.length > 0
+){
         fetchItems();
       }
     });
@@ -99,15 +105,15 @@ export default function StarterItemsModal({
 
       const currentPage = reset ? 0 : page;
 
-      const from = currentPage * 200;
-      const to = from + 199;
+    //   const from = currentPage * 50;
+    //   const to = from + 49;
 
    
       let query = supabase
         .from("grocery_items")
         .select("*")
         .order("item_name")
-        .range(from, to);
+        .range(0, 4999);
 
       // Search
       if (search.trim()) {
@@ -175,10 +181,17 @@ export default function StarterItemsModal({
       if (reset) {
         setItems(data || []);
       } else {
-        setItems((prev) => [
-          ...prev,
-          ...(data || []),
-        ]);
+      setItems((prev) => {
+  const combined = [...prev, ...(data || [])];
+
+  const uniqueItems = combined.filter(
+    (item, index, self) =>
+      index ===
+      self.findIndex((i) => i.id === item.id)
+  );
+
+  return uniqueItems;
+});
       }
 
       setHasMore((data || []).length === 50);
@@ -294,7 +307,7 @@ export default function StarterItemsModal({
             </button>
           </div>
         <div className="mb-4">
-          <h1 className="text-3xl font-black">
+          <h1 className="text-3xl font-black text-[#1EC677]">
             Add your grocery items
           </h1>
 
@@ -375,7 +388,7 @@ export default function StarterItemsModal({
                     flex items-center gap-3
                     ${
                       isSelected
-                        ? "bg-[#ACF532] border-black"
+                        ? "bg-[#1EC677] border-black"
                         : "bg-white border-gray-200"
                     }
                   `}
@@ -438,12 +451,13 @@ export default function StarterItemsModal({
           <button
             onClick={handleAddItems}
             disabled={adding}
-            className="
-              w-full h-[60px]
+            className={`w-full h-[60px]
               rounded-2xl
-              bg-black text-white
+              bg-[#0B2E1E] text-white
               font-bold text-lg
-            "
+              ${ButtonFont.className}`}
+              
+            
           >
             {adding
               ? "Adding items..."

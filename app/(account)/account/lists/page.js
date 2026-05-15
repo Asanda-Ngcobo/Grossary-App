@@ -38,7 +38,6 @@ async function page() {
       const activeList = myLists.filter((list)=>
 list.money_spent === 0 || list.money_spent === null)
 
-      console.log(activeList)
 
 const { data:allItemsRaw, error:AllItemsError } = await supabase
   .from("list_items")
@@ -53,14 +52,14 @@ const { data:allItemsRaw, error:AllItemsError } = await supabase
     (item) => item.user_lists?.user_id === profile.id
   );
 
-  console.log(allItems)
+ 
 
     return (
 
         <>
         
              <div className="w-[90%] mx-auto
-              lg:w-[60%] lg:mx-[20%] lg:mt-20 mt-15 ">
+              lg:w-[60%] lg:mx-[20%] lg:mt-20 mt-15 text-black ">
                 
        
 
@@ -69,14 +68,11 @@ const { data:allItemsRaw, error:AllItemsError } = await supabase
             {activeList.length === 0 ? (
                 
                 <p>You have no <span className="font-bold"> active lists</span> currently. Start adding your list by clicking 
-                <span className="italic mx-1 text-[#ACF532]"> Add New List</span> 
-                 below or <span className="italic  mx-1 text-[#ACF532]"> Reuse your Shopped Lists</span> .
-                <Link href='/account/forms/add-list'>   <span className="flex 
-                justify-between items-center 
-                mx-3
-                text-[#A2B06D] 
-                my-6">
-                &#43; New List</span></Link></p>
+                <span className="italic mx-1 text-[#ACF532]">
+                   Add New List</span> 
+                 below or <span className="italic  mx-1 text-[#ACF532]"> 
+                  Reuse your Shopped Lists</span> .
+               </p>
             ): (
                 <Suspense fallback={<Loading/>}>
 <Lists myLists={myLists} allItems={allItems}

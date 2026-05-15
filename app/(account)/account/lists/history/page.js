@@ -38,7 +38,7 @@ list.money_spent > 0 )
 
 
     return (
-      <div className="w-[90%] ml-[5%] lg:w-[80%] lg:ml-[5%] mt-5">
+      <div className="w-[90%] lg:w-[80%] mx-auto mt-15">
         
             
              <Suspense fallback={<Loading/>}>
