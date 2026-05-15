@@ -178,7 +178,9 @@ const pages = [
 
       {/* LIST TEMPLATES */}
       
-      <OnboardingCards userName={firstName || Name}/> 
+      <OnboardingCards userName={firstName || Name} 
+      
+      /> 
         
 
       

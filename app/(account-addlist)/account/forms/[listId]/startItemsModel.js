@@ -152,14 +152,22 @@ export default function StarterItemsModal({
 
       // Baby onboarding
       else if (lower.includes("baby essentials")) {
-        query = query.eq("item_category", "Baby");
+        query = query.in("item_category", ["Baby", "Health Care", "Personal Care"]);
       }
 
       // Medication onboarding
       else if (lower.includes("medication")) {
         query = query.eq(
           "item_category",
-          "Medication"
+          "Health Care"
+        );
+      }
+
+        // Snacks onboarding
+      else if (lower.includes("snacks")) {
+        query = query.in(
+          "item_category",
+          ["Sweets & Snacks", "Beverages. Juices & Cordials"]
         );
       }
 
@@ -329,7 +337,7 @@ export default function StarterItemsModal({
             h-10
             rounded-2xl
             border border-gray-200
-            px-4
+            px-6
             outline-none
             bg-white
             mb-4

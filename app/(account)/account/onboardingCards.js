@@ -1,10 +1,11 @@
-
-
 "use client";
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/app/_utils/supabase/client";
+import ParentFormBackground from "./ParentFormBackground";
+import AddListForm from "./AddListForm";
+import { useForm } from "@/app/providers/Provider";
 
 const onboardingCards = [
   {
@@ -12,7 +13,7 @@ const onboardingCards = [
     emoji: "🧺",
     description: "Your regular weekly grocery shopping",
   },
-    {
+  {
     title: "Monthly groceries",
     emoji: "🛒",
     description: "Your regular monthly grocery shopping",
@@ -32,37 +33,49 @@ const onboardingCards = [
     emoji: "📜",
     description: "Groceries restock",
   },
- 
   {
     title: "Baby essentials",
     emoji: "🍼",
     description: "Diapers, formula, wipes and more",
   },
-  {
-    title: "Custom list",
-    emoji: "✍️",
-    description: "Create list with your custom name",
-    custom: true,
+   {
+    title: "Snacks",
+    emoji: "🍫",
+    description: "Chips, sweets, drinks and more",
   },
+  // {
+  //   title: "Custom list",
+  //   emoji: "✍️",
+  //   description: "Create list with your custom name",
+  //   custom: true,
+  // },
 ];
 
-export default function OnboardingCards({userName}) {
+export default function OnboardingCards({ userName }) {
   const supabase = createClient();
   const router = useRouter();
+  const { toggleForm } = useForm();
 
-  const [loading, setLoading] = useState(null);
+  const [loadingCard, setLoadingCard] = useState(null);
 
   async function handleCreateList(card) {
+    // prevent double clicks
+    if (loadingCard) return;
+
+    // -----------------------------
+    // CUSTOM LIST FLOW (NO DB CALL)
+    // -----------------------------
+    if (card.custom) {
+      toggleForm();
+      return;
+    }
+
+    // -----------------------------
+    // SYSTEM LIST FLOW (DB CALL)
+    // -----------------------------
     try {
-      setLoading(card.title);
+      setLoadingCard(card.title);
 
-      // Redirect custom list
-      if (card.custom) {
-        router.push("/account/lists/create");
-        return;
-      }
-
-      // Get logged in user
       const {
         data: { user },
       } = await supabase.auth.getUser();
@@ -72,7 +85,6 @@ export default function OnboardingCards({userName}) {
         return;
       }
 
-      // Create list
       const { data: list, error } = await supabase
         .from("user_lists")
         .insert({
@@ -88,28 +100,26 @@ export default function OnboardingCards({userName}) {
         return;
       }
 
-      // Optional:
-      // Insert starter items here later
-
-      // Redirect to list
       router.push(`/account/forms/${list.id}`);
     } catch (error) {
       console.error(error);
     } finally {
-      setLoading(null);
+      setLoadingCard(null);
     }
   }
 
   return (
     <main className="min-h-screen bg-[#F8F8F8] px-4 py-10">
       <div className="max-w-5xl mx-auto">
+
+        {/* Greeting */}
+        <div className="w-full h-20 flex items-center font-bold">
+          <h1 className="text-2xl">
+            Hello, {userName}
+          </h1>
+        </div>
+
         {/* Heading */}
-         <div className="w-full h-20 flex justify-left items-center
-             font-bold">
-            <div className="lg:flex text-2xl">
-              <h1 >Hello, {userName}</h1>
-            </div>
-          </div>
         <div className="mb-10">
           <h1 className="text-4xl font-black text-black">
             What kind of shopping are we planning to do?
@@ -122,36 +132,65 @@ export default function OnboardingCards({userName}) {
 
         {/* Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-5">
-          {onboardingCards.map((card) => (
-            <button
-              key={card.title}
-              onClick={() => handleCreateList(card)}
-              disabled={loading !== null}
-              className="bg-white rounded-3xl p-6 text-left border border-gray-200 hover:border-black hover:shadow-xl transition-all duration-200 active:scale-[0.98]"
-            >
-              <div className="text-5xl mb-5">{card.emoji}</div>
+          {onboardingCards.map((card) => {
+            const isLoading = loadingCard === card.title;
 
-              <h2 className="font-bold text-2xl text-[#0B2E1E]">
-                {card.title}
-              </h2>
+            return (
+              <button
+                key={card.title}
+                onClick={() => handleCreateList(card)}
+                disabled={!!loadingCard && !card.custom}
+                className={`
+                  bg-white rounded-3xl p-6 text-left border
+                  transition-all duration-200 active:scale-[0.98]
+                  hover:shadow-xl hover:border-black
 
-              <p className="text-gray-500 mt-2 text-sm leading-relaxed">
-                {card.description}
-              </p>
+                  ${
+                    card.custom
+                      ? "border-dashed border-gray-400"
+                      : "border-gray-200"
+                  }
 
-              <div className="mt-6">
-                <span className="text-sm font-semibold text-[#ACF532]">
-                  {loading === card.title
-                    ? "Creating..."
-                    : card.custom
-                    ? "Create custom"
-                    : "Create List →"}
-                </span>
-              </div>
-            </button>
-          ))}
+                  ${
+                    loadingCard && !card.custom
+                      ? "opacity-60 cursor-not-allowed"
+                      : ""
+                  }
+                `}
+              >
+                <div className="text-5xl mb-5">
+                  {card.emoji}
+                </div>
+
+                <h2 className="font-bold text-2xl text-[#0B2E1E]">
+                  {card.title}
+                </h2>
+
+                <p className="text-gray-500 mt-2 text-sm leading-relaxed">
+                  {card.description}
+                </p>
+
+                <div className="mt-6">
+                  <span className="text-sm font-semibold text-[#ACF532]">
+                    {isLoading
+                      ? "Creating..."
+                      : card.custom
+                      ? "Create custom →"
+                      : "Create list →"}
+                  </span>
+                </div>
+              </button>
+            );
+          })}
         </div>
       </div>
+
+      {/* Custom List Modal */}
+      {/* {formOpen && (
+        <ParentFormBackground openform={toggleForm}>
+          <AddListForm toggleForm={toggleForm} />
+        </ParentFormBackground>
+      )} */}
     </main>
   );
 }

@@ -7,7 +7,7 @@ export default function ParentFormBackground({children, openform}) {
          <main className="backdrop-blur-sm
           w-screen h-screen z-20 top-0 bottom-0 absolute left-0 transition-all
            duration-500
-           overflow-x-hidden flex justify-center items-center" >
+           overflow-x-hidden  flex justify-center items-center" >
 
               
            
