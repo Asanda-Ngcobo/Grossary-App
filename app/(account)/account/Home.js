@@ -14,13 +14,13 @@ import OnboardingCards from "./onboardingCards";
 import Link from "next/link";
 
 
-export default function Home({ profile, myLists, allItems, data }) {
+export default function Home({ profile, myLists, data }) {
   const { formOpen, toggleForm, menuOpen, toggleMenu,
      active, toggleActive } = useForm();
       const activeList = myLists.filter((list)=>
 list.money_spent === 0 || list.money_spent === null)
 
-    console.log(activeList.length)
+   
 
       //Email & Password
   const firstName =
@@ -64,26 +64,7 @@ if (nameParts.length >= 2) {
 }
 
 
-const pages = [
-  {
-    id: 1,
-    name: 'Lists',
-    icon: <List/>,
-    href: "/account/lists"
-  },
-    {
-    id: 2,
-    name: 'Lists',
-    icon: <CreditCard/>,
-    href: "/account/cards"
-  },
-    {
-    id: 3,
-    name: 'Lists',
-    icon: <PieChart/>,
-    href: "/account/reports"
-  }
-]
+
   return (
     <div className="w-full ">
       {/* HEADER */}

@@ -30,28 +30,43 @@ const ButtonFont = Lexend_Deca({
   display: 'swap',
 });
 
-function Reports({ allLists, allItems
+function Reports({ allLists, allItems, userName
  }) {
-  const [duration, setDuration] = useState(30);
- const [expand, setExpand] = useState(false)
+ const [duration, setDuration] = useState(30);
+const [expand, setExpand] = useState(false);
 
- function handleExpand(){
-  setExpand(prev=> !prev)
- }
+function handleExpand() {
+  setExpand((prev) => !prev);
+}
 
-  // // ✅ filter lists
-  const filteredLists = useMemo(() => {
-    if (duration === "all") return allLists;
-    const cutoffDate = new Date(Date.now() - duration * 24 * 60 * 60 * 1000);
-    return allLists.filter((list) => new Date(list.shopped_at) >= cutoffDate);
-  }, [allLists, duration]);
+// ✅ use 30 days whenever expand is false
+const activeDuration = expand ? duration : 30;
 
-  // ✅ filter items
-  const filteredItems = useMemo(() => {
-    if (duration === "all") return allItems;
-    const cutoffDate = new Date(Date.now() - duration * 24 * 60 * 60 * 1000);
-    return allItems.filter((item) => new Date(item.purchased_at) >= cutoffDate);
-  }, [allItems, duration]);
+// ✅ filter lists
+const filteredLists = useMemo(() => {
+  if (activeDuration === "all") return allLists;
+
+  const cutoffDate = new Date(
+    Date.now() - activeDuration * 24 * 60 * 60 * 1000
+  );
+
+  return allLists.filter(
+    (list) => new Date(list.shopped_at) >= cutoffDate
+  );
+}, [allLists, activeDuration]);
+
+// ✅ filter items
+const filteredItems = useMemo(() => {
+  if (activeDuration === "all") return allItems;
+
+  const cutoffDate = new Date(
+    Date.now() - activeDuration * 24 * 60 * 60 * 1000
+  );
+
+  return allItems.filter(
+    (item) => new Date(item.purchased_at) >= cutoffDate
+  );
+}, [allItems, activeDuration]);
 
   // ✅ line chart data
  const chartData = useMemo(() => {
@@ -127,14 +142,17 @@ const categoryList = useMemo(() => {
   return (
     <div className="py-2 px-4 rounded-md  mt-2 
        lg:w-[80%] lg:ml-[10%] lg:mx-0 gap-6">
-  <button className=" cursor-pointer active:bg-gray-600 text-black rounded-full w-10 h-10 flex items-center justify-center">
+
+        <div className="flex flex-col w-full h-[30vh] rounded-md ">
+            <button className=" cursor-pointer active:bg-gray-600 text-black rounded-full w-10 h-10 flex items-center justify-center">
                         <Link href={`/account`}>
                             <ChevronLeft />
                         </Link>
                     </button>
-        <div className="flex flex-col w-full h-[30vh] rounded-md">
-            
+         <h1 className="text-center">Hi, {userName} welcome to your insights</h1>  
+         <h3 className="text-sm text-center text-gray-300">For better and more indepth insights, use grossary as your companion for every grocery planning and shopping trip.</h3>    
           {/* Stats */}
+   
       <div className=" gap-4 rounded-2xl w-full h-fit flex flex-col justify-center items-center ">
     
 
@@ -143,12 +161,14 @@ const categoryList = useMemo(() => {
 
      
       </div>
-<ReportDuration onChange={(val) => setDuration(val)} />
+     
         </div>
     
          
       
-{!moneySpent ? <p> No Charts Yet</p>: (
+{!moneySpent ? <p className="text-center"> No Charts Yet, Start using Grossary as your grocery planning and 
+  shopping companion to get insights on your spending habits.
+</p>: (
   <div>
  {/* Spend Per  Cat */}
 
@@ -169,6 +189,7 @@ const categoryList = useMemo(() => {
     ${expand ? "h-[90vh] fixed bottom-0 z-30 left-0 w-full overflow-y-auto" : "h-fit"}
   `}
 >
+   {expand && <MoneySpent moneySpent={moneySpent} expand={expand}/>}
   <div className="flex justify-end"> <button
     onClick={handleExpand}
     className="h-8 w-8 rounded-full flex items-center justify-center active:bg-gray-200"
@@ -195,7 +216,7 @@ const categoryList = useMemo(() => {
             {cat.name}
           </span>
 
-          <span className="text-[#ACF532] text-sm font-medium">
+          <span className="text-[#1EC677] text-sm font-medium">
             {new Intl.NumberFormat("en-ZA", {
               style: "currency",
               currency: "ZAR",
@@ -204,7 +225,7 @@ const categoryList = useMemo(() => {
         </div>
 
         {/* Progress bar */}
-        <div className="w-full h-2 bg-[#1C2E45] rounded-full overflow-hidden">
+        <div className="w-full h-2 bg-[#0B2E1E] rounded-full overflow-hidden">
           <div
             className="h-full bg-[#ACF532]"
             style={{ width: `${cat.percentage}%` }}
@@ -232,12 +253,12 @@ const categoryList = useMemo(() => {
     <BarChart data={chartData}>
       <CartesianGrid strokeDasharray="3 3" stroke="" />
 
-      <XAxis dataKey="month" stroke="#8F8C8C" />
-      <YAxis stroke="#8F8C8C" />
+      <XAxis dataKey="month" stroke="" />
+      <YAxis stroke="" />
 
       <Tooltip
-        contentStyle={{ backgroundColor: "#041527", border: "none" }}
-        labelStyle={{ color: "#ACF532" }}
+        contentStyle={{ backgroundColor: "#0B2E1E", border: "none" }}
+        labelStyle={{ color: "#ACF532",background: "none" }}
         formatter={(value) =>
           new Intl.NumberFormat("en-ZA", {
             style: "currency",
@@ -250,6 +271,7 @@ const categoryList = useMemo(() => {
         dataKey="total"
         fill="#ACF532"
         radius={[6, 6, 0, 0]} // rounded top bars 🔥
+        backgroundColor='white'
       />
     </BarChart>
   </ResponsiveContainer>

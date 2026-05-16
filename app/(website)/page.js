@@ -8,6 +8,8 @@ import HomeImage from "@/app/(website)/_components/HomeImage";
 import PlanningAhead from "@/app/(website)/_components/PlanningAhead";
 import ShoppingReimagined from "@/app/(website)/_components/ShoppingReimagined";
 import Testimonials from "@/app/(website)/_components/Testimonials";
+import BuiltForWho from "./_components/BuiltForWho";
+import Finances from "./_components/Finances";
 
 
 export const metadata = {
@@ -127,7 +129,7 @@ export default function Home() {
     <main className="pt-35">
            <HomeImage/>
    <PlanningAhead/>
-   {/* <Finances/> */}
+   <Finances/>
     {/* <HomeGrossaryPlus/> */}
     {/* <BuiltForWho/> */}
    <Testimonials/>

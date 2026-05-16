@@ -35,7 +35,27 @@ async function page() {
       .eq("id", userId)
       .single();
   
-  
+       //Email & Password
+  const firstName =
+    profile?.fullName?.split(" ")[0]?.[0]?.toUpperCase() +
+    profile?.fullName?.split(" ")[0]?.slice(1)?.toLowerCase();
+    const nameParts = profile?.fullName
+  ?.trim()
+  ?.split(/\s+/) // handles multiple spaces
+  .filter(Boolean) || [];
+
+//Google auth
+   const {email} = data?.claims;
+
+   const Name = email
+  ? email
+      .split('@')[0]
+      .split(/[._]/)[0]
+      .replace(/\d+/g, '')
+      .replace(/\b\w/g, c => c.toUpperCase())
+  : 'User'
+
+  const userName  = firstName || Name;
     // Get user's lists
     const myLists = await getLists(userId);
   
@@ -57,8 +77,10 @@ async function page() {
 
   return (
     <Suspense fallback={<Loading />}>
+   
     
-      <Reports allLists={myLists || []} allItems={allItems} />
+      <Reports allLists={myLists || []} allItems={allItems}
+      userName={firstName || Name}  />
     </Suspense>
   );
 }

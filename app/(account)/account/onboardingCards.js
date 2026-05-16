@@ -3,8 +3,6 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/app/_utils/supabase/client";
-import ParentFormBackground from "./ParentFormBackground";
-import AddListForm from "./AddListForm";
 import { useForm } from "@/app/providers/Provider";
 
 const onboardingCards = [
@@ -62,13 +60,7 @@ export default function OnboardingCards({ userName }) {
     // prevent double clicks
     if (loadingCard) return;
 
-    // -----------------------------
-    // CUSTOM LIST FLOW (NO DB CALL)
-    // -----------------------------
-    if (card.custom) {
-      toggleForm();
-      return;
-    }
+  
 
     // -----------------------------
     // SYSTEM LIST FLOW (DB CALL)
@@ -144,12 +136,9 @@ export default function OnboardingCards({ userName }) {
                   bg-white rounded-3xl p-6 text-left border
                   transition-all duration-200 active:scale-[0.98]
                   hover:shadow-xl hover:border-black
+                  border-gray-200
 
-                  ${
-                    card.custom
-                      ? "border-dashed border-gray-400"
-                      : "border-gray-200"
-                  }
+                 
 
                   ${
                     loadingCard && !card.custom
@@ -180,8 +169,39 @@ export default function OnboardingCards({ userName }) {
                   </span>
                 </div>
               </button>
+             
             );
           })}
+
+           {/* <button onClick={toggleForm}>
+            <div className="  bg-white rounded-3xl p-6 text-left border
+                  transition-all duration-200 active:scale-[0.98]
+                  hover:shadow-xl hover:border-black
+                  border-dashed border-gray-400"
+                  >
+
+                      <div className="text-5xl mb-5">
+                  ✍️
+                </div>
+
+                <h2 className="font-bold text-2xl text-[#0B2E1E]">
+                 Custom list
+                </h2>
+
+                <p className="text-gray-500 mt-2 text-sm leading-relaxed">
+                Create list with your custom name
+                </p>
+
+                <div className="mt-6">
+                  <span className="text-sm font-semibold text-[#ACF532]">
+                    
+                     Create custom 
+                     
+                  </span>
+                </div>   
+
+                  </div>
+           </button> */}
         </div>
       </div>
 

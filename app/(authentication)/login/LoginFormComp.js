@@ -50,7 +50,7 @@ function LoginFormComp({handleSubmit, isPending}) {
           disabled={isPending}
           className="bg-[#1EC677] text-white px-4 py-2 cursor-pointer w-full rounded disabled:opacity-50"
         >
-          {isPending ? <Loading/> : 'Sign in'}
+          {isPending ? 'Signing...' : 'Sign in'}
         </button>
       </form>
 
