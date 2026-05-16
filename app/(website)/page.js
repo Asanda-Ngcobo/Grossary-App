@@ -129,7 +129,7 @@ export default function Home() {
     <main className="pt-35">
            <HomeImage/>
    <PlanningAhead/>
-   <Finances/>
+   {/* <Finances/> */}
     {/* <HomeGrossaryPlus/> */}
     {/* <BuiltForWho/> */}
    <Testimonials/>
