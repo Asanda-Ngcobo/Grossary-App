@@ -10,6 +10,7 @@ import EmailIcon from '@/public/icons8-email-50.png'
 import Link from "next/link"
 
 import { createClient } from "@/app/_utils/supabase/client"
+import Logo from "@/app/(website)/_components/Logo"
 
 
 function LoginAuth() {
@@ -50,7 +51,7 @@ setError(error instanceof Error ? error.message : 'An error occurred')
       ">
             {/* Header */}
       <header className=" mb-6 pb-4 space-y-2 text-center">
-    <h1 className="text-[24px] font-bold">Welcome back 😍</h1>
+    <Logo/>
     <h2 className="text-xl font-bold">No missed grocery items. No overspending.</h2>
      <p className="text-[#908787] text-base">Plan smarter. Shop better. Save more.</p>
      </header>
@@ -77,7 +78,7 @@ setError(error instanceof Error ? error.message : 'An error occurred')
             </p>
           )}
         </button>
-         <div><p>OR</p></div>
+      
          <button
           
         

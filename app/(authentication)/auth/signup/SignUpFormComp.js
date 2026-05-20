@@ -33,10 +33,10 @@ function SignUpFormComp({handleSubmit, isPending}) {
     },
   ];
   return (
-    <div className="w-[90%] max-w-[500px] mx-auto py-6 text-[#041527] grid gap-4">
+    <div className="w-[90%] max-w-[500px] mx-auto py-6  grid gap-4">
       {/* Header */}
       <header className="border-b border-[#908787] mb-6 pb-4 space-y-2 text-center">
-        <h1 className="text-[24px] font-bold">Welcome to<Logo/></h1>
+        <h1 className="text-[24px] font-bold"><Logo/></h1>
         <h2 className="text-xl font-bold">No missed grocery items. No overspending.</h2>
         <p className="text-[#908787] text-base">Plan smarter. Shop better. Save more.</p>
         
@@ -108,7 +108,7 @@ function SignUpFormComp({handleSubmit, isPending}) {
       <button
         type="submit"
         disabled={isPending}
-        className="bg-amber-700 text-white px-4 py-2 w-full rounded disabled:opacity-50"
+        className="bg-[#1EC677] text-white px-4 py-2 w-full rounded disabled:opacity-50"
       >
         {isPending ? 'Signing up...' : 'Sign Up'}
       </button>

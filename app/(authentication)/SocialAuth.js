@@ -73,7 +73,7 @@ setError(error instanceof Error ? error.message : 'An error occurred')
             </p>
           )}
         </button>
-        <div><p>OR</p></div>
+      
               <button
           
         
