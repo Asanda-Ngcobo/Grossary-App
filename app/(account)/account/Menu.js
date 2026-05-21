@@ -78,11 +78,11 @@ function Menu() {
   {navLinks.map(function(userInfo){
     return <ul key={userInfo.id} className="w-[90%] ml-[5%]">
       <li  className={` p-1 flex
-       justify-between  cursor-pointer 
+       justify-between  cursor-pointer active:text-xl active:font-bold
      
         ${userInfo.id === 1 ? '': ''}`}>
        
- <span className="flex gap-2.5 active:text-[#1EC677]">
+ <span className="flex gap-2.5 ">
 {userInfo.name}</span>
         <span className="text-black">{userInfo.icon}</span>
        

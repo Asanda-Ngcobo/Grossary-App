@@ -152,7 +152,7 @@ const profileLinks = [
     return <ul key={proflinks.id} className="w-[90%] ml-[5%]">
       <li  className={` px-1 py-3 flex
        justify-between  cursor-pointer border-b-1 border-b-gray-400
-       active:text-[#ACF532]
+       active:text-xl active:font-bold
         ${proflinks.id === 1 ? '': ''}`}>
        
  <span className="flex gap-2.5">
