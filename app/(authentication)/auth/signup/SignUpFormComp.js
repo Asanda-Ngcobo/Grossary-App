@@ -1,6 +1,6 @@
 'use client'
 
-import GoogleAuthComp from './GoogleAuthComp'
+
 import Link from 'next/link'
 import Logo from '@/app/(website)/_components/Logo'
 import { useState } from 'react';
