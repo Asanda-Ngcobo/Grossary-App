@@ -41,6 +41,11 @@ const onboardingCards = [
     emoji: "🍫",
     description: "Chips, sweets, drinks and more",
   },
+   {
+    title: "Booze",
+    emoji: "🍷",
+    description: "Beer, Cider, wine, spirits and more",
+  },
   // {
   //   title: "Custom list",
   //   emoji: "✍️",

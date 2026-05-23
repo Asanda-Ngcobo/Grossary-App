@@ -171,6 +171,13 @@ export default function StarterItemsModal({
         );
       }
 
+         // Alcohol onboarding
+      else if (lower.includes("booze")) {
+        query = query.in(
+          "item_category",
+          ["Wine, Beer & Spirits", "Beverages. Juices & Cordials"]
+        );
+      }
       // Manual tab override
       if (activeTab !== "All") {
         query = query.eq(
