@@ -313,13 +313,16 @@ export default function StarterItemsModal({
       >
         {/* Header */}
           <div className="flex items-center mb-4">
-            <button
+
+            {itemsLength === 0 || 
+              <button
               type="button"
               onClick={handleClose}
               className="text-black w-10 h-10"
             >
               <ChevronLeft size={28} />
-            </button>
+            </button>}
+          
           </div>
         <div className="mb-4">
           <h1 className="text-3xl font-black text-[#1EC677]">
@@ -461,9 +464,10 @@ export default function StarterItemsModal({
 
         {/* Footer */}
         <div className="pt-5 mt-5 border-t">
-            {itemsLength === 0 && selectedItems.length === 0 && <p className="text-red-400 text-center">
+            {itemsLength === 0 && selectedItems.length === 0 &&
+             <p className="text-red-400 text-center text-xl">
                 Please select at least one item</p>}
-          <button
+          {selectedItems.length === 0 || <button
             onClick={handleAddItems}
             disabled={adding}
             className={`w-full h-[60px]
@@ -477,7 +481,7 @@ export default function StarterItemsModal({
             {adding
               ? "Adding items..."
               : `Add ${selectedItems.length} items`}
-          </button>
+          </button> }
         </div>
       </div>
     </div>
