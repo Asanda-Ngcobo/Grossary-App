@@ -35,7 +35,9 @@ function CardsClient({ cards }) {
             {/* Header */}
             <div className='flex flex-row justify-between w-full'> 
                 <div>
-                    <button className=" cursor-pointer active:bg-gray-600 text-black rounded-full w-10 h-10 flex items-center justify-center">
+                    <button className=" hidden
+                    md:hidden cursor-pointer active:bg-gray-600 text-black rounded-full
+                     w-10 h-10 items-center justify-center">
                         <Link href={`/account`}>
                             <ChevronLeft />
                         </Link>

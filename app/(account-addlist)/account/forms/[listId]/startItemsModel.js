@@ -354,38 +354,7 @@ export default function StarterItemsModal({
           "
         />
 
-        {/* Tabs */}
-        {/* <div
-          className="
-            flex gap-2 overflow-x-auto
-            no-scrollbar
-            mb-5
-          "
-        >
-          {categoryTabs.map((tab) => (
-            <button
-              key={tab}
-              onClick={() => setActiveTab(tab)}
-              className={`
-                whitespace-nowrap
-                px-4 py-2
-                rounded-full
-                text-sm font-medium
-                border
-                mb-20
-                flex justify-center items-center
-                transition-all
-                ${
-                  activeTab === tab
-                    ? "bg-black text-white border-black"
-                    : "bg-white border-gray-200"
-                }
-              `}
-            >
-              {tab}
-            </button>
-          ))}
-        </div> */}
+     
 
         {/* Items */}
         <div className="overflow-y-auto flex-1 pr-1 mt-3">

@@ -17,10 +17,10 @@ export default function ListsLayout({ children }) {
       <div
         className={`${MainFont.className} text-white h-screen`}
       >
-  <button className="
+  <button className=" hidden md:flex
             cursor-pointer active:bg-gray-600
              text-black rounded-full w-10 h-10
-              flex items-center justify-center"
+               items-center justify-center"
               >
                 <Link href={`/account`}>
     <ChevronLeft />

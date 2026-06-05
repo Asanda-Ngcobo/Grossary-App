@@ -144,7 +144,8 @@ const categoryList = useMemo(() => {
        lg:w-[80%] lg:ml-[10%] lg:mx-0 gap-6">
 
         <div className="flex flex-col w-full h-[30vh] rounded-md ">
-            <button className=" cursor-pointer active:bg-gray-600 text-black rounded-full w-10 h-10 flex items-center justify-center">
+            <button className="hidden md:flex
+             cursor-pointer active:bg-gray-600 text-black rounded-full w-10 h-10 items-center justify-center">
                         <Link href={`/account`}>
                             <ChevronLeft />
                         </Link>

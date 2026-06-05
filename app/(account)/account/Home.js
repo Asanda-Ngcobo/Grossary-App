@@ -83,7 +83,7 @@ if (nameParts.length >= 2) {
           
          {/* Links */}
 
-         <ul className="w-[50%] lg:w-[15%] flex justify-between">
+         <ul className="hidden md:flex w-[50%] lg:w-[15%] justify-between">
 
   
     <li
@@ -96,7 +96,7 @@ if (nameParts.length >= 2) {
     >
       <Link
         href='/account/lists'
-        className="flex flex-col items-center justify-center relative"
+        className="flex  items-center justify-center relative"
       >
        <List/>
        <span className="   absolute

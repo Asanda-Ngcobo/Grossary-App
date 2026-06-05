@@ -51,7 +51,7 @@ export default function WebAppLayout({ children }) {
           <Analytics/>
         
         
-        
+        <AppNav/>
       </body>
     </html>
      
