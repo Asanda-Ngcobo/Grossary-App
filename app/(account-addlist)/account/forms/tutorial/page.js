@@ -18,17 +18,15 @@ export default function TutorialPage() {
           Watch the video below for your next step.
         </p>
 
+        {/* Video Embed */}
         <div className="mt-10 flex justify-center">
-          <div className="w-full max-w-md rounded-2xl overflow-hidden shadow-lg border bg-black">
-            <video
-              className="w-full h-auto"
-              controls
-              playsInline
-              preload="metadata"
-            >
-              <source src="/Grocery Shopping For June.mp4" type="video/mp4" />
-              Your browser does not support the video tag.
-            </video>
+          <div className="w-full max-w-md rounded-2xl overflow-hidden shadow-lg border">
+            <iframe
+              src="https://1drv.ms/v/c/a69b2f6b39a4e7c8/IQRSyjVzGYM4TJyY1f2S3tVnARR44CC0alJyZ9LonM841_Y?width=3840&height=2160"
+              className="w-full h-[600px]"
+              allow="encrypted-media"
+              allowFullScreen
+            />
           </div>
         </div>
 
