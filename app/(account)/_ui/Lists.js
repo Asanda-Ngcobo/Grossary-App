@@ -37,13 +37,16 @@ await deleteList(listId)
  
     return (
         <div className='
-         h-screen overflow-y-auto no-scrollbar '>
+         h-screen overflow-y-auto no-scrollbar my-20 '>
          
            
            {!active &&     <ul className=''>
 
-               {activeList.length === 0 && myLists.length > 0 &&  <p className='lg:w-[80%] font-bold mx-auto text-[#0B2E1E]
-               text-3xl text-center'>You have no <span className="font-extrabold">
+               {activeList.length === 0 && myLists.length > 0 &&
+                 <p className='lg:w-[80%] font-bold mx-auto
+                  text-[#0B2E1E]
+               text-3xl text-center'>
+                You have no <span className="font-extrabold">
                  active lists</span> currently. Create your new list by clicking the bottom right
                             button below or  Reuse your Shopped Lists.
                             </p>} 

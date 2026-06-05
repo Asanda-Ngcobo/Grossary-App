@@ -67,11 +67,13 @@ const { data:allItemsRaw, error:AllItemsError } = await supabase
             
             {activeList.length === 0 ? (
                 
-                <p>You have no <span className="font-bold"> active lists</span> currently. 
+                <p className="my-20 text-3xl
+                w-full h-screen text-center flex justify-center items-center">
+                  You have no  active lists currently. 
                 Start adding your list by selection one of 
-                the options on home page
+                the options on the home page
                  below or 
-                  Reuse your Shopped Lists .
+                  Reuse your Shopped Lists.
                </p>
             ): (
                 <Suspense fallback={<Loading/>}>
