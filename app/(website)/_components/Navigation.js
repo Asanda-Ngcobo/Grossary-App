@@ -37,7 +37,7 @@ export default function Navigation() {
 
             <Logo/>
          
-            <div className="w-[10%] flex gap-4 justify-center items-center">
+            <div className="md:w-[10%] flex gap-4 justify-center items-center">
             <ul className=" flex lg:flex-row-reverse gap-10 list-none mx-3.5">
                 
                 {/* <li><Link href='/auth/signup'><SignUpButton>Sign Up</SignUpButton></Link></li> */}
