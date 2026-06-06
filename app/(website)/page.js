@@ -1,15 +1,7 @@
 
 
-
-
-import HomeGrossaryPlus from "@/app/(website)/_components/HomeGrossaryPlus";
-import HomeImage from "@/app/(website)/_components/HomeImage";
-
-import PlanningAhead from "@/app/(website)/_components/PlanningAhead";
-import ShoppingReimagined from "@/app/(website)/_components/ShoppingReimagined";
-import Testimonials from "@/app/(website)/_components/Testimonials";
-import BuiltForWho from "./_components/BuiltForWho";
-import Finances from "./_components/Finances";
+import OnboardingCards from "../(account)/account/onboardingCards";
+import MobileMenu from "./_components/MobileMenu";
 
 
 export const metadata = {
@@ -127,13 +119,9 @@ export const metadata = {
 export default function Home() {
   return (
     <main className="pt-35">
-           <HomeImage/>
-   <PlanningAhead/>
-   {/* <Finances/> */}
-    {/* <HomeGrossaryPlus/> */}
-    {/* <BuiltForWho/> */}
-   <Testimonials/>
-   <ShoppingReimagined/>
+
+   <OnboardingCards/>
+   <MobileMenu/>
 
     </main>
 

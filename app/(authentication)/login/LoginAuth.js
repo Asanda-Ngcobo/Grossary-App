@@ -44,7 +44,7 @@ setError(error instanceof Error ? error.message : 'An error occurred')
         handleSocialLogin()
       }}
     className=" w-[90%] md:w-[40%] h-[60vh]
-      md:shadow-lg">
+      shadow-lg flex justify-center items-center">
       <div className="flex flex-col  gap-4
       justify-center items-center
       

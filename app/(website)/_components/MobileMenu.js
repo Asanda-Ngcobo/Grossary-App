@@ -25,8 +25,8 @@ function MobileMenu({ handleDisplayMenu, showMenu }) {
       ${!showMenu ? 'hidden' : 'flex flex-col '}`}
     >
       <ul className="flex flex-col gap-6 overflow-scroll sm:overflow-hidden">
-        {/* Features Section */}
-        {/* <li className="border-b-1 border-b-gray-200">
+        {/* Features Section  */}
+        <li className="border-b-1 border-b-gray-200">
           <NavigationButtons>Features</NavigationButtons>
           <ul className="mt-2 ml-4 space-y-2">
             <li className="p-3 hover:bg-gray-100 rounded-xl transition">
@@ -39,7 +39,7 @@ function MobileMenu({ handleDisplayMenu, showMenu }) {
               <Link href="/features/grossaryplus">Grossary Plus</Link>
             </li>
           </ul>
-        </li> */}
+        </li>
 
         {/* Company Section */}
         <li className="border-b-1 border-b-gray-200 mb-5">

@@ -1,29 +1,43 @@
-// app/components/AppNavLinks.jsx
+
 "use client";
 
-import { BarChart, CreditCard, House, List, PieChart, User } from "@deemlol/next-icons";
+import { CreditCard, House, List, PieChart, User } from "@deemlol/next-icons";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 const navLinks = [
-  { name: "Home", href: "/account", exact: true, icon: <House /> },
+  { name: "Home", href: "/", exact: true, icon: <House /> },
+   { name: "Account", href: "/account", exact: false, icon: <User /> },
   { name: "Lists", href: "/account/lists", exact: false, icon: <List /> },
     { name: "Cards", href: "/account/cards", exact: false, icon: <CreditCard /> },
   { name: "Reports", href: "/account/reports", exact: false, icon: <PieChart /> },
-  // { name: "Profile", href: "/account/profile", exact: false, icon: <User /> },
+ 
 ];
 
-export default function AppNavLinks({userLists} ) {
+export default function AppNavLinks({userLists, profile} ) {
   const pathname = usePathname();
+const filteredLinks = navLinks.filter((link) => {
+  // Hide Home when logged in
+  if (profile && link.name === "Home") return false;
+
+  return true;
+});
 
   return (
-    <nav className="h-[115px] text-white
-     w-full z-40 flex items-center justify-center lg:mt-60 pl-3">
+      <nav
+      className="h-[115px] text-white
+      w-full z-40 flex items-center justify-center lg:mt-60 pl-3"
+    >
       <ul
-        className="grid grid-cols-4 gap-2 text-center w-full
-        lg:grid-cols-1 lg:grid-rows-4 lg:gap-10 "
+        className={`grid gap-2 text-center w-full
+        ${
+          profile
+            ? "grid-cols-4 lg:grid-cols-1"
+            : "grid-cols-5 lg:grid-cols-1"
+        }
+        lg:grid-rows-4 lg:gap-10`}
       >
-        {navLinks.map((link) => {
+        {filteredLinks.map((link) => {
           const isActive = link.exact
             ? pathname === link.href
             : pathname.startsWith(link.href);

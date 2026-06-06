@@ -5,24 +5,25 @@ import HandleCategories from './add-price/HandleCategories';
 import Link from 'next/link';
 import { Check, ChevronLeft, Edit, Edit2, Plus, ShoppingCart } from '@deemlol/next-icons';
 
-import DeleteItem from './_listcomponents/DeleteItem';
+
 import IncreaseQuantity from './_listcomponents/IncreaseQuantity';
 
 import AccountModal from '@/app/(account)/_ui/AccountModal';
 import { Lexend_Deca, Quicksand } from 'next/font/google';
 import ParentFormBackground from '@/app/(account)/account/ParentFormBackground';
-import AddItemForm from './_listcomponents/AddItemForm';
+
 
 import ListMoneySpent from '@/app/(account)/_ui/ListMoneySpent';
-import Budget from '@/app/(account)/_ui/Budget';
+
 
 import DeleteModal from "@/app/(account)/account/lists/DeleteModal";
 import DeleteList from '@/app/(account)/_ui/DeleteList';
 import { deleteList } from '@/app/_lib/actions';
 import AddPriceSheet from '../AddPriceSheet';
 import StarterItemsModal from './startItemsModel';
-import { createClient } from '@/app/_utils/supabase/client';
+
 import EditItem from '../EditItem';
+
 
 const ButtonFont = Lexend_Deca({
   subsets: ["latin"],
@@ -34,11 +35,12 @@ const MoneyFont = Quicksand({
   display: 'swap',
 });
 export default function PageClient({ listId, list_name, 
-  list_budget, listitems, groupedItems, profile }) {
+  list_budget, listitems, groupedItems, profile, lists }) {
  const [selectedCategory, setSelectedCategory] = useState('');
  const [isOpenModal, setIsOpenModal] = useState(false)
  const [showForm, setShowForm] = useState(false)
  const [editingItem, setEditingItem] = useState(null);
+
 
     function HandleShowForm (){
         setShowForm(def => !def)
@@ -113,7 +115,6 @@ const firstName = profile.fullName?.split(" ")[0] || "there";
 
   const overallShopped = listitems.filter(item => item.total_price !== null).length;
   const itemsLength = listitems.length;
-  console.log('length', itemsLength)
   const doneShopping = overallShopped === itemsLength;
  
   const toBeShopped = itemsLength - overallShopped;
@@ -126,6 +127,10 @@ useEffect(() => {
 }, [overallShopped, itemsLength])
 
 
+//questionnaire redirecting
+
+const isFirstList = lists.length === 1;
+
 
   return (
     <div>
@@ -135,16 +140,25 @@ useEffect(() => {
        text-black rounded-md shadow-lg px-4 py-4 mb-2">
         <div className="flex items-center justify-between mb-4">
     
-            <button className="bg-white
-            cursor-pointer active:bg-gray-600
-             text-black rounded-full w-10 h-10
-              flex items-center justify-center"
-              >
-                <Link href={`/account/lists`}>
-    <ChevronLeft />
-      </Link>
-              
-            </button>
+        <Link
+  href={isFirstList ? "/account/forms/quiz" : "/account/lists"}
+  className="
+    bg-white
+    text-black
+    rounded-full
+    w-10
+    h-10
+    flex
+    items-center
+    justify-center
+    cursor-pointer
+    transition
+    active:bg-gray-200
+    hover:bg-gray-100
+  "
+>
+  <ChevronLeft />
+</Link>
       
           <h1 className="text-xl font-bold text-[#8F8C8C]">{list_name}</h1>
             {/* Right: Buttons */}

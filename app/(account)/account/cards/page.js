@@ -6,10 +6,12 @@ import { createClient } from "@/app/_utils/supabase/server";
 
 
 import { getCards } from "@/app/_lib/data-services";
-
-import { Check, ChevronLeft, Edit, Edit2, Plus, ShoppingCart } from '@deemlol/next-icons';
 import CardsClient from "../CardsClient";
 
+export const metadata = {
+  title: "Cards | Grossary",
+  description: "Grossary - a simple, all-in-one grocery app that helps you",
+};
 export default async function CardsPage() {
   const supabase = await createClient();
   

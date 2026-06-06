@@ -57,7 +57,7 @@ const onboardingCards = [
 export default function OnboardingCards({ userName }) {
   const supabase = createClient();
   const router = useRouter();
-  const { toggleForm } = useForm();
+  
 
   const [loadingCard, setLoadingCard] = useState(null);
 

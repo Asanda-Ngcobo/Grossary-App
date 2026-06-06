@@ -1,4 +1,4 @@
-import { getList, getListsItemsById } from "@/app/_lib/data-services";
+import { getList, getLists, getListsItemsById } from "@/app/_lib/data-services";
 import PageClient from "./PageClient";
 import { createClient } from "@/app/_utils/supabase/server";
 
@@ -11,9 +11,12 @@ export default async function Page({ params }) {
 
   // Fetch data on the server
   const list = await getList(listId);
+
   const listitems = await getListsItemsById(listId);
   const supabase = await createClient();
   const { data, error } = await supabase.auth.getUser();
+
+
 
   if (!list) return <div>List not found</div>;
 
@@ -25,6 +28,8 @@ export default async function Page({ params }) {
 
   const { list_name, list_budget, id } = list;
 
+  const lists = await getLists(profile.id)
+  console.log(lists.length)
   function groupItemsByCategory(items) {
     return items.reduce((acc, item) => {
       const cat = item.item_category || "uncategorized";
@@ -44,6 +49,7 @@ export default async function Page({ params }) {
         groupedItems={groupItemsByCategory(listitems)}
         listitems={listitems}
         profile={profile}
+        lists={lists}
       />
     </main>
   );
