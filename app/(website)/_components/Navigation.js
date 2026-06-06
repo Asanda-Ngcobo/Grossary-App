@@ -1,3 +1,5 @@
+'use client'
+
 import Link from "next/link"
 
 import Logo from "./Logo";
@@ -43,7 +45,7 @@ export default function Navigation() {
                 <li className=" lg:flex"><Link href='/account'>
                 <SignInButton/></Link></li>
             </ul>
-            <div className="cursor-pointer"><Menu/></div>
+            {/* <div className="cursor-pointer"><Menu/></div> */}
             </div>
             
           </div>

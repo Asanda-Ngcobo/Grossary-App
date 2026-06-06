@@ -143,7 +143,7 @@ export default function OnboardingCards({ userName }) {
                   hover:shadow-xl hover:border-black
                   border-gray-200
 
-                 
+                 cursor-pointer
 
                   ${
                     loadingCard && !card.custom
