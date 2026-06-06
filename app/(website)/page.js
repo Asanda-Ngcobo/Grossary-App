@@ -118,7 +118,7 @@ export const metadata = {
 
 export default function Home() {
   return (
-    <main className="pt-35">
+    <main className="pt-15">
 
    <OnboardingCards/>
    <MobileMenu/>
