@@ -33,11 +33,11 @@ export default function TutorialPage() {
         {/* CTA Button */}
         <div className="mt-10">
           <Link
-            href="/account"
+            href="/account/cards"
             className="inline-flex items-center
              justify-center rounded-xl bg-[#0B2E1E] px-8 py-4 text-white font-medium hover:bg-green-700 transition"
           >
-            Go to Home
+            Finish
           </Link>
         </div>
 

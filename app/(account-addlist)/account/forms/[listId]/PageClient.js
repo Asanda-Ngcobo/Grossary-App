@@ -129,7 +129,8 @@ useEffect(() => {
 
 //questionnaire redirecting
 
-const isFirstList = lists.length === 1;
+const isFirstList = lists.length > 1 && !profile.surveyed;
+
 
 
   return (

@@ -12,7 +12,7 @@ function SignInButton() {
         <>
           <button className={`${ButtonFont.className} bg-white
            w-[100px]
-         h-[30px] rounded-[10px]
+         h-[30px] rounded-[15px]
          text-[14px]
          font-semibold
          cursor-pointer

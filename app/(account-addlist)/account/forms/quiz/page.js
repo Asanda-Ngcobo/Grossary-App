@@ -80,6 +80,14 @@ export default function OnboardingSurveyPage() {
 
       if (error) throw error;
 
+      // 👇 mark user as surveyed
+const { error: profileError } = await supabase
+  .from("users_info")
+  .update({ surveyed: true })
+  .eq("id", user.id);
+
+if (profileError) throw profileError;
+
       router.push("/account/forms/tutorial");
     } catch (err) {
       console.error("Survey submission failed:", err);
