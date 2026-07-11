@@ -84,7 +84,7 @@ export default function MenuContent({ onToggle, onCart, onAccount }) {
         bg-white
         z-10
         lg:w-[25%]
-        w-screen
+        w-[90%]
         py-3
       "
       >

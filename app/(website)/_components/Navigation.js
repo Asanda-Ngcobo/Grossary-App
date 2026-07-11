@@ -42,7 +42,7 @@ export default function Navigation() {
             <Logo/>
          
             <div className="md:w-[10%] flex gap-4 justify-center items-center">
-            <ul className=" flex gap-10 list-none mx-3.5 hover:cursor-pointer">
+            <ul className=" flex gap-5 list-none mx-3.5 hover:cursor-pointer">
                 
                 {/* <li><Link href='/auth/signup'><SignUpButton>Sign Up</SignUpButton></Link></li> */}
                 {/* <li className="lg:hidden"><Menu/></li> */}
