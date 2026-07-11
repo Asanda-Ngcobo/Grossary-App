@@ -1,6 +1,6 @@
 import { Quicksand } from "next/font/google";
 import Link from "next/link";
-import SignUpButton from "../../_components/SignUpButton";
+import SignUpButton from "@/app/(website)/_components/SignUpButton";
 import Image from "next/image";
 import Lists from '@/public/d8TqHBd5fuB (2).png'
 import Slip from '@/public/slip.jpeg'
