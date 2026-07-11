@@ -25,8 +25,9 @@ const filteredLinks = navLinks.filter((link) => {
 
   return (
       <nav
-      className="h-[115px] text-white
-      w-full z-40 flex items-center justify-center lg:mt-60 pl-3"
+      className="h-[115px] md:h-full text-black w-full
+       z-40 flex items-center
+       justify-center lg:mt-20 pl-3"
     >
       <ul
         className={`grid gap-2 text-center w-full
@@ -49,20 +50,21 @@ const filteredLinks = navLinks.filter((link) => {
               key={link.name}
               className="flex items-center justify-center lg:justify-center
               w-[60px] h-[60px]
-              lg:w-full  rounded-full lg:flex-row lg:gap-2"
+              lg:w-full lg:flex-row lg:gap-2"
             >
             <Link
   href={link.href}
-  className={`flex flex-col lg:flex-row items-center
-  lg:gap-10 lg:text-white
-  lg:w-[90%] lg:ml-[5%] hover:bg-[#04284B]
-  hover:text-gray-50 hover:rounded-[4px]
+  className={`flex flex-col items-center justify-center
+  lg:gap-2 
+  lg:w-full hover:bg-gray-300
+  hover:text-[#0B2E1E] 
   lg:p-3 active:opacity-60
-  text-[10px] lg:text-[18px]
+  text-[10px] lg:text-[12px]
+  
   ${
     isActive
-      ? "text-[#ACF532] w-full h-full rounded-full flex justify-center items-center lg:rounded-[4px] lg:text-gray-50"
-      : " w-full h-full rounded-full flex justify-center items-center text-black"
+      ? "text-[#ACF532] md:bg-gray-300 w-full h-full flex justify-center items-center lg:text-[#0B2E1E]"
+      : " w-full h-full flex justify-center items-center text-black"
   }`}
 >
   <div className="relative flex items-center justify-center">

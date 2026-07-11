@@ -8,12 +8,12 @@ import { useForm } from "@/app/providers/Provider";
 const onboardingCards = [
   {
     title: "Weekly groceries",
-    emoji: "🧺",
+    emoji: "🗓",
     description: "Your regular weekly grocery shopping",
   },
   {
     title: "Monthly groceries",
-    emoji: "🛒",
+    emoji: "📆",
     description: "Your regular monthly grocery shopping",
   },
   {

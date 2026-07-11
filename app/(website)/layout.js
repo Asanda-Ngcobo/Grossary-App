@@ -4,7 +4,8 @@ import Navigation from "@/app/(website)/_components/Navigation";
 import { Analytics } from "@vercel/analytics/next"
 import Script from "next/script";
 import AppNavigation from "../(account)/_ui/AppNav";
-
+import { FormProvider } from "@/app/providers/Provider";
+import Menu from "./_components/MenuComp";
 
 const MainFont = Nunito_Sans({
   variable: "--font-geist-sans",
@@ -35,11 +36,19 @@ export default function RootLayout({ children }) {
       <body
         className={`${MainFont.className} gap-6`}
       >
-        <Navigation/>
-        {children}
+          <FormProvider>
+                <Navigation/>
+                 <Menu/>
+             <div className="lg:grid grid-cols-[5rem_1fr] ">
+              <div>  <AppNavigation/></div>
+              <div> {children}</div>
+             </div>
+          </FormProvider>
+    
+       
           
               
-        <AppNavigation/>
+      
         <Analytics/>
       </body>
 

@@ -10,14 +10,14 @@ function LoginFormComp({handleSubmit, isPending}) {
   const [showPassword, setShowPassword] = useState(false);
     return (
         <div>
-             <header className="border-b border-[#908787] mb-6 pb-4 space-y-2 text-center">
-        <h1 className="text-[24px] font-bold">Welcome back 😍</h1>
-        <h2 className="text-xl font-bold">No missed grocery items. No overspending.</h2>
+             <header className=" mb-6 pb-4 space-y-2 text-center">
+        <h1 className="text-[24px] font-bold">Welcome back</h1>
+        {/* <h2 className="text-xl font-bold">No missed grocery items. No overspending.</h2> */}
         <p className="text-[#908787] text-base">Plan smarter. Shop better. Save more.</p>
       </header>
 
       <form action={handleSubmit} className="space-y-4 mx-auto mb-10">
-        <h3 className="text-center text-xl font-extrabold">Sign In</h3>
+        {/* <h3 className="text-center text-xl font-extrabold">Sign In</h3> */}
         <input
           type="email"
           name="email"

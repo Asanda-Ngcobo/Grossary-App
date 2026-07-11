@@ -13,11 +13,11 @@ export default async function AppNavigation() {
   if (!user) {
     return (
       <div
-        className="fixed bottom-0 bg-white w-full
-        h-[80px]
+        className="fixed bottom-0 w-full
+        h-[80px] bg-white
         flex justify-center items-center
-        md:hidden
-        lg:w-[20%] lg:mx-0 lg:h-screen
+       
+        lg:w-[5rem] lg:mx-0 lg:h-screen
         lg:bottom-auto lg:flex-col
         lg:justify-start"
       >
@@ -44,7 +44,7 @@ export default async function AppNavigation() {
       h-[80px]
       flex justify-center items-center
       md:hidden
-      lg:w-[20%] lg:mx-0 lg:h-screen
+      lg:w-full lg:mx-0 lg:h-screen
       lg:bottom-auto lg:flex-col
       lg:justify-start"
     >
