@@ -7,7 +7,7 @@ function loading() {
               h-[80vh] mx-[10%]">
                 
       <Spinner/>
-      <h2 className="text-black">Fetching Your Lists</h2>
+      <h2 className="text-black">Fetching Your Insight</h2>
   
       </section>
     )
