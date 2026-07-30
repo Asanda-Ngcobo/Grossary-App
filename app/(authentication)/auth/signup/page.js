@@ -4,7 +4,7 @@ import SocialAuth from "../../SocialAuth";
 
 
 export const metadata = {
-  title: "Login to Grossary | Smart Grocery Shopping & Budget Tracking",
+  title: "Sign Up | Smart Grocery Shopping & Budget Tracking",
   
   description:
     "signup to Grossary to easily manage grocery lists, track shopping costs in real time, compare prices, and plan smarter shopping trips across South African stores.",
