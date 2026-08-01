@@ -2,7 +2,7 @@
 
 function TestimonialBunner({ usertestimonial }) {
   return (
-    <div className="px-4 md:px-8 py-6">
+    <div className="px-4 md:px-8 py-2 mt-4">
       
       <div className=" hover:shadow-md transition-all duration-300 p-6 md:p-8">
         

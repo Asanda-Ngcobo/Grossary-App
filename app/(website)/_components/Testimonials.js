@@ -45,7 +45,8 @@ const HeaderFont = Quicksand({
 
 function Testimonials() {
   return (
-    <section className="w-full py-6 px-4 flex flex-col items-center bg-gradient-to-b from-white to-gray-50">
+    <section className="w-full py-3 px-4 mt-10 flex flex-col items-center
+     bg-gradient-to-b from-white to-gray-50">
       
       {/* <h2
         className={`text-2xl md:text-3xl font-semibold text-center text-gray-900 mb-10 ${HeaderFont.className}`}
