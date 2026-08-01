@@ -4,7 +4,7 @@
 import LoginAuth from './LoginAuth';
 
 export const metadata = {
-  title: "Login to Grossary | Smart Grocery Shopping & Budget Tracking",
+  title: "Login | Smart Grocery Shopping & Budget Tracking",
   
   description:
     "Log in to Grossary to manage grocery lists, track shopping costs in real time, compare prices, and plan smarter shopping trips across South African stores.",

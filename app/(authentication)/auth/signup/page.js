@@ -5,6 +5,7 @@ import Link from "next/link"
 
 
 export const metadata = {
+  title: "Sign Up | Smart Grocery Shopping & Budget Tracking",
   title: "Sign Up to Grossary | Smart Grocery Shopping & Budget Tracking",
   
   description:
