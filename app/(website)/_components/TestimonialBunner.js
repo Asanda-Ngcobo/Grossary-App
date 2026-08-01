@@ -4,18 +4,20 @@ function TestimonialBunner({ usertestimonial }) {
   return (
     <div className="px-4 md:px-8 py-6">
       
-      <div className="rounded-2xl border border-gray-100 bg-white shadow-sm hover:shadow-md transition-all duration-300 p-6 md:p-8">
+      <div className=" hover:shadow-md transition-all duration-300 p-6 md:p-8">
         
         {/* Quote */}
-        <p className="text-gray-700 text-base md:text-lg leading-relaxed">
-          “{usertestimonial.testimonial}”
+        <p className="text-gray-700 text-base md:text-lg leading-relaxed flex flex-col">
+          <span>“{usertestimonial.testimonial}”</span>
+          <span>{usertestimonial.name}</span>
+          <span> {usertestimonial.occupation}</span>
         </p>
 
         {/* Divider */}
-        <div className="mt-6 mb-4 h-px bg-gray-100" />
+        {/* <div className="mt-6 mb-4 h-px bg-gray-100" /> */}
 
         {/* User Info */}
-        <div className="flex items-center justify-between">
+        {/* <div className="flex items-center justify-between text-center">
           <div>
             <h3 className="text-sm font-semibold text-gray-900">
               {usertestimonial.name}
@@ -25,11 +27,8 @@ function TestimonialBunner({ usertestimonial }) {
             </p>
           </div>
 
-          {/* subtle fintech badge */}
-          <span className="text-xs px-3 py-1 rounded-full bg-[#ACF532]/10 text-[#6B8E23] font-medium">
-            Verified user
-          </span>
-        </div>
+       
+        </div> */}
       </div>
     </div>
   );

@@ -78,7 +78,7 @@ export default function OnboardingCards({ userName }) {
       } = await supabase.auth.getUser();
 
       if (!user) {
-        router.push("/login");
+        router.push("/auth/signup");
         return;
       }
 

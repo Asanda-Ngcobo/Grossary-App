@@ -19,7 +19,7 @@ export default function SignUpForm() {
       try {
          await signUpUser(formData);
 
-        router.push('/auth/signup-success')
+        router.push('/account')
 
       } catch (error) {
         toast.error('An error occured when signing up, Please try again!!', {

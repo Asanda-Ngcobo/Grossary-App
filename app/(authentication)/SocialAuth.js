@@ -10,6 +10,7 @@ import Logo from "../(website)/_components/Logo"
 import Link from "next/link"
 
 
+
 function SocialAuth() {
   const [error, setError] = useState(null)
   const [isLoading, setIsLoading] = useState(false)
@@ -41,15 +42,16 @@ setError(error instanceof Error ? error.message : 'An error occurred')
         handleSocialLogin()
       }}
     className=" w-[90%] md:w-[40%] h-[60vh]
-      shadow-lg">
+      md:shadow-lg">
       <div className="flex flex-col  gap-4
       justify-center items-center
       
       ">
+        
             {/* Header */}
-      <header className=" mb-6 pb-4 space-y-2 text-center">
+      <header className=" my-6 pb-4 space-y-2 text-center ">
         <h1 className="text-[24px] font-bold">Welcome to<Logo/></h1>
-        <h2 className="text-xl font-bold">No missed grocery items. No overspending.</h2>
+        <h2 className="text-xl font-bold">Create an account to start creating your lists.</h2>
         <p className="text-[#908787] text-base">Plan smarter. Shop better. Save more.</p>
         
       </header>
