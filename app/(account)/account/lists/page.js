@@ -71,8 +71,7 @@ const { data:allItemsRaw, error:AllItemsError } = await supabase
                 w-full h-screen text-center flex justify-center items-center">
                   You have no  active lists currently. 
                 Start adding your list by selection one of 
-                the options on the home page
-                 below or 
+                the options on the home page or 
                   Reuse your Shopped Lists.
                </p>
             ): (
