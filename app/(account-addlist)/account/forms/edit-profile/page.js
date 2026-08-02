@@ -47,7 +47,7 @@ export default async function Page() {
   return (
     <div>
       <button className="m-5 bg-white rounded-full w-[50px] h-[50px] flex justify-center items-center">
-        <Link href="/account">
+        <Link href="/account/forms/profile">
           <ChevronLeft color="black" size={40} />
         </Link>
       </button>
@@ -57,9 +57,9 @@ export default async function Page() {
       >
         <div
           className="py-2 px-4 rounded-md w-[90%] mt-[5%] ml-[5%] 
-          md:w-[40%] md:ml-[25%] grid grid-rows-2 gap-6 bg-[#041527] shadow-sm"
+          md:w-[40%] md:ml-[25%] grid grid-rows-2 gap-6"
         >
-          <label htmlFor="name" className="text-center text-2xl text-white">
+          <label htmlFor="name" className="text-center text-2xl">
             Name
           </label>
           <input

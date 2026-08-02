@@ -1,14 +1,14 @@
-import Image from 'next/image'
-import Logo1 from '@/public/logo.png'
 
-function Loading() {
-  return (
-    <div className="flex flex-col justify-center items-center absolute inset-0 z-50 bg-white w-full h-full">
-      <Image src={Logo1} width={150} alt="Grossary logo" className="mb-6" />
-      <h1 className={` text-[24px] font-semibold ml-3.5 text-center text-black`}>Plan, Shop, Save.</h1>
-      <div className="animate-spin rounded-full h-12 w-12 border-t-4 border-[#EDE734]"></div>
-    </div>
-  )
+import Spinner from "@/app/(website)/_components/Spinner"
+
+function loading() {
+    return (
+       <section className="flex flex-col justify-center items-center w-[80%]
+              h-[80vh] mx-[10%]">
+       
+      <Spinner/>
+      </section>
+    )
 }
 
-export default Loading
+export default loading

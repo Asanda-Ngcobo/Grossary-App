@@ -14,7 +14,7 @@ const ButtonFont = Lexend_Deca({
 function EditButton({children}) {
     const { pending } = useFormStatus();
     return (
-        <button className={`${ButtonFont.className} bg-amber-700
+        <button className={`${ButtonFont.className}   bg-[#1EC677]
         
         w-[60%]
         mx-[20%]
