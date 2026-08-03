@@ -4,6 +4,7 @@ import { ChevronLeft } from "@deemlol/next-icons";
 import { createClient } from "@supabase/supabase-js";
 import { Lexend_Deca } from "next/font/google";
 import { useEffect, useRef, useState } from "react";
+import AddingOwn from "./_listcomponents/AddingOwn";
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL,
@@ -335,26 +336,30 @@ export default function StarterItemsModal({
         </div>
 
         {/* Search */}
-        <input
-          type="text"
-          placeholder="Filter by name"
-          value={search}
-          onChange={(e) =>
-            setSearch(e.target.value)
-          }
-          className="
-            w-full
-            h-10
-            rounded-2xl
-            border border-gray-200
-            px-6
-            outline-none
-            bg-white
-            mb-4
-          "
-        />
-
-     
+     <input
+  type="text"
+  name="item_name"
+  placeholder="Filter by name"
+  value={search}
+  onChange={(e) => setSearch(e.target.value)}
+  className="
+    w-full
+    h-10
+    rounded-2xl
+    border border-gray-200
+    px-6
+    py-6
+    outline-none
+    bg-white
+    mb-4
+  "
+/>
+         {/* Manual Entry */}
+       {search.length >= 2 && items.length === 0 && (
+        <AddingOwn search={search}
+        listId={listId}
+        setSearch={setSearch}/>
+       )}
 
         {/* Items */}
         <div className="overflow-y-auto flex-1 pr-1 mt-3">
@@ -433,7 +438,7 @@ export default function StarterItemsModal({
 
         {/* Footer */}
         <div className="pt-5 mt-5 border-t">
-            {itemsLength === 0 && selectedItems.length === 0 &&
+            {itemsLength === 0 && selectedItems.length === 0 && search.length === 0 &&
              <p className="text-red-400 text-center text-xl">
                 Please select at least one item</p>}
           {selectedItems.length === 0 || <button

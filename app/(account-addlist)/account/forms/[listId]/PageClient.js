@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useOptimistic, useState } from 'react';
 import HandleCategories from './add-price/HandleCategories';
 import Link from 'next/link';
-import { Check, ChevronLeft, Edit, Edit2, Plus, ShoppingCart } from '@deemlol/next-icons';
+import { Check, ChevronLeft, Edit, Edit2, PenTool, Plus, ShoppingCart } from '@deemlol/next-icons';
 
 
 import IncreaseQuantity from './_listcomponents/IncreaseQuantity';
@@ -161,7 +161,9 @@ const isFirstList = lists.length === 1 && !profile.surveyed;
   <ChevronLeft />
 </Link>
       
-          <h1 className="text-xl font-bold text-[#8F8C8C]">{list_name}</h1>
+          <h1 className="text-xl font-bold text-[#8F8C8C] flex">{list_name}
+       
+          </h1>
             {/* Right: Buttons */}
       <div className="flex gap-2 items-center w-1/5">
         {/* <EditList id={id} /> */}

@@ -45,7 +45,7 @@ export default async function EditListPage({ params }) {
           />
         </div>
 
-        <div>
+        {/* <div>
           <label htmlFor="name" className=" text-2xl">Budget (Rands)</label>
           <input
             type="number"
@@ -56,7 +56,7 @@ export default async function EditListPage({ params }) {
             required
                className="bg-white text-[#041527] text-2xl p-3 rounded-md w-full"
           />
-        </div>
+        </div> */}
 
      <EditButton>Save Changes</EditButton>
       </form>

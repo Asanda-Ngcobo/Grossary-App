@@ -1,5 +1,5 @@
 'use client';
-import { ShoppingBag } from "@deemlol/next-icons";
+import { Edit2, ShoppingBag } from "@deemlol/next-icons";
 import DeleteModal from "../account/lists/DeleteModal";
 import { useState } from "react";
 import Link from "next/link";
@@ -40,7 +40,9 @@ const shoppedPercentage = ((Number(shoppedItems.length/listitems.length)) * 100)
 >
   {/* Top Row */}
   <div className="flex justify-between items-start">
-    <h1 className="font-bold text-lg text-[#0B2E1E]">{list_name}</h1>
+    <h1 className="font-bold text-lg text-[#0B2E1E] flex gap-1">{list_name}
+           {/* <Link href='/account/forms/edit-list'><Edit2/></Link> */}
+    </h1>
 
     <span className="text-xs text-gray-400">
       {key}
