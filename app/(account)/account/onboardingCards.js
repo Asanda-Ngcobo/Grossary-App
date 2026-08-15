@@ -59,52 +59,87 @@ export default function OnboardingCards({ userName }) {
   const router = useRouter();
   
 
-  const [loadingCard, setLoadingCard] = useState(null);
+ const [loadingCard, setLoadingCard] = useState(null);
+const [isLoading, setIsLoading] = useState(false);
 
-  async function handleCreateList(card) {
-    // prevent double clicks
-    if (loadingCard) return;
+ async function handleCreateList(card) {
+  // Prevent double clicks / multiple list creation
+  if (loadingCard || isLoading) return;
 
-  
+  const loadingStartTime = Date.now();
 
-    // -----------------------------
-    // SYSTEM LIST FLOW (DB CALL)
-    // -----------------------------
-    try {
-      setLoadingCard(card.title);
+  try {
+    setLoadingCard(card.title);
+    setIsLoading(true);
 
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
 
-      if (!user) {
-        router.push("/auth/signup");
-        return;
-      }
-
-      const { data: list, error } = await supabase
-        .from("user_lists")
-        .insert({
-          user_id: user.id,
-          list_name: card.title,
-        })
-        .select()
-        .single();
-
-      if (error) {
-        console.error(error);
-        alert("Failed to create list");
-        return;
-      }
-
-      router.push(`/account/forms/${list.id}`);
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setLoadingCard(null);
+    if (!user) {
+      router.push("/auth/signup");
+      return;
     }
-  }
 
+    const { data: list, error } = await supabase
+      .from("user_lists")
+      .insert({
+        user_id: user.id,
+        list_name: card.title,
+      })
+      .select()
+      .single();
+
+    if (error) {
+      console.error(error);
+      alert("Failed to create list");
+
+      setIsLoading(false);
+      setLoadingCard(null);
+
+      return;
+    }
+
+    // Calculate how much of the 5 seconds has already passed
+    const elapsedTime = Date.now() - loadingStartTime;
+
+    // Ensure loading screen is shown for at least 5 seconds
+    const remainingTime = Math.max(5000 - elapsedTime, 0);
+
+    setTimeout(() => {
+      // DON'T turn loading off here.
+      // Keep the UI locked while Next.js navigates.
+      router.push(`/account/forms/${list.id}`);
+    }, remainingTime);
+
+  } catch (error) {
+    console.error(error);
+
+    setIsLoading(false);
+    setLoadingCard(null);
+  }
+}
+
+if (isLoading) {
+  return (
+    <div className="min-h-screen bg-[#F8F8F8] w-full fixed left-0 top-0 z-10
+     flex items-center justify-center px-6">
+      <div className="text-center">
+
+        <div className="mx-auto mb-6 w-16 h-16 rounded-full border-4 border-gray-200 border-t-[#ACF532] animate-spin" />
+
+        <h1 className="text-3xl font-black text-[#0B2E1E]">
+          Creating Your List...
+        </h1>
+
+        <p className="mt-3 text-gray-500">
+          We are getting everything ready for you.
+        </p>
+
+      </div>
+    </div>
+  );
+}
   return (
     <main className="min-h-screen bg-[#F8F8F8] px-4 py-10">
       <div className="max-w-5xl mx-auto">
@@ -133,25 +168,24 @@ export default function OnboardingCards({ userName }) {
             const isLoading = loadingCard === card.title;
 
             return (
-              <button
-                key={card.title}
-                onClick={() => handleCreateList(card)}
-                disabled={!!loadingCard && !card.custom}
-                className={`
-                  bg-white rounded-3xl p-6 text-left border
-                  transition-all duration-200 active:scale-[0.98]
-                  hover:shadow-xl hover:border-black
-                  border-gray-200
+         <button
+  key={card.title}
+  onClick={() => handleCreateList(card)}
+  disabled={!!loadingCard || isLoading}
+  className={`
+    bg-white rounded-3xl p-6 text-left border
+    transition-all duration-200 active:scale-[0.98]
+    hover:shadow-xl hover:border-black
+    border-gray-200
+    cursor-pointer
 
-                 cursor-pointer
-
-                  ${
-                    loadingCard && !card.custom
-                      ? "opacity-60 cursor-not-allowed"
-                      : ""
-                  }
-                `}
-              >
+    ${
+      loadingCard || isLoading
+        ? "opacity-60 cursor-not-allowed"
+        : ""
+    }
+  `}
+>
                 <div className="text-5xl mb-5">
                   {card.emoji}
                 </div>
@@ -176,6 +210,8 @@ export default function OnboardingCards({ userName }) {
               </button>
              
             );
+
+             
           })}
 
            {/* <button onClick={toggleForm}>
@@ -216,6 +252,8 @@ export default function OnboardingCards({ userName }) {
           <AddListForm toggleForm={toggleForm} />
         </ParentFormBackground>
       )} */}
+
+    
     </main>
   );
 }
