@@ -1,5 +1,5 @@
 import Image from "next/image"
-import HeroPic from '@/public/familty doing shopping.jpg'
+import HeroPic from '@/public/shopping with phone.jpg'
 
 
 function AboutHero() {
