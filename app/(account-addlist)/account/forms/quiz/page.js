@@ -4,6 +4,11 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/app/_utils/supabase/client";
 
+
+export const metadata = {
+  title: "Quiz | Grossary",
+ 
+};
 const questions = [
   {
     key: "funnel",
