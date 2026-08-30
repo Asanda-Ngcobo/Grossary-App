@@ -99,7 +99,9 @@ export const metadata = {
 
 export default function Page() {
   return (
-    <div className="w-screen h-screen flex flex-col justify-center items-center">
+    <div className="w-screen h-screen flex flex-col justify-center items-center
+     bg-[#0B2E1E]
+    text-white">
    {/* <Testimonials/> */}
         <SocialAuth/>
    <section className="text-center text-sm mt-[10vh]">

@@ -25,7 +25,7 @@ const filteredLinks = navLinks.filter((link) => {
 
   return (
       <nav
-      className="h-[115px] md:h-full text-black w-full
+      className="h-[120px] md:h-full text-black w-full
        z-40 flex items-center
        justify-center lg:mt-20 pl-3"
     >
@@ -63,7 +63,7 @@ const filteredLinks = navLinks.filter((link) => {
   
   ${
     isActive
-      ? "text-[#ACF532] md:bg-gray-300 w-full h-full flex justify-center items-center lg:text-[#0B2E1E]"
+      ? "text-[#1EC677] md:bg-gray-300 w-full h-full flex justify-center items-center lg:text-[#0B2E1E]"
       : " w-full h-full flex justify-center items-center text-black"
   }`}
 >

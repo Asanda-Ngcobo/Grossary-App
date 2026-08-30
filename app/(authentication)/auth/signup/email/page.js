@@ -2,7 +2,8 @@ import SignUpForm from "../SignUpform"
 
 function page() {
     return (
-        <div>
+        <div className=" bg-[#0B2E1E]
+    text-white">
             <SignUpForm/>
         </div>
     )

@@ -3,7 +3,8 @@ import LoginForm from "../LoginForm"
 
 function page() {
     return (
-        <div>
+        <div className=" bg-[#0B2E1E]
+    text-white h-screen">
             <LoginForm/>
         </div>
     )

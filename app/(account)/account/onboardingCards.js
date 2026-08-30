@@ -126,7 +126,8 @@ if (isLoading) {
      flex items-center justify-center px-6">
       <div className="text-center">
 
-        <div className="mx-auto mb-6 w-16 h-16 rounded-full border-4 border-gray-200 border-t-[#ACF532] animate-spin" />
+        <div className="mx-auto mb-6 w-16 h-16 rounded-full border-4
+         border-gray-200 border-t-[#ACF532] animate-spin" />
 
         <h1 className="text-3xl font-black text-[#0B2E1E]">
           Creating Your List...
@@ -199,7 +200,7 @@ if (isLoading) {
                 </p>
 
                 <div className="mt-6">
-                  <span className="text-sm font-semibold text-[#ACF532]">
+                  <span className="text-sm font-semibold text-[#1EC677]">
                     {isLoading
                       ? "Creating..."
                       : card.custom

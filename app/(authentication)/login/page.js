@@ -99,7 +99,8 @@ export default function SignInForm() {
 
   return (
  
-    <div className="w-screen h-screen flex justify-center items-center">
+    <div className="w-screen h-screen flex justify-center items-center bg-[#0B2E1E]
+    text-white">
       <LoginAuth/>
     </div>
     
