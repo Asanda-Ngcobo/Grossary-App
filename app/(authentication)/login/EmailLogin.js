@@ -47,7 +47,8 @@ function EmailLogin({ setIsEmail }) {
 
   return (
     <>
-      <div className="fixed inset-0 z-40 flex items-center justify-center bg-black/40 backdrop-blur-md">
+      <div className="fixed inset-0 z-40 flex items-center justify-center
+       bg-black/40 backdrop-blur-md">
         <div className="relative w-[92%] max-w-md rounded-2xl bg-white/80 backdrop-blur-xl shadow-2xl p-7 animate-in fade-in zoom-in-95 duration-200">
 
           <button
@@ -73,7 +74,7 @@ function EmailLogin({ setIsEmail }) {
 
               <form
                 onSubmit={handleSubmit}
-                className="space-y-4"
+                className="space-y-4 text-white"
               >
                 <input
                   type="email"
@@ -100,7 +101,11 @@ function EmailLogin({ setIsEmail }) {
                     required
                     autoComplete="current-password"
                     placeholder="Password"
-                    className="w-full rounded-lg border border-gray-200 px-4 py-3 pr-12 text-sm transition focus:border-(--accent-secondary) focus:outline-none focus:ring-2 focus:ring-(--accent-secondary)"
+                    className="w-full rounded-lg border
+                     border-gray-200 px-4
+                     py-4 pr-12 text-sm transition text-white
+                     focus:border-(--accent-secondary) 
+                     focus:outline-none focus:ring-2 focus:ring-(--accent-secondary)"
                   />
 
                   <button

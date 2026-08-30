@@ -16,7 +16,7 @@ function LoginFormComp({handleSubmit, isPending}) {
         <p className="text-[#908787] text-base">Plan smarter. Shop better. Save more.</p>
       </header>
 
-      <form action={handleSubmit} className="space-y-4 mx-auto mb-10">
+      <form action={handleSubmit} className="space-y-4 mx-auto mb-10 text-white font-bold">
         {/* <h3 className="text-center text-xl font-extrabold">Sign In</h3> */}
         <input
           type="email"
