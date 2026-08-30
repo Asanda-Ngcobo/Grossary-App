@@ -63,7 +63,7 @@ const filteredLinks = navLinks.filter((link) => {
   
   ${
     isActive
-      ? "text-[#1EC677] md:bg-gray-300 w-full h-full flex justify-center items-center lg:text-[#0B2E1E]"
+      ? "text-[#1EC677] overline md:bg-gray-300 w-full h-full flex justify-center items-center lg:text-[#0B2E1E]"
       : " w-full h-full flex justify-center items-center text-black"
   }`}
 >
