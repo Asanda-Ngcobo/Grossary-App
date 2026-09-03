@@ -19,7 +19,7 @@ const faqs = [
   {
     question: "Is Grossary a food delivery platform?",
     answer:
-      "No. Grossary does not deliver groceries. Instead, it helps you plan your shopping, stay within your budget, organise your grocery lists, store loyalty cards and compare prices before you visit the supermarket.",
+      "No. Grossary is not a delivery platform. Instead, it is a in-store grocery shopping companion, helping you remember all grocery essentials, stay within your budget & never miss out on savings because you forgot your lotalty cards at home..",
   },
   {
     question: "Is Grossary free?",
