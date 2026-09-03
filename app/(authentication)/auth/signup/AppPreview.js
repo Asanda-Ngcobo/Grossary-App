@@ -1,6 +1,6 @@
 function AppPreview() {
     return (
-        <div className="bg-[#041527] ">
+        <div className="bg-[#0B2E1E] ">
             
         </div>
     )

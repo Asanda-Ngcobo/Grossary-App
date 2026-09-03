@@ -23,7 +23,7 @@ export default function Navigation() {
      
     return (
         <div className="flex justify-between
-         h-[60px] bg-[#0B2E1E]
+         h-[60px]
  
         w-full
      
@@ -48,7 +48,7 @@ export default function Navigation() {
                 {/* <li className="lg:hidden"><Menu/></li> */}
                 <li className=" lg:flex"><Link href='/account'>
                 <SignInButton/></Link></li>
-                <li onClick={toggleMenu}><Menu className="text-white"/></li>
+                <li onClick={toggleMenu}><Menu className="text-[#0B2E1E]"/></li>
             </ul>
            
             </div>

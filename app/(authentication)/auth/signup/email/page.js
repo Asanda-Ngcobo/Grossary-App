@@ -8,8 +8,7 @@ export const metadata = {
 
 function page() {
     return (
-        <div className=" bg-[#0B2E1E]
-    text-white">
+        <div className="">
             <SignUpForm/>
         </div>
     )

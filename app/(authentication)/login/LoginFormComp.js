@@ -4,6 +4,7 @@ import { Eye, EyeOff } from "@deemlol/next-icons"
 import Link from "next/link"
 import { useState, useTransition } from "react";
 import Loading from "./loading";
+import Logo from "@/app/(website)/_components/Logo";
 
 function LoginFormComp({handleSubmit, isPending}) {
      
@@ -11,12 +12,13 @@ function LoginFormComp({handleSubmit, isPending}) {
     return (
         <div>
              <header className=" mb-6 pb-4 space-y-2 text-center">
+              <Logo/>
         <h1 className="text-[24px] font-bold">Welcome back</h1>
         {/* <h2 className="text-xl font-bold">No missed grocery items. No overspending.</h2> */}
         <p className="text-[#908787] text-base">Plan smarter. Shop better. Save more.</p>
       </header>
 
-      <form action={handleSubmit} className="space-y-4 mx-auto mb-10 text-white font-bold">
+      <form action={handleSubmit} className="space-y-4 mx-auto mb-10 font-bold">
         {/* <h3 className="text-center text-xl font-extrabold">Sign In</h3> */}
         <input
           type="email"
@@ -48,7 +50,7 @@ function LoginFormComp({handleSubmit, isPending}) {
         <button
           type="submit"
           disabled={isPending}
-          className="bg-[#1EC677] text-white px-4 py-2 cursor-pointer w-full rounded disabled:opacity-50"
+          className="bg-[#0B2E1E] text-white px-4 py-2 cursor-pointer w-full rounded disabled:opacity-50"
         >
           {isPending ? 'Signing...' : 'Sign in'}
         </button>

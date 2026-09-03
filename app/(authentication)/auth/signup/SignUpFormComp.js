@@ -108,7 +108,7 @@ function SignUpFormComp({handleSubmit, isPending}) {
       <button
         type="submit"
         disabled={isPending}
-        className="bg-[#1EC677] text-white px-4 py-2 w-full rounded disabled:opacity-50"
+        className="bg-[#0B2E1E] text-white px-4 py-2 w-full rounded disabled:opacity-50"
       >
         {isPending ? 'Signing up...' : 'Sign Up'}
       </button>
