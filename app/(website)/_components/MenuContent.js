@@ -57,12 +57,12 @@ const features = [
     name: 'Store Loyalty Cards',
     icon: ChevronRight,
   },
-  // {
-  //   id: 4,
-  //   link: `/features/digital-slips`,
-  //   name: 'Digital Slips',
-  //   icon: ChevronRight,
-  // },
+  {
+    id: 4,
+    link: `/features/grossaryplus`,
+    name: 'Grossary Plus',
+    icon: ChevronRight,
+  },
   {
     id: 5,
     link: `/for-grossary-stores`,

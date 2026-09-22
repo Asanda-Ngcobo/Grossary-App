@@ -49,7 +49,7 @@ const filteredLinks = navLinks.filter((link) => {
             <li
               key={link.name}
               className="flex items-center justify-center lg:justify-center
-              w-[60px] h-[60px]
+              w-[100px] h-[60px]
               lg:w-full lg:flex-row lg:gap-2"
             >
             <Link
@@ -63,7 +63,7 @@ const filteredLinks = navLinks.filter((link) => {
   
   ${
     isActive
-      ? "text-[#1EC677] overline md:bg-gray-300 w-full h-full flex justify-center items-center lg:text-[#0B2E1E]"
+      ? "text-[#1EC677] bg-gray-200 rounded-4xl px-5 md:bg-gray-300 w-full h-full flex justify-center items-center lg:text-[#0B2E1E]"
       : " w-full h-full flex justify-center items-center text-black"
   }`}
 >

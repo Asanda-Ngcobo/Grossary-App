@@ -31,9 +31,24 @@
   }
 } 
 
+:root {
+  --checkers: #007A4D;
+  --checkers-blue: #0055A5;
+  --sixty60-blue: #38A8AE;
+
+  --pnp-blue: #003359;
+  --pnp-red: #E31E24;
+
+  --shoprite: #E41E2B;
+  --shoprite-yellow: #FFD100;
+
+  --spar: #E30613;
+  --spar-green: #00843D;
+}
 /* :root {
   --background: #ffffff;
   --foreground: #171717;
+  --checkers-green: #007A4D;
 }
 
 @theme inline {

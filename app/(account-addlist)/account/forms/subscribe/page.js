@@ -1,106 +1,179 @@
 
-import { ChevronLeft, CreditCard, PayPal } from "@deemlol/next-icons";
-import Link from "next/link";
-import EditButton from "../[listId]/edit-list/EditButton";
-import { createClient } from "@/app/_utils/supabase/server";
+import SubscribeButton from "./SubscribeButton";
 
 
 
+export default function SubscribePage() {
 
-async function page() {
-  const supabase = await createClient()
-       const { data, error } = await supabase.auth.getUser()
-     
-     
-     // Get additional profile info
-      // Get additional profile info
-       const { data: profile } = await supabase
-         .from('users_info')
-         .select('*')
-         .eq('id', data.user.id)
-         .single();
-  
+  return (
 
-  
-    
-    
-    
-      const email = profile.email;
-    return (
-        <div>
-            <button className="m-5 bg-white rounded-full w-[50px] h-[50px] flex justify-center items-center">
-        <Link href="/account/profile">
-          <ChevronLeft color="black" size={40} />
-        </Link>
-      </button>
-            <form >
+    <main
+      className="
+        min-h-screen
+        bg-[#F7FAF8]
+        px-4
+        py-12
+      "
+    >
+
+      <div
+        className="
+          max-w-lg
+          mx-auto
+        "
+      >
+
         <div
-          className="py-2 px-4 rounded-md w-[90%] mt-[5%] ml-[5%] 
-          md:w-[40%] md:ml-[25%] grid grid-rows-2 gap-1 bg-[#041527] shadow-sm"
+          className="
+            text-center
+          "
         >
-          <label htmlFor="name" className="text-left text-lg text-white">
-            Contact Info
-          </label>
-          <input
-          id="name"
-            name="name"
-            defaultValue={email}
-            className="bg-white text-gray-500 text-lg text-left p-1 rounded-md"
-            required
-          />
-            <div className="flex justify-between mt-3">
-                <h2>
-Payment method
-                </h2>
-                
-                <ul  className="flex justify-between bg-[#04284B] px-3 py-1 rounded-md">
-                    <li className="px-2 flex gap-2">Card <CreditCard/></li>
-                  
-                </ul>
-            </div>
-               <label htmlFor="name" className="text-left text-lg text-gray-500">
-            Card Information
-          </label>
-          <input
-          id="name"
-            name="name"
-            placeholder="4566 4554 5467 5467"
-            className="border border-amber-50 text-gray-500 text-lg text-left w-[100%] p-1 rounded-md mb-2"
-            required
-          />
-          <div className="flex flex-row gap-3">
-  <input
-          id="name"
-            name="name"
-            placeholder="MM/YYYY"
-            className="border border-amber-50 text-gray-500 text-lg text-left w-3/4 p-1 rounded-md "
-            required
-          />
-            <input
-         
-            placeholder="CVC"
-            className="border border-amber-50 text-gray-500 text-lg text-left w-1/4 p-1 rounded-md"
-            required
-          />
+
+          <div
+            className="
+              inline-flex
+              bg-[#0B2E1E]
+              text-white
+              font-bold
+              rounded-2xl
+              px-4
+              py-2
+            "
+          >
+            grossary<span className="text-[#1EC677]">plus</span>
           </div>
-                <label htmlFor="name" className="text-left text-lg text-gray-500">
-            CardHolder FullName
-          </label>
-          <input
-         
-            placeholder=""
-            className="border border-amber-50 text-gray-500 text-lg text-left w-[100%] p-1 rounded-md mb-2"
-            required
+
+
+          <h1
+            className="
+              text-3xl
+              font-bold
+              text-[#0B2E1E]
+              mt-5
+            "
+          >
+            Save up to <span className="text-[#1EC677]">R100</span>{" "} per 6 Items
+          </h1>
+
+
+          <p
+            className="
+              text-gray-500
+              mt-3
+            "
+          >
+            grossary plus compares your
+            grocery list across participating nearby
+            stores and shows you where
+            each item is cheaper.
+          </p>
+
+        </div>
+
+
+        <div
+          className="
+            bg-white
+            border
+            border-gray-100
+            rounded-3xl
+            p-6
+            mt-8
+          "
+        >
+
+          <div
+            className="
+              flex
+              items-end
+              gap-1
+            "
+          >
+
+            <span
+              className="
+                text-4xl
+                font-bold
+                text-[#0B2E1E]
+              "
+            >
+              R39
+            </span>
+
+            <span
+              className="
+                text-gray-500
+                mb-1
+              "
+            >
+              /month
+            </span>
+
+          </div>
+
+
+          <p
+            className="
+              text-[#1EC677]
+              font-semibold
+              mt-2
+            "
+          >
+            First 7 days free
+          </p>
+
+
+          <div
+            className="
+              border-t
+              border-gray-100
+              my-6
+            "
           />
-        </div>
-      
 
-        <div className="mt-4 ">
-          <EditButton>Subscribe to Grossary Plus</EditButton>
+
+          <div
+            className="
+              space-y-4
+              text-sm
+              text-[#0B2E1E]
+            "
+          >
+
+            <p>
+              ✓ Compare your list across
+              nearby stores
+            </p>
+
+            <p>
+              ✓ Find the cheapest store
+              for each item
+            </p>
+
+            <p>
+              ✓ Get your best-value
+              shopping plan
+            </p>
+
+            <p>
+              ✓ Compare it with the
+              convenience of one store
+            </p>
+
+            <p>
+              ✓ See retailer promotional
+              savings
+            </p>
+
+          </div>
+
+
+       <SubscribeButton/>
+
         </div>
-      </form>
-        </div>
-    )
+
+      </div>
+
+    </main>
+  );
 }
-
-export default page

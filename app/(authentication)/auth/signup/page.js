@@ -101,7 +101,7 @@ export default function Page() {
   return (
     <div className="w-screen h-screen flex flex-col justify-center items-center
     ">
-   {/* <Testimonials/> */}
+    <Testimonials/> 
         <SocialAuth/>
    <section className="text-center text-sm mt-[10vh]">
         <span className="font-semibold">Already have an account? </span>

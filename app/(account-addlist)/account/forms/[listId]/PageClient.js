@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useMemo, useOptimistic, useState } from 'react';
+import { useRouter } from "next/navigation";
 import HandleCategories from './add-price/HandleCategories';
 import Link from 'next/link';
 import { Check, ChevronLeft, Edit, Edit2, PenTool, Plus, ShoppingCart } from '@deemlol/next-icons';
@@ -23,6 +24,8 @@ import AddPriceSheet from '../AddPriceSheet';
 import StarterItemsModal from './startItemsModel';
 
 import EditItem from '../EditItem';
+import GrossaryPlusBunner from '@/app/(account)/_ui/GrossaryPlusBunner';
+
 
 
 const ButtonFont = Lexend_Deca({
@@ -40,8 +43,12 @@ export default function PageClient({ listId, list_name,
  const [isOpenModal, setIsOpenModal] = useState(false)
  const [showForm, setShowForm] = useState(false)
  const [editingItem, setEditingItem] = useState(null);
-
-
+  const [isOptimizing, setIsOptimizing] = useState(false);
+  const [grossaryPlusResult, setGrossaryPlusResult] =
+  useState(null);
+  const [GrossaryPlusRun, setGrossaryPlusRun] = useState(false)
+  const [locationStatus, setLocationStatus] = useState("idle");
+const router = useRouter();
     function HandleShowForm (){
         setShowForm(def => !def)
     }
@@ -131,8 +138,274 @@ useEffect(() => {
 
 const isFirstList = lists.length === 1 && !profile.surveyed;
 
+//handlingGrossaryPlus
+async function handleGrossaryPlus() {
+
+  try {
+
+    // ==================================
+    // 1. CHECK SUBSCRIPTION FIRST
+    // ==================================
+
+    console.log(
+      "Checking Grossary Plus subscription..."
+    );
 
 
+    const statusResponse =
+      await fetch(
+        "/api/grossary-plus/status",
+        {
+          method:
+            "GET",
+
+          cache:
+            "no-store",
+        }
+      );
+
+
+    const statusData =
+      await statusResponse.json();
+
+
+    console.log(
+      "Grossary Plus status:",
+      statusData
+    );
+
+
+    // ==================================
+    // USER NOT SUBSCRIBED
+    // ==================================
+
+    if (
+      statusResponse.ok &&
+      !statusData.isPlus
+    ) {
+
+    const returnTo =
+  `/account/forms/${listId}`;
+
+
+      router.push(
+        `/account/forms/subscribe?returnTo=${encodeURIComponent(
+          returnTo
+        )}`
+      );
+
+
+      return;
+    }
+
+
+    if (!statusResponse.ok) {
+
+      throw new Error(
+        statusData?.error ||
+        "Unable to verify Grossary Plus subscription."
+      );
+    }
+
+
+    // ==================================
+    // 2. USER HAS PLUS
+    // ==================================
+
+    setIsOptimizing(
+      true
+    );
+
+    setLocationStatus(
+      "getting-location"
+    );
+
+    setGrossaryPlusRun(
+      true
+    );
+
+
+    console.log(
+      "Starting Grossary Plus..."
+    );
+
+
+    // ==================================
+    // 3. GET USER LOCATION
+    // ==================================
+
+    const position =
+      await new Promise(
+        (
+          resolve,
+          reject
+        ) => {
+
+          if (
+            !navigator.geolocation
+          ) {
+
+            reject(
+              new Error(
+                "Geolocation is not supported by this browser."
+              )
+            );
+
+            return;
+          }
+
+
+          navigator.geolocation
+            .getCurrentPosition(
+              resolve,
+              reject,
+              {
+                enableHighAccuracy:
+                  true,
+
+                timeout:
+                  10000,
+
+                maximumAge:
+                  300000,
+              }
+            );
+        }
+      );
+
+
+    const latitude =
+      position.coords.latitude;
+
+    const longitude =
+      position.coords.longitude;
+
+
+    console.log(
+      "User latitude:",
+      latitude
+    );
+
+    console.log(
+      "User longitude:",
+      longitude
+    );
+
+
+    setLocationStatus(
+      "location-found"
+    );
+
+
+    // ==================================
+    // 4. RUN GROSSARY PLUS
+    // ==================================
+
+    const response =
+      await fetch(
+        "/api/grossary-plus",
+        {
+          method:
+            "POST",
+
+          headers: {
+            "Content-Type":
+              "application/json",
+          },
+
+          body:
+            JSON.stringify({
+              listId,
+              latitude,
+              longitude,
+            }),
+        }
+      );
+
+
+    const data =
+      await response.json();
+
+
+    console.log(
+      "Grossary Plus API response:",
+      data
+    );
+
+
+    // ==================================
+    // 5. SERVER-SIDE SECURITY CHECK
+    // ==================================
+
+    /*
+     * /api/grossary-plus should STILL
+     * check is_plus itself.
+     *
+     * This protects the endpoint if
+     * someone bypasses this frontend.
+     */
+
+    if (
+      response.status === 403 &&
+      data?.error ===
+        "PLUS_REQUIRED"
+    ) {
+
+      setGrossaryPlusRun(
+        false
+      );
+
+
+      router.push(
+        `/account/forms/subscribe?returnTo=${encodeURIComponent(
+          `/account/lists/${listId}`
+        )}`
+      );
+
+
+      return;
+    }
+
+
+    if (!response.ok) {
+
+      throw new Error(
+        data?.error ||
+        "Grossary Plus failed."
+      );
+    }
+
+
+    // ==================================
+    // 6. SUCCESS
+    // ==================================
+
+    setGrossaryPlusResult(
+      data.result
+    );
+
+
+  } catch (error) {
+
+    console.error(
+      "Failed to activate Grossary Plus:",
+      error
+    );
+
+
+    setLocationStatus(
+      "error"
+    );
+
+
+  } finally {
+
+    setIsOptimizing(
+      false
+    );
+
+  }
+}
   return (
     <div>
       {/* Header Card */}
@@ -299,7 +572,70 @@ bottom-5'>Add Your Grocery list items using the Plus button above</p> */}
     </span>
   </label>
 
+{item.recommended_retailer && item.price === null && (
 
+  <div
+    className="
+      mt-2
+      inline-flex
+      items-center
+      gap-2
+      bg-[#F4FFF9]
+      border
+      border-[#1EC677]/20
+      rounded-full
+      px-1
+      py-1
+    "
+  >
+
+   
+
+    <span
+      className="
+        text-xs
+        text-gray-600
+      "
+    >
+      Buy at
+    </span>
+
+    <span
+      className={
+    ` ${item.recommended_retailer === 'Checkers' ? 'text-[#38A8AE]': 'text-[#003359]'}
+        text-xs
+        font-bold
+        `}
+    >
+      {
+        item.recommended_retailer
+      }
+    </span>
+
+
+    {/* {item.recommended_price !=
+      null && (
+
+      <span
+        className="
+          text-xs
+          font-bold
+          text-[#1EC677]
+        "
+      >
+        R
+        {Number(
+          item.recommended_price
+        ).toFixed(
+          2
+        )}
+      </span>
+
+    )} */}
+
+  </div>
+
+)}
 
 
                         <div>
@@ -457,7 +793,47 @@ bottom-5'>Add Your Grocery list items using the Plus button above</p> */}
         itemsLength={itemsLength}
      
       />: ''}
- 
+
+
+
+    {itemsLength !== 0 && (
+      <button
+      type="button"
+      onClick={handleGrossaryPlus}
+      disabled={isOptimizing}
+      className="
+        bg-[#0B2E1E]
+        text-white
+       
+        rounded-full
+        font-semibold
+        text-sm
+        cursor-pointer
+        hover:bg-[#0B2E1E]
+        active:scale-95
+        transition-all
+        disabled:opacity-50
+        disabled:cursor-not-allowed
+        h-15 w-15 flex justify-center items-center
+        right-2 bottom-2
+        z-10 fixed
+      "
+    >
+      {isOptimizing
+        ? "Finding prices..."
+        :  <p className='text-2xl'>g<span className='text-[#1EC677]'>.</span>
+        <span className='-mt-1 text-sm absolute'>+</span></p>}
+    </button>
+
+    )}
+{GrossaryPlusRun && (
+  <GrossaryPlusBunner
+    optimizing={isOptimizing}
+    results={grossaryPlusResult}
+  
+    listId={listId}
+  />
+)}
     </div>
     
   );

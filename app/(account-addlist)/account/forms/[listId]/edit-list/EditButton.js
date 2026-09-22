@@ -16,8 +16,7 @@ function EditButton({children}) {
     return (
         <button className={`${ButtonFont.className}   bg-[#1EC677]
         
-        w-[60%]
-        mx-[20%]
+       w-full py-1 px-3
         mt-10
         lg:w-[20%] lg:ml-[35%]
          h-[50px] rounded-[10px]
