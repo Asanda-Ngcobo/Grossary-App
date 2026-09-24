@@ -1,9 +1,95 @@
+import Link from "next/link";
+import { redirect } from "next/navigation";
 
 import SubscribeButton from "./SubscribeButton";
 
+import {
+  createClient,
+} from "@/app/_utils/supabase/server";
 
 
-export default function SubscribePage() {
+// ========================================
+// SUBSCRIBE PAGE
+// ========================================
+
+export default async function SubscribePage() {
+
+  // ======================================
+  // 1. GET AUTHENTICATED USER
+  // ======================================
+
+  const supabase =
+    await createClient();
+
+
+  const {
+    data: {
+      user,
+    },
+  } =
+    await supabase
+      .auth
+      .getUser();
+
+
+  // ======================================
+  // 2. REQUIRE LOGIN
+  // ======================================
+
+  if (!user) {
+
+    redirect(
+      "/auth/login"
+    );
+
+  }
+
+
+  // ======================================
+  // 3. GET SUBSCRIPTION DETAILS
+  // ======================================
+
+  const {
+    data:
+      profile,
+
+    error:
+      profileError,
+  } =
+    await supabase
+      .from(
+        "users_info"
+      )
+      .select(`
+        plus_trial_used,
+        is_plus,
+        plus_status
+      `)
+      .eq(
+        "id",
+        user.id
+      )
+      .single();
+
+
+  if (profileError) {
+
+    console.error(
+      "Unable to load Grossary Plus subscription:",
+      profileError
+    );
+
+  }
+
+
+  // ======================================
+  // 4. TRIAL ELIGIBILITY
+  // ======================================
+
+  const trialEligible =
+    profile?.plus_trial_used !==
+    true;
+
 
   return (
 
@@ -23,6 +109,10 @@ export default function SubscribePage() {
         "
       >
 
+        {/* =================================
+            HEADER
+        ================================= */}
+
         <div
           className="
             text-center
@@ -40,7 +130,14 @@ export default function SubscribePage() {
               py-2
             "
           >
-            grossary<span className="text-[#1EC677]">plus</span>
+            grossary
+            <span
+              className="
+                text-[#1EC677]
+              "
+            >
+              plus
+            </span>
           </div>
 
 
@@ -52,7 +149,15 @@ export default function SubscribePage() {
               mt-5
             "
           >
-            Save up to <span className="text-[#1EC677]">R100</span>{" "} per 6 Items
+            Save up to{" "}
+            <span
+              className="
+                text-[#1EC677]
+              "
+            >
+              R100
+            </span>{" "}
+            per 6 Items
           </h1>
 
 
@@ -63,13 +168,17 @@ export default function SubscribePage() {
             "
           >
             grossary plus compares your
-            grocery list across participating nearby
-            stores and shows you where
+            grocery list across participating
+            nearby stores and shows you where
             each item is cheaper.
           </p>
 
         </div>
 
+
+        {/* =================================
+            PRICING CARD
+        ================================= */}
 
         <div
           className="
@@ -81,6 +190,8 @@ export default function SubscribePage() {
             mt-8
           "
         >
+
+          {/* PRICE */}
 
           <div
             className="
@@ -100,6 +211,7 @@ export default function SubscribePage() {
               R39
             </span>
 
+
             <span
               className="
                 text-gray-500
@@ -112,15 +224,26 @@ export default function SubscribePage() {
           </div>
 
 
-          <p
-            className="
-              text-[#1EC677]
-              font-semibold
-              mt-2
-            "
-          >
-            First 7 days free
-          </p>
+          {/* =================================
+              FREE TRIAL
+
+              Only show this if the user
+              has never used their trial.
+          ================================= */}
+
+          {trialEligible && (
+
+            <p
+              className="
+                text-[#1EC677]
+                font-semibold
+                mt-2
+              "
+            >
+              First 7 days free
+            </p>
+
+          )}
 
 
           <div
@@ -131,6 +254,10 @@ export default function SubscribePage() {
             "
           />
 
+
+          {/* =================================
+              FEATURES
+          ================================= */}
 
           <div
             className="
@@ -168,7 +295,83 @@ export default function SubscribePage() {
           </div>
 
 
-       <SubscribeButton/>
+          {/* =================================
+              SUBSCRIBE
+          ================================= */}
+
+          <SubscribeButton
+            trialEligible={
+              trialEligible
+            }
+          />
+
+
+          {/* =================================
+              SUBSCRIPTION TERMS
+          ================================= */}
+
+          <p
+            className="
+              text-xs
+              text-gray-400
+              text-center
+              leading-5
+              mt-4
+            "
+          >
+
+            {trialEligible
+              ? "   R1 refundable card verification now. Then, R39/month after your 7-day free trial. Cancel anytime."
+              : "R39/month. Cancel anytime."}
+
+          </p>
+
+
+          <div
+            className="
+              flex
+              justify-center
+              gap-3
+              flex-wrap
+              mt-2
+              text-xs
+              text-gray-400
+            "
+          >
+
+            <Link
+              href="/company/cancellationpolicy"
+              className="
+                underline
+                hover:text-[#0B2E1E]
+              "
+            >
+              Cancellation Policy
+            </Link>
+
+
+            <Link
+              href="/company/terms"
+              className="
+                underline
+                hover:text-[#0B2E1E]
+              "
+            >
+              Terms
+            </Link>
+
+
+            <Link
+              href="/company/privacy"
+              className="
+                underline
+                hover:text-[#0B2E1E]
+              "
+            >
+              Privacy
+            </Link>
+
+          </div>
 
         </div>
 

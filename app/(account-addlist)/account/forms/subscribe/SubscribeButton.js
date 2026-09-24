@@ -9,7 +9,9 @@ import {
 } from "react";
 
 
-export default function SubscribeButton() {
+export default function SubscribeButton({
+  trialEligible,
+}) {
 
   const searchParams =
     useSearchParams();
@@ -91,8 +93,7 @@ export default function SubscribeButton() {
 
 
       if (
-        !data
-          ?.authorizationUrl
+        !data?.authorizationUrl
       ) {
 
         throw new Error(
@@ -167,7 +168,9 @@ export default function SubscribeButton() {
         {
           loading
             ? "Opening secure checkout..."
-            : "Claim 7-Day Free Trial"
+            : trialEligible
+              ? "Claim 7-Day Free Trial"
+              : "Resubscribe"
         }
 
       </button>
@@ -189,21 +192,6 @@ export default function SubscribeButton() {
 
         )
       }
-
-
-      <p
-        className="
-          mt-3
-          text-center
-          text-xs
-          text-gray-500
-        "
-      >
-        R1 refundable card verification.
-        Then R39/month after your
-        7-day free trial.
-     You can cancel anytime before your trial ends and you won`t be charged.
-      </p>
 
     </div>
   );

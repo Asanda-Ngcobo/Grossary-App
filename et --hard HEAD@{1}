@@ -1,0 +1,33 @@
+[33m3ae8c34[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m)[m HEAD@{0}: commit: internal testing
+[33mf3f4857[m HEAD@{1}: commit: preparing for paystack
+[33m942addf[m HEAD@{2}: commit: payment
+[33m6b6f0e2[m HEAD@{3}: commit: improving signup
+[33m7f60314[m HEAD@{4}: commit: chnaging the logo
+[33m0fd4592[m HEAD@{5}: commit: getting back to white bg for auth pages
+[33mde6fc2f[m HEAD@{6}: commit: making input white
+[33me04147d[m HEAD@{7}: commit: fixing appNav
+[33m39c5008[m HEAD@{8}: commit: removing quiz metadata
+[33m13eb5d7[m HEAD@{9}: commit (merge): Merge branch 'main' of https://github.com/Asanda-Ngcobo/Grossary-App
+[33m08781c0[m HEAD@{10}: commit: editting color palette
+[33m6a8988d[m HEAD@{11}: commit: adding title to quiz
+[33me15ff49[m HEAD@{12}: commit: Improving creating list UX
+[33mfc8cf36[m HEAD@{13}: commit: adding the ability to add nonprepopulated items
+[33m1f3cf08[m HEAD@{14}: commit: fixing edit profile
+[33md329460[m HEAD@{15}: commit: improving no active lists messegae
+[33m2de72f7[m HEAD@{16}: commit: fixing the testimonials view
+[33maa418a6[m HEAD@{17}: commit (merge): Merge branch 'main' of https://github.com/Asanda-Ngcobo/Grossary-App
+[33m93a844e[m HEAD@{18}: commit: improving sing up conversion
+[33me6a70d4[m HEAD@{19}: commit: changing reports to insights
+[33m537bf55[m HEAD@{20}: commit: fixing loading state
+[33m49cc22f[m HEAD@{21}: commit: Improving mobile menu
+[33m512688e[m HEAD@{22}: commit: improvements for funding
+[33m62c46be[m HEAD@{23}: commit: Improving the website
+[33m8230772[m HEAD@{24}: commit: adding home analytics
+[33mbd380bc[m HEAD@{25}: commit: ux
+[33m4d866f4[m HEAD@{26}: commit: improving quiz ux
+[33m6e7e584[m HEAD@{27}: commit: fixing the navigation
+[33m5564104[m HEAD@{28}: commit: adding cursor-pointer
+[33m38e9509[m HEAD@{29}: commit: fixing the active link bug
+[33m06e2dde[m HEAD@{30}: commit: reducing the mt
+[33mb347244[m HEAD@{31}: commit: Improving the home page
+[33mc873b7d[m HEAD@{32}: commit: Fixing the no list UI

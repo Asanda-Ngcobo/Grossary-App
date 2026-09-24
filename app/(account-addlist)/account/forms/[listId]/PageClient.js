@@ -796,7 +796,7 @@ bottom-5'>Add Your Grocery list items using the Plus button above</p> */}
 
 
 
-    {itemsLength !== 0 && (
+    {itemsLength !== 0 &&  (
       <button
       type="button"
       onClick={handleGrossaryPlus}
@@ -821,8 +821,8 @@ bottom-5'>Add Your Grocery list items using the Plus button above</p> */}
     >
       {isOptimizing
         ? "Finding prices..."
-        :  <p className='text-2xl'>g<span className='text-[#1EC677]'>.</span>
-        <span className='-mt-1 text-sm absolute'>+</span></p>}
+        :  <p className='text-2xl'>g
+        <span className='-mt-1 text-sm absolute text-[#1EC677]'>+</span></p>}
     </button>
 
     )}
