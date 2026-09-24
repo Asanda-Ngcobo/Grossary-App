@@ -527,8 +527,11 @@ bottom-5'>Add Your Grocery list items using the Plus button above</p> */}
                   .map((item) => (
                     <div key={item.id} className="border-b border-gray-300 pb-3">
                       <div className="flex justify-between text-xs font-semibold mb-2">
-                        <span>{item.item_quantity} × {item.item_name}</span>
-                        <span>{item.item_brand}</span>
+                        <div className='h-fit flex-col gap-1 '>
+                          <p>{item.item_name} x {item.item_quantity}</p>
+                            <p>{item.item_brand}</p>
+                        </div>
+                      
                         <span>{item.item_volume_mass}{item.item_unit}</span>
                       </div>
                       <form className="flex items-center gap-4 justify-between">

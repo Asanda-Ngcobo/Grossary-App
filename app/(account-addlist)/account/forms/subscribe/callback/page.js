@@ -238,7 +238,7 @@ GrossaryPlusCallbackPage() {
               text-[#0B2E1E]
             "
           >
-            Activating Grossary Plus
+            Activating grossary <span className="text-[#1EC677]">plus</span>
           </h1>
 
 
@@ -314,7 +314,7 @@ GrossaryPlusCallbackPage() {
               text-[#0B2E1E]
             "
           >
-            Welcome to Grossary+
+            Welcome to grossary<span className="text-[#1EC677]">+</span>
           </h1>
 
 
@@ -324,8 +324,7 @@ GrossaryPlusCallbackPage() {
               text-gray-500
             "
           >
-            Your 7-day free trial
-            is now active.
+            You can start shopping smart.
           </p>
 
 
@@ -379,7 +378,7 @@ GrossaryPlusCallbackPage() {
           "
         >
           We couldn`t activate
-          Grossary Plus
+          grossary plus
         </h1>
 
 

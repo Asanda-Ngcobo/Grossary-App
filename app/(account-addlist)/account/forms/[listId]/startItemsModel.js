@@ -116,13 +116,15 @@ export default function StarterItemsModal({
         .order("item_name")
         .range(0, 4999);
 
-      // Search
-      if (search.trim()) {
-        query = query.ilike(
-          "item_name",
-          `%${search}%`
-        );
-      }
+  
+   // Search by item name OR brand
+if (search.trim()) {
+  const searchTerm = search.trim();
+
+  query = query.or(
+    `item_name.ilike.%${searchTerm}%,item_brand.ilike.%${searchTerm}%`
+  );
+}
 
       // Weekly/monthly = all
       const lower = list_name.toLowerCase();
