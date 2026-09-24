@@ -528,8 +528,8 @@ bottom-5'>Add Your Grocery list items using the Plus button above</p> */}
                     <div key={item.id} className="border-b border-gray-300 pb-3">
                       <div className="flex justify-between text-xs font-semibold mb-2">
                         <div className='h-fit flex-col gap-1 '>
-                          <p>{item.item_name} x {item.item_quantity}</p>
-                            <p>{item.item_brand}</p>
+                          <p>{item.item_name}</p>
+                            <p className='font-bold'>{item.item_brand}</p>
                         </div>
                       
                         <span>{item.item_volume_mass}{item.item_unit}</span>
