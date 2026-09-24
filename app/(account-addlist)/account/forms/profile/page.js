@@ -1,5 +1,5 @@
 import SignOutButton from "@/app/(authentication)/signOutButton";
-import {  ChevronLeft, ChevronRight, Edit,    Edit2,    Email,    LogOut,  Mail, Trash2, User } from "@deemlol/next-icons";
+import {  ChevronLeft, ChevronRight, CreditCard, Edit,    Edit2,    Email,    LogOut,  Mail, Trash2, User } from "@deemlol/next-icons";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -10,6 +10,7 @@ import { createClient } from "@/app/_utils/supabase/server";
 import Privacy from "@/app/(account)/_ui/Privacy";
 import ReportIssueButton from "../reports/ReportIssueButton";
 import DeleteAccount from "./DeleteAccount";
+import Membership from "../plusmembership/Membership";
 
 
 
@@ -62,6 +63,15 @@ const fullName = profile?.fullName
 
 
 const profileLinks = [
+
+    {
+    name: <Membership/>,
+    id: 1,
+      icon: <ChevronRight/>
+  
+    
+    
+  },
   
    {
     name: <Privacy/>,

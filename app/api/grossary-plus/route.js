@@ -164,32 +164,26 @@ export async function POST(
      *
      * The authenticated Supabase user ID
      * should match users_info.id.
-     */
-
-    const {
-      data:
-        profile,
-
-      error:
-        profileError,
-    } =
-      await adminSupabase
-        .from(
-          "users_info"
-        )
-        .select(`
-          id,
-          is_plus,
-          plus_status,
-          plus_trial_ends_at,
-          plus_current_period_end
-        `)
-        .eq(
-          "id",
-          user.id
-        )
-        .single();
-
+     */const {
+  data: profile,
+  error: profileError,
+} =
+  await adminSupabase
+    .from("users_info")
+    .select(`
+      id,
+      is_plus,
+      plus_status,
+      plus_trial_ends_at,
+      plus_current_period_start,
+      plus_current_period_end,
+      plus_cancel_at_period_end
+    `)
+    .eq(
+      "id",
+      user.id
+    )
+    .single();
 
     console.log(
       "Grossary Plus profile:",
@@ -260,56 +254,359 @@ export async function POST(
       profile.plus_status ===
         "trialing";
 
+// ========================================
+// CHECK GROSSARY PLUS ACCESS
+// ========================================
 
-    const hasPlusAccess =
-      profile.is_plus ===
-        true &&
-      validPlusStatus;
+const now =
+  new Date();
 
+
+let hasPlusAccess =
+  false;
+
+
+let accessReason =
+  null;
+
+
+// ========================================
+// ACTIVE TRIAL
+// ========================================
+
+if (
+  profile.is_plus === true &&
+  profile.plus_status === "trialing"
+) {
+
+  const trialEndsAt =
+    profile.plus_trial_ends_at
+      ? new Date(
+          profile.plus_trial_ends_at
+        )
+      : null;
+
+
+  if (
+    trialEndsAt &&
+    !Number.isNaN(
+      trialEndsAt.getTime()
+    ) &&
+    trialEndsAt > now
+  ) {
+
+    hasPlusAccess =
+      true;
+
+    accessReason =
+      "active_trial";
+
+  } else {
+
+    /*
+     * Trial has expired.
+     *
+     * Until Paystack confirms the first
+     * R39 payment, don't continue giving
+     * Plus access.
+     */
 
     console.log(
-      "Grossary Plus access:",
+      "Grossary Plus trial expired:",
       {
-        isPlus:
-          profile.is_plus,
+        userId:
+          user.id,
 
-        status:
-          profile.plus_status,
-
-        hasPlusAccess,
+        trialEndsAt:
+          profile.plus_trial_ends_at,
       }
     );
 
 
+    // Keep DB state from lying about access.
+
+    const {
+      error:
+        expireError,
+    } =
+      await adminSupabase
+        .from(
+          "users_info"
+        )
+      .update({
+
+  is_plus:
+    false,
+
+  plus_status:
+    profile.plus_cancel_at_period_end
+      ? "cancelled"
+      : "trial_expired",
+
+})
+        .eq(
+          "id",
+          user.id
+        )
+        .eq(
+          "plus_status",
+          "trialing"
+        );
+
+
     if (
-      !hasPlusAccess
+      expireError
     ) {
 
-      console.log(
-        "Grossary Plus subscription required."
+      console.error(
+        "Failed to mark Grossary Plus trial expired:",
+        expireError
       );
 
-
-      return NextResponse.json(
-        {
-          success:
-            false,
-
-          error:
-            "PLUS_REQUIRED",
-
-          message:
-            "A Grossary Plus subscription is required.",
-
-          redirectTo:
-            "/account/forms/subscribe",
-        },
-        {
-          status:
-            403,
-        }
-      );
     }
+  }
+}
+
+
+// ========================================
+// ACTIVE PAID SUBSCRIPTION
+// ========================================
+
+if (
+  profile.is_plus === true &&
+  profile.plus_status === "active"
+) {
+
+  const periodEnd =
+    profile.plus_current_period_end
+      ? new Date(
+          profile.plus_current_period_end
+        )
+      : null;
+
+
+  /*
+   * Once we're using webhooks in
+   * production, an active subscription
+   * should have a billing period end.
+   */
+
+  if (
+    periodEnd &&
+    !Number.isNaN(
+      periodEnd.getTime()
+    ) &&
+    periodEnd > now
+  ) {
+
+    hasPlusAccess =
+      true;
+
+    accessReason =
+      "active_subscription";
+
+  } else {
+
+    console.log(
+      "Grossary Plus paid period expired:",
+      {
+        userId:
+          user.id,
+
+        periodEnd:
+          profile.plus_current_period_end,
+      }
+    );
+
+
+    const {
+      error:
+        expireError,
+    } =
+      await adminSupabase
+        .from(
+          "users_info"
+        )
+.update({
+
+  is_plus:
+    false,
+
+  plus_status:
+    profile.plus_cancel_at_period_end
+      ? "cancelled"
+      : "expired",
+
+})
+        .eq(
+          "id",
+          user.id
+        )
+        .eq(
+          "plus_status",
+          "active"
+        );
+
+
+    if (
+      expireError
+    ) {
+
+      console.error(
+        "Failed to expire Grossary Plus:",
+        expireError
+      );
+
+    }
+  }
+}
+
+
+// ========================================
+// PAST-DUE GRACE PERIOD
+// ========================================
+
+if (
+  profile.is_plus === true &&
+  profile.plus_status === "past_due"
+) {
+
+  const periodEnd =
+    profile.plus_current_period_end
+      ? new Date(
+          profile.plus_current_period_end
+        )
+      : null;
+
+
+  if (
+    periodEnd &&
+    !Number.isNaN(
+      periodEnd.getTime()
+    )
+  ) {
+
+    const gracePeriodEnd =
+      new Date(
+        periodEnd
+      );
+
+
+    gracePeriodEnd.setDate(
+      gracePeriodEnd.getDate() +
+      3
+    );
+
+
+    if (
+      gracePeriodEnd > now
+    ) {
+
+      hasPlusAccess =
+        true;
+
+      accessReason =
+        "payment_grace_period";
+
+    } else {
+
+      const {
+        error:
+          expireError,
+      } =
+        await adminSupabase
+          .from(
+            "users_info"
+          )
+          .update({
+
+            is_plus:
+              false,
+
+            plus_status:
+              "past_due_expired",
+
+          })
+          .eq(
+            "id",
+            user.id
+          )
+          .eq(
+            "plus_status",
+            "past_due"
+          );
+
+
+      if (
+        expireError
+      ) {
+
+        console.error(
+          "Failed to expire past-due Grossary Plus:",
+          expireError
+        );
+
+      }
+    }
+  }
+}
+
+
+// ========================================
+// DENY ACCESS
+// ========================================
+
+if (
+  !hasPlusAccess
+) {
+
+  console.log(
+    "Grossary Plus access denied:",
+    {
+      userId:
+        user.id,
+
+      status:
+        profile.plus_status,
+
+      isPlus:
+        profile.is_plus,
+    }
+  );
+
+
+  return NextResponse.json(
+    {
+      success:
+        false,
+
+      error:
+        "PLUS_REQUIRED",
+
+      plusStatus:
+        profile.plus_status,
+
+      redirectTo:
+        "/account/forms/subscribe",
+    },
+    {
+      status:
+        403,
+    }
+  );
+}
+
+
+console.log(
+  "Grossary Plus access granted:",
+  {
+    userId:
+      user.id,
+
+    reason:
+      accessReason,
+  }
+);
 
 
     // =====================================

@@ -6,7 +6,7 @@ export default function Profile() {
         <div className="flex items-center gap-2  py-2
         cursor-pointer  text-black">
             <Link href='/account/forms/profile'>
-             <p className='flex gap-2'><User/> Personal Info</p></Link>
+             <p className='flex gap-2'><User/> Account</p></Link>
            
         </div>
     )

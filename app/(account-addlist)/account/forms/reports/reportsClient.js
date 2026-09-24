@@ -40,7 +40,7 @@ function ReportsClient({profile}) {
         );
 
         setTimeout(() => {
-          router.push(`/account`);
+          router.push(`/account/forms/profile`);
         }, 2000);
       }
     } catch (error) {
@@ -58,7 +58,7 @@ function ReportsClient({profile}) {
     return (
           <main>
       <button className="my-5 mx-[5%] bg-white active:bg-gray-600 rounded-full w-[50px] h-[50px] flex justify-center items-center">
-        <Link href={`/account`}>
+        <Link href={`/account/forms/profile`}>
           <ChevronLeft color="black" size={40} />
         </Link>
       </button>

@@ -22,7 +22,7 @@ function Footer() {
               <Link href="/features/staying-under-budget">Stay Under Budget</Link>
             </li>
             <li className="hover:underline p-2 rounded-md transition">
-              <Link href="/features/digital-slips">Digital Slips</Link>
+              <Link href="/features/grossaryplus">grossary plus</Link>
             </li>
             {/* <li className="hover:underline p-2 rounded-md transition">
               <Link href="/features/grossaryplus">Grossary Plus</Link>
@@ -37,6 +37,10 @@ function Footer() {
             <li className="hover:underline p-2 rounded-md transition">
               <Link href="/company/about">About</Link>
             </li>
+
+              <li className="hover:underline p-2 rounded-md transition">
+              <Link href="/company/contactus">Support info</Link>
+            </li>
             <li className="hover:underline p-2 rounded-md transition">
               <Link href="/company/blog">Blog</Link>
             </li>
@@ -46,6 +50,10 @@ function Footer() {
             </li>
             <li className="hover:underline p-2 rounded-md transition">
               <Link href="/company/terms">Terms of Service</Link>
+            </li>
+
+             <li className="hover:underline p-2 rounded-md transition">
+              <Link href="/company/cancellationpolicy">Plus Cancellation Policy</Link>
             </li>
           </ul>
         </div>

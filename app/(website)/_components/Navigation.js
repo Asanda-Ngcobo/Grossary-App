@@ -18,8 +18,8 @@ import { useForm } from "@/app/providers/Provider";
 
 export default function Navigation() {
 
-   const { formOpen, toggleForm, menuOpen, toggleMenu,
-     active, toggleActive } = useForm();
+   const { toggleMenu,
+  } = useForm();
      
     return (
         <div className="flex justify-between
@@ -30,7 +30,7 @@ export default function Navigation() {
         items-center
         
        
-      
+       bg-white
         border-b
         border-b-gray-300 
        

@@ -154,7 +154,7 @@ if (isLoading) {
 
         {/* Heading */}
         <div className="mb-10">
-          <h1 className="text-4xl font-black text-black">
+          <h1 className="text-4xl text-black">
             What kind of shopping are we planning to do?
           </h1>
 

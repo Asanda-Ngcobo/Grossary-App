@@ -131,16 +131,18 @@ export async function POST(
         .from(
           "users_info"
         )
-        .select(`
-          id,
-          is_plus,
-          plus_status,
-          plus_trial_used,
-          plus_trial_started_at,
-          plus_trial_ends_at,
-          provider_customer_code,
-          provider_authorization_code
-        `)
+       .select(`
+  id,
+  is_plus,
+  plus_status,
+  plus_trial_used,
+  plus_trial_started_at,
+  plus_trial_ends_at,
+  provider_customer_code,
+  provider_authorization_code,
+  provider_subscription_code,
+  provider_subscription_token
+`)
         .eq(
           "id",
           user.id
@@ -185,31 +187,36 @@ export async function POST(
      * or verification is called twice.
      */
 
-    if (
-      profile.is_plus ===
-        true &&
-      profile.plus_status ===
-        "trialing" &&
-      profile.plus_trial_used ===
-        true
-    ) {
+   if (
+  profile.is_plus === true &&
+  profile.plus_status === "trialing" &&
+  profile.plus_trial_used === true &&
+  profile.provider_subscription_code
+) {
 
-      return NextResponse.json({
-        success:
-          true,
+  return NextResponse.json({
 
-        alreadyActivated:
-          true,
+    success:
+      true,
 
-        status:
-          "trialing",
+    alreadyActivated:
+      true,
 
-        trialEndsAt:
-          profile
-            .plus_trial_ends_at,
-      });
-    }
+    status:
+      "trialing",
 
+    subscriptionCreated:
+      true,
+
+    subscriptionCode:
+      profile
+        .provider_subscription_code,
+
+    trialEndsAt:
+      profile
+        .plus_trial_ends_at,
+  });
+}
 
     // =====================================
     // 5. PREVENT SECOND FREE TRIAL
@@ -796,9 +803,278 @@ export async function POST(
       user.id
     );
 
+// =====================================
+// 18. CREATE PAYSTACK SUBSCRIPTION
+// =====================================
 
+const planCode =
+  process.env
+    .PAYSTACK_GROSSARY_PLUS_PLAN_CODE;
+
+
+if (!planCode) {
+
+  console.error(
+    "PAYSTACK_GROSSARY_PLUS_PLAN_CODE is missing."
+  );
+
+
+  return NextResponse.json(
+    {
+      success:
+        false,
+
+      error:
+        "PLAN_NOT_CONFIGURED",
+
+      message:
+        "Grossary Plus subscription plan is not configured.",
+    },
+    {
+      status:
+        500,
+    }
+  );
+}
+
+
+console.log(
+  "Creating Paystack subscription:",
+  {
+    customerCode,
+    planCode,
+    startDate:
+      trialEndsAt
+        .toISOString(),
+  }
+);
+
+
+const subscriptionResponse =
+  await fetch(
+    "https://api.paystack.co/subscription",
+    {
+      method:
+        "POST",
+
+      headers: {
+
+        Authorization:
+          `Bearer ${process.env.PAYSTACK_SECRET_KEY}`,
+
+        "Content-Type":
+          "application/json",
+      },
+
+      body:
+        JSON.stringify({
+
+          customer:
+            customerCode,
+
+          plan:
+            planCode,
+
+          authorization:
+            authorizationCode,
+
+          start_date:
+            trialEndsAt
+              .toISOString(),
+        }),
+    }
+  );
+
+
+const subscriptionData =
+  await subscriptionResponse
+    .json();
+
+
+console.log(
+  "Paystack subscription response:",
+  subscriptionData
+);
+
+
+if (
+  !subscriptionResponse.ok ||
+  !subscriptionData?.status
+) {
+
+  console.error(
+    "Failed to create Paystack subscription:",
+    subscriptionData
+  );
+
+
+  /*
+   * IMPORTANT:
+   *
+   * Do not remove the user's trial.
+   *
+   * Their R1 verification succeeded
+   * and their 7-day trial is valid.
+   *
+   * We simply haven't managed to
+   * schedule recurring billing yet.
+   */
+
+  return NextResponse.json(
+    {
+      success:
+        false,
+
+      error:
+        "SUBSCRIPTION_CREATION_FAILED",
+
+      message:
+        subscriptionData
+          ?.message ||
+        "Your trial was activated, but recurring billing could not be scheduled.",
+
+      trialActive:
+        true,
+
+      trialEndsAt:
+        trialEndsAt
+          .toISOString(),
+    },
+    {
+      status:
+        500,
+    }
+  );
+}
+
+
+// =====================================
+// 19. EXTRACT SUBSCRIPTION DETAILS
+// =====================================
+
+const subscription =
+  subscriptionData.data;
+
+
+const subscriptionCode =
+  subscription
+    ?.subscription_code;
+
+
+const subscriptionToken =
+  subscription
+    ?.email_token;
+
+
+const nextPaymentDate =
+  subscription
+    ?.next_payment_date;
+
+
+if (!subscriptionCode) {
+
+  console.error(
+    "Paystack subscription code missing:",
+    subscriptionData
+  );
+
+
+  return NextResponse.json(
+    {
+      success:
+        false,
+
+      error:
+        "SUBSCRIPTION_CODE_MISSING",
+
+      trialActive:
+        true,
+    },
+    {
+      status:
+        500,
+    }
+  );
+}
+
+
+console.log(
+  "Grossary Plus subscription created:",
+  {
+    subscriptionCode,
+    nextPaymentDate,
+  }
+);
+
+
+// =====================================
+// 20. SAVE SUBSCRIPTION
+// =====================================
+
+const {
+  error:
+    subscriptionUpdateError,
+} =
+  await adminSupabase
+    .from(
+      "users_info"
+    )
+    .update({
+
+      provider_subscription_code:
+        subscriptionCode,
+
+      provider_subscription_token:
+        subscriptionToken || null,
+
+    })
+    .eq(
+      "id",
+      user.id
+    );
+
+
+if (
+  subscriptionUpdateError
+) {
+
+  console.error(
+    "Failed to save Paystack subscription:",
+    subscriptionUpdateError
+  );
+
+
+  /*
+   * The subscription DOES exist in
+   * Paystack at this point.
+   *
+   * Don't try creating another one
+   * automatically because that could
+   * create duplicate subscriptions.
+   */
+
+  return NextResponse.json(
+    {
+      success:
+        false,
+
+      error:
+        "SUBSCRIPTION_SAVE_FAILED",
+
+      message:
+        "The Paystack subscription was created but could not be saved to Grossary.",
+
+      trialActive:
+        true,
+    },
+    {
+      status:
+        500,
+    }
+  );
+}
     // =====================================
-    // 18. REFUND R1
+    // 21. REFUND R1
     // =====================================
 
     /*
@@ -890,29 +1166,36 @@ export async function POST(
     // 19. SUCCESS
     // =====================================
 
-    return NextResponse.json({
+   return NextResponse.json({
 
-      success:
-        true,
+  success:
+    true,
 
-      status:
-        "trialing",
+  status:
+    "trialing",
 
-      isPlus:
-        true,
+  isPlus:
+    true,
 
-      trialStartedAt:
-        trialStartedAt
-          .toISOString(),
+  subscriptionCreated:
+    true,
 
-      trialEndsAt:
-        trialEndsAt
-          .toISOString(),
+  subscriptionCode,
 
-      refundQueued,
+  nextPaymentDate:
+    nextPaymentDate || null,
 
-    });
+  trialStartedAt:
+    trialStartedAt
+      .toISOString(),
 
+  trialEndsAt:
+    trialEndsAt
+      .toISOString(),
+
+  refundQueued,
+
+});
 
   } catch (error) {
 
