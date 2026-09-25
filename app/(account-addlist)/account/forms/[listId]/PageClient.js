@@ -47,8 +47,16 @@ export default function PageClient({ listId, list_name,
   const [grossaryPlusResult, setGrossaryPlusResult] =
   useState(null);
   const [GrossaryPlusRun, setGrossaryPlusRun] = useState(false)
+const [activeRecommendedPriceId, setActiveRecommendedPriceId] = useState(null);
   const [locationStatus, setLocationStatus] = useState("idle");
 const router = useRouter();
+
+
+function HandleParseprice(itemId) {
+  setActiveRecommendedPriceId((currentId) =>
+    currentId === itemId ? null : itemId
+  );
+}
     function HandleShowForm (){
         setShowForm(def => !def)
     }
@@ -574,11 +582,10 @@ bottom-5'>Add Your Grocery list items using the Plus button above</p> */}
       )}
     </span>
   </label>
-
 {item.recommended_retailer && item.price === null && (
-
   <div
     className="
+      relative
       mt-2
       inline-flex
       items-center
@@ -589,57 +596,51 @@ bottom-5'>Add Your Grocery list items using the Plus button above</p> */}
       rounded-full
       px-1
       py-1
+      cursor-pointer
     "
+    onClick={() => HandleParseprice(item.id)}
   >
 
-   
+    {/* Recommended Price */}
+    {item.recommended_price != null &&
+      activeRecommendedPriceId === item.id && (
+        <span
+          className="
+            absolute
+            bottom-full
+            left-1/2
+            -translate-x-1/2
+            mb-1
+            text-xs
+            font-bold
+            text-[#1EC677]
+            whitespace-nowrap
+          "
+        >
+          R{Number(item.recommended_price).toFixed(2)}
+        </span>
+      )}
 
-    <span
-      className="
-        text-xs
-        text-gray-600
-      "
-    >
+    <span className="text-xs text-gray-600">
       Buy at
     </span>
 
     <span
-      className={
-    ` ${item.recommended_retailer === 'Checkers' ? 'text-[#38A8AE]': 'text-[#003359]'}
+      className={`
+        ${
+          item.recommended_retailer === "Checkers"
+            ? "text-[#38A8AE]"
+            : "text-[#003359]"
+        }
         text-xs
         font-bold
-        `}
+      `}
     >
-      {
-        item.recommended_retailer
-      }
+      {item.recommended_retailer}
     </span>
 
-
-    {/* {item.recommended_price !=
-      null && (
-
-      <span
-        className="
-          text-xs
-          font-bold
-          text-[#1EC677]
-        "
-      >
-        R
-        {Number(
-          item.recommended_price
-        ).toFixed(
-          2
-        )}
-      </span>
-
-    )} */}
-
   </div>
-
 )}
-
 
                         <div>
                           {item.price && <p className="text-sm font-bold text-gray-400">R{item.price}</p>}
