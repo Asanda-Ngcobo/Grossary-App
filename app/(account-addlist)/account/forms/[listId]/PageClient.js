@@ -834,6 +834,8 @@ bottom-5'>Add Your Grocery list items using the Plus button above</p> */}
   <GrossaryPlusBunner
     optimizing={isOptimizing}
     results={grossaryPlusResult}
+    setGrossaryPlusRun={setGrossaryPlusRun}
+    GrossaryPlusRun={GrossaryPlusRun}
   
     listId={listId}
   />

@@ -67,15 +67,15 @@ async function main() {
     process.argv
       .slice(2)
       .join(" ") ||
-    "Tastic Rice 2kg";
+    "Bakers Zoo Zoos Cream Biscuit 125g";
 
 
   const requestedItem = {
-    item_name: "Rice",
-    item_brand: "Tastic",
-    item_volume_mass: 2,
-    item_unit: "kg",
-    item_quantity: 2,
+    item_name: "Cream Biscuit",
+    item_brand: "Bakers Zoo Zoos",
+    item_volume_mass: 125,
+    item_unit: "g",
+    item_quantity: 1,
   };
 
 
@@ -95,7 +95,7 @@ async function main() {
       query,
       {
         page: 0,
-        pageSize: 10,
+        pageSize: 3,
       }
     );
 
@@ -118,7 +118,41 @@ async function main() {
     "==============================\n"
   );
 
+/*
+ * ----------------------------------------------
+ * Inspect raw Parse products
+ * ----------------------------------------------
+ */
 
+console.log(
+  "\n=============================="
+);
+
+console.log(
+  "RAW PNP PRODUCT DATA"
+);
+
+console.log(
+  "==============================\n"
+);
+
+
+products.forEach(
+  (product, index) => {
+
+    console.log(
+      `\n---------- PRODUCT ${index + 1} ----------`
+    );
+
+    console.dir(
+      product,
+      {
+        depth: null,
+      }
+    );
+
+  }
+);
   /*
    * ----------------------------------------------
    * Normalize

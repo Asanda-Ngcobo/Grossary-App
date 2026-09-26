@@ -28,7 +28,7 @@ const stores = [
 
 
 const query =
-  "Tastic Rice 2kg";
+  "Oros Tropical Flavoured Apple Squash 2L";
 
 
 /*

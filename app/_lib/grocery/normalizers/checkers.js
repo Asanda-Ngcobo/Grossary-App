@@ -23,9 +23,7 @@ function toNumber(value) {
 
 function getPrice(product) {
   /*
-   * New store-specific endpoint
-   *
-   * price: 39.99
+   * Store-specific endpoint
    */
   const directPrice =
     toNumber(product?.price);
@@ -36,9 +34,7 @@ function getPrice(product) {
 
 
   /*
-   * Old generic endpoint
-   *
-   * priceWithoutDecimal: 3999
+   * Generic endpoint
    */
   const cents =
     toNumber(
@@ -99,12 +95,8 @@ function getPromotionalSavings(
   product
 ) {
   /*
-   * New store endpoint explicitly
+   * Store endpoint explicitly
    * provides promotionSaving.
-   *
-   * This is preferable to calculating:
-   *
-   * oldPrice - price
    */
   const saving =
     toNumber(
@@ -120,10 +112,7 @@ function getPromotionalSavings(
 
 
   /*
-   * Older generic endpoint sometimes
-   * exposed discount.
-   *
-   * Only use it when it is numeric.
+   * Older generic endpoint
    */
   const discount =
     toNumber(
@@ -149,9 +138,6 @@ function getPromotionalSavings(
  */
 
 function getImage(product) {
-  /*
-   * New endpoint
-   */
   if (
     Array.isArray(
       product?.imageUrls
@@ -165,9 +151,6 @@ function getImage(product) {
   }
 
 
-  /*
-   * Old endpoint
-   */
   return (
     product?.imageProductCardURL ||
     product?.imageURL ||
@@ -183,10 +166,6 @@ function getImage(product) {
  */
 
 function getStockStatus(product) {
-  /*
-   * Old Checkers endpoint exposes
-   * explicit stock information.
-   */
   if (
     product?.isStockAvailable ===
     true
@@ -218,13 +197,452 @@ function getStockStatus(product) {
 
 
   /*
-   * New search_store_products response
-   * currently does NOT expose stock
-   * availability.
-   *
-   * Do not invent true/false.
+   * search_store_products currently
+   * does not expose stock status.
    */
   return null;
+}
+
+
+/*
+ * ------------------------------------------------
+ * Normalize Checkers promotion mechanic
+ * ------------------------------------------------
+ */
+
+function normalizePromotionMechanic(
+  mechanic
+) {
+  if (!mechanic) {
+    return "UNKNOWN";
+  }
+
+
+  const normalized =
+    String(mechanic)
+      .trim()
+      .toLowerCase();
+
+
+  /*
+   * Checkers calls this:
+   *
+   * fixed_discount
+   *
+   * But its meaning is:
+   *
+   * "Overrides the price of the product"
+   *
+   * Therefore this is equivalent to
+   * Grossary's FIXED_PRICE mechanic.
+   */
+  if (
+    normalized ===
+    "fixed_discount"
+  ) {
+    return "FIXED_PRICE";
+  }
+
+
+  /*
+   * We can add Checkers multibuy
+   * mechanics here once we see
+   * actual API examples.
+   *
+   * Do not guess them.
+   */
+  return "UNKNOWN";
+}
+
+
+/*
+ * ------------------------------------------------
+ * Promotion active check
+ * ------------------------------------------------
+ */
+
+function isPromotionActive(
+  promotion
+) {
+  if (!promotion) {
+    return false;
+  }
+
+
+  if (
+    promotion.active === false
+  ) {
+    return false;
+  }
+
+
+  const now =
+    Date.now();
+
+
+  const start =
+    promotion.startsAt
+      ? new Date(
+          promotion.startsAt
+        ).getTime()
+      : toNumber(
+          promotion.startDate
+        );
+
+
+  const end =
+    promotion.endsAt
+      ? new Date(
+          promotion.endsAt
+        ).getTime()
+      : toNumber(
+          promotion.endDate
+        );
+
+
+  if (
+    Number.isFinite(start) &&
+    now < start
+  ) {
+    return false;
+  }
+
+
+  if (
+    Number.isFinite(end) &&
+    now > end
+  ) {
+    return false;
+  }
+
+
+  return true;
+}
+
+
+/*
+ * ------------------------------------------------
+ * Normalize one Checkers Bonus Buy
+ * ------------------------------------------------
+ */
+
+function normalizeCheckersBonusBuy(
+  response
+) {
+  if (!response) {
+    return null;
+  }
+
+
+  /*
+   * Parse returns:
+   *
+   * {
+   *   status: "success",
+   *   data: {...}
+   * }
+   *
+   * But supporting response.data ?? response
+   * makes this helper easier to test.
+   */
+  const data =
+    response?.data ??
+    response;
+
+
+  if (!data) {
+    return null;
+  }
+
+
+  const promotion =
+    data.promotion ||
+    null;
+
+
+  const bonusBuyId =
+    data.bonusBuyId ||
+    promotion?.bonusBuyId ||
+    data.raw?.id ||
+    null;
+
+
+  const normalPrice =
+    toNumber(
+      data.normalPrice
+    );
+
+
+  const promotionPrice =
+    toNumber(
+      data.promotionPrice ??
+      promotion?.promotionPrice ??
+      promotion?.discountValue
+    );
+
+
+  /*
+   * Prefer the explicit saving
+   * returned by Parse.
+   *
+   * Only calculate the difference
+   * as fallback.
+   */
+  let saving =
+    toNumber(data.saving);
+
+
+  if (
+    saving === null &&
+    normalPrice !== null &&
+    promotionPrice !== null
+  ) {
+    saving =
+      normalPrice -
+      promotionPrice;
+  }
+
+
+  saving =
+    Math.max(
+      0,
+      Number(
+        saving || 0
+      )
+    );
+
+
+  const requiresLoyaltyCard =
+    promotion
+      ?.requiresLoyaltyCard ===
+      true ||
+    promotion
+      ?.promotionType ===
+      "fox_members" ||
+    promotion
+      ?.memberTypeName ===
+      "Xtra Savings Members";
+
+
+  const promotionMechanic =
+    normalizePromotionMechanic(
+      promotion
+        ?.promotionMechanic
+    );
+
+
+  const promotionQuantity =
+    toNumber(
+      promotion
+        ?.promotionQuantity
+    );
+
+
+  const promotionBundlePrice =
+    toNumber(
+      promotion
+        ?.promotionBundlePrice
+    );
+
+
+  const active =
+    data.availableAtStore !==
+      false &&
+    isPromotionActive(
+      promotion
+    );
+
+
+  return {
+    /*
+     * Provider
+     */
+    source:
+      "parse_checkers_bonus_buy",
+
+    retailer:
+      "Checkers",
+
+
+    /*
+     * Store
+     */
+    providerStoreId:
+      data.storeId ||
+      null,
+
+    storeName:
+      data.storeName ||
+      null,
+
+    storeBrand:
+      data.storeBrand ||
+      "Checkers",
+
+    availableAtStore:
+      data.availableAtStore ===
+      true,
+
+
+    /*
+     * Promotion identity
+     */
+    bonusBuyId,
+
+    promotionCode:
+      bonusBuyId,
+
+    providerPromotionCode:
+      promotion?.code ||
+      null,
+
+    providerPromotionId:
+      promotion?.promotionId ||
+      null,
+
+
+    /*
+     * Pricing
+     */
+    normalPrice,
+
+    promotionPrice,
+
+    saving:
+      Number(
+        saving.toFixed(2)
+      ),
+
+
+    /*
+     * Grossary loyalty pricing
+     *
+     * Checkers Xtra Savings is
+     * represented using the same
+     * normalized fields as PnP
+     * Smart Shopper.
+     */
+    loyaltyPrice:
+      requiresLoyaltyCard
+        ? promotionPrice
+        : null,
+
+    loyaltySavings:
+      requiresLoyaltyCard
+        ? Number(
+            saving.toFixed(2)
+          )
+        : 0,
+
+    requiresLoyaltyCard,
+
+
+    /*
+     * Promotion
+     */
+    isPromotion:
+      active,
+
+    promotionType:
+      requiresLoyaltyCard
+        ? "XTRA_SAVINGS"
+        : "CHECKERS_PROMOTION",
+
+    promotionMessage:
+      promotion
+        ?.promotionMessage ||
+      promotion?.name ||
+      promotion
+        ?.longDescription ||
+      null,
+
+    promotionMechanic,
+
+    promotionQuantity:
+      promotionQuantity !==
+        null
+        ? promotionQuantity
+        : 1,
+
+    promotionBundlePrice:
+      promotionBundlePrice !==
+        null
+        ? promotionBundlePrice
+        : promotionPrice,
+
+
+    /*
+     * Dates
+     */
+    promotionStartsAt:
+      promotion?.startsAt ||
+      null,
+
+    promotionEndsAt:
+      promotion?.endsAt ||
+      null,
+
+
+    /*
+     * Checkers metadata
+     */
+    memberTypeName:
+      promotion
+        ?.memberTypeName ||
+      null,
+
+    memberTypeDescription:
+      promotion
+        ?.memberTypeDescription ||
+      null,
+
+    redemptionLimit:
+      toNumber(
+        promotion
+          ?.redemptionLimit
+      ),
+
+    channelIndicator:
+      promotion
+        ?.channelIndicator ||
+      null,
+
+    channelSpecificPromotions:
+      promotion
+        ?.channelSpecificPromotions ||
+      null,
+
+
+    /*
+     * Products covered by
+     * this Bonus Buy
+     */
+    qualifyingProductCodes:
+      Array.isArray(
+        promotion
+          ?.qualifyingProductCodes
+      )
+        ? promotion
+            .qualifyingProductCodes
+        : [],
+
+    qualifyingProductIds:
+      Array.isArray(
+        promotion
+          ?.qualifyingProductIds
+      )
+        ? promotion
+            .qualifyingProductIds
+        : [],
+
+
+    /*
+     * Keep provider data
+     */
+    raw:
+      data.raw ||
+      data,
+  };
 }
 
 
@@ -249,11 +667,14 @@ function normalizeCheckersProduct(
     getOldPrice(product);
 
   const promotionalSavings =
-    getPromotionalSavings(product);
+    getPromotionalSavings(
+      product
+    );
 
 
   const isPromotion =
-    product?.isOnPromotion === true ||
+    product?.isOnPromotion ===
+      true ||
     promotionalSavings > 0;
 
 
@@ -311,7 +732,8 @@ function normalizeCheckersProduct(
       Array.isArray(
         product.barcodes
       )
-        ? product.barcodes[0] ||
+        ? product
+            .barcodes[0] ||
           null
         : null,
 
@@ -343,6 +765,46 @@ function normalizeCheckersProduct(
 
 
     /*
+     * Loyalty defaults
+     *
+     * These are populated later
+     * if a Bonus Buy is resolved.
+     */
+    loyaltyPrice:
+      null,
+
+    loyaltySavings:
+      0,
+
+    requiresLoyaltyCard:
+      false,
+
+    promotionType:
+      null,
+
+    promotionCode:
+      null,
+
+    promotionMessage:
+      null,
+
+    promotionMechanic:
+      null,
+
+    promotionQuantity:
+      null,
+
+    promotionBundlePrice:
+      null,
+
+    promotionStartsAt:
+      null,
+
+    promotionEndsAt:
+      null,
+
+
+    /*
      * Stock
      */
     inStock,
@@ -368,7 +830,7 @@ function normalizeCheckersProduct(
 
 
     /*
-     * Promotion metadata
+     * Bonus Buy references
      */
     bonusBuyIds:
       Array.isArray(
@@ -400,6 +862,7 @@ function normalizeCheckersProducts(
     return [];
   }
 
+
   return products
     .map(
       normalizeCheckersProduct
@@ -411,4 +874,7 @@ function normalizeCheckersProducts(
 module.exports = {
   normalizeCheckersProduct,
   normalizeCheckersProducts,
+  normalizeCheckersBonusBuy,
+  normalizePromotionMechanic,
+  isPromotionActive,
 };

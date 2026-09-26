@@ -8,8 +8,79 @@
  * 1. search_products
  * 2. search_store_products
  *
- * Converts both Parse response formats into the
- * same internal Grossary product structure.
+ * Handles:
+ *
+ * - Standard PnP promotions
+ * - Smart Shopper promotions
+ * - Fixed-price Smart Shopper promotions
+ * - Multi-buy Smart Shopper promotions
+ * - Promotion dates
+ * - Store-specific stock
+ *
+ *
+ * IMPORTANT:
+ *
+ * STANDARD PNP PROMOTION
+ *
+ * Example:
+ *
+ * price.value = 14.99
+ * price.oldPrice = 17.99
+ * price.savings = 3
+ *
+ * Normalized:
+ *
+ * price = 14.99
+ * regularPrice = 17.99
+ * promotionalSavings = 3
+ *
+ *
+ * SMART SHOPPER FIXED PRICE
+ *
+ * Example:
+ *
+ * price = 39.99
+ * promotion message = "R29.99"
+ *
+ * Normalized:
+ *
+ * price = 39.99
+ * loyaltyPrice = 29.99
+ * loyaltySavings = 10
+ * promotionMechanic = "FIXED_PRICE"
+ *
+ *
+ * SMART SHOPPER MULTI-BUY
+ *
+ * Example:
+ *
+ * price = 21.99
+ * promotion message = "2 For R32.00"
+ *
+ * Normalized:
+ *
+ * price = 21.99
+ * loyaltyPrice = 16
+ * loyaltySavings = 11.98
+ * promotionMechanic = "MULTIBUY"
+ * promotionQuantity = 2
+ * promotionBundlePrice = 32
+ *
+ *
+ * IMPORTANT:
+ *
+ * loyaltyPrice for MULTIBUY represents the
+ * effective unit price only.
+ *
+ * It must NOT later be blindly multiplied
+ * by the user's quantity.
+ *
+ * The optimizer must respect:
+ *
+ * promotionQuantity
+ * promotionBundlePrice
+ *
+ * ------------------------------------------------
  */
 
 
@@ -20,20 +91,220 @@
  */
 
 function toNumber(value) {
+
   if (
     value === null ||
     value === undefined ||
     value === ""
   ) {
+
     return null;
+
   }
+
 
   const number =
     Number(value);
 
+
   return Number.isFinite(number)
     ? number
     : null;
+}
+
+
+/*
+ * ------------------------------------------------
+ * Promotion message parser
+ * ------------------------------------------------
+ *
+ * Supported examples:
+ *
+ * R29.99
+ *
+ * ->
+ *
+ * {
+ *   mechanic: "FIXED_PRICE",
+ *   quantity: 1,
+ *   bundlePrice: 29.99,
+ *   unitPrice: 29.99
+ * }
+ *
+ *
+ * 2 For R32.00
+ *
+ * ->
+ *
+ * {
+ *   mechanic: "MULTIBUY",
+ *   quantity: 2,
+ *   bundlePrice: 32,
+ *   unitPrice: 16
+ * }
+ *
+ *
+ * Unknown formats are preserved in the
+ * promotion metadata but are NOT used to
+ * calculate prices.
+ * ------------------------------------------------
+ */
+
+function parsePromotionMessage(
+  value
+) {
+
+  if (
+    typeof value !== "string"
+  ) {
+
+    return null;
+
+  }
+
+
+  const text =
+    value.trim();
+
+
+  /*
+   * ------------------------------------------------
+   * Fixed price
+   *
+   * R29.99
+   * R30
+   * ------------------------------------------------
+   */
+
+  const fixedPriceMatch =
+    text.match(
+      /^R\s*(\d+(?:\.\d{1,2})?)$/i
+    );
+
+
+  if (fixedPriceMatch) {
+
+    const price =
+      toNumber(
+        fixedPriceMatch[1]
+      );
+
+
+    if (
+      price === null
+    ) {
+
+      return null;
+
+    }
+
+
+    return {
+
+      mechanic:
+        "FIXED_PRICE",
+
+      quantity:
+        1,
+
+      bundlePrice:
+        price,
+
+      unitPrice:
+        price,
+
+    };
+
+  }
+
+
+  /*
+   * ------------------------------------------------
+   * Multi-buy
+   *
+   * 2 For R32.00
+   * 2 FOR R32
+   * 3 for R50
+   * 4 For R100.00
+   * ------------------------------------------------
+   */
+
+  const multiBuyMatch =
+    text.match(
+      /^(\d+)\s*FOR\s*R\s*(\d+(?:\.\d{1,2})?)$/i
+    );
+
+
+  if (multiBuyMatch) {
+
+    const quantity =
+      toNumber(
+        multiBuyMatch[1]
+      );
+
+
+    const bundlePrice =
+      toNumber(
+        multiBuyMatch[2]
+      );
+
+
+    if (
+      quantity === null ||
+      quantity <= 0 ||
+      bundlePrice === null ||
+      bundlePrice < 0
+    ) {
+
+      return null;
+
+    }
+
+
+    return {
+
+      mechanic:
+        "MULTIBUY",
+
+      quantity,
+
+      bundlePrice,
+
+      unitPrice:
+        Number(
+          (
+            bundlePrice /
+            quantity
+          ).toFixed(2)
+        ),
+
+    };
+
+  }
+
+
+  /*
+   * Promotion exists, but we don't
+   * understand its pricing mechanic.
+   *
+   * Do not guess.
+   */
+
+  return {
+
+    mechanic:
+      "UNKNOWN",
+
+    quantity:
+      null,
+
+    bundlePrice:
+      null,
+
+    unitPrice:
+      null,
+
+  };
 }
 
 
@@ -44,74 +315,89 @@ function toNumber(value) {
  */
 
 function getImage(images) {
-  if (!Array.isArray(images)) {
+
+  if (
+    !Array.isArray(images)
+  ) {
+
     return null;
+
   }
 
 
-  /*
-   * Prefer full product image
-   */
   const productImage =
     images.find(
       image =>
-        image?.format === "product" &&
-        image?.imageType === "PRIMARY"
+        image?.format ===
+          "product" &&
+        image?.imageType ===
+          "PRIMARY"
     );
 
-  if (productImage?.url) {
+
+  if (
+    productImage?.url
+  ) {
+
     return productImage.url;
+
   }
 
 
-  /*
-   * Then listing image
-   */
   const listingImage =
     images.find(
       image =>
-        image?.format === "listing" &&
-        image?.imageType === "PRIMARY"
+        image?.format ===
+          "listing" &&
+        image?.imageType ===
+          "PRIMARY"
     );
 
-  if (listingImage?.url) {
+
+  if (
+    listingImage?.url
+  ) {
+
     return listingImage.url;
+
   }
 
 
-  /*
-   * New store endpoint may return
-   * images in a simpler format.
-   */
   const primaryImage =
     images.find(
       image =>
-        image?.imageType === "PRIMARY" &&
+        image?.imageType ===
+          "PRIMARY" &&
         image?.url
     );
 
-  if (primaryImage?.url) {
+
+  if (
+    primaryImage?.url
+  ) {
+
     return primaryImage.url;
+
   }
 
 
-  /*
-   * String URL fallback
-   */
   const stringImage =
     images.find(
       image =>
-        typeof image === "string"
+        typeof image ===
+          "string"
     );
 
-  if (stringImage) {
+
+  if (
+    stringImage
+  ) {
+
     return stringImage;
+
   }
 
 
-  /*
-   * Any image with URL
-   */
   return (
     images.find(
       image =>
@@ -128,7 +414,10 @@ function getImage(images) {
  * ------------------------------------------------
  */
 
-function isStoreProduct(product) {
+function isStoreProduct(
+  product
+) {
+
   return Boolean(
     product?.storeId
   );
@@ -141,44 +430,42 @@ function isStoreProduct(product) {
  * ------------------------------------------------
  */
 
-function getPrice(product) {
+function getPrice(
+  product
+) {
 
   /*
-   * New search_store_products:
-   *
-   * price: 39.99
+   * search_store_products
    */
+
   if (
     typeof product?.price ===
-    "number"
+      "number"
   ) {
+
     return toNumber(
       product.price
     );
+
+  }
+
+
+  if (
+    typeof product?.price ===
+      "string"
+  ) {
+
+    return toNumber(
+      product.price
+    );
+
   }
 
 
   /*
-   * Sometimes APIs return numeric
-   * values as strings.
+   * search_products
    */
-  if (
-    typeof product?.price ===
-    "string"
-  ) {
-    return toNumber(
-      product.price
-    );
-  }
 
-
-  /*
-   * Original search_products:
-   *
-   * price: {
-   *   value: 42.99
-   * }
-   */
   return toNumber(
     product?.price?.value
   );
@@ -191,37 +478,47 @@ function getPrice(product) {
  * ------------------------------------------------
  */
 
-function getOldPrice(product) {
+function getOldPrice(
+  product
+) {
 
   /*
-   * New store endpoint
+   * search_store_products
    */
+
   const directOldPrice =
     toNumber(
       product?.oldPrice
     );
 
+
   if (
     directOldPrice !== null &&
     directOldPrice > 0
   ) {
+
     return directOldPrice;
+
   }
 
 
   /*
-   * Original endpoint
+   * search_products
    */
+
   const nestedOldPrice =
     toNumber(
       product?.price?.oldPrice
     );
 
+
   if (
     nestedOldPrice !== null &&
     nestedOldPrice > 0
   ) {
+
     return nestedOldPrice;
+
   }
 
 
@@ -231,49 +528,275 @@ function getOldPrice(product) {
 
 /*
  * ------------------------------------------------
- * Promotional saving
+ * Standard promotional saving
  * ------------------------------------------------
  */
 
-function getSavings(product) {
+function getSavings(
+  product
+) {
 
   /*
-   * New store endpoint gives:
-   *
-   * savings: 5
+   * search_store_products
    */
+
   const directSavings =
     toNumber(
       product?.savings
     );
 
+
   if (
     directSavings !== null &&
     directSavings > 0
   ) {
+
     return directSavings;
+
   }
 
 
   /*
-   * Original endpoint:
-   *
-   * price.savings
+   * search_products
    */
+
   const nestedSavings =
     toNumber(
       product?.price?.savings
     );
 
+
   if (
     nestedSavings !== null &&
     nestedSavings > 0
   ) {
+
     return nestedSavings;
+
   }
 
 
   return 0;
+}
+
+
+/*
+ * ------------------------------------------------
+ * Get promotions
+ * ------------------------------------------------
+ *
+ * STORE ENDPOINT:
+ *
+ * promotions: [
+ *   {
+ *     code: "...",
+ *     message: "R29.99",
+ *     type: "SMART_SHOPPER",
+ *     startDate: "...",
+ *     endDate: "..."
+ *   }
+ * ]
+ *
+ *
+ * GENERAL ENDPOINT:
+ *
+ * potentialPromotions: [
+ *   {
+ *     code: "...",
+ *     promotionTextMessage: "R29.99",
+ *     promotionDisplayType: "SMART_SHOPPER",
+ *     startDate: "...",
+ *     endDate: "...",
+ *     valid: false
+ *   }
+ * ]
+ * ------------------------------------------------
+ */
+
+function getPromotions(
+  product
+) {
+
+  /*
+   * Store-specific endpoint.
+   *
+   * Already comes in the structure
+   * we want.
+   */
+
+  if (
+    Array.isArray(
+      product?.promotions
+    )
+  ) {
+
+    return product.promotions;
+
+  }
+
+
+  /*
+   * General search endpoint.
+   *
+   * Convert its naming into the same
+   * shape as the store endpoint.
+   */
+
+  if (
+    Array.isArray(
+      product
+        ?.potentialPromotions
+    )
+  ) {
+
+    return product
+      .potentialPromotions
+      .map(
+        promotion => ({
+
+          code:
+            promotion?.code ||
+            null,
+
+          message:
+            promotion
+              ?.promotionTextMessage ||
+            null,
+
+          type:
+            promotion
+              ?.promotionDisplayType ||
+            null,
+
+          startDate:
+            promotion?.startDate ||
+            null,
+
+          endDate:
+            promotion?.endDate ||
+            null,
+
+          valid:
+            promotion?.valid,
+
+        })
+      );
+
+  }
+
+
+  return [];
+}
+
+
+/*
+ * ------------------------------------------------
+ * Smart Shopper promotion
+ * ------------------------------------------------
+ */
+
+function getSmartShopperPromotion(
+  product
+) {
+
+  const promotions =
+    getPromotions(
+      product
+    );
+
+
+  const smartShopperPromotions =
+    promotions.filter(
+      promotion =>
+        String(
+          promotion?.type ||
+          ""
+        )
+          .toUpperCase()
+          .includes(
+            "SMART_SHOPPER"
+          )
+    );
+
+
+  if (
+    !smartShopperPromotions.length
+  ) {
+
+    return null;
+
+  }
+
+
+  /*
+   * Prefer a Smart Shopper promotion
+   * whose pricing mechanic Grossary
+   * understands.
+   */
+
+  const understoodPromotion =
+    smartShopperPromotions.find(
+      promotion => {
+
+        const parsed =
+          parsePromotionMessage(
+            promotion?.message
+          );
+
+
+        return (
+          parsed &&
+          parsed.mechanic !==
+            "UNKNOWN"
+        );
+
+      }
+    );
+
+
+  return (
+    understoodPromotion ||
+    smartShopperPromotions[0]
+  );
+}
+
+
+/*
+ * ------------------------------------------------
+ * Promotion type
+ * ------------------------------------------------
+ */
+
+function getPromotionType(
+  product,
+  isPromotion
+) {
+
+  const smartShopper =
+    getSmartShopperPromotion(
+      product
+    );
+
+
+  if (
+    smartShopper
+  ) {
+
+    return "SMART_SHOPPER";
+
+  }
+
+
+  if (
+    isPromotion
+  ) {
+
+    return "STANDARD";
+
+  }
+
+
+  return null;
 }
 
 
@@ -291,50 +814,79 @@ function getPromotionStatus(
 ) {
 
   /*
-   * New store endpoint
+   * Store endpoint
    */
+
   if (
     product?.onPromotion ===
-    true
+      true
   ) {
+
     return true;
+
   }
 
 
   /*
-   * Original endpoint
+   * General endpoint
    */
+
   if (
     product?.isOnPromotion ===
-    true
+      true
   ) {
+
     return true;
+
+  }
+
+
+  /*
+   * Promotion metadata exists
+   */
+
+  if (
+    getPromotions(
+      product
+    ).length > 0
+  ) {
+
+    return true;
+
   }
 
 
   /*
    * Explicit advertised savings
    */
+
   if (
     savings > 0
   ) {
+
     return true;
+
   }
 
 
   /*
-   * Fallback only for identifying
-   * that a markdown exists.
+   * Price markdown fallback.
    *
-   * We still DO NOT calculate
-   * promotionalSavings from this.
+   * This is only used to detect that
+   * a promotion exists.
+   *
+   * We do NOT use this calculation
+   * as promotionalSavings.
    */
+
   if (
     oldPrice !== null &&
     price !== null &&
     oldPrice > price
   ) {
+
     return true;
+
   }
 
 
@@ -353,61 +905,57 @@ function getStockStatus(
 ) {
 
   /*
-   * IMPORTANT:
-   *
-   * New store endpoint can return:
-   *
-   * available: true
-   * inStock: false
-   * stockLevel: 0
-   * stockStatus: "outOfStock"
-   *
-   * Therefore "available" must NOT
-   * override branch stock information.
-   */
-
-
-  /*
    * 1. Explicit branch stock status
    */
+
   if (
     product?.stockStatus ===
-    "outOfStock"
+      "outOfStock"
   ) {
+
     return false;
+
   }
 
 
   if (
     product?.stockStatus ===
-    "inStock"
+      "inStock"
   ) {
+
     return true;
+
   }
 
 
   /*
    * 2. Explicit branch boolean
    */
+
   if (
     product?.inStock ===
-    false
+      false
   ) {
+
     return false;
+
   }
 
 
   if (
     product?.inStock ===
-    true
+      true
   ) {
+
     return true;
+
   }
 
 
   /*
-   * 3. Explicit numeric stock level
+   * 3. Explicit stock level
    */
+
   const stockLevel =
     toNumber(
       product?.stockLevel
@@ -417,20 +965,25 @@ function getStockStatus(
   if (
     stockLevel !== null
   ) {
+
     return stockLevel > 0;
+
   }
 
 
   /*
    * 4. Original endpoint
    */
+
   if (
     product
       ?.stock
       ?.stockLevelStatus ===
-    "outOfStock"
+      "outOfStock"
   ) {
+
     return false;
+
   }
 
 
@@ -438,37 +991,71 @@ function getStockStatus(
     product
       ?.stock
       ?.stockLevelStatus ===
-    "inStock"
+      "inStock"
   ) {
+
     return true;
+
   }
 
 
   /*
    * 5. Old boolean
    */
+
   if (
-    product?.inStockIndicator ===
-    false
+    product
+      ?.inStockIndicator ===
+      false
   ) {
+
     return false;
+
   }
 
 
   if (
-    product?.inStockIndicator ===
-    true
+    product
+      ?.inStockIndicator ===
+      true
   ) {
+
     return true;
+
   }
 
 
   /*
    * 6. Lowest-confidence fallback
    */
-  return (
-    product?.available === true
-  );
+
+  if (
+    product?.available ===
+      true
+  ) {
+
+    return true;
+
+  }
+
+
+  if (
+    product?.available ===
+      false
+  ) {
+
+    return false;
+
+  }
+
+
+  /*
+   * Unknown stock should remain unknown.
+   *
+   * Do not convert unknown to false.
+   */
+
+  return null;
 }
 
 
@@ -491,15 +1078,12 @@ function getStockLevel(
   if (
     direct !== null
   ) {
+
     return direct;
+
   }
 
 
-  /*
-   * Future compatibility in case
-   * provider starts exposing quantity
-   * under nested stock.
-   */
   const nested =
     toNumber(
       product
@@ -511,7 +1095,9 @@ function getStockLevel(
   if (
     nested !== null
   ) {
+
     return nested;
+
   }
 
 
@@ -529,10 +1115,20 @@ function normalizePnpProduct(
   product
 ) {
 
-  if (!product) {
+  if (
+    !product
+  ) {
+
     return null;
+
   }
 
+
+  /*
+   * ----------------------------------------------
+   * Standard price
+   * ----------------------------------------------
+   */
 
   const price =
     getPrice(
@@ -552,6 +1148,201 @@ function normalizePnpProduct(
     );
 
 
+  /*
+   * ----------------------------------------------
+   * Promotion metadata
+   * ----------------------------------------------
+   */
+
+  const promotions =
+    getPromotions(
+      product
+    );
+
+
+  const smartShopperPromotion =
+    getSmartShopperPromotion(
+      product
+    );
+
+
+  /*
+   * ----------------------------------------------
+   * Parse Smart Shopper pricing mechanic
+   * ----------------------------------------------
+   */
+
+  const parsedPromotion =
+    smartShopperPromotion
+      ? parsePromotionMessage(
+          smartShopperPromotion
+            ?.message
+        )
+      : null;
+
+
+  /*
+   * Effective per-unit loyalty price.
+   *
+   * FIXED_PRICE:
+   *
+   * "R29.99"
+   * -> R29.99/unit
+   *
+   *
+   * MULTIBUY:
+   *
+   * "2 For R32"
+   * -> R16/unit effective price
+   *
+   *
+   * IMPORTANT:
+   *
+   * MULTIBUY loyaltyPrice must NOT be
+   * blindly multiplied by arbitrary
+   * quantities later.
+   *
+   * The optimizer must respect:
+   *
+   * promotionQuantity
+   * promotionBundlePrice
+   */
+
+  const loyaltyPrice =
+    parsedPromotion
+      ?.unitPrice ??
+    null;
+
+
+  const promotionMechanic =
+    parsedPromotion
+      ?.mechanic ??
+    null;
+
+
+  const promotionQuantity =
+    parsedPromotion
+      ?.quantity ??
+    null;
+
+
+  const promotionBundlePrice =
+    parsedPromotion
+      ?.bundlePrice ??
+    null;
+
+
+  /*
+   * ----------------------------------------------
+   * Loyalty savings
+   * ----------------------------------------------
+   *
+   * FIXED_PRICE:
+   *
+   * Normal:
+   * R39.99
+   *
+   * Smart Shopper:
+   * R29.99
+   *
+   * Saving:
+   * R10.00 per item
+   *
+   *
+   * MULTIBUY:
+   *
+   * Normal:
+   * 2 × R21.99 = R43.98
+   *
+   * Smart Shopper:
+   * 2 For R32
+   *
+   * Saving:
+   * R11.98 per qualifying bundle
+   * ----------------------------------------------
+   */
+
+  let loyaltySavings =
+    0;
+
+
+  if (
+    price !== null &&
+    parsedPromotion
+  ) {
+
+    /*
+     * Fixed loyalty price
+     */
+
+    if (
+      parsedPromotion
+        .mechanic ===
+        "FIXED_PRICE" &&
+      parsedPromotion
+        .unitPrice !==
+        null &&
+      price >
+        parsedPromotion
+          .unitPrice
+    ) {
+
+      loyaltySavings =
+        Number(
+          (
+            price -
+            parsedPromotion
+              .unitPrice
+          ).toFixed(2)
+        );
+
+    }
+
+
+    /*
+     * Multi-buy loyalty promotion
+     */
+
+    if (
+      parsedPromotion
+        .mechanic ===
+        "MULTIBUY" &&
+      parsedPromotion
+        .quantity &&
+      parsedPromotion
+        .bundlePrice !==
+        null
+    ) {
+
+      const normalBundlePrice =
+        price *
+        parsedPromotion
+          .quantity;
+
+
+      loyaltySavings =
+        Math.max(
+          0,
+          Number(
+            (
+              normalBundlePrice -
+              parsedPromotion
+                .bundlePrice
+            ).toFixed(2)
+          )
+        );
+
+    }
+
+  }
+
+
+  /*
+   * ----------------------------------------------
+   * Promotion status
+   * ----------------------------------------------
+   */
+
   const isPromotion =
     getPromotionStatus(
       product,
@@ -560,6 +1351,57 @@ function normalizePnpProduct(
       price
     );
 
+
+  const promotionType =
+    getPromotionType(
+      product,
+      isPromotion
+    );
+
+
+  /*
+   * ----------------------------------------------
+   * Promotion dates / details
+   * ----------------------------------------------
+   */
+
+  const promotionStartsAt =
+    smartShopperPromotion
+      ?.startDate ||
+    promotions[0]
+      ?.startDate ||
+    null;
+
+
+  const promotionEndsAt =
+    smartShopperPromotion
+      ?.endDate ||
+    promotions[0]
+      ?.endDate ||
+    null;
+
+
+  const promotionCode =
+    smartShopperPromotion
+      ?.code ||
+    promotions[0]
+      ?.code ||
+    null;
+
+
+  const promotionMessage =
+    smartShopperPromotion
+      ?.message ||
+    promotions[0]
+      ?.message ||
+    null;
+
+
+  /*
+   * ----------------------------------------------
+   * Stock
+   * ----------------------------------------------
+   */
 
   const inStock =
     getStockStatus(
@@ -573,16 +1415,24 @@ function normalizePnpProduct(
     );
 
 
+  /*
+   * ----------------------------------------------
+   * Normalized product
+   * ----------------------------------------------
+   */
+
   return {
 
     /*
-     * ----------------------------
+     * --------------------------------------------
      * Provider
-     * ----------------------------
+     * --------------------------------------------
      */
 
     source:
-      isStoreProduct(product)
+      isStoreProduct(
+        product
+      )
         ? "parse_pnp_store"
         : "parse_pnp",
 
@@ -591,9 +1441,9 @@ function normalizePnpProduct(
 
 
     /*
-     * ----------------------------
+     * --------------------------------------------
      * IDs
-     * ----------------------------
+     * --------------------------------------------
      */
 
     providerProductId:
@@ -606,9 +1456,9 @@ function normalizePnpProduct(
 
 
     /*
-     * ----------------------------
+     * --------------------------------------------
      * Product
-     * ----------------------------
+     * --------------------------------------------
      */
 
     productName:
@@ -617,15 +1467,11 @@ function normalizePnpProduct(
 
 
     /*
-     * IMPORTANT:
-     *
-     * brandSellerId is supplier /
-     * manufacturer and is NOT always
-     * the consumer-facing brand.
-     *
-     * Example:
-     * Tastic → TIGER BRANDS
+     * brandSellerId appears to represent
+     * supplier/manufacturer rather than
+     * necessarily the consumer-facing brand.
      */
+
     brand:
       null,
 
@@ -635,9 +1481,9 @@ function normalizePnpProduct(
 
 
     /*
-     * ----------------------------
+     * --------------------------------------------
      * Barcode
-     * ----------------------------
+     * --------------------------------------------
      */
 
     barcode:
@@ -648,9 +1494,9 @@ function normalizePnpProduct(
 
 
     /*
-     * ----------------------------
-     * Price
-     * ----------------------------
+     * --------------------------------------------
+     * Standard pricing
+     * --------------------------------------------
      */
 
     price,
@@ -660,14 +1506,6 @@ function normalizePnpProduct(
         ? oldPrice
         : price,
 
-
-    /*
-     * We use Parse/PnP's explicit
-     * advertised saving.
-     *
-     * Do NOT calculate this from
-     * oldPrice - price.
-     */
     promotionalSavings:
       Number(
         (
@@ -680,9 +1518,56 @@ function normalizePnpProduct(
 
 
     /*
-     * ----------------------------
+     * --------------------------------------------
+     * Loyalty / Smart Shopper
+     * --------------------------------------------
+     */
+
+    loyaltyPrice,
+
+    loyaltySavings,
+
+    requiresLoyaltyCard:
+      promotionType ===
+      "SMART_SHOPPER",
+
+
+    /*
+     * --------------------------------------------
+     * Promotion pricing mechanic
+     * --------------------------------------------
+     */
+
+    promotionMechanic,
+
+    promotionQuantity,
+
+    promotionBundlePrice,
+
+
+    /*
+     * --------------------------------------------
+     * Promotion metadata
+     * --------------------------------------------
+     */
+
+    promotionType,
+
+    promotionCode,
+
+    promotionMessage,
+
+    promotionStartsAt,
+
+    promotionEndsAt,
+
+    promotions,
+
+
+    /*
+     * --------------------------------------------
      * Stock
-     * ----------------------------
+     * --------------------------------------------
      */
 
     inStock,
@@ -702,9 +1587,9 @@ function normalizePnpProduct(
 
 
     /*
-     * ----------------------------
+     * --------------------------------------------
      * Media
-     * ----------------------------
+     * --------------------------------------------
      */
 
     imageUrl:
@@ -714,9 +1599,9 @@ function normalizePnpProduct(
 
 
     /*
-     * ----------------------------
+     * --------------------------------------------
      * Categories
-     * ----------------------------
+     * --------------------------------------------
      */
 
     categories:
@@ -728,9 +1613,9 @@ function normalizePnpProduct(
 
 
     /*
-     * ----------------------------
+     * --------------------------------------------
      * Other metadata
-     * ----------------------------
+     * --------------------------------------------
      */
 
     onlineOnly:
@@ -749,13 +1634,21 @@ function normalizePnpProduct(
 
 
     /*
-     * ----------------------------
-     * Keep raw provider response
-     * ----------------------------
+     * --------------------------------------------
+     * Raw provider response
+     * --------------------------------------------
+     *
+     * Always preserve this.
+     *
+     * It allows us to support additional
+     * PnP promotion mechanics later without
+     * losing the original provider data.
+     * --------------------------------------------
      */
 
     raw:
       product,
+
   };
 }
 
@@ -775,7 +1668,9 @@ function normalizePnpProducts(
       products
     )
   ) {
+
     return [];
+
   }
 
 
@@ -783,11 +1678,26 @@ function normalizePnpProducts(
     .map(
       normalizePnpProduct
     )
-    .filter(Boolean);
+    .filter(
+      Boolean
+    );
 }
 
+
+/*
+ * ------------------------------------------------
+ * Exports
+ * ------------------------------------------------
+ */
 
 module.exports = {
   normalizePnpProduct,
   normalizePnpProducts,
+
+  /*
+   * Exporting this makes promotion parsing
+   * easy to test independently.
+   */
+
+  parsePromotionMessage,
 };

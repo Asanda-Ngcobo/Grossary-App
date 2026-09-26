@@ -151,7 +151,31 @@ async function searchCheckersStoreProducts(
   );
 }
 
+/*
+ * Get full Checkers product details
+ */
+async function getCheckersProductDetails(
+  slug
+) {
 
+  if (!slug) {
+    throw new Error(
+      "Checkers product slug is required."
+    );
+  }
+
+
+  return parseRequest(
+    "get_product_details",
+    {
+      method: "GET",
+
+      params: {
+        slug,
+      },
+    }
+  );
+}
 /*
  * Find nearby Checkers stores
  */
@@ -172,9 +196,49 @@ async function findCheckersStores(
   );
 }
 
+/*
+ * Get store-specific Checkers
+ * Bonus Buy promotion
+ */
+async function getCheckersBonusBuy(
+  bonusBuyId,
+  storeId
+) {
+
+  if (!bonusBuyId) {
+    throw new Error(
+      "Checkers bonusBuyId is required."
+    );
+  }
+
+
+  if (!storeId) {
+    throw new Error(
+      "Checkers storeId is required."
+    );
+  }
+
+
+  return parseRequest(
+    "get_bonus_buy",
+    {
+      method: "GET",
+
+      params: {
+        bonus_buy_id:
+          bonusBuyId,
+
+        store_id:
+          storeId,
+      },
+    }
+  );
+}
 
 module.exports = {
   searchCheckersProducts,
   searchCheckersStoreProducts,
   findCheckersStores,
+  getCheckersProductDetails,
+  getCheckersBonusBuy,
 };

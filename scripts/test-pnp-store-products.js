@@ -29,13 +29,38 @@ const stores = [
 ];
 
 
+/*
+ * ------------------------------------------------
+ * Extract products from Parse response
+ * ------------------------------------------------
+ */
+
+function extractProducts(response) {
+
+  return (
+    response?.products ||
+    response?.data?.products ||
+    response?.data?.items ||
+    response?.items ||
+    []
+  );
+
+}
+
+
+/*
+ * ------------------------------------------------
+ * Test one store
+ * ------------------------------------------------
+ */
+
 async function testStore(
   store,
   query
 ) {
 
   console.log(
-    "\n=============================="
+    "\n========================================"
   );
 
   console.log(
@@ -47,9 +72,15 @@ async function testStore(
   );
 
   console.log(
-    "==============================\n"
+    "========================================\n"
   );
 
+
+  /*
+   * ----------------------------------------------
+   * Search store-specific products
+   * ----------------------------------------------
+   */
 
   const response =
     await searchPnpStoreProducts(
@@ -63,8 +94,11 @@ async function testStore(
 
 
   /*
-   * Print top-level store context.
+   * ----------------------------------------------
+   * Response context
+   * ----------------------------------------------
    */
+
   console.log(
     "Response storeId:",
     response?.storeId
@@ -76,15 +110,95 @@ async function testStore(
   );
 
 
+  /*
+   * ----------------------------------------------
+   * Extract products
+   * ----------------------------------------------
+   */
+
   const products =
-    response?.products ||
-    response?.data?.products ||
-    [];
+    extractProducts(
+      response
+    );
+
+
+  console.log(
+    "\n=============================="
+  );
+
+  console.log(
+    `RAW PRODUCTS FOUND: ${products.length}`
+  );
+
+  console.log(
+    "==============================\n"
+  );
+
+
+  /*
+   * ----------------------------------------------
+   * Print FULL raw product data
+   * ----------------------------------------------
+   *
+   * This is the important part for investigating
+   * PnP promotions and Smart Shopper pricing.
+   * ----------------------------------------------
+   */
+
+  console.log(
+    "=============================="
+  );
+
+  console.log(
+    "RAW PNP PRODUCT DATA"
+  );
+
+  console.log(
+    "==============================\n"
+  );
+
+
+  products.forEach(
+    (product, index) => {
+
+      console.log(
+        `\n---------- PRODUCT ${index + 1} ----------`
+      );
+
+      console.dir(
+        product,
+        {
+          depth: null,
+        }
+      );
+
+    }
+  );
+
+
+  /*
+   * ----------------------------------------------
+   * Compact product table
+   * ----------------------------------------------
+   */
+
+  console.log(
+    "\n=============================="
+  );
+
+  console.log(
+    "PRODUCT SUMMARY"
+  );
+
+  console.log(
+    "==============================\n"
+  );
 
 
   console.table(
     products.map(
       product => ({
+
         name:
           product.name,
 
@@ -117,6 +231,7 @@ async function testStore(
 
         code:
           product.code,
+
       })
     )
   );
@@ -127,8 +242,15 @@ async function testStore(
     response,
     products,
   };
+
 }
 
+
+/*
+ * ------------------------------------------------
+ * Main
+ * ------------------------------------------------
+ */
 
 async function main() {
 
@@ -164,6 +286,7 @@ async function main() {
    * Sequential deliberately because
    * of Parse rate limits.
    */
+
   for (
     const store
     of stores
@@ -184,6 +307,7 @@ async function main() {
      * Give Parse a little breathing room
      * between requests.
      */
+
     await new Promise(
       resolve =>
         setTimeout(
@@ -194,6 +318,12 @@ async function main() {
 
   }
 
+
+  /*
+   * ------------------------------------------------
+   * Compare stores
+   * ------------------------------------------------
+   */
 
   console.log(
     "\n=============================="
@@ -215,7 +345,9 @@ async function main() {
         const firstProduct =
           result.products[0];
 
+
         return {
+
           store:
             result.store.name,
 
@@ -238,6 +370,18 @@ async function main() {
             firstProduct
               ?.price,
 
+          oldPrice:
+            firstProduct
+              ?.oldPrice,
+
+          savings:
+            firstProduct
+              ?.savings,
+
+          promotion:
+            firstProduct
+              ?.onPromotion,
+
           available:
             firstProduct
               ?.available,
@@ -245,6 +389,7 @@ async function main() {
           stockLevel:
             firstProduct
               ?.stockLevel,
+
         };
 
       }
@@ -253,6 +398,12 @@ async function main() {
 
 }
 
+
+/*
+ * ------------------------------------------------
+ * Run
+ * ------------------------------------------------
+ */
 
 main()
   .catch(

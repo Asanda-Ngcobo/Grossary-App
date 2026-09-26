@@ -3,24 +3,381 @@ function formatMoney(value) {
 }
 
 
+/*
+ * ------------------------------------------------
+ * Convert allocations into an array
+ * ------------------------------------------------
+ */
+
+function normalizeAllocations(
+  allocations
+) {
+
+  if (
+    Array.isArray(
+      allocations
+    )
+  ) {
+
+    return allocations.filter(
+      store =>
+        store &&
+        Array.isArray(
+          store.items
+        ) &&
+        store.items.length > 0
+    );
+  }
+
+
+  if (
+    allocations &&
+    typeof allocations ===
+      "object"
+  ) {
+
+    return Object.values(
+      allocations
+    ).filter(
+      store =>
+        store &&
+        (
+          Number(
+            store.itemCount ||
+            0
+          ) > 0 ||
+          (
+            Array.isArray(
+              store.items
+            ) &&
+            store.items.length >
+              0
+          )
+        )
+    );
+  }
+
+
+  return [];
+}
+
+
+/*
+ * ------------------------------------------------
+ * Retailer loyalty branding
+ * ------------------------------------------------
+ */
+
+function getLoyaltyDetails(
+  retailer
+) {
+
+  const normalizedRetailer =
+    String(
+      retailer || ""
+    )
+      .trim()
+      .toLowerCase();
+
+
+  if (
+    normalizedRetailer ===
+    "checkers"
+  ) {
+
+    return {
+      name:
+        "Xtra Savings",
+
+      color:
+        "#38A8AE",
+
+      background:
+        "#EAF7F8",
+    };
+  }
+
+
+  if (
+    normalizedRetailer ===
+      "pnp" ||
+    normalizedRetailer ===
+      "pick n pay" ||
+    normalizedRetailer ===
+      "pick n pay"
+  ) {
+
+    return {
+      name:
+        "Smart Shopper",
+
+      color:
+        "#003359",
+
+      background:
+        "#E8EEF0",
+    };
+  }
+
+
+  return {
+    name:
+      "Loyalty",
+
+    color:
+      "#168B55",
+
+    background:
+      "#E9FFF4",
+  };
+}
+
+
+/*
+ * ------------------------------------------------
+ * Get item display data
+ * ------------------------------------------------
+ */
+
+function getItemDisplayData(
+  item
+) {
+
+  const product =
+    item?.product ||
+    {};
+
+
+  const requestedItem =
+    item?.requestedItem ||
+    {};
+
+
+  const productName =
+    product.productName ||
+    item?.productName ||
+    requestedItem.item_name ||
+    "Product";
+
+
+  const requestedName =
+    requestedItem.item_name ||
+    null;
+
+
+  const quantity =
+    Number(
+      item?.quantity ||
+      requestedItem
+        ?.item_quantity ||
+      1
+    ) || 1;
+
+
+  const unitPrice =
+    Number(
+      item?.unitPrice ??
+      product?.price ??
+      0
+    );
+
+
+  const lineTotal =
+    Number(
+      item?.lineTotal ??
+      item?.totalPrice ??
+      (
+        unitPrice *
+        quantity
+      )
+    );
+
+
+  const promotionalSavings =
+    Number(
+      item?.promotionalSavings ||
+      0
+    );
+
+
+  const loyaltySavings =
+    Number(
+      item?.loyaltySavings ||
+      product?.loyaltySavings ||
+      0
+    );
+
+
+  const loyaltyApplied =
+    item?.loyaltyApplied ===
+    true;
+
+
+  const promotionType =
+    item?.promotionType ||
+    product?.promotionType ||
+    null;
+
+
+  const promotionMechanic =
+    item?.promotionMechanic ||
+    product?.promotionMechanic ||
+    null;
+
+
+  const promotionQuantity =
+    item?.promotionQuantity ??
+    product?.promotionQuantity ??
+    null;
+
+
+  const promotionBundlePrice =
+    item?.promotionBundlePrice ??
+    product?.promotionBundlePrice ??
+    null;
+
+
+  const promotionMessage =
+    item?.promotionMessage ||
+    product?.promotionMessage ||
+    null;
+
+
+  const loyaltyPrice =
+    item?.loyaltyPrice ??
+    product?.loyaltyPrice ??
+    null;
+
+
+  const normalUnitPrice =
+    item?.normalUnitPrice ??
+    product?.price ??
+    null;
+
+
+  const qualifyingBundles =
+    Number(
+      item?.qualifyingBundles ||
+      0
+    );
+
+
+  const remainingQuantity =
+    Number(
+      item?.remainingQuantity ||
+      0
+    );
+
+
+  return {
+
+    product,
+
+    requestedItem,
+
+    productName,
+
+    requestedName,
+
+    quantity,
+
+    unitPrice,
+
+    lineTotal,
+
+    promotionalSavings,
+
+    loyaltySavings,
+
+    loyaltyApplied,
+
+    promotionType,
+
+    promotionMechanic,
+
+    promotionQuantity,
+
+    promotionBundlePrice,
+
+    promotionMessage,
+
+    loyaltyPrice,
+
+    normalUnitPrice,
+
+    qualifyingBundles,
+
+    remainingQuantity,
+
+  };
+}
+
+
+/*
+ * ------------------------------------------------
+ * Loyalty badge
+ * ------------------------------------------------
+ */
+
+function LoyaltyBadge({
+  children,
+  retailer,
+  strong = false,
+}) {
+
+  const loyalty =
+    getLoyaltyDetails(
+      retailer
+    );
+
+
+  return (
+
+    <span
+      className={`
+        inline-flex
+        items-center
+        rounded-full
+        px-2.5
+        py-1
+        text-xs
+        ${
+          strong
+            ? "font-bold"
+            : "font-semibold"
+        }
+      `}
+      style={{
+        backgroundColor:
+          loyalty.background,
+
+        color:
+          loyalty.color,
+      }}
+    >
+      {children}
+    </span>
+
+  );
+}
+
+
 function GrossaryPlusResults({
-  results, savingPlan,  onSelectPlan
+  results,
+  savingPlan,
+  onSelectPlan,
 }) {
 
   /*
-   * Your API may pass either:
+   * API may pass either:
    *
    * data.result
    *
-   * OR the whole:
+   * OR
    *
-   * {
-   *   success: true,
-   *   result: {...}
-   * }
-   *
-   * This supports both.
+   * the entire response.
    */
+
   const data =
     results?.result ||
     results;
@@ -34,55 +391,128 @@ function GrossaryPlusResults({
     optimization?.optimized;
 
 
-  const allocationsObject =
-    optimized?.allocations ||
-    {};
-
-
-  /*
-   * API returns:
-   *
-   * {
-   *   checkers: {...},
-   *   pnp: {...}
-   * }
-   *
-   * Convert it to an array for rendering.
-   */
   const allocations =
-    Object.values(
-      allocationsObject
-    ).filter(
-      store =>
-        store &&
-        store.itemCount > 0
+    normalizeAllocations(
+      optimized?.allocations
     );
 
 
+  /*
+   * ------------------------------------------------
+   * Totals
+   * ------------------------------------------------
+   */
+
   const total =
-    optimized?.total ||
-    0;
+    Number(
+      optimized?.total ||
+      0
+    );
 
 
-  const combinationSavings =
-    optimization?.combinationSavings ||
-    0;
+  /*
+   * ------------------------------------------------
+   * Savings from allocated products
+   * ------------------------------------------------
+   */
+
+  const itemSavings =
+    allocations.reduce(
+      (
+        basketTotal,
+        store
+      ) => {
+
+        const storeItems =
+          Array.isArray(
+            store?.items
+          )
+            ? store.items
+            : [];
 
 
-  const promotionalSavings =
-    optimized?.promotionalSavings ||
-    0;
+        const storeSavings =
+          storeItems.reduce(
+            (
+              savingsTotal,
+              item
+            ) => {
 
-const totalSavings = combinationSavings + promotionalSavings || 0;
+              const itemData =
+                getItemDisplayData(
+                  item
+                );
+
+
+              return (
+                savingsTotal +
+                Number(
+                  itemData
+                    .promotionalSavings ||
+                  0
+                ) +
+                Number(
+                  itemData
+                    .loyaltySavings ||
+                  0
+                )
+              );
+
+            },
+            0
+          );
+
+
+        return (
+          basketTotal +
+          storeSavings
+        );
+
+      },
+      0
+    );
+
+
+  /*
+   * Savings created by Grossary choosing
+   * cheaper stores.
+   */
+
+  const splitSavings =
+    Number(
+      optimized
+        ?.combinationSavings ??
+      optimization
+        ?.combinationSavings ??
+      0
+    );
+
+
+  /*
+   * Total customer-facing Grossary+
+   * savings.
+   */
+
+  const grossaryPlusSavings =
+    itemSavings +
+    splitSavings;
+
+
   const storesUsed =
-    optimized?.storesUsed ||
-    allocations.length;
+    Number(
+      optimized?.storesUsed ??
+      optimized?.numberOfStores ??
+      allocations.length
+    );
 
 
   const cheapestSingleStore =
     optimization
       ?.singleStoreOptions
-      ?.cheapest;
+      ?.cheapest ||
+    optimized
+      ?.cheapestSingleStore ||
+    null;
 
 
   const shoppingLocation =
@@ -94,9 +524,16 @@ const totalSavings = combinationSavings + promotionalSavings || 0;
 
 
   const unmatchedItems =
-    optimization?.unmatchedItems ||
+    optimization
+      ?.unmatchedItems ||
     [];
 
+
+  /*
+   * ------------------------------------------------
+   * Invalid result
+   * ------------------------------------------------
+   */
 
   if (
     !optimization ||
@@ -104,6 +541,7 @@ const totalSavings = combinationSavings + promotionalSavings || 0;
   ) {
 
     return (
+
       <div
         className="
           bg-white
@@ -115,14 +553,36 @@ const totalSavings = combinationSavings + promotionalSavings || 0;
         "
       >
 
+        <div
+          className="
+            w-12
+            h-12
+            mx-auto
+            rounded-2xl
+            bg-red-50
+            text-red-500
+            flex
+            items-center
+            justify-center
+            font-bold
+            text-xl
+            mb-4
+          "
+        >
+          !
+        </div>
+
+
         <p
           className="
             font-bold
             text-[#0B2E1E]
           "
         >
-          We couldn`t create your shopping plan.
+          We couldn&apos;t create your
+          shopping plan.
         </p>
+
 
         <p
           className="
@@ -135,16 +595,19 @@ const totalSavings = combinationSavings + promotionalSavings || 0;
         </p>
 
       </div>
+
     );
   }
 
 
   return (
+
     <div
       className="
         space-y-5
       "
     >
+
 
       {/* ================================= */}
       {/* SUCCESS HEADER */}
@@ -193,7 +656,8 @@ const totalSavings = combinationSavings + promotionalSavings || 0;
             mt-1
           "
         >
-          Here`s your best shopping plan
+          Here&apos;s your best shopping
+          plan
         </h1>
 
 
@@ -278,10 +742,7 @@ const totalSavings = combinationSavings + promotionalSavings || 0;
                 mt-1
               "
             >
-              R
-              {formatMoney(
-                total
-              )}
+              R{formatMoney(total)}
             </p>
 
           </div>
@@ -321,8 +782,7 @@ const totalSavings = combinationSavings + promotionalSavings || 0;
         </div>
 
 
-        {combinationSavings >
-          0 && (
+        {grossaryPlusSavings > 0 && (
 
           <div
             className="
@@ -333,39 +793,103 @@ const totalSavings = combinationSavings + promotionalSavings || 0;
             "
           >
 
-            <p
+            <div
               className="
-                text-sm
-                text-white/60
+                flex
+                items-end
+                justify-between
+                gap-4
               "
             >
-              Save by following this plan
-            </p>
+
+              <div>
+
+                <p
+                  className="
+                    text-sm
+                    text-white/60
+                  "
+                >
+                  Grossary+ savings
+                </p>
 
 
-            <p
-              className="
-                text-2xl
-                font-bold
-                text-[#1EC677]
-                mt-1
-              "
-            >
-              R
-              {formatMoney(
-                totalSavings
+                <p
+                  className="
+                    text-2xl
+                    font-bold
+                    text-[#1EC677]
+                    mt-1
+                  "
+                >
+                  R{formatMoney(
+                    grossaryPlusSavings
+                  )}
+                </p>
+
+              </div>
+
+
+              {total > 0 && (
+
+                <div
+                  className="
+                    bg-[#1EC677]/10
+                    border
+                    border-[#1EC677]/20
+                    rounded-xl
+                    px-3
+                    py-2
+                  "
+                >
+
+                  <p
+                    className="
+                      text-[10px]
+                      uppercase
+                      tracking-wide
+                      text-white/50
+                    "
+                  >
+                    You save
+                  </p>
+
+                  <p
+                    className="
+                      text-sm
+                      font-bold
+                      text-[#1EC677]
+                    "
+                  >
+                    {(
+                      (
+                        grossaryPlusSavings /
+                        (
+                          total +
+                          grossaryPlusSavings
+                        )
+                      ) *
+                      100
+                    ).toFixed(0)}
+                    %
+                  </p>
+
+                </div>
+
               )}
-            </p>
+
+            </div>
 
 
             <p
               className="
                 text-xs
                 text-white/50
-                mt-1
+                mt-2
               "
             >
-              compared with the cheapest complete single-store basket
+              Your total savings with this
+              shopping plan
             </p>
 
           </div>
@@ -373,116 +897,6 @@ const totalSavings = combinationSavings + promotionalSavings || 0;
         )}
 
       </section>
-
-
-      {/* ================================= */}
-      {/* SAVINGS */}
-      {/* ================================= */}
-
-      <div
-        className="
-          grid
-          grid-cols-2
-          gap-3
-        "
-      >
-
-        <div
-          className="
-            bg-white
-            border
-            border-gray-100
-            rounded-2xl
-            p-4
-          "
-        >
-
-          <p
-            className="
-              text-xs
-              text-gray-500
-            "
-          >
-            Smart split savings
-          </p>
-
-
-          <p
-            className="
-              text-xl
-              font-bold
-              text-[#0B2E1E]
-              mt-1
-            "
-          >
-            R
-            {formatMoney(
-              combinationSavings
-            )}
-          </p>
-
-
-          <p
-            className="
-              text-xs
-              text-gray-400
-              mt-1
-            "
-          >
-            By choosing the cheaper store per item
-          </p>
-
-        </div>
-
-
-        <div
-          className="
-            bg-white
-            border
-            border-gray-100
-            rounded-2xl
-            p-4
-          "
-        >
-
-          <p
-            className="
-              text-xs
-              text-gray-500
-            "
-          >
-            Retailer promotions
-          </p>
-
-
-          <p
-            className="
-              text-xl
-              font-bold
-              text-[#1EC677]
-              mt-1
-            "
-          >
-            R
-            {formatMoney(
-              promotionalSavings
-            )}
-          </p>
-
-
-          <p
-            className="
-              text-xs
-              text-gray-400
-              mt-1
-            "
-          >
-            Advertised promotional savings
-          </p>
-
-        </div>
-
-      </div>
 
 
       {/* ================================= */}
@@ -518,6 +932,7 @@ const totalSavings = combinationSavings + promotionalSavings || 0;
                 flex
                 items-center
                 justify-center
+                flex-shrink-0
               "
             >
               📍
@@ -558,14 +973,10 @@ const totalSavings = combinationSavings + promotionalSavings || 0;
                   "
                 >
                   About{" "}
-
                   {Number(
                     shoppingLocation
                       .distanceKm
-                  ).toFixed(
-                    1
-                  )}
-
+                  ).toFixed(1)}
                   {" "}km away
                 </p>
 
@@ -610,14 +1021,14 @@ const totalSavings = combinationSavings + promotionalSavings || 0;
               mt-1
             "
           >
-            Buy each item at the store where Grossary found the best price.
+            Buy each item at the store where
+            Grossary found the best price.
           </p>
 
         </div>
 
 
-        {allocations.length >
-          0 ? (
+        {allocations.length > 0 ? (
 
           <div
             className="
@@ -631,10 +1042,6 @@ const totalSavings = combinationSavings + promotionalSavings || 0;
                 storeIndex
               ) => {
 
-                /*
-                 * Get actual branch name
-                 * from shoppingLocation.
-                 */
                 const isCheckers =
                   store.retailer ===
                   "Checkers";
@@ -648,9 +1055,32 @@ const totalSavings = combinationSavings + promotionalSavings || 0;
                         ?.pnp;
 
 
+                const storeItems =
+                  Array.isArray(
+                    store.items
+                  )
+                    ? store.items
+                    : [];
+
+
+                const itemCount =
+                  Number(
+                    store.itemCount ??
+                    storeItems.length
+                  );
+
+
+                const loyalty =
+                  getLoyaltyDetails(
+                    store.retailer
+                  );
+
+
                 return (
+
                   <div
                     key={
+                      store.storeId ||
                       `${store.retailer}-${storeIndex}`
                     }
                     className="
@@ -673,6 +1103,7 @@ const totalSavings = combinationSavings + promotionalSavings || 0;
                         justify-between
                         border-b
                         border-gray-100
+                        gap-4
                       "
                     >
 
@@ -681,6 +1112,7 @@ const totalSavings = combinationSavings + promotionalSavings || 0;
                           flex
                           items-center
                           gap-3
+                          min-w-0
                         "
                       >
 
@@ -693,13 +1125,18 @@ const totalSavings = combinationSavings + promotionalSavings || 0;
                             flex
                             items-center
                             justify-center
+                            flex-shrink-0
                           "
                         >
                           🛒
                         </div>
 
 
-                        <div>
+                        <div
+                          className="
+                            min-w-0
+                          "
+                        >
 
                           <p
                             className="
@@ -708,26 +1145,25 @@ const totalSavings = combinationSavings + promotionalSavings || 0;
                               text-[#0B2E1E]
                             "
                           >
-                            {
-                              store.retailer
-                            }
+                            {store.retailer}
                           </p>
 
 
-                          {storeDetails
-                            ?.storeName && (
+                          {(store.branchName ||
+                            storeDetails
+                              ?.storeName) && (
 
                             <p
                               className="
                                 text-xs
                                 text-gray-500
                                 mt-0.5
+                                truncate
                               "
                             >
-                              {
+                              {store.branchName ||
                                 storeDetails
-                                  .storeName
-                              }
+                                  ?.storeName}
                             </p>
 
                           )}
@@ -740,6 +1176,7 @@ const totalSavings = combinationSavings + promotionalSavings || 0;
                       <div
                         className="
                           text-right
+                          flex-shrink-0
                         "
                       >
 
@@ -749,15 +1186,10 @@ const totalSavings = combinationSavings + promotionalSavings || 0;
                             text-gray-400
                           "
                         >
-                          {
-                            store.itemCount
-                          }{" "}
-                          {
-                            store.itemCount ===
-                            1
-                              ? "item"
-                              : "items"
-                          }
+                          {itemCount}{" "}
+                          {itemCount === 1
+                            ? "item"
+                            : "items"}
                         </p>
 
 
@@ -768,8 +1200,7 @@ const totalSavings = combinationSavings + promotionalSavings || 0;
                             mt-0.5
                           "
                         >
-                          R
-                          {formatMoney(
+                          R{formatMoney(
                             store.total
                           )}
                         </p>
@@ -788,68 +1219,79 @@ const totalSavings = combinationSavings + promotionalSavings || 0;
                       "
                     >
 
-                      {store.items?.map(
+                      {storeItems.map(
                         (
                           item,
                           itemIndex
                         ) => {
 
-                          const product =
-                            item.product ||
-                            {};
+                          const itemData =
+                            getItemDisplayData(
+                              item
+                            );
 
 
-                          const requestedItem =
-                            item.requestedItem ||
-                            {};
+                          const hasLoyaltySaving =
+                            itemData
+                              .loyaltyApplied &&
+                            itemData
+                              .loyaltySavings >
+                              0;
 
 
                           return (
+
                             <div
                               key={
-                                requestedItem.id ||
+                                itemData
+                                  .requestedItem
+                                  ?.id ||
+                                item.productId ||
                                 itemIndex
                               }
                               className="
                                 px-5
                                 py-4
-                                flex
-                                items-start
-                                justify-between
-                                gap-4
                               "
                             >
 
                               <div
                                 className="
-                                  flex-1
-                                  min-w-0
+                                  flex
+                                  items-start
+                                  justify-between
+                                  gap-4
                                 "
                               >
 
-                                {/* Actual matched product */}
+                                {/* PRODUCT DETAILS */}
 
-                                <p
+                                <div
                                   className="
-                                    text-sm
-                                    font-semibold
-                                    text-[#0B2E1E]
+                                    flex-1
+                                    min-w-0
                                   "
                                 >
-                                  {
-                                    product.productName ||
-                                    requestedItem.item_name ||
-                                    "Product"
-                                  }
-                                </p>
+
+                                  <p
+                                    className="
+                                      text-sm
+                                      font-semibold
+                                      text-[#0B2E1E]
+                                    "
+                                  >
+                                    {
+                                      itemData
+                                        .productName
+                                    }
+                                  </p>
 
 
-                                {/* Original request */}
-
-                                {product.productName &&
-                                  requestedItem.item_name &&
-                                  product.productName !==
-                                    requestedItem.item_name && (
+                                  {itemData.requestedName &&
+                                    itemData
+                                      .productName !==
+                                      itemData
+                                        .requestedName && (
 
                                     <p
                                       className="
@@ -859,164 +1301,379 @@ const totalSavings = combinationSavings + promotionalSavings || 0;
                                       "
                                     >
                                       For:{" "}
-
                                       {
-                                        requestedItem
-                                          .item_name
+                                        itemData
+                                          .requestedName
                                       }
                                     </p>
 
                                   )}
 
 
-                                <p
-                                  className="
-                                    text-xs
-                                    text-gray-500
-                                    mt-1
-                                  "
-                                >
-                                  {
-                                    item.quantity ||
-                                    1
-                                  }
-
-                                  {" × R"}
-
-                                  {formatMoney(
-                                    item.unitPrice
-                                  )}
-                                </p>
-
-
-                                {/* PROMOTION */}
-
-                                {Number(
-                                  item.promotionalSavings ||
-                                  0
-                                ) >
-                                  0 && (
-
-                                  <span
-                                    className="
-                                      inline-flex
-                                      mt-2
-                                      bg-[#E9FFF4]
-                                      text-[#168B55]
-                                      text-xs
-                                      font-semibold
-                                      rounded-full
-                                      px-2.5
-                                      py-1
-                                    "
-                                  >
-                                    Save R
-                                    {formatMoney(
-                                      item.promotionalSavings
-                                    )}
-                                  </span>
-
-                                )}
-
-                              </div>
-
-
-                              <div
-                                className="
-                                  text-right
-                                  flex-shrink-0
-                                "
-                              >
-
-                                <p
-                                  className="
-                                    font-bold
-                                    text-[#0B2E1E]
-                                  "
-                                >
-                                  R
-                                  {formatMoney(
-                                    item.lineTotal
-                                  )}
-                                </p>
-
-
-                                {item.priceSource && (
+                                  {/* NORMAL PRICE / QUANTITY */}
 
                                   <p
                                     className="
-                                      text-[10px]
-                                      uppercase
-                                      tracking-wide
-                                      text-gray-400
+                                      text-xs
+                                      text-gray-500
                                       mt-1
                                     "
                                   >
-                                    {
-                                      item.priceSource
-                                    } price
+                                    {itemData.quantity}
+
+                                    {" × R"}
+
+                                    {formatMoney(
+                                      itemData
+                                        .unitPrice
+                                    )}
                                   </p>
 
-                                )}
+
+                                  {/* ========================= */}
+                                  {/* LOYALTY MULTIBUY */}
+                                  {/* ========================= */}
+
+                                  {itemData
+                                    .loyaltyApplied &&
+                                    itemData
+                                      .promotionMechanic ===
+                                      "MULTIBUY" && (
+
+                                    <div
+                                      className="
+                                        mt-2
+                                        flex
+                                        flex-wrap
+                                        items-center
+                                        gap-2
+                                      "
+                                    >
+
+                                      <LoyaltyBadge
+                                        retailer={
+                                          store.retailer
+                                        }
+                                      >
+                                        {
+                                          loyalty.name
+                                        }
+                                        :{" "}
+
+                                        {itemData
+                                          .promotionMessage ||
+                                          `${itemData.promotionQuantity} for R${formatMoney(
+                                            itemData
+                                              .promotionBundlePrice
+                                          )}`}
+                                      </LoyaltyBadge>
+
+
+                                      {hasLoyaltySaving && (
+
+                                        <LoyaltyBadge
+                                          retailer={
+                                            store.retailer
+                                          }
+                                          strong
+                                        >
+                                          Save R
+                                          {formatMoney(
+                                            itemData
+                                              .loyaltySavings
+                                          )}
+                                        </LoyaltyBadge>
+
+                                      )}
+
+                                    </div>
+
+                                  )}
+
+
+                                  {/* ========================= */}
+                                  {/* LOYALTY FIXED PRICE */}
+                                  {/* ========================= */}
+
+                                  {itemData
+                                    .loyaltyApplied &&
+                                    itemData
+                                      .promotionMechanic ===
+                                      "FIXED_PRICE" && (
+
+                                    <div
+                                      className="
+                                        mt-2
+                                        flex
+                                        flex-wrap
+                                        items-center
+                                        gap-2
+                                      "
+                                    >
+
+                                      <LoyaltyBadge
+                                        retailer={
+                                          store.retailer
+                                        }
+                                      >
+                                        {
+                                          loyalty.name
+                                        }{" "}
+
+                                        R
+                                        {formatMoney(
+                                          itemData
+                                            .loyaltyPrice ??
+                                          itemData
+                                            .unitPrice
+                                        )}
+                                      </LoyaltyBadge>
+
+
+                                      {hasLoyaltySaving && (
+
+                                        <LoyaltyBadge
+                                          retailer={
+                                            store.retailer
+                                          }
+                                          strong
+                                        >
+                                          Save R
+                                          {formatMoney(
+                                            itemData
+                                              .loyaltySavings
+                                          )}
+                                        </LoyaltyBadge>
+
+                                      )}
+
+                                    </div>
+
+                                  )}
+
+
+                                  {/* ========================= */}
+                                  {/* UNKNOWN LOYALTY MECHANIC */}
+                                  {/* ========================= */}
+
+                                  {itemData
+                                    .loyaltyApplied &&
+                                    ![
+                                      "MULTIBUY",
+                                      "FIXED_PRICE",
+                                    ].includes(
+                                      itemData
+                                        .promotionMechanic
+                                    ) && (
+
+                                    <div
+                                      className="
+                                        mt-2
+                                        flex
+                                        flex-wrap
+                                        items-center
+                                        gap-2
+                                      "
+                                    >
+
+                                      <LoyaltyBadge
+                                        retailer={
+                                          store.retailer
+                                        }
+                                      >
+                                        {
+                                          loyalty.name
+                                        }
+                                        {itemData
+                                          .promotionMessage
+                                          ? `: ${itemData.promotionMessage}`
+                                          : ""}
+                                      </LoyaltyBadge>
+
+
+                                      {hasLoyaltySaving && (
+
+                                        <LoyaltyBadge
+                                          retailer={
+                                            store.retailer
+                                          }
+                                          strong
+                                        >
+                                          Save R
+                                          {formatMoney(
+                                            itemData
+                                              .loyaltySavings
+                                          )}
+                                        </LoyaltyBadge>
+
+                                      )}
+
+                                    </div>
+
+                                  )}
+
+
+                                  {/* ========================= */}
+                                  {/* STANDARD PROMOTION */}
+                                  {/* ========================= */}
+
+                                  {!itemData
+                                    .loyaltyApplied &&
+                                    itemData
+                                      .promotionalSavings >
+                                      0 && (
+
+                                    <span
+                                      className="
+                                        inline-flex
+                                        items-center
+                                        mt-2
+                                        bg-[#E9FFF4]
+                                        text-[#168B55]
+                                        text-xs
+                                        font-semibold
+                                        rounded-full
+                                        px-2.5
+                                        py-1
+                                      "
+                                    >
+                                      Save R
+                                      {formatMoney(
+                                        itemData
+                                          .promotionalSavings
+                                      )}
+                                    </span>
+
+                                  )}
+
+                                </div>
+
+
+                                {/* LINE TOTAL */}
+
+                                <div
+                                  className="
+                                    text-right
+                                    flex-shrink-0
+                                  "
+                                >
+
+                                  <p
+                                    className="
+                                      font-bold
+                                      text-[#0B2E1E]
+                                    "
+                                  >
+                                    R{formatMoney(
+                                      itemData
+                                        .lineTotal
+                                    )}
+                                  </p>
+
+
+                                  {itemData
+                                    .loyaltyApplied ? (
+
+                                    <p
+                                      className="
+                                        text-[10px]
+                                        font-bold
+                                        uppercase
+                                        tracking-wide
+                                        mt-1
+                                      "
+                                      style={{
+                                        color:
+                                          loyalty.color,
+                                      }}
+                                    >
+                                      {
+                                        loyalty.name
+                                      }{" "}
+                                      price
+                                    </p>
+
+                                  ) : (
+
+                                    item.priceSource && (
+
+                                      <p
+                                        className="
+                                          text-[10px]
+                                          uppercase
+                                          tracking-wide
+                                          text-gray-400
+                                          mt-1
+                                        "
+                                      >
+                                        {
+                                          item.priceSource
+                                        }{" "}
+                                        price
+                                      </p>
+
+                                    )
+
+                                  )}
+
+                                </div>
 
                               </div>
 
+
+                              {/* ========================= */}
+                              {/* MULTIBUY EXPLANATION */}
+                              {/* ========================= */}
+
+                              {itemData
+                                .loyaltyApplied &&
+                                itemData
+                                  .promotionMechanic ===
+                                  "MULTIBUY" &&
+                                itemData
+                                  .qualifyingBundles >
+                                  0 && (
+
+                                <p
+                                  className="
+                                    text-xs
+                                    text-gray-400
+                                    mt-2
+                                  "
+                                >
+
+                                  {itemData
+                                    .qualifyingBundles}{" "}
+
+                                  {itemData
+                                    .qualifyingBundles ===
+                                    1
+                                    ? "qualifying bundle"
+                                    : "qualifying bundles"}
+
+                                  {itemData
+                                    .remainingQuantity >
+                                    0
+                                    ? ` + ${itemData.remainingQuantity} at normal price`
+                                    : ""}
+
+                                </p>
+
+                              )}
+
                             </div>
+
                           );
+
                         }
                       )}
 
                     </div>
 
-
-                    {/* STORE SAVINGS */}
-
-                    {Number(
-                      store.promotionalSavings ||
-                      0
-                    ) >
-                      0 && (
-
-                      <div
-                        className="
-                          bg-[#F4FFF9]
-                          px-5
-                          py-3
-                          flex
-                          items-center
-                          justify-between
-                        "
-                      >
-
-                        <span
-                          className="
-                            text-xs
-                            text-gray-600
-                          "
-                        >
-                          Promotional savings
-                        </span>
-
-
-                        <span
-                          className="
-                            text-sm
-                            font-bold
-                            text-[#1EC677]
-                          "
-                        >
-                          R
-                          {formatMoney(
-                            store.promotionalSavings
-                          )}
-                        </span>
-
-                      </div>
-
-                    )}
-
                   </div>
+
                 );
+
               }
             )}
 
@@ -1041,7 +1698,8 @@ const totalSavings = combinationSavings + promotionalSavings || 0;
                 text-gray-500
               "
             >
-              No store allocations were returned.
+              No store allocations were
+              returned.
             </p>
 
           </div>
@@ -1049,29 +1707,44 @@ const totalSavings = combinationSavings + promotionalSavings || 0;
         )}
 
       </section>
-<button
-  onClick={() =>
-    onSelectPlan("best")
-  }
-  disabled={savingPlan}
-  className="
-    mt-5
-    w-full
-    bg-[#1EC677]
-    text-[#0B2E1E]
-    font-bold
-    py-3.5
-    px-5
-    rounded-2xl
-    hover:opacity-90
-    transition
-    disabled:opacity-50
-  "
->
-  {savingPlan
-    ? "Updating your list..."
-    : "Use Best Option"}
-</button>
+
+
+      {/* ================================= */}
+      {/* USE BEST OPTION */}
+      {/* ================================= */}
+
+      <button
+        type="button"
+        onClick={() =>
+          onSelectPlan(
+            total,
+            grossaryPlusSavings
+          )
+        }
+        disabled={savingPlan}
+        className="
+          mt-5
+          w-full
+          bg-[#1EC677]
+          text-[#0B2E1E]
+          font-bold
+          py-3.5
+          px-5
+          rounded-2xl
+          hover:opacity-90
+          active:scale-[0.99]
+          transition
+          disabled:opacity-50
+          disabled:cursor-not-allowed
+        "
+      >
+
+        {savingPlan
+          ? "Updating your list..."
+          : "Use Best Option"}
+
+      </button>
+
 
       {/* ================================= */}
       {/* SINGLE STORE OPTION */}
@@ -1119,7 +1792,6 @@ const totalSavings = combinationSavings + promotionalSavings || 0;
                 "
               >
                 Shop at only{" "}
-
                 {
                   cheapestSingleStore
                     .retailer
@@ -1134,7 +1806,8 @@ const totalSavings = combinationSavings + promotionalSavings || 0;
                   mt-1
                 "
               >
-                Complete the entire basket at one store.
+                Complete the entire basket
+                at one store.
               </p>
 
             </div>
@@ -1147,41 +1820,51 @@ const totalSavings = combinationSavings + promotionalSavings || 0;
                 whitespace-nowrap
               "
             >
-              R
-              {formatMoney(
-                cheapestSingleStore.total
+              R{formatMoney(
+                cheapestSingleStore
+                  .total
               )}
             </p>
 
           </div>
 
 
-          {combinationSavings >
-            0 && (
+          {splitSavings > 0 && (
 
-            <p
+            <div
               className="
-                text-xs
-                text-gray-500
-                mt-3
+                mt-4
+                pt-4
+                border-t
+                border-gray-200
               "
             >
-              Grossary`s recommended split saves you{" "}
 
-              <span
+              <p
                 className="
-                  font-bold
-                  text-[#1EC677]
+                  text-xs
+                  text-gray-500
                 "
               >
-                R
-                {formatMoney(
-                  combinationSavings
-                )}
-              </span>
+                Grossary&apos;s recommended
+                split saves you{" "}
 
-              .
-            </p>
+                <span
+                  className="
+                    font-bold
+                    text-[#1EC677]
+                  "
+                >
+                  R{formatMoney(
+                    splitSavings
+                  )}
+                </span>
+
+                {" "}compared with shopping
+                at one store.
+              </p>
+
+            </div>
 
           )}
 
@@ -1189,36 +1872,65 @@ const totalSavings = combinationSavings + promotionalSavings || 0;
 
       )}
 
-<button
-  onClick={() =>
-    onSelectPlan("convenience")
-  }
-  disabled={savingPlan}
-  className="
-    mt-4
-    w-full
-    bg-white
-    border
-    border-[#0B2E1E]
-    text-[#0B2E1E]
-    font-bold
-    py-3.5
-    px-5
-    rounded-2xl
-    hover:bg-gray-50
-    transition
-    disabled:opacity-50
-  "
->
-  Use Convenience Option
-</button>
+
+      {cheapestSingleStore && (
+
+        <button
+          type="button"
+          onClick={() =>
+            onSelectPlan(
+              Number(
+                cheapestSingleStore
+                  ?.total ||
+                0
+              ),
+
+              Number(
+                cheapestSingleStore
+                  ?.promotionalSavings ||
+                0
+              ) +
+
+              Number(
+                cheapestSingleStore
+                  ?.loyaltySavings ||
+                0
+              )
+            )
+          }
+          disabled={savingPlan}
+          className="
+            mt-4
+            w-full
+            bg-white
+            border
+            border-[#0B2E1E]
+            text-[#0B2E1E]
+            font-bold
+            py-3.5
+            px-5
+            rounded-2xl
+            hover:bg-gray-50
+            active:scale-[0.99]
+            transition
+            disabled:opacity-50
+            disabled:cursor-not-allowed
+          "
+        >
+          {savingPlan
+            ? "Updating your list..."
+            : "Use Convenience Option"}
+        </button>
+
+      )}
+
+
       {/* ================================= */}
       {/* UNMATCHED ITEMS */}
       {/* ================================= */}
 
       {!complete &&
-        unmatchedItems.length >
-          0 && (
+        unmatchedItems.length > 0 && (
 
         <section
           className="
@@ -1230,45 +1942,69 @@ const totalSavings = combinationSavings + promotionalSavings || 0;
           "
         >
 
-          <p
+          <div
             className="
-              font-bold
-              text-[#0B2E1E]
+              flex
+              items-start
+              gap-3
             "
           >
-            Some items couldn`t be compared
-          </p>
+
+            <div
+              className="
+                w-9
+                h-9
+                rounded-xl
+                bg-orange-100
+                flex
+                items-center
+                justify-center
+                flex-shrink-0
+              "
+            >
+              !
+            </div>
 
 
-          <p
-            className="
-              text-sm
-              text-gray-600
-              mt-1
-            "
-          >
-            We couldn`t confidently find prices for{" "}
+            <div>
 
-            {
-              unmatchedItems.length
-            }
+              <p
+                className="
+                  font-bold
+                  text-[#0B2E1E]
+                "
+              >
+                Some items couldn&apos;t be
+                compared
+              </p>
 
-            {" "}
-            {
-              unmatchedItems.length ===
-              1
-                ? "item"
-                : "items"
-            }
 
-            .
-          </p>
+              <p
+                className="
+                  text-sm
+                  text-gray-600
+                  mt-1
+                "
+              >
+                We couldn&apos;t confidently
+                find prices for{" "}
+                {unmatchedItems.length}{" "}
+                {unmatchedItems.length === 1
+                  ? "item"
+                  : "items"}
+                .
+              </p>
+
+            </div>
+
+          </div>
 
         </section>
 
       )}
 
     </div>
+
   );
 }
 

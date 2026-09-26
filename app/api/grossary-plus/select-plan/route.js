@@ -13,23 +13,57 @@ export async function POST(
 
   try {
 
+    // =====================================
+    // REQUEST BODY
+    // =====================================
+
     const {
       listId,
-      plan,
+      basketTotal,
+      savings,
       result,
     } =
       await request.json();
 
 
+    if (!listId) {
+
+      return NextResponse.json(
+        {
+          error:
+            "listId is required.",
+        },
+        {
+          status:
+            400,
+        }
+      );
+    }
+
+
+    const selectedBasketTotal =
+      Number(
+        basketTotal
+      );
+
+
+    const selectedSavings =
+      Number(
+        savings
+      );
+
+
     if (
-      !listId ||
-      !plan
+      !Number.isFinite(
+        selectedBasketTotal
+      ) ||
+      selectedBasketTotal < 0
     ) {
 
       return NextResponse.json(
         {
           error:
-            "listId and plan are required.",
+            "A valid basketTotal is required.",
         },
         {
           status:
@@ -40,18 +74,16 @@ export async function POST(
 
 
     if (
-      ![
-        "best",
-        "convenience",
-      ].includes(
-        plan
-      )
+      !Number.isFinite(
+        selectedSavings
+      ) ||
+      selectedSavings < 0
     ) {
 
       return NextResponse.json(
         {
           error:
-            "Invalid Grossary Plus plan.",
+            "A valid savings amount is required.",
         },
         {
           status:
@@ -90,6 +122,151 @@ export async function POST(
 
 
     // =====================================
+    // DETERMINE SELECTED OPTION
+    // =====================================
+
+    /*
+     * The frontend no longer sends:
+     *
+     * "best"
+     * or
+     * "convenience"
+     *
+     * grossary_plus_plan now stores the
+     * actual selected basket total.
+     *
+     * We therefore determine which option
+     * was selected by comparing basketTotal
+     * against the available options.
+     */
+
+
+    const optimized =
+      optimization
+        ?.optimized;
+
+
+    const cheapestSingleStore =
+      optimization
+        ?.singleStoreOptions
+        ?.cheapest;
+
+
+    const optimizedTotal =
+      Number(
+        optimized?.total
+      );
+
+
+    const singleStoreTotal =
+      Number(
+        cheapestSingleStore
+          ?.total
+      );
+
+
+    /*
+     * Small tolerance protects us from
+     * floating-point differences such as:
+     *
+     * 99.989999999
+     * vs
+     * 99.99
+     */
+
+    const totalsMatch = (
+      first,
+      second
+    ) => {
+
+      if (
+        !Number.isFinite(
+          first
+        ) ||
+        !Number.isFinite(
+          second
+        )
+      ) {
+
+        return false;
+      }
+
+
+      return (
+        Math.abs(
+          first -
+          second
+        ) < 0.01
+      );
+    };
+
+
+    const selectedBestPlan =
+      totalsMatch(
+        selectedBasketTotal,
+        optimizedTotal
+      );
+
+
+    const selectedConveniencePlan =
+      totalsMatch(
+        selectedBasketTotal,
+        singleStoreTotal
+      );
+
+
+    /*
+     * If both totals happen to be exactly
+     * the same, prefer the optimized plan.
+     */
+
+    let selectedPlan =
+      null;
+
+
+    if (
+      selectedBestPlan
+    ) {
+
+      selectedPlan =
+        "best";
+
+    } else if (
+      selectedConveniencePlan
+    ) {
+
+      selectedPlan =
+        "convenience";
+
+    }
+
+
+    if (!selectedPlan) {
+
+      console.error(
+        "Unable to identify selected Grossary+ option:",
+        {
+          selectedBasketTotal,
+          optimizedTotal,
+          singleStoreTotal,
+        }
+      );
+
+
+      return NextResponse.json(
+        {
+          error:
+            "The selected shopping plan could not be identified.",
+        },
+        {
+          status:
+            400,
+        }
+      );
+    }
+
+
+    // =====================================
     // BUILD ITEM RECOMMENDATIONS
     // =====================================
 
@@ -98,7 +275,7 @@ export async function POST(
 
 
     if (
-      plan ===
+      selectedPlan ===
       "best"
     ) {
 
@@ -168,7 +345,9 @@ export async function POST(
     } else {
 
       /*
+       * ===================================
        * CONVENIENCE PLAN
+       * ===================================
        */
 
       const cheapest =
@@ -326,7 +505,32 @@ export async function POST(
     // SAVE SELECTED PLAN
     // =====================================
 
+    /*
+     * IMPORTANT:
+     *
+     * Previously:
+     *
+     * grossary_plus_plan = "best"
+     *
+     * or
+     *
+     * grossary_plus_plan = "convenience"
+     *
+     *
+     * Now:
+     *
+     * grossary_plus_plan =
+     * actual basket amount
+     *
+     * grossary_plus_savings =
+     * actual selected savings
+     */
+
+
     const {
+      data:
+        updatedList,
+
       error:
         listError,
     } =
@@ -335,13 +539,32 @@ export async function POST(
           "user_lists"
         )
         .update({
+
           grossary_plus_plan:
-            plan,
+            Number(
+              selectedBasketTotal
+                .toFixed(2)
+            ),
+
+          grossary_plus_savings:
+            Number(
+              selectedSavings
+                .toFixed(2)
+            ),
+
         })
         .eq(
           "id",
           listId
-        );
+        )
+        .select(
+          `
+            id,
+            grossary_plus_plan,
+            grossary_plus_savings
+          `
+        )
+        .single();
 
 
     if (listError) {
@@ -350,17 +573,71 @@ export async function POST(
     }
 
 
+    // =====================================
+    // SUCCESS
+    // =====================================
+
+    console.log(
+      "Grossary Plus plan saved:",
+      {
+
+        listId,
+
+        selectedPlan,
+
+        basketTotal:
+          selectedBasketTotal,
+
+        savings:
+          selectedSavings,
+
+        recommendations:
+          recommendations.length,
+
+      }
+    );
+
+
     return NextResponse.json({
 
       success:
         true,
 
-      plan,
+
+      /*
+       * Useful internally/debugging.
+       *
+       * We aren't storing this string in
+       * user_lists anymore.
+       */
+
+      selectedPlan,
+
+
+      basketTotal:
+        Number(
+          selectedBasketTotal
+            .toFixed(2)
+        ),
+
+
+      savings:
+        Number(
+          selectedSavings
+            .toFixed(2)
+        ),
+
 
       recommendations,
 
+
       updatedCount:
         recommendations.length,
+
+
+      list:
+        updatedList,
+
     });
 
 

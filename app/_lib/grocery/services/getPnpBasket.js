@@ -4,17 +4,20 @@ const {
   "../providers/pnp"
 );
 
+
 const {
   normalizePnpProducts,
 } = require(
   "../normalizers/pnp"
 );
 
+
 const {
   matchProduct,
 } = require(
   "../matchProduct"
 );
+
 
 const {
   getFreshCachedProducts,
@@ -72,6 +75,720 @@ function extractPnpProducts(
 
 /*
  * ------------------------------------------------
+ * Quantity
+ * ------------------------------------------------
+ */
+
+function getQuantity(
+  item
+) {
+
+  const quantity =
+    Number(
+      item?.item_quantity
+    );
+
+
+  return (
+    Number.isFinite(
+      quantity
+    ) &&
+    quantity > 0
+  )
+    ? quantity
+    : 1;
+}
+
+
+/*
+ * ------------------------------------------------
+ * Check promotion dates
+ * ------------------------------------------------
+ *
+ * If the provider supplied promotion dates,
+ * make sure the promotion is active before
+ * applying loyalty pricing.
+ *
+ * If no dates are available, we rely on the
+ * normalized promotion state.
+ * ------------------------------------------------
+ */
+
+function isPromotionActive(
+  product,
+  now = new Date()
+) {
+
+  if (
+    !product?.isPromotion
+  ) {
+
+    return false;
+
+  }
+
+
+  if (
+    product.promotionStartsAt
+  ) {
+
+    const start =
+      new Date(
+        product.promotionStartsAt
+      );
+
+
+    if (
+      !Number.isNaN(
+        start.getTime()
+      ) &&
+      start.getTime() >
+        now.getTime()
+    ) {
+
+      return false;
+
+    }
+
+  }
+
+
+  if (
+    product.promotionEndsAt
+  ) {
+
+    const end =
+      new Date(
+        product.promotionEndsAt
+      );
+
+
+    if (
+      !Number.isNaN(
+        end.getTime()
+      ) &&
+      end.getTime() <=
+        now.getTime()
+    ) {
+
+      return false;
+
+    }
+
+  }
+
+
+  return true;
+}
+
+
+/*
+ * ------------------------------------------------
+ * Calculate PnP product pricing
+ * ------------------------------------------------
+ *
+ * This is quantity-aware.
+ *
+ *
+ * NORMAL PRICE
+ *
+ * R45.99 × 1
+ * = R45.99
+ *
+ *
+ * SMART SHOPPER FIXED PRICE
+ *
+ * Normal:
+ * R45.99
+ *
+ * Smart Shopper:
+ * R36.99
+ *
+ * Quantity 1:
+ * = R36.99
+ *
+ *
+ * SMART SHOPPER MULTIBUY
+ *
+ * Normal:
+ * R21.99 each
+ *
+ * Smart Shopper:
+ * 2 For R32
+ *
+ * Quantity 1:
+ * = R21.99
+ *
+ * Quantity 2:
+ * = R32.00
+ *
+ * Quantity 3:
+ * = R53.99
+ *
+ * Quantity 4:
+ * = R64.00
+ *
+ *
+ * IMPORTANT:
+ *
+ * Loyalty pricing is currently enabled by
+ * useLoyaltyPricing.
+ *
+ * Later this should be connected to the
+ * user's actual Grossary loyalty-card data.
+ * ------------------------------------------------
+ */
+
+function calculatePnpProductPricing(
+  product,
+  quantity,
+  {
+    useLoyaltyPricing = true,
+  } = {}
+) {
+
+  const normalUnitPrice =
+    Number(
+      product?.price
+    );
+
+
+  if (
+    !Number.isFinite(
+      normalUnitPrice
+    )
+  ) {
+
+    return null;
+
+  }
+
+
+  /*
+   * Normal customer-pay total.
+   */
+
+  const normalTotal =
+    Number(
+      (
+        normalUnitPrice *
+        quantity
+      ).toFixed(2)
+    );
+
+
+  /*
+   * Standard PnP promotion saving.
+   *
+   * This is NOT Smart Shopper.
+   */
+
+  const standardSavingPerUnit =
+    Number(
+      product
+        ?.promotionalSavings
+    ) || 0;
+
+
+  const standardPromotionSavings =
+    Number(
+      (
+        standardSavingPerUnit *
+        quantity
+      ).toFixed(2)
+    );
+
+
+  /*
+   * ------------------------------------------------
+   * Can we apply loyalty pricing?
+   * ------------------------------------------------
+   */
+
+  const canUseLoyalty =
+    useLoyaltyPricing === true &&
+    product
+      ?.requiresLoyaltyCard ===
+      true &&
+    isPromotionActive(
+      product
+    );
+
+
+  /*
+   * No usable loyalty promotion.
+   */
+
+  if (
+    !canUseLoyalty
+  ) {
+
+    return {
+
+      unitPrice:
+        normalUnitPrice,
+
+      lineTotal:
+        normalTotal,
+
+      normalUnitPrice,
+
+      normalTotal,
+
+      promotionalSavings:
+        standardPromotionSavings,
+
+      loyaltySavings:
+        0,
+
+      loyaltyApplied:
+        false,
+
+      promotionType:
+        product
+          ?.promotionType ||
+        null,
+
+      promotionMechanic:
+        product
+          ?.promotionMechanic ||
+        null,
+
+      promotionQuantity:
+        product
+          ?.promotionQuantity ??
+        null,
+
+      promotionBundlePrice:
+        product
+          ?.promotionBundlePrice ??
+        null,
+
+      qualifyingBundles:
+        0,
+
+      remainingQuantity:
+        quantity,
+
+    };
+
+  }
+
+
+  /*
+   * ------------------------------------------------
+   * FIXED PRICE
+   * ------------------------------------------------
+   *
+   * Example:
+   *
+   * Oros
+   *
+   * Normal:
+   * R45.99
+   *
+   * Smart Shopper:
+   * R36.99
+   * ------------------------------------------------
+   */
+
+  if (
+    product
+      ?.promotionMechanic ===
+      "FIXED_PRICE"
+  ) {
+
+    const loyaltyPrice =
+      Number(
+        product.loyaltyPrice
+      );
+
+
+    if (
+      Number.isFinite(
+        loyaltyPrice
+      ) &&
+      loyaltyPrice >= 0 &&
+      loyaltyPrice <
+        normalUnitPrice
+    ) {
+
+      const lineTotal =
+        Number(
+          (
+            loyaltyPrice *
+            quantity
+          ).toFixed(2)
+        );
+
+
+      const loyaltySavings =
+        Number(
+          (
+            normalTotal -
+            lineTotal
+          ).toFixed(2)
+        );
+
+
+      return {
+
+        /*
+         * For FIXED_PRICE this is the
+         * actual customer-pay unit price.
+         */
+
+        unitPrice:
+          loyaltyPrice,
+
+        lineTotal,
+
+        normalUnitPrice,
+
+        normalTotal,
+
+        /*
+         * Keep standard and loyalty
+         * savings separate.
+         */
+
+        promotionalSavings:
+          0,
+
+        loyaltySavings,
+
+        loyaltyApplied:
+          true,
+
+        promotionType:
+          product
+            ?.promotionType ||
+          "SMART_SHOPPER",
+
+        promotionMechanic:
+          "FIXED_PRICE",
+
+        promotionQuantity:
+          product
+            ?.promotionQuantity ??
+          1,
+
+        promotionBundlePrice:
+          product
+            ?.promotionBundlePrice ??
+          loyaltyPrice,
+
+        qualifyingBundles:
+          quantity,
+
+        remainingQuantity:
+          0,
+
+      };
+
+    }
+
+  }
+
+
+  /*
+   * ------------------------------------------------
+   * MULTIBUY
+   * ------------------------------------------------
+   *
+   * Example:
+   *
+   * Coke
+   *
+   * Normal:
+   * R21.99 each
+   *
+   * Smart Shopper:
+   * 2 For R32
+   * ------------------------------------------------
+   */
+
+  if (
+    product
+      ?.promotionMechanic ===
+      "MULTIBUY"
+  ) {
+
+    const promotionQuantity =
+      Number(
+        product
+          .promotionQuantity
+      );
+
+
+    const promotionBundlePrice =
+      Number(
+        product
+          .promotionBundlePrice
+      );
+
+
+    if (
+      Number.isFinite(
+        promotionQuantity
+      ) &&
+      promotionQuantity > 0 &&
+      Number.isFinite(
+        promotionBundlePrice
+      ) &&
+      promotionBundlePrice >= 0
+    ) {
+
+      /*
+       * Number of complete promotion bundles.
+       */
+
+      const qualifyingBundles =
+        Math.floor(
+          quantity /
+          promotionQuantity
+        );
+
+
+      /*
+       * Products left after complete bundles.
+       */
+
+      const remainingQuantity =
+        quantity %
+        promotionQuantity;
+
+
+      /*
+       * User doesn't qualify yet.
+       *
+       * Example:
+       *
+       * promotion = 2 For R32
+       * quantity = 1
+       *
+       * They pay normal price.
+       */
+
+      if (
+        qualifyingBundles === 0
+      ) {
+
+        return {
+
+          unitPrice:
+            normalUnitPrice,
+
+          lineTotal:
+            normalTotal,
+
+          normalUnitPrice,
+
+          normalTotal,
+
+          promotionalSavings:
+            0,
+
+          loyaltySavings:
+            0,
+
+          loyaltyApplied:
+            false,
+
+          promotionType:
+            product
+              ?.promotionType ||
+            "SMART_SHOPPER",
+
+          promotionMechanic:
+            "MULTIBUY",
+
+          promotionQuantity,
+
+          promotionBundlePrice,
+
+          qualifyingBundles:
+            0,
+
+          remainingQuantity:
+            quantity,
+
+        };
+
+      }
+
+
+      /*
+       * Complete bundles.
+       */
+
+      const bundlesTotal =
+        qualifyingBundles *
+        promotionBundlePrice;
+
+
+      /*
+       * Any remaining items are bought
+       * at the normal unit price.
+       */
+
+      const remainingTotal =
+        remainingQuantity *
+        normalUnitPrice;
+
+
+      const lineTotal =
+        Number(
+          (
+            bundlesTotal +
+            remainingTotal
+          ).toFixed(2)
+        );
+
+
+      /*
+       * Actual saving achieved for this
+       * requested quantity.
+       */
+
+      const loyaltySavings =
+        Math.max(
+          0,
+          Number(
+            (
+              normalTotal -
+              lineTotal
+            ).toFixed(2)
+          )
+        );
+
+
+      /*
+       * Effective average unit price.
+       *
+       * IMPORTANT:
+       *
+       * This is only useful for display.
+       *
+       * lineTotal is the authoritative
+       * customer-pay amount.
+       */
+
+      const effectiveUnitPrice =
+        Number(
+          (
+            lineTotal /
+            quantity
+          ).toFixed(2)
+        );
+
+
+      return {
+
+        unitPrice:
+          effectiveUnitPrice,
+
+        lineTotal,
+
+        normalUnitPrice,
+
+        normalTotal,
+
+        promotionalSavings:
+          0,
+
+        loyaltySavings,
+
+        loyaltyApplied:
+          true,
+
+        promotionType:
+          product
+            ?.promotionType ||
+          "SMART_SHOPPER",
+
+        promotionMechanic:
+          "MULTIBUY",
+
+        promotionQuantity,
+
+        promotionBundlePrice,
+
+        qualifyingBundles,
+
+        remainingQuantity,
+
+      };
+
+    }
+
+  }
+
+
+  /*
+   * ------------------------------------------------
+   * UNKNOWN loyalty promotion
+   * ------------------------------------------------
+   *
+   * Never guess promotion maths.
+   *
+   * Use normal customer-pay price.
+   * ------------------------------------------------
+   */
+
+  return {
+
+    unitPrice:
+      normalUnitPrice,
+
+    lineTotal:
+      normalTotal,
+
+    normalUnitPrice,
+
+    normalTotal,
+
+    promotionalSavings:
+      standardPromotionSavings,
+
+    loyaltySavings:
+      0,
+
+    loyaltyApplied:
+      false,
+
+    promotionType:
+      product
+        ?.promotionType ||
+      null,
+
+    promotionMechanic:
+      product
+        ?.promotionMechanic ||
+      null,
+
+    promotionQuantity:
+      product
+        ?.promotionQuantity ??
+      null,
+
+    promotionBundlePrice:
+      product
+        ?.promotionBundlePrice ??
+      null,
+
+    qualifyingBundles:
+      0,
+
+    remainingQuantity:
+      quantity,
+
+  };
+}
+
+
+/*
+ * ------------------------------------------------
  * Build unmatched basket result
  * ------------------------------------------------
  */
@@ -113,17 +830,47 @@ function buildUnmatchedResult({
       [],
 
     quantity:
-      Number(
-        item.item_quantity
-      ) || 1,
+      getQuantity(
+        item
+      ),
 
     unitPrice:
+      null,
+
+    normalUnitPrice:
       null,
 
     lineTotal:
       null,
 
+    normalTotal:
+      null,
+
     promotionalSavings:
+      0,
+
+    loyaltySavings:
+      0,
+
+    loyaltyApplied:
+      false,
+
+    promotionType:
+      null,
+
+    promotionMechanic:
+      null,
+
+    promotionQuantity:
+      null,
+
+    promotionBundlePrice:
+      null,
+
+    qualifyingBundles:
+      0,
+
+    remainingQuantity:
       0,
 
     priceSource,
@@ -131,6 +878,7 @@ function buildUnmatchedResult({
     candidates:
       matchResult?.candidates ||
       [],
+
   };
 }
 
@@ -147,6 +895,7 @@ function buildMatchedResult({
   searchQuery,
   matchResult,
   priceSource,
+  useLoyaltyPricing = true,
 }) {
 
   const product =
@@ -154,14 +903,23 @@ function buildMatchedResult({
 
 
   const quantity =
-    Number(
-      item.item_quantity
-    ) || 1;
+    getQuantity(
+      item
+    );
 
 
-  const unitPrice =
-    Number(
-      product.price
+  /*
+   * Calculate the actual customer-pay
+   * amount for this quantity.
+   */
+
+  const pricing =
+    calculatePnpProductPricing(
+      product,
+      quantity,
+      {
+        useLoyaltyPricing,
+      }
     );
 
 
@@ -172,9 +930,7 @@ function buildMatchedResult({
    */
 
   if (
-    !Number.isFinite(
-      unitPrice
-    )
+    !pricing
   ) {
 
     return {
@@ -210,10 +966,40 @@ function buildMatchedResult({
       unitPrice:
         null,
 
+      normalUnitPrice:
+        null,
+
       lineTotal:
         null,
 
+      normalTotal:
+        null,
+
       promotionalSavings:
+        0,
+
+      loyaltySavings:
+        0,
+
+      loyaltyApplied:
+        false,
+
+      promotionType:
+        null,
+
+      promotionMechanic:
+        null,
+
+      promotionQuantity:
+        null,
+
+      promotionBundlePrice:
+        null,
+
+      qualifyingBundles:
+        0,
+
+      remainingQuantity:
         0,
 
       priceSource,
@@ -221,28 +1007,10 @@ function buildMatchedResult({
       candidates:
         matchResult.candidates ||
         [],
+
     };
+
   }
-
-
-  /*
-   * ------------------------------------------------
-   * Totals
-   * ------------------------------------------------
-   */
-
-  const lineTotal =
-    unitPrice *
-    quantity;
-
-
-  const promotionalSavings =
-    (
-      Number(
-        product.promotionalSavings
-      ) || 0
-    ) *
-    quantity;
 
 
   return {
@@ -260,6 +1028,23 @@ function buildMatchedResult({
 
     searchQuery,
 
+    /*
+     * Keep full normalized product.
+     *
+     * This includes:
+     *
+     * price
+     * loyaltyPrice
+     * loyaltySavings
+     * promotionType
+     * promotionMechanic
+     * promotionQuantity
+     * promotionBundlePrice
+     * promotionMessage
+     * promotionStartsAt
+     * promotionEndsAt
+     */
+
     product,
 
     score:
@@ -271,27 +1056,108 @@ function buildMatchedResult({
 
     quantity,
 
-    unitPrice,
-
-    lineTotal:
-      Number(
-        lineTotal.toFixed(2)
-      ),
-
-    promotionalSavings:
-      Number(
-        promotionalSavings.toFixed(2)
-      ),
 
     /*
-     * cache = today's Supabase value
+     * Actual/effective customer-pay
+     * unit price.
+     *
+     * For MULTIBUY this is the average
+     * effective price for display.
+     */
+
+    unitPrice:
+      pricing.unitPrice,
+
+
+    /*
+     * Normal PnP unit price.
+     */
+
+    normalUnitPrice:
+      pricing.normalUnitPrice,
+
+
+    /*
+     * AUTHORITATIVE amount the customer
+     * pays for this requested quantity.
+     */
+
+    lineTotal:
+      pricing.lineTotal,
+
+
+    /*
+     * What the quantity would cost at
+     * the normal PnP price.
+     */
+
+    normalTotal:
+      pricing.normalTotal,
+
+
+    /*
+     * Standard promotion saving.
+     */
+
+    promotionalSavings:
+      pricing
+        .promotionalSavings,
+
+
+    /*
+     * Smart Shopper saving.
+     */
+
+    loyaltySavings:
+      pricing
+        .loyaltySavings,
+
+    loyaltyApplied:
+      pricing
+        .loyaltyApplied,
+
+
+    /*
+     * Promotion metadata.
+     */
+
+    promotionType:
+      pricing
+        .promotionType,
+
+    promotionMechanic:
+      pricing
+        .promotionMechanic,
+
+    promotionQuantity:
+      pricing
+        .promotionQuantity,
+
+    promotionBundlePrice:
+      pricing
+        .promotionBundlePrice,
+
+    qualifyingBundles:
+      pricing
+        .qualifyingBundles,
+
+    remainingQuantity:
+      pricing
+        .remainingQuantity,
+
+
+    /*
+     * cache = Supabase cache value
      * api   = fresh Parse result
      */
+
     priceSource,
+
 
     candidates:
       matchResult.candidates ||
       [],
+
   };
 }
 
@@ -307,13 +1173,27 @@ async function getPnpBasketItem(
   {
     storeId,
     cachedProducts = [],
+
+    /*
+     * Temporary default for testing.
+     *
+     * Later this should come from the
+     * user's Grossary loyalty cards.
+     */
+
+    useLoyaltyPricing = true,
+
   } = {}
 ) {
 
-  if (!storeId) {
+  if (
+    !storeId
+  ) {
+
     throw new Error(
       "PnP storeId is required."
     );
+
   }
 
 
@@ -324,7 +1204,7 @@ async function getPnpBasketItem(
 
 
   // =====================================
-  // 1. TRY TODAY'S CACHE FIRST
+  // 1. TRY CACHE FIRST
   // =====================================
 
   const cacheMatch =
@@ -345,14 +1225,23 @@ async function getPnpBasketItem(
 
 
     return buildMatchedResult({
+
       item,
+
       storeId,
+
       searchQuery,
+
       matchResult:
         cacheMatch,
+
       priceSource:
         "cache",
+
+      useLoyaltyPricing,
+
     });
+
   }
 
 
@@ -403,18 +1292,17 @@ async function getPnpBasketItem(
 
   /*
    * Extra store safety.
-   *
-   * Use String() because provider IDs
-   * may not always arrive with the same
-   * primitive type.
    */
+
   const storeProducts =
     normalizedProducts.filter(
       product =>
         String(
           product.providerStoreId
         ) ===
-        String(storeId)
+        String(
+          storeId
+        )
     );
 
 
@@ -428,13 +1316,13 @@ async function getPnpBasketItem(
   // =====================================
 
   if (
-    storeProducts.length >
-    0
+    storeProducts.length > 0
   ) {
 
     try {
 
       await saveProductsToCache({
+
         retailer:
           "Pick n Pay",
 
@@ -442,6 +1330,7 @@ async function getPnpBasketItem(
 
         products:
           storeProducts,
+
       });
 
 
@@ -449,27 +1338,33 @@ async function getPnpBasketItem(
         `✓ Cached ${storeProducts.length} PnP products`
       );
 
-    } catch (cacheError) {
+    } catch (
+      cacheError
+    ) {
 
       /*
-       * A cache-write problem should not
-       * prevent Grossary from using the
-       * fresh retailer result.
+       * Cache-write problems should not
+       * stop Grossary from using fresh
+       * retailer results.
        */
+
       console.error(
         "PnP cache save failed:",
         cacheError.message
       );
+
     }
 
 
     /*
      * Reuse newly downloaded products
-     * for later items in this same basket.
+     * for later items in this basket.
      */
+
     cachedProducts.push(
       ...storeProducts
     );
+
   }
 
 
@@ -490,14 +1385,21 @@ async function getPnpBasketItem(
   ) {
 
     return buildUnmatchedResult({
+
       item,
+
       storeId,
+
       searchQuery,
+
       matchResult:
         apiMatch,
+
       priceSource:
         "api",
+
     });
+
   }
 
 
@@ -506,13 +1408,21 @@ async function getPnpBasketItem(
   // =====================================
 
   return buildMatchedResult({
+
     item,
+
     storeId,
+
     searchQuery,
+
     matchResult:
       apiMatch,
+
     priceSource:
       "api",
+
+    useLoyaltyPricing,
+
   });
 }
 
@@ -527,6 +1437,18 @@ async function getPnpBasket(
   items,
   {
     storeId,
+
+    /*
+     * Temporary testing default.
+     *
+     * Later:
+     *
+     * true only if the Grossary user
+     * has the relevant loyalty card.
+     */
+
+    useLoyaltyPricing = true,
+
   } = {}
 ) {
 
@@ -539,14 +1461,18 @@ async function getPnpBasket(
     throw new Error(
       "PnP basket items must be an array."
     );
+
   }
 
 
-  if (!storeId) {
+  if (
+    !storeId
+  ) {
 
     throw new Error(
       "PnP storeId is required."
     );
+
   }
 
 
@@ -555,7 +1481,7 @@ async function getPnpBasket(
 
 
   // =====================================
-  // LOAD TODAY'S CACHE ONCE
+  // LOAD CACHE ONCE
   // =====================================
 
   let cachedProducts =
@@ -566,42 +1492,81 @@ async function getPnpBasket(
 
     cachedProducts =
       await getFreshCachedProducts({
+
         retailer:
           "Pick n Pay",
 
         storeId,
+
       });
 
 
     console.log(
       `PnP ${storeId}: ${cachedProducts.length} fresh cached products`
     );
-console.log(
-  "PnP cached products:",
-  {
-    storeId,
-    count:
-      cachedProducts.length,
 
-    products:
-      cachedProducts.map(
-        product => ({
-          name:
-            product.productName,
 
-          brand:
-            product.brand,
+    /*
+     * Useful while testing promotion
+     * normalization.
+     */
 
-          price:
-            product.price,
+    console.log(
+      "PnP cached products:",
+      {
 
-          providerStoreId:
-            product.providerStoreId,
-        })
-      ),
-  }
-);
-  } catch (error) {
+        storeId,
+
+        count:
+          cachedProducts.length,
+
+        products:
+          cachedProducts.map(
+            product => ({
+
+              name:
+                product.productName,
+
+              brand:
+                product.brand,
+
+              price:
+                product.price,
+
+              loyaltyPrice:
+                product.loyaltyPrice,
+
+              promotionType:
+                product.promotionType,
+
+              promotionMechanic:
+                product
+                  .promotionMechanic,
+
+              promotionQuantity:
+                product
+                  .promotionQuantity,
+
+              promotionBundlePrice:
+                product
+                  .promotionBundlePrice,
+
+              promotionEndsAt:
+                product
+                  .promotionEndsAt,
+
+              providerStoreId:
+                product.providerStoreId,
+
+            })
+          ),
+
+      }
+    );
+
+  } catch (
+    error
+  ) {
 
     console.error(
       "PnP cache lookup failed:",
@@ -611,6 +1576,7 @@ console.log(
 
     cachedProducts =
       [];
+
   }
 
 
@@ -622,9 +1588,10 @@ console.log(
    * Sequential processing is deliberate.
    *
    * Products downloaded for one item can
-   * immediately become cache candidates
-   * for the following list item.
+   * immediately become candidates for the
+   * next list item.
    */
+
   for (
     const item
     of items
@@ -636,8 +1603,13 @@ console.log(
         await getPnpBasketItem(
           item,
           {
+
             storeId,
+
             cachedProducts,
+
+            useLoyaltyPricing,
+
           }
         );
 
@@ -646,7 +1618,9 @@ console.log(
         result
       );
 
-    } catch (error) {
+    } catch (
+      error
+    ) {
 
       console.error(
         `PnP search failed for "${buildPnpSearchQuery(
@@ -656,12 +1630,9 @@ console.log(
       );
 
 
-      /*
-       * One failed retailer request should
-       * not destroy the whole basket.
-       */
       results.push(
         buildUnmatchedResult({
+
           item,
 
           storeId,
@@ -677,9 +1648,12 @@ console.log(
           reasons: [
             `search failed: ${error.message}`,
           ],
+
         })
       );
+
     }
+
   }
 
 
@@ -701,6 +1675,10 @@ console.log(
     );
 
 
+  /*
+   * Actual customer-pay basket total.
+   */
+
   const total =
     matched.reduce(
       (
@@ -709,12 +1687,18 @@ console.log(
       ) =>
         sum +
         (
-          result.lineTotal ||
-          0
+          Number(
+            result.lineTotal
+          ) || 0
         ),
       0
     );
 
+
+  /*
+   * Standard retailer promotional
+   * savings.
+   */
 
   const promotionalSavings =
     matched.reduce(
@@ -724,8 +1708,33 @@ console.log(
       ) =>
         sum +
         (
-          result.promotionalSavings ||
-          0
+          Number(
+            result
+              .promotionalSavings
+          ) || 0
+        ),
+      0
+    );
+
+
+  /*
+   * Loyalty-card savings.
+   *
+   * Kept separate from standard
+   * promotional savings.
+   */
+
+  const loyaltySavings =
+    matched.reduce(
+      (
+        sum,
+        result
+      ) =>
+        sum +
+        (
+          Number(
+            result.loyaltySavings
+          ) || 0
         ),
       0
     );
@@ -773,15 +1782,38 @@ console.log(
 
     unmatched,
 
+    /*
+     * Actual basket total after applicable
+     * loyalty pricing.
+     */
+
     total:
       Number(
         total.toFixed(2)
       ),
 
+
+    /*
+     * Standard PnP promotional savings.
+     */
+
     promotionalSavings:
       Number(
-        promotionalSavings.toFixed(2)
+        promotionalSavings
+          .toFixed(2)
       ),
+
+
+    /*
+     * Smart Shopper savings.
+     */
+
+    loyaltySavings:
+      Number(
+        loyaltySavings
+          .toFixed(2)
+      ),
+
 
     itemCount:
       results.length,
@@ -806,14 +1838,29 @@ console.log(
       apiResults,
 
       failedResults,
+
     },
+
   };
 }
 
 
+/*
+ * ------------------------------------------------
+ * Exports
+ * ------------------------------------------------
+ */
+
 module.exports = {
+
   buildPnpSearchQuery,
+
   extractPnpProducts,
+
+  calculatePnpProductPricing,
+
   getPnpBasketItem,
+
   getPnpBasket,
+
 };
