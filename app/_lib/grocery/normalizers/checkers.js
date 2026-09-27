@@ -14,7 +14,6 @@ function toNumber(value) {
     : null;
 }
 
-
 /*
  * ------------------------------------------------
  * Price
@@ -22,21 +21,12 @@ function toNumber(value) {
  */
 
 function getPrice(product) {
-  /*
-   * Store-specific endpoint
-   */
-
   const directPrice =
     toNumber(product?.price);
 
   if (directPrice !== null) {
     return directPrice;
   }
-
-
-  /*
-   * Generic endpoint
-   */
 
   const cents =
     toNumber(
@@ -49,7 +39,6 @@ function getPrice(product) {
 
   return null;
 }
-
 
 /*
  * ------------------------------------------------
@@ -68,7 +57,6 @@ function getOldPrice(product) {
     return oldPrice;
   }
 
-
   const oldPriceCents =
     toNumber(
       product?.oldPriceWithoutDecimal
@@ -84,7 +72,6 @@ function getOldPrice(product) {
   return null;
 }
 
-
 /*
  * ------------------------------------------------
  * Promotional saving
@@ -94,11 +81,6 @@ function getOldPrice(product) {
 function getPromotionalSavings(
   product
 ) {
-  /*
-   * Store endpoint explicitly
-   * provides promotionSaving.
-   */
-
   const saving =
     toNumber(
       product?.promotionSaving
@@ -110,11 +92,6 @@ function getPromotionalSavings(
   ) {
     return saving;
   }
-
-
-  /*
-   * Older generic endpoint
-   */
 
   const discount =
     toNumber(
@@ -130,7 +107,6 @@ function getPromotionalSavings(
 
   return 0;
 }
-
 
 /*
  * ------------------------------------------------
@@ -157,7 +133,6 @@ function getImage(product) {
     null
   );
 }
-
 
 /*
  * ------------------------------------------------
@@ -192,36 +167,21 @@ function getStockStatus(product) {
     return true;
   }
 
-
-  /*
-   * search_store_products currently
-   * does not expose stock status.
-   */
-
   return null;
 }
-
 
 /*
  * ------------------------------------------------
  * Parse Checkers multibuy promotion message
  * ------------------------------------------------
  *
- * Checkers does not always expose useful
- * promotionQuantity / promotionBundlePrice
- * values for multibuy Bonus Buys.
+ * Examples:
  *
- * The customer-facing promotion message,
- * however, may clearly contain:
- *
+ * Buy 2 For R34
  * 2 for R34
- * 4 for R45
- * 2 For R34.00
+ * Buy 4 For R55
  * 3 FOR R100
  * 2 for R 34
- *
- * We can safely derive the quantity and
- * bundle price from that message.
  * ------------------------------------------------
  */
 
@@ -232,45 +192,27 @@ function parseCheckersMultibuyMessage(
     return null;
   }
 
-
   const text =
     String(message)
       .trim()
       .replace(/\s+/g, " ");
 
-
-  /*
-   * Handles:
-   *
-   * 2 for R34
-   * 2 For R34.00
-   * 4 FOR R45
-   * 3 for 100
-   * 2 FOR R 34
-   * 2 x for R34
-   */
-
   const match =
     text.match(
-      /(\d+)\s*(?:x\s*)?for\s*r?\s*(\d+(?:[.,]\d{1,2})?)/i
+      /(?:buy\s*)?(\d+)\s*(?:x\s*)?for\s*r?\s*(\d+(?:[.,]\d{1,2})?)/i
     );
-
 
   if (!match) {
     return null;
   }
 
-
   const quantity =
     Number(match[1]);
 
-
   const bundlePrice =
     Number(
-      match[2]
-        .replace(",", ".")
+      match[2].replace(",", ".")
     );
-
 
   if (
     !Number.isFinite(quantity) ||
@@ -283,7 +225,6 @@ function parseCheckersMultibuyMessage(
     return null;
   }
 
-
   return {
     mechanic:
       "MULTIBUY",
@@ -294,6 +235,76 @@ function parseCheckersMultibuyMessage(
   };
 }
 
+/*
+ * ------------------------------------------------
+ * Parse quantity percentage promotion
+ * ------------------------------------------------
+ *
+ * Examples:
+ *
+ * Buy 2 & Save 20%
+ * Buy 2 & Save 25%
+ * Buy 3 & Save 10%
+ *
+ * These are NOT fixed-price multibuys.
+ *
+ * They require a certain quantity and then
+ * apply a percentage discount to the
+ * qualifying quantity.
+ * ------------------------------------------------
+ */
+
+function parseCheckersQuantityPercentageMessage(
+  message
+) {
+  if (!message) {
+    return null;
+  }
+
+  const text =
+    String(message)
+      .trim()
+      .replace(/\s+/g, " ");
+
+  const match =
+    text.match(
+      /buy\s*(\d+)\s*(?:&|and)?\s*save\s*(\d+(?:[.,]\d+)?)\s*%/i
+    );
+
+  if (!match) {
+    return null;
+  }
+
+  const quantity =
+    Number(match[1]);
+
+  const discountPercentage =
+    Number(
+      String(match[2])
+        .replace(",", ".")
+    );
+
+  if (
+    !Number.isFinite(quantity) ||
+    quantity <= 0 ||
+    !Number.isFinite(
+      discountPercentage
+    ) ||
+    discountPercentage <= 0 ||
+    discountPercentage >= 100
+  ) {
+    return null;
+  }
+
+  return {
+    mechanic:
+      "QUANTITY_PERCENTAGE",
+
+    quantity,
+
+    discountPercentage,
+  };
+}
 
 /*
  * ------------------------------------------------
@@ -310,18 +321,10 @@ function normalizePromotionMechanic(
       .trim()
       .toLowerCase();
 
-
   /*
-   * Checkers calls this:
-   *
-   * fixed_discount
-   *
-   * But its meaning is:
-   *
-   * "Overrides the price of the product"
-   *
-   * Therefore this is equivalent to
-   * Grossary's FIXED_PRICE mechanic.
+   * Checkers fixed_discount means that
+   * the member price overrides the normal
+   * product price.
    */
 
   if (
@@ -335,12 +338,8 @@ function normalizePromotionMechanic(
     return "FIXED_PRICE";
   }
 
-
   /*
-   * Known/common multibuy names.
-   *
-   * If Parse starts returning one of these,
-   * Grossary will recognise it directly.
+   * Known multibuy mechanic names.
    */
 
   if (
@@ -356,37 +355,56 @@ function normalizePromotionMechanic(
     return "MULTIBUY";
   }
 
+  /*
+   * Known quantity percentage names,
+   * should Parse expose one in future.
+   */
+
+  if (
+    normalized ===
+      "quantity_percentage" ||
+    normalized ===
+      "quantity percentage" ||
+    normalized ===
+      "quantity-percent" ||
+    normalized ===
+      "quantity_percent" ||
+    normalized ===
+      "percentage_discount" ||
+    normalized ===
+      "percentage discount"
+  ) {
+    return "QUANTITY_PERCENTAGE";
+  }
 
   /*
-   * IMPORTANT FALLBACK
+   * IMPORTANT:
    *
-   * Even if Checkers/Parse gives us an
-   * unfamiliar internal mechanic, a message
-   * such as:
-   *
-   * "2 for R34"
-   *
-   * or
-   *
-   * "4 for R45"
-   *
-   * unambiguously describes a multibuy.
+   * Customer-facing promotion messages
+   * take priority when the provider's
+   * mechanic is unknown.
    */
+
+  const parsedQuantityPercentage =
+    parseCheckersQuantityPercentageMessage(
+      promotionMessage
+    );
+
+  if (parsedQuantityPercentage) {
+    return "QUANTITY_PERCENTAGE";
+  }
 
   const parsedMultibuy =
     parseCheckersMultibuyMessage(
       promotionMessage
     );
 
-
   if (parsedMultibuy) {
     return "MULTIBUY";
   }
 
-
   return "UNKNOWN";
 }
-
 
 /*
  * ------------------------------------------------
@@ -407,10 +425,8 @@ function isPromotionActive(
     return false;
   }
 
-
   const now =
     Date.now();
-
 
   const start =
     promotion.startsAt
@@ -421,7 +437,6 @@ function isPromotionActive(
           promotion.startDate
         );
 
-
   const end =
     promotion.endsAt
       ? new Date(
@@ -431,14 +446,12 @@ function isPromotionActive(
           promotion.endDate
         );
 
-
   if (
     Number.isFinite(start) &&
     now < start
   ) {
     return false;
   }
-
 
   if (
     Number.isFinite(end) &&
@@ -447,10 +460,8 @@ function isPromotionActive(
     return false;
   }
 
-
   return true;
 }
-
 
 /*
  * ------------------------------------------------
@@ -465,33 +476,17 @@ function normalizeCheckersBonusBuy(
     return null;
   }
 
-
-  /*
-   * Parse returns:
-   *
-   * {
-   *   status: "success",
-   *   data: {...}
-   * }
-   *
-   * But supporting response.data ?? response
-   * makes this helper easier to test.
-   */
-
   const data =
     response?.data ??
     response;
-
 
   if (!data) {
     return null;
   }
 
-
   const promotion =
     data.promotion ||
     null;
-
 
   const bonusBuyId =
     data.bonusBuyId ||
@@ -499,12 +494,10 @@ function normalizeCheckersBonusBuy(
     data.raw?.id ||
     null;
 
-
   const normalPrice =
     toNumber(
       data.normalPrice
     );
-
 
   const promotionPrice =
     toNumber(
@@ -513,32 +506,23 @@ function normalizeCheckersBonusBuy(
       promotion?.discountValue
     );
 
-
   /*
    * ------------------------------------------------
    * Promotion message
    * ------------------------------------------------
-   *
-   * We calculate this before the mechanic
-   * because the message can tell us whether
-   * an otherwise UNKNOWN mechanic is actually
-   * a MULTIBUY.
    */
 
   const promotionMessage =
-    promotion
-      ?.promotionMessage ||
+    promotion?.promotionMessage ||
     promotion?.name ||
-    promotion
-      ?.longDescription ||
+    promotion?.longDescription ||
     data?.promotionMessage ||
     data?.name ||
     null;
 
-
   /*
    * ------------------------------------------------
-   * Parse multibuy message
+   * Parse customer-facing promotion
    * ------------------------------------------------
    */
 
@@ -547,6 +531,10 @@ function normalizeCheckersBonusBuy(
       promotionMessage
     );
 
+  const parsedQuantityPercentage =
+    parseCheckersQuantityPercentageMessage(
+      promotionMessage
+    );
 
   /*
    * ------------------------------------------------
@@ -556,80 +544,90 @@ function normalizeCheckersBonusBuy(
 
   const promotionMechanic =
     normalizePromotionMechanic(
-      promotion
-        ?.promotionMechanic,
+      promotion?.promotionMechanic,
       promotionMessage
     );
-
 
   /*
    * ------------------------------------------------
    * Promotion quantity
    * ------------------------------------------------
-   *
-   * MULTIBUY:
-   *
-   * Message takes priority because it is the
-   * customer-facing promotion.
-   *
-   * "2 for R34"
-   *
-   * becomes:
-   *
-   * promotionQuantity: 2
-   *
-   *
-   * FIXED_PRICE:
-   *
-   * Quantity remains 1.
    */
 
-  let promotionQuantity =
-    1;
-
+  let promotionQuantity = 1;
 
   if (
     promotionMechanic ===
-    "MULTIBUY"
+      "MULTIBUY"
   ) {
     promotionQuantity =
-      parsedMultibuy
-        ?.quantity ??
+      parsedMultibuy?.quantity ??
       toNumber(
-        promotion
-          ?.promotionQuantity
+        promotion?.promotionQuantity
       ) ??
       1;
   }
 
+  if (
+    promotionMechanic ===
+      "QUANTITY_PERCENTAGE"
+  ) {
+    promotionQuantity =
+      parsedQuantityPercentage
+        ?.quantity ??
+      toNumber(
+        promotion?.promotionQuantity
+      ) ??
+      1;
+  }
+
+  /*
+   * ------------------------------------------------
+   * Percentage discount
+   * ------------------------------------------------
+   *
+   * Example:
+   *
+   * Buy 2 & Save 20%
+   *
+   * promotionQuantity = 2
+   * promotionDiscountPercentage = 20
+   * ------------------------------------------------
+   */
+
+  let promotionDiscountPercentage =
+    null;
+
+  if (
+    promotionMechanic ===
+      "QUANTITY_PERCENTAGE"
+  ) {
+    promotionDiscountPercentage =
+      parsedQuantityPercentage
+        ?.discountPercentage ??
+      toNumber(
+        promotion
+          ?.promotionDiscountPercentage
+      ) ??
+      toNumber(
+        promotion
+          ?.discountPercentage
+      ) ??
+      null;
+  }
 
   /*
    * ------------------------------------------------
    * Promotion bundle price
    * ------------------------------------------------
-   *
-   * MULTIBUY:
-   *
-   * "2 for R34"
-   *
-   * becomes:
-   *
-   * promotionBundlePrice: 34
-   *
-   *
-   * FIXED_PRICE:
-   *
-   * bundle price remains the promotional
-   * member price.
    */
 
   let promotionBundlePrice =
     null;
 
-
   if (
     promotionMechanic ===
-    "MULTIBUY"
+      "MULTIBUY"
   ) {
     promotionBundlePrice =
       parsedMultibuy
@@ -639,6 +637,19 @@ function normalizeCheckersBonusBuy(
           ?.promotionBundlePrice
       ) ??
       promotionPrice;
+  } else if (
+    promotionMechanic ===
+      "QUANTITY_PERCENTAGE"
+  ) {
+    /*
+     * No fixed bundle price exists.
+     *
+     * The actual discounted total depends
+     * on the normal product price.
+     */
+
+    promotionBundlePrice =
+      null;
   } else {
     promotionBundlePrice =
       toNumber(
@@ -648,40 +659,26 @@ function normalizeCheckersBonusBuy(
       promotionPrice;
   }
 
-
   /*
    * ------------------------------------------------
    * Saving
    * ------------------------------------------------
-   *
-   * FIXED PRICE:
-   *
-   * normal price - promotional price
-   *
-   *
-   * MULTIBUY:
-   *
-   * normal unit price × qualifying quantity
-   * minus bundle price.
-   *
-   * Example:
-   *
-   * Normal = R22.99
-   * Promo  = 2 for R34
-   *
-   * R22.99 × 2 = R45.98
-   *
-   * R45.98 - R34 = R11.98
-   *
-   * Therefore:
-   *
-   * loyaltySavings = R11.98 per qualifying
-   * bundle.
    */
 
   let saving =
     null;
 
+  /*
+   * MULTIBUY
+   *
+   * R22.99 each
+   * Buy 2 for R34
+   *
+   * saving:
+   *
+   * (22.99 × 2) - 34
+   * = R11.98
+   */
 
   if (
     promotionMechanic ===
@@ -697,17 +694,53 @@ function normalizeCheckersBonusBuy(
         promotionQuantity
       ) -
       promotionBundlePrice;
-  } else {
-    /*
-     * Prefer explicit Parse saving for
-     * non-multibuy promotions.
-     */
+  }
 
+  /*
+   * QUANTITY_PERCENTAGE
+   *
+   * R50 each
+   * Buy 2 & Save 20%
+   *
+   * qualifying normal total:
+   *
+   * R50 × 2 = R100
+   *
+   * saving:
+   *
+   * R100 × 20%
+   * = R20
+   */
+
+  else if (
+    promotionMechanic ===
+      "QUANTITY_PERCENTAGE" &&
+    normalPrice !== null &&
+    promotionQuantity > 0 &&
+    promotionDiscountPercentage !==
+      null
+  ) {
+    const qualifyingNormalTotal =
+      normalPrice *
+      promotionQuantity;
+
+    saving =
+      qualifyingNormalTotal *
+      (
+        promotionDiscountPercentage /
+        100
+      );
+  }
+
+  /*
+   * FIXED_PRICE / other promotion.
+   */
+
+  else {
     saving =
       toNumber(
         data.saving
       );
-
 
     if (
       saving === null &&
@@ -720,7 +753,6 @@ function normalizeCheckersBonusBuy(
     }
   }
 
-
   saving =
     Math.max(
       0,
@@ -728,7 +760,6 @@ function normalizeCheckersBonusBuy(
         saving || 0
       )
     );
-
 
   /*
    * ------------------------------------------------
@@ -747,7 +778,6 @@ function normalizeCheckersBonusBuy(
       ?.memberTypeName ===
       "Xtra Savings Members";
 
-
   /*
    * ------------------------------------------------
    * Active promotion
@@ -761,36 +791,32 @@ function normalizeCheckersBonusBuy(
       promotion
     );
 
-
   /*
    * ------------------------------------------------
    * Loyalty price
    * ------------------------------------------------
    *
-   * FIXED_PRICE:
+   * FIXED_PRICE has a meaningful unit price.
    *
-   * loyaltyPrice is meaningful because the
-   * promotion defines a unit/member price.
-   *
-   *
-   * MULTIBUY:
-   *
-   * There is no single loyalty unit price.
-   * The meaningful values are:
-   *
-   * promotionQuantity
-   * promotionBundlePrice
-   *
-   * So loyaltyPrice stays null.
+   * MULTIBUY and QUANTITY_PERCENTAGE do not.
+   * Their actual price depends on quantity.
+   * ------------------------------------------------
    */
 
   const loyaltyPrice =
     requiresLoyaltyCard &&
     promotionMechanic !==
-      "MULTIBUY"
+      "MULTIBUY" &&
+    promotionMechanic !==
+      "QUANTITY_PERCENTAGE"
       ? promotionPrice
       : null;
 
+  /*
+   * ------------------------------------------------
+   * Normalized Bonus Buy
+   * ------------------------------------------------
+   */
 
   return {
     /*
@@ -802,7 +828,6 @@ function normalizeCheckersBonusBuy(
 
     retailer:
       "Checkers",
-
 
     /*
      * Store
@@ -824,7 +849,6 @@ function normalizeCheckersBonusBuy(
       data.availableAtStore ===
       true,
 
-
     /*
      * Promotion identity
      */
@@ -842,7 +866,6 @@ function normalizeCheckersBonusBuy(
       promotion?.promotionId ||
       null,
 
-
     /*
      * Pricing
      */
@@ -856,16 +879,19 @@ function normalizeCheckersBonusBuy(
         saving.toFixed(2)
       ),
 
-
     /*
-     * Grossary loyalty pricing
-     *
-     * Checkers Xtra Savings is represented
-     * using the same normalized fields as
-     * PnP Smart Shopper.
+     * Loyalty pricing
      */
 
     loyaltyPrice,
+
+    /*
+     * This represents the saving for ONE
+     * qualifying promotion group.
+     *
+     * Basket calculation will determine
+     * total savings based on item_quantity.
+     */
 
     loyaltySavings:
       requiresLoyaltyCard
@@ -875,7 +901,6 @@ function normalizeCheckersBonusBuy(
         : 0,
 
     requiresLoyaltyCard,
-
 
     /*
      * Promotion
@@ -897,6 +922,7 @@ function normalizeCheckersBonusBuy(
 
     promotionBundlePrice,
 
+    promotionDiscountPercentage,
 
     /*
      * Dates
@@ -909,7 +935,6 @@ function normalizeCheckersBonusBuy(
     promotionEndsAt:
       promotion?.endsAt ||
       null,
-
 
     /*
      * Checkers metadata
@@ -941,10 +966,8 @@ function normalizeCheckersBonusBuy(
         ?.channelSpecificPromotions ||
       null,
 
-
     /*
-     * Products covered by
-     * this Bonus Buy
+     * Products covered by this Bonus Buy
      */
 
     qualifyingProductCodes:
@@ -965,7 +988,6 @@ function normalizeCheckersBonusBuy(
             .qualifyingProductIds
         : [],
 
-
     /*
      * Keep provider data
      */
@@ -975,7 +997,6 @@ function normalizeCheckersBonusBuy(
       data,
   };
 }
-
 
 /*
  * ------------------------------------------------
@@ -990,7 +1011,6 @@ function normalizeCheckersProduct(
     return null;
   }
 
-
   const price =
     getPrice(product);
 
@@ -1002,16 +1022,13 @@ function normalizeCheckersProduct(
       product
     );
 
-
   const isPromotion =
     product?.isOnPromotion ===
       true ||
     promotionalSavings > 0;
 
-
   const inStock =
     getStockStatus(product);
-
 
   return {
     /*
@@ -1025,7 +1042,6 @@ function normalizeCheckersProduct(
 
     retailer:
       "Checkers",
-
 
     /*
      * IDs
@@ -1044,7 +1060,6 @@ function normalizeCheckersProduct(
       product.articleNumber ||
       null,
 
-
     /*
      * Product
      */
@@ -1058,7 +1073,6 @@ function normalizeCheckersProduct(
       product.brand ||
       null,
 
-
     /*
      * Barcode
      */
@@ -1067,8 +1081,7 @@ function normalizeCheckersProduct(
       Array.isArray(
         product.barcodes
       )
-        ? product
-            .barcodes[0] ||
+        ? product.barcodes[0] ||
           null
         : null,
 
@@ -1078,7 +1091,6 @@ function normalizeCheckersProduct(
       )
         ? product.barcodes
         : [],
-
 
     /*
      * Pricing
@@ -1099,12 +1111,10 @@ function normalizeCheckersProduct(
 
     isPromotion,
 
-
     /*
      * Loyalty defaults
      *
-     * These are populated later
-     * if a Bonus Buy is resolved.
+     * Populated when Bonus Buy is resolved.
      */
 
     loyaltyPrice:
@@ -1134,12 +1144,22 @@ function normalizeCheckersProduct(
     promotionBundlePrice:
       null,
 
+    /*
+     * NEW
+     *
+     * Used by:
+     *
+     * Buy 2 & Save 20%
+     */
+
+    promotionDiscountPercentage:
+      null,
+
     promotionStartsAt:
       null,
 
     promotionEndsAt:
       null,
-
 
     /*
      * Stock
@@ -1151,7 +1171,6 @@ function normalizeCheckersProduct(
       product.stockOnHand ??
       null,
 
-
     /*
      * Unit
      */
@@ -1160,14 +1179,12 @@ function normalizeCheckersProduct(
       product.unitOfMeasure ||
       null,
 
-
     /*
      * Images
      */
 
     imageUrl:
       getImage(product),
-
 
     /*
      * Bonus Buy references
@@ -1180,7 +1197,6 @@ function normalizeCheckersProduct(
         ? product.bonusBuyIds
         : [],
 
-
     /*
      * Keep original response
      */
@@ -1189,7 +1205,6 @@ function normalizeCheckersProduct(
       product,
   };
 }
-
 
 /*
  * ------------------------------------------------
@@ -1204,7 +1219,6 @@ function normalizeCheckersProducts(
     return [];
   }
 
-
   return products
     .map(
       normalizeCheckersProduct
@@ -1212,17 +1226,18 @@ function normalizeCheckersProducts(
     .filter(Boolean);
 }
 
+/*
+ * ------------------------------------------------
+ * Exports
+ * ------------------------------------------------
+ */
 
 module.exports = {
   normalizeCheckersProduct,
-
   normalizeCheckersProducts,
-
   normalizeCheckersBonusBuy,
-
   normalizePromotionMechanic,
-
   parseCheckersMultibuyMessage,
-
+  parseCheckersQuantityPercentageMessage,
   isPromotionActive,
 };

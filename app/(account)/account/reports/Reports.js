@@ -125,8 +125,9 @@ const categoryList = useMemo(() => {
   // ✅ totals
   const moneySpent = filteredItems.reduce((sum, l) => sum + (l.total_price || 0), 0);
 
-
+  const moneySaved = filteredLists.reduce((sum, l) => sum + (l.grossary_plus_savings || 0), 0);
   
+ 
   // const totalBudget = filteredLists.reduce((sum, l) => sum + (l.list_budget || 0), 0);
   // const moneySaved = totalBudget - moneySpent;
 
@@ -159,8 +160,8 @@ const categoryList = useMemo(() => {
 
            <MoneySpent moneySpent={moneySpent}/>
 
-
-     
+     {moneySaved &&   <p className="text-xs text-gray-400 pt-6">grossary<span className="text-[#1EC677]">plus</span> savings &plusmn;R{moneySaved} </p>}
+   
       </div>
      
         </div>
@@ -191,7 +192,10 @@ const categoryList = useMemo(() => {
   `}
 >
    {expand && <MoneySpent moneySpent={moneySpent} expand={expand}/>}
-  <div className="flex justify-end"> <button
+  <div className="flex justify-end"> 
+      {moneySaved &&   <p className="text-xs text-gray-400 py-6">grossary<span className="text-[#1EC677]">plus</span> savings &plusmn;R{moneySaved} </p>}
+   
+   <button
     onClick={handleExpand}
     className="h-8 w-8 rounded-full flex items-center justify-center active:bg-gray-200"
   >
@@ -228,7 +232,7 @@ const categoryList = useMemo(() => {
         {/* Progress bar */}
         <div className="w-full h-2 bg-[#0B2E1E] rounded-full overflow-hidden">
           <div
-            className="h-full bg-[#ACF532]"
+            className="h-full bg-[#1EC677]"
             style={{ width: `${cat.percentage}%` }}
           />
         </div>
@@ -270,7 +274,7 @@ const categoryList = useMemo(() => {
 
       <Bar
         dataKey="total"
-        fill="#ACF532"
+        fill="#1EC677"
         radius={[6, 6, 0, 0]} // rounded top bars 🔥
         backgroundColor='white'
       />

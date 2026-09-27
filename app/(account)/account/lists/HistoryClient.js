@@ -41,7 +41,7 @@ function HistoryClient({ History, userId }) {
 
               {/* Monthly totals */}
               <div className="mb-2 ml-1  text-xs  text-gray-600  flex gap-2">
-                <p>Total Spent: <span className="font-extrabold text-[#ACF532]">R{data.totalSpent.toFixed(2)}</span></p>
+                <p>Total Spent: <span className="font-extrabold text-[#1EC677]">R{data.totalSpent.toFixed(2)}</span></p>
              
               </div>
               
@@ -49,6 +49,7 @@ function HistoryClient({ History, userId }) {
 
               <ul>
                 {data.items.map((history) => (
+                
                   <li
                     key={history.id} className=" 
                      w-full flex justify-center items-center text-black"
@@ -75,8 +76,8 @@ function HistoryClient({ History, userId }) {
                       <p className="text-sm">R{history.money_spent}</p>
                     </div>
 
-                  
-
+                 {history.grossary_plus_plan !== null && <p className="text-xs text-gray-400">grossary<span className="text-[#1EC677]">plus</span> savings &plusmn;R{ Number(history.grossary_plus_savings)} </p>
+} 
            
                    
                      

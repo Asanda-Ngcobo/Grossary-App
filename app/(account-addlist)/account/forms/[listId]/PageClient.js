@@ -38,7 +38,7 @@ const MoneyFont = Quicksand({
   display: 'swap',
 });
 export default function PageClient({ listId, list_name, 
-  list_budget, listitems, groupedItems, profile, lists }) {
+  list_budget, listitems, groupedItems, profile, lists, savings, plan }) {
  const [selectedCategory, setSelectedCategory] = useState('');
  const [isOpenModal, setIsOpenModal] = useState(false)
  const [showForm, setShowForm] = useState(false)
@@ -452,8 +452,10 @@ async function handleGrossaryPlus() {
       </div>
         </div>
 
-        <div className="flex justify-between font-bold">
-           <ListMoneySpent money_spent={money_spent}/>
+        <div className="flex flex-col justify-between font-bold">
+           <ListMoneySpent money_spent={money_spent}
+           />
+           {listitems.recommended_price !== null && <p className='text-xs text-gray-400'>Expected Spending &plusmn;R{plan}</p>}
            {/* <ListMoneyLeft money_left={money_left}/> */}
 
          

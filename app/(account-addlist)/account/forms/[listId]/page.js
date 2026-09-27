@@ -26,7 +26,7 @@ export default async function Page({ params }) {
     .eq("id", data?.user?.id)
     .single();
 
-  const { list_name, list_budget, id } = list;
+  const { list_name, list_budget, id, grossary_plus_savings, grossary_plus_plan } = list;
 
   const lists = await getLists(profile.id)
   console.log(lists.length)
@@ -50,6 +50,8 @@ export default async function Page({ params }) {
         listitems={listitems}
         profile={profile}
         lists={lists}
+        savings={grossary_plus_savings}
+        plan={grossary_plus_plan}
       />
     </main>
   );

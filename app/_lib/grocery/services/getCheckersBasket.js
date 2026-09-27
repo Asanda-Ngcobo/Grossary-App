@@ -357,6 +357,120 @@ function calculateCheckersProductPricing(
   }
 
   /*
+ * ------------------------------------------------
+ * QUANTITY_PERCENTAGE
+ * ------------------------------------------------
+ *
+ * Example:
+ *
+ * Buy 2 & Save 25%
+ *
+ * Normal unit price = R20
+ * Quantity = 5
+ *
+ * 2 qualifying groups = 4 products
+ * 1 remaining product = normal price
+ */
+
+const promotionDiscountPercentage =
+  Number(
+    product?.promotionDiscountPercentage
+  );
+
+if (
+  loyaltyAllowed &&
+  mechanic === "QUANTITY_PERCENTAGE" &&
+  promotionQuantity > 1 &&
+  Number.isFinite(
+    promotionDiscountPercentage
+  ) &&
+  promotionDiscountPercentage > 0
+) {
+  const qualifyingBundles =
+    Math.floor(
+      safeQuantity /
+      promotionQuantity
+    );
+
+  const qualifyingQuantity =
+    qualifyingBundles *
+    promotionQuantity;
+
+  const remainingQuantity =
+    safeQuantity -
+    qualifyingQuantity;
+
+  if (qualifyingBundles > 0) {
+    const qualifyingNormalTotal =
+      qualifyingQuantity *
+      normalUnitPrice;
+
+    const discountRate =
+      promotionDiscountPercentage /
+      100;
+
+    const loyaltySavings =
+      qualifyingNormalTotal *
+      discountRate;
+
+    const discountedTotal =
+      qualifyingNormalTotal -
+      loyaltySavings;
+
+    const remainingTotal =
+      remainingQuantity *
+      normalUnitPrice;
+
+    const lineTotal =
+      discountedTotal +
+      remainingTotal;
+
+    return {
+      normalUnitPrice,
+
+      normalTotal:
+        Number(
+          normalTotal.toFixed(2)
+        ),
+
+      unitPrice:
+        normalUnitPrice,
+
+      lineTotal:
+        Number(
+          lineTotal.toFixed(2)
+        ),
+
+      promotionalSavings:
+        Number(
+          promotionalSavings.toFixed(2)
+        ),
+
+      loyaltySavings:
+        Number(
+          loyaltySavings.toFixed(2)
+        ),
+
+      loyaltyApplied:
+        loyaltySavings > 0,
+
+      promotionMechanic:
+        mechanic,
+
+      promotionQuantity,
+
+      promotionDiscountPercentage,
+
+      promotionBundlePrice:
+        null,
+
+      qualifyingBundles,
+
+      remainingQuantity,
+    };
+  }
+}
+  /*
    * ------------------------------------------------
    * FIXED_PRICE
    * ------------------------------------------------
@@ -678,14 +792,17 @@ function applyBonusBuyToProduct(
     promotionMechanic:
       bonusBuy.promotionMechanic,
 
-    promotionQuantity:
-      bonusBuy.promotionQuantity,
+   promotionQuantity:
+  bonusBuy.promotionQuantity,
 
-    promotionBundlePrice:
-      bonusBuy.promotionBundlePrice,
+promotionBundlePrice:
+  bonusBuy.promotionBundlePrice,
 
-    promotionStartsAt:
-      bonusBuy.promotionStartsAt,
+promotionDiscountPercentage:
+  bonusBuy.promotionDiscountPercentage,
+
+promotionStartsAt:
+  bonusBuy.promotionStartsAt,
 
     promotionEndsAt:
       bonusBuy.promotionEndsAt,
@@ -725,14 +842,17 @@ function applyBonusBuyToProduct(
         requiresLoyaltyCard:
           bonusBuy.requiresLoyaltyCard,
 
-        promotionQuantity:
-          bonusBuy.promotionQuantity,
+       promotionQuantity:
+  bonusBuy.promotionQuantity,
 
-        promotionBundlePrice:
-          bonusBuy.promotionBundlePrice,
+promotionBundlePrice:
+  bonusBuy.promotionBundlePrice,
 
-        promotionStartsAt:
-          bonusBuy.promotionStartsAt,
+promotionDiscountPercentage:
+  bonusBuy.promotionDiscountPercentage,
+
+promotionStartsAt:
+  bonusBuy.promotionStartsAt,
 
         promotionEndsAt:
           bonusBuy.promotionEndsAt,
@@ -1003,10 +1123,13 @@ function buildUnmatchedResult({
       null,
 
     promotionBundlePrice:
-      null,
+  null,
 
-    qualifyingBundles:
-      0,
+promotionDiscountPercentage:
+  null,
+
+qualifyingBundles:
+  0,
 
     remainingQuantity:
       getQuantity(item),
@@ -1112,12 +1235,16 @@ function buildMatchedResult({
         product?.promotionQuantity ??
         null,
 
-      promotionBundlePrice:
-        product?.promotionBundlePrice ??
-        null,
+    promotionBundlePrice:
+  product?.promotionBundlePrice ??
+  null,
 
-      qualifyingBundles:
-        0,
+promotionDiscountPercentage:
+  product?.promotionDiscountPercentage ??
+  null,
+
+qualifyingBundles:
+  0,
 
       remainingQuantity:
         quantity,
@@ -1202,6 +1329,11 @@ function buildMatchedResult({
 
     promotionBundlePrice:
       pricing.promotionBundlePrice,
+
+promotionDiscountPercentage:
+  pricing.promotionDiscountPercentage ??
+  product?.promotionDiscountPercentage ??
+  null,
 
     /*
      * MULTIBUY details.
@@ -1559,15 +1691,17 @@ async function getCheckersBasket(
 
               promotionMechanic:
                 product.promotionMechanic,
+promotionQuantity:
+  product.promotionQuantity,
 
-              promotionQuantity:
-                product.promotionQuantity,
+promotionBundlePrice:
+  product.promotionBundlePrice,
 
-              promotionBundlePrice:
-                product.promotionBundlePrice,
+promotionDiscountPercentage:
+  product.promotionDiscountPercentage,
 
-              promotionMessage:
-                product.promotionMessage,
+promotionMessage:
+  product.promotionMessage,
 
               promotionEndsAt:
                 product.promotionEndsAt,
