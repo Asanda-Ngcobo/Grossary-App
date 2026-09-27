@@ -22,7 +22,6 @@ import toast from "react-hot-toast";
 function GrossaryPlusBunner({
   results,
   optimizing,
-  GrossaryPlusRun,
   setGrossaryPlusRun,
   listId,
 }) {
@@ -120,7 +119,11 @@ function GrossaryPlusBunner({
      */
 
     toast.success(
-      "Grossary+ shopping plan added to your list."
+      "Grossary+ shopping plan added to your list.",
+        {
+              duration: 5000,
+              style: { background: "#0B2E1E", color: "#fff" },
+            }
     );
 
 
@@ -134,7 +137,11 @@ function GrossaryPlusBunner({
 
     toast.error(
       error.message ||
-      "We couldn't update your list."
+      "We couldn't update your list.",
+        {
+              duration: 5000,
+              style: { background: "#0B2E1E", color: "#fff" },
+            }
     );
 
 

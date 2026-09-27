@@ -9,54 +9,32 @@ function formatMoney(value) {
  * ------------------------------------------------
  */
 
-function normalizeAllocations(
-  allocations
-) {
-
-  if (
-    Array.isArray(
-      allocations
-    )
-  ) {
-
+function normalizeAllocations(allocations) {
+  if (Array.isArray(allocations)) {
     return allocations.filter(
-      store =>
+      (store) =>
         store &&
-        Array.isArray(
-          store.items
-        ) &&
+        Array.isArray(store.items) &&
         store.items.length > 0
     );
   }
 
-
   if (
     allocations &&
-    typeof allocations ===
-      "object"
+    typeof allocations === "object"
   ) {
-
-    return Object.values(
-      allocations
-    ).filter(
-      store =>
+    return Object.values(allocations).filter(
+      (store) =>
         store &&
         (
-          Number(
-            store.itemCount ||
-            0
-          ) > 0 ||
+          Number(store.itemCount || 0) > 0 ||
           (
-            Array.isArray(
-              store.items
-            ) &&
-            store.items.length >
-              0
+            Array.isArray(store.items) &&
+            store.items.length > 0
           )
         )
     );
   }
-
 
   return [];
 }
@@ -68,67 +46,41 @@ function normalizeAllocations(
  * ------------------------------------------------
  */
 
-function getLoyaltyDetails(
-  retailer
-) {
-
+function getLoyaltyDetails(retailer) {
   const normalizedRetailer =
-    String(
-      retailer || ""
-    )
+    String(retailer || "")
       .trim()
       .toLowerCase();
 
-
-  if (
-    normalizedRetailer ===
-    "checkers"
-  ) {
-
+  if (normalizedRetailer === "checkers") {
     return {
-      name:
-        "Xtra Savings",
+      name: "Xtra Savings",
 
-      color:
-        "#38A8AE",
+      // Checkers blue
+      color: "#38A8AE",
 
-      background:
-        "#EAF7F8",
+      background: "#EAF7F8",
     };
   }
 
-
   if (
-    normalizedRetailer ===
-      "pnp" ||
-    normalizedRetailer ===
-      "pick n pay" ||
-    normalizedRetailer ===
-      "pick n pay"
+    normalizedRetailer === "pnp" ||
+    normalizedRetailer === "pick n pay"
   ) {
-
     return {
-      name:
-        "Smart Shopper",
+      name: "Smart Shopper",
 
-      color:
-        "#003359",
+      // Pick n Pay blue
+      color: "#003359",
 
-      background:
-        "#E8EEF0",
+      background: "#E8EEF0",
     };
   }
-
 
   return {
-    name:
-      "Loyalty",
-
-    color:
-      "#168B55",
-
-    background:
-      "#E9FFF4",
+    name: "Loyalty",
+    color: "#168B55",
+    background: "#E9FFF4",
   };
 }
 
@@ -139,19 +91,12 @@ function getLoyaltyDetails(
  * ------------------------------------------------
  */
 
-function getItemDisplayData(
-  item
-) {
-
+function getItemDisplayData(item) {
   const product =
-    item?.product ||
-    {};
-
+    item?.product || {};
 
   const requestedItem =
-    item?.requestedItem ||
-    {};
-
+    item?.requestedItem || {};
 
   const productName =
     product.productName ||
@@ -159,20 +104,16 @@ function getItemDisplayData(
     requestedItem.item_name ||
     "Product";
 
-
   const requestedName =
     requestedItem.item_name ||
     null;
 
-
   const quantity =
     Number(
       item?.quantity ||
-      requestedItem
-        ?.item_quantity ||
+      requestedItem?.item_quantity ||
       1
     ) || 1;
-
 
   const unitPrice =
     Number(
@@ -180,7 +121,6 @@ function getItemDisplayData(
       product?.price ??
       0
     );
-
 
   const lineTotal =
     Number(
@@ -192,13 +132,11 @@ function getItemDisplayData(
       )
     );
 
-
   const promotionalSavings =
     Number(
       item?.promotionalSavings ||
       0
     );
-
 
   const loyaltySavings =
     Number(
@@ -207,53 +145,43 @@ function getItemDisplayData(
       0
     );
 
-
   const loyaltyApplied =
-    item?.loyaltyApplied ===
-    true;
-
+    item?.loyaltyApplied === true;
 
   const promotionType =
     item?.promotionType ||
     product?.promotionType ||
     null;
 
-
   const promotionMechanic =
     item?.promotionMechanic ||
     product?.promotionMechanic ||
     null;
-
 
   const promotionQuantity =
     item?.promotionQuantity ??
     product?.promotionQuantity ??
     null;
 
-
   const promotionBundlePrice =
     item?.promotionBundlePrice ??
     product?.promotionBundlePrice ??
     null;
-
 
   const promotionMessage =
     item?.promotionMessage ||
     product?.promotionMessage ||
     null;
 
-
   const loyaltyPrice =
     item?.loyaltyPrice ??
     product?.loyaltyPrice ??
     null;
 
-
   const normalUnitPrice =
     item?.normalUnitPrice ??
     product?.price ??
     null;
-
 
   const qualifyingBundles =
     Number(
@@ -261,54 +189,32 @@ function getItemDisplayData(
       0
     );
 
-
   const remainingQuantity =
     Number(
       item?.remainingQuantity ||
       0
     );
 
-
   return {
-
     product,
-
     requestedItem,
-
     productName,
-
     requestedName,
-
     quantity,
-
     unitPrice,
-
     lineTotal,
-
     promotionalSavings,
-
     loyaltySavings,
-
     loyaltyApplied,
-
     promotionType,
-
     promotionMechanic,
-
     promotionQuantity,
-
     promotionBundlePrice,
-
     promotionMessage,
-
     loyaltyPrice,
-
     normalUnitPrice,
-
     qualifyingBundles,
-
     remainingQuantity,
-
   };
 }
 
@@ -324,15 +230,10 @@ function LoyaltyBadge({
   retailer,
   strong = false,
 }) {
-
   const loyalty =
-    getLoyaltyDetails(
-      retailer
-    );
-
+    getLoyaltyDetails(retailer);
 
   return (
-
     <span
       className={`
         inline-flex
@@ -357,17 +258,21 @@ function LoyaltyBadge({
     >
       {children}
     </span>
-
   );
 }
 
+
+/*
+ * ------------------------------------------------
+ * Main component
+ * ------------------------------------------------
+ */
 
 function GrossaryPlusResults({
   results,
   savingPlan,
   onSelectPlan,
 }) {
-
   /*
    * API may pass either:
    *
@@ -382,14 +287,11 @@ function GrossaryPlusResults({
     results?.result ||
     results;
 
-
   const optimization =
     data?.optimization;
 
-
   const optimized =
     optimization?.optimized;
-
 
   const allocations =
     normalizeAllocations(
@@ -422,7 +324,6 @@ function GrossaryPlusResults({
         basketTotal,
         store
       ) => {
-
         const storeItems =
           Array.isArray(
             store?.items
@@ -430,19 +331,16 @@ function GrossaryPlusResults({
             ? store.items
             : [];
 
-
         const storeSavings =
           storeItems.reduce(
             (
               savingsTotal,
               item
             ) => {
-
               const itemData =
                 getItemDisplayData(
                   item
                 );
-
 
               return (
                 savingsTotal +
@@ -457,25 +355,24 @@ function GrossaryPlusResults({
                   0
                 )
               );
-
             },
             0
           );
-
 
         return (
           basketTotal +
           storeSavings
         );
-
       },
       0
     );
 
 
   /*
+   * ------------------------------------------------
    * Savings created by Grossary choosing
    * cheaper stores.
+   * ------------------------------------------------
    */
 
   const splitSavings =
@@ -489,8 +386,9 @@ function GrossaryPlusResults({
 
 
   /*
-   * Total customer-facing Grossary+
-   * savings.
+   * ------------------------------------------------
+   * Total customer-facing Grossary+ savings
+   * ------------------------------------------------
    */
 
   const grossaryPlusSavings =
@@ -506,6 +404,23 @@ function GrossaryPlusResults({
     );
 
 
+  /*
+   * ------------------------------------------------
+   * Convenience option
+   * ------------------------------------------------
+   *
+   * The optimizer now returns:
+   *
+   * cheapestComplete
+   * cheapestPartial
+   * cheapest
+   *
+   * "cheapest" already prioritises a complete
+   * basket and falls back to the partial
+   * convenience basket.
+   * ------------------------------------------------
+   */
+
   const cheapestSingleStore =
     optimization
       ?.singleStoreOptions
@@ -515,13 +430,95 @@ function GrossaryPlusResults({
     null;
 
 
-  const shoppingLocation =
-    data?.shoppingLocation;
+  const convenienceIsPartial =
+    cheapestSingleStore?.partial ===
+      true ||
+    cheapestSingleStore?.complete ===
+      false;
 
+
+  const convenienceItems =
+    Array.isArray(
+      cheapestSingleStore?.items
+    )
+      ? cheapestSingleStore.items
+      : [];
+
+
+  const convenienceMatchedCount =
+    Number(
+      cheapestSingleStore
+        ?.matchedCount ??
+      convenienceItems.length ??
+      0
+    );
+
+
+  const totalRequestedItems =
+    Number(
+      optimization?.itemCount ??
+      data?.itemCount ??
+      (
+        optimization?.matchedCount !=
+          null &&
+        optimization?.unmatchedCount !=
+          null
+          ? Number(
+              optimization.matchedCount
+            ) +
+            Number(
+              optimization.unmatchedCount
+            )
+          : 0
+      )
+    );
+
+
+  const convenienceExcludedCount =
+    Number(
+      cheapestSingleStore
+        ?.unmatchedCount ??
+      Math.max(
+        0,
+        totalRequestedItems -
+        convenienceMatchedCount
+      )
+    );
+
+
+  const convenienceSavings =
+    Number(
+      cheapestSingleStore
+        ?.promotionalSavings ||
+      0
+    ) +
+    Number(
+      cheapestSingleStore
+        ?.loyaltySavings ||
+      0
+    );
+
+
+  /*
+   * ------------------------------------------------
+   * Shopping location
+   * ------------------------------------------------
+   */
+
+  const shoppingLocation =
+    data?.shoppingLocation ||
+    optimization?.location ||
+    null;
+
+
+  /*
+   * ------------------------------------------------
+   * Overall matching status
+   * ------------------------------------------------
+   */
 
   const complete =
     optimization?.complete;
-
 
   const unmatchedItems =
     optimization
@@ -539,9 +536,7 @@ function GrossaryPlusResults({
     !optimization ||
     !optimized
   ) {
-
     return (
-
       <div
         className="
           bg-white
@@ -552,7 +547,6 @@ function GrossaryPlusResults({
           text-center
         "
       >
-
         <div
           className="
             w-12
@@ -572,7 +566,6 @@ function GrossaryPlusResults({
           !
         </div>
 
-
         <p
           className="
             font-bold
@@ -583,7 +576,6 @@ function GrossaryPlusResults({
           shopping plan.
         </p>
 
-
         <p
           className="
             text-sm
@@ -593,28 +585,23 @@ function GrossaryPlusResults({
         >
           Please try again.
         </p>
-
       </div>
-
     );
   }
 
 
   return (
-
     <div
       className="
         space-y-5
       "
     >
 
-
       {/* ================================= */}
       {/* SUCCESS HEADER */}
       {/* ================================= */}
 
       <section>
-
         <div
           className="
             w-12
@@ -633,7 +620,6 @@ function GrossaryPlusResults({
           ✓
         </div>
 
-
         <p
           className="
             text-xs
@@ -645,7 +631,6 @@ function GrossaryPlusResults({
         >
           Optimisation complete
         </p>
-
 
         <h1
           className="
@@ -660,9 +645,7 @@ function GrossaryPlusResults({
           plan
         </h1>
 
-
         {shoppingLocation && (
-
           <p
             className="
               text-sm
@@ -683,9 +666,7 @@ function GrossaryPlusResults({
 
             .
           </p>
-
         )}
-
       </section>
 
 
@@ -701,7 +682,6 @@ function GrossaryPlusResults({
           p-6
         "
       >
-
         <div
           className="
             flex
@@ -710,9 +690,7 @@ function GrossaryPlusResults({
             gap-4
           "
         >
-
           <div>
-
             <p
               className="
                 text-xs
@@ -722,7 +700,6 @@ function GrossaryPlusResults({
             >
               BEST OPTION
             </p>
-
 
             <p
               className="
@@ -734,7 +711,6 @@ function GrossaryPlusResults({
               Estimated basket total
             </p>
 
-
             <p
               className="
                 text-4xl
@@ -744,9 +720,7 @@ function GrossaryPlusResults({
             >
               R{formatMoney(total)}
             </p>
-
           </div>
-
 
           <div
             className="
@@ -757,7 +731,6 @@ function GrossaryPlusResults({
               text-center
             "
           >
-
             <p
               className="
                 text-xs
@@ -767,7 +740,6 @@ function GrossaryPlusResults({
               Stores
             </p>
 
-
             <p
               className="
                 text-xl
@@ -776,14 +748,11 @@ function GrossaryPlusResults({
             >
               {storesUsed}
             </p>
-
           </div>
-
         </div>
 
 
         {grossaryPlusSavings > 0 && (
-
           <div
             className="
               mt-6
@@ -792,7 +761,6 @@ function GrossaryPlusResults({
               border-white/10
             "
           >
-
             <div
               className="
                 flex
@@ -801,9 +769,7 @@ function GrossaryPlusResults({
                 gap-4
               "
             >
-
               <div>
-
                 <p
                   className="
                     text-sm
@@ -812,7 +778,6 @@ function GrossaryPlusResults({
                 >
                   Grossary+ savings
                 </p>
-
 
                 <p
                   className="
@@ -826,12 +791,9 @@ function GrossaryPlusResults({
                     grossaryPlusSavings
                   )}
                 </p>
-
               </div>
 
-
               {total > 0 && (
-
                 <div
                   className="
                     bg-[#1EC677]/10
@@ -842,7 +804,6 @@ function GrossaryPlusResults({
                     py-2
                   "
                 >
-
                   <p
                     className="
                       text-[10px]
@@ -873,13 +834,9 @@ function GrossaryPlusResults({
                     ).toFixed(0)}
                     %
                   </p>
-
                 </div>
-
               )}
-
             </div>
-
 
             <p
               className="
@@ -891,11 +848,8 @@ function GrossaryPlusResults({
               Your total savings with this
               shopping plan
             </p>
-
           </div>
-
         )}
-
       </section>
 
 
@@ -904,7 +858,6 @@ function GrossaryPlusResults({
       {/* ================================= */}
 
       {shoppingLocation && (
-
         <section
           className="
             bg-white
@@ -914,7 +867,6 @@ function GrossaryPlusResults({
             p-5
           "
         >
-
           <div
             className="
               flex
@@ -922,7 +874,6 @@ function GrossaryPlusResults({
               gap-3
             "
           >
-
             <div
               className="
                 w-10
@@ -938,9 +889,7 @@ function GrossaryPlusResults({
               📍
             </div>
 
-
             <div>
-
               <p
                 className="
                   text-xs
@@ -949,7 +898,6 @@ function GrossaryPlusResults({
               >
                 Shopping location
               </p>
-
 
               <p
                 className="
@@ -961,10 +909,8 @@ function GrossaryPlusResults({
                 {shoppingLocation.name}
               </p>
 
-
               {shoppingLocation.distanceKm !=
                 null && (
-
                 <p
                   className="
                     text-xs
@@ -979,15 +925,10 @@ function GrossaryPlusResults({
                   ).toFixed(1)}
                   {" "}km away
                 </p>
-
               )}
-
             </div>
-
           </div>
-
         </section>
-
       )}
 
 
@@ -996,13 +937,7 @@ function GrossaryPlusResults({
       {/* ================================= */}
 
       <section>
-
-        <div
-          className="
-            mb-4
-          "
-        >
-
+        <div className="mb-4">
           <h2
             className="
               text-lg
@@ -1012,7 +947,6 @@ function GrossaryPlusResults({
           >
             Your shopping plan
           </h2>
-
 
           <p
             className="
@@ -1024,28 +958,20 @@ function GrossaryPlusResults({
             Buy each item at the store where
             Grossary found the best price.
           </p>
-
         </div>
 
 
         {allocations.length > 0 ? (
-
-          <div
-            className="
-              space-y-4
-            "
-          >
+          <div className="space-y-4">
 
             {allocations.map(
               (
                 store,
                 storeIndex
               ) => {
-
                 const isCheckers =
                   store.retailer ===
                   "Checkers";
-
 
                 const storeDetails =
                   isCheckers
@@ -1054,7 +980,6 @@ function GrossaryPlusResults({
                     : shoppingLocation
                         ?.pnp;
 
-
                 const storeItems =
                   Array.isArray(
                     store.items
@@ -1062,22 +987,18 @@ function GrossaryPlusResults({
                     ? store.items
                     : [];
 
-
                 const itemCount =
                   Number(
                     store.itemCount ??
                     storeItems.length
                   );
 
-
                 const loyalty =
                   getLoyaltyDetails(
                     store.retailer
                   );
 
-
                 return (
-
                   <div
                     key={
                       store.storeId ||
@@ -1106,7 +1027,6 @@ function GrossaryPlusResults({
                         gap-4
                       "
                     >
-
                       <div
                         className="
                           flex
@@ -1115,7 +1035,6 @@ function GrossaryPlusResults({
                           min-w-0
                         "
                       >
-
                         <div
                           className="
                             w-10
@@ -1131,13 +1050,7 @@ function GrossaryPlusResults({
                           🛒
                         </div>
 
-
-                        <div
-                          className="
-                            min-w-0
-                          "
-                        >
-
+                        <div className="min-w-0">
                           <p
                             className="
                               text-base
@@ -1148,11 +1061,9 @@ function GrossaryPlusResults({
                             {store.retailer}
                           </p>
 
-
                           {(store.branchName ||
                             storeDetails
                               ?.storeName) && (
-
                             <p
                               className="
                                 text-xs
@@ -1165,13 +1076,9 @@ function GrossaryPlusResults({
                                 storeDetails
                                   ?.storeName}
                             </p>
-
                           )}
-
                         </div>
-
                       </div>
-
 
                       <div
                         className="
@@ -1179,7 +1086,6 @@ function GrossaryPlusResults({
                           flex-shrink-0
                         "
                       >
-
                         <p
                           className="
                             text-xs
@@ -1192,7 +1098,6 @@ function GrossaryPlusResults({
                             : "items"}
                         </p>
 
-
                         <p
                           className="
                             font-bold
@@ -1204,9 +1109,7 @@ function GrossaryPlusResults({
                             store.total
                           )}
                         </p>
-
                       </div>
-
                     </div>
 
 
@@ -1218,18 +1121,15 @@ function GrossaryPlusResults({
                         divide-gray-100
                       "
                     >
-
                       {storeItems.map(
                         (
                           item,
                           itemIndex
                         ) => {
-
                           const itemData =
                             getItemDisplayData(
                               item
                             );
-
 
                           const hasLoyaltySaving =
                             itemData
@@ -1238,9 +1138,7 @@ function GrossaryPlusResults({
                               .loyaltySavings >
                               0;
 
-
                           return (
-
                             <div
                               key={
                                 itemData
@@ -1254,7 +1152,6 @@ function GrossaryPlusResults({
                                 py-4
                               "
                             >
-
                               <div
                                 className="
                                   flex
@@ -1272,7 +1169,6 @@ function GrossaryPlusResults({
                                     min-w-0
                                   "
                                 >
-
                                   <p
                                     className="
                                       text-sm
@@ -1286,28 +1182,25 @@ function GrossaryPlusResults({
                                     }
                                   </p>
 
-
                                   {itemData.requestedName &&
                                     itemData
                                       .productName !==
                                       itemData
                                         .requestedName && (
-
-                                    <p
-                                      className="
-                                        text-xs
-                                        text-gray-400
-                                        mt-1
-                                      "
-                                    >
-                                      For:{" "}
-                                      {
-                                        itemData
-                                          .requestedName
-                                      }
-                                    </p>
-
-                                  )}
+                                      <p
+                                        className="
+                                          text-xs
+                                          text-gray-400
+                                          mt-1
+                                        "
+                                      >
+                                        For:{" "}
+                                        {
+                                          itemData
+                                            .requestedName
+                                        }
+                                      </p>
+                                    )}
 
 
                                   {/* NORMAL PRICE / QUANTITY */}
@@ -1339,56 +1232,49 @@ function GrossaryPlusResults({
                                     itemData
                                       .promotionMechanic ===
                                       "MULTIBUY" && (
-
-                                    <div
-                                      className="
-                                        mt-2
-                                        flex
-                                        flex-wrap
-                                        items-center
-                                        gap-2
-                                      "
-                                    >
-
-                                      <LoyaltyBadge
-                                        retailer={
-                                          store.retailer
-                                        }
+                                      <div
+                                        className="
+                                          mt-2
+                                          flex
+                                          flex-wrap
+                                          items-center
+                                          gap-2
+                                        "
                                       >
-                                        {
-                                          loyalty.name
-                                        }
-                                        :{" "}
-
-                                        {itemData
-                                          .promotionMessage ||
-                                          `${itemData.promotionQuantity} for R${formatMoney(
-                                            itemData
-                                              .promotionBundlePrice
-                                          )}`}
-                                      </LoyaltyBadge>
-
-
-                                      {hasLoyaltySaving && (
-
                                         <LoyaltyBadge
                                           retailer={
                                             store.retailer
                                           }
-                                          strong
                                         >
-                                          Save R
-                                          {formatMoney(
-                                            itemData
-                                              .loyaltySavings
-                                          )}
+                                          {
+                                            loyalty.name
+                                          }
+                                          :{" "}
+
+                                          {itemData
+                                            .promotionMessage ||
+                                            `${itemData.promotionQuantity} for R${formatMoney(
+                                              itemData
+                                                .promotionBundlePrice
+                                            )}`}
                                         </LoyaltyBadge>
 
-                                      )}
-
-                                    </div>
-
-                                  )}
+                                        {hasLoyaltySaving && (
+                                          <LoyaltyBadge
+                                            retailer={
+                                              store.retailer
+                                            }
+                                            strong
+                                          >
+                                            Save R
+                                            {formatMoney(
+                                              itemData
+                                                .loyaltySavings
+                                            )}
+                                          </LoyaltyBadge>
+                                        )}
+                                      </div>
+                                    )}
 
 
                                   {/* ========================= */}
@@ -1400,56 +1286,49 @@ function GrossaryPlusResults({
                                     itemData
                                       .promotionMechanic ===
                                       "FIXED_PRICE" && (
-
-                                    <div
-                                      className="
-                                        mt-2
-                                        flex
-                                        flex-wrap
-                                        items-center
-                                        gap-2
-                                      "
-                                    >
-
-                                      <LoyaltyBadge
-                                        retailer={
-                                          store.retailer
-                                        }
+                                      <div
+                                        className="
+                                          mt-2
+                                          flex
+                                          flex-wrap
+                                          items-center
+                                          gap-2
+                                        "
                                       >
-                                        {
-                                          loyalty.name
-                                        }{" "}
-
-                                        R
-                                        {formatMoney(
-                                          itemData
-                                            .loyaltyPrice ??
-                                          itemData
-                                            .unitPrice
-                                        )}
-                                      </LoyaltyBadge>
-
-
-                                      {hasLoyaltySaving && (
-
                                         <LoyaltyBadge
                                           retailer={
                                             store.retailer
                                           }
-                                          strong
                                         >
-                                          Save R
+                                          {
+                                            loyalty.name
+                                          }{" "}
+
+                                          R
                                           {formatMoney(
                                             itemData
-                                              .loyaltySavings
+                                              .loyaltyPrice ??
+                                            itemData
+                                              .unitPrice
                                           )}
                                         </LoyaltyBadge>
 
-                                      )}
-
-                                    </div>
-
-                                  )}
+                                        {hasLoyaltySaving && (
+                                          <LoyaltyBadge
+                                            retailer={
+                                              store.retailer
+                                            }
+                                            strong
+                                          >
+                                            Save R
+                                            {formatMoney(
+                                              itemData
+                                                .loyaltySavings
+                                            )}
+                                          </LoyaltyBadge>
+                                        )}
+                                      </div>
+                                    )}
 
 
                                   {/* ========================= */}
@@ -1465,52 +1344,46 @@ function GrossaryPlusResults({
                                       itemData
                                         .promotionMechanic
                                     ) && (
-
-                                    <div
-                                      className="
-                                        mt-2
-                                        flex
-                                        flex-wrap
-                                        items-center
-                                        gap-2
-                                      "
-                                    >
-
-                                      <LoyaltyBadge
-                                        retailer={
-                                          store.retailer
-                                        }
+                                      <div
+                                        className="
+                                          mt-2
+                                          flex
+                                          flex-wrap
+                                          items-center
+                                          gap-2
+                                        "
                                       >
-                                        {
-                                          loyalty.name
-                                        }
-                                        {itemData
-                                          .promotionMessage
-                                          ? `: ${itemData.promotionMessage}`
-                                          : ""}
-                                      </LoyaltyBadge>
-
-
-                                      {hasLoyaltySaving && (
-
                                         <LoyaltyBadge
                                           retailer={
                                             store.retailer
                                           }
-                                          strong
                                         >
-                                          Save R
-                                          {formatMoney(
-                                            itemData
-                                              .loyaltySavings
-                                          )}
+                                          {
+                                            loyalty.name
+                                          }
+
+                                          {itemData
+                                            .promotionMessage
+                                            ? `: ${itemData.promotionMessage}`
+                                            : ""}
                                         </LoyaltyBadge>
 
-                                      )}
-
-                                    </div>
-
-                                  )}
+                                        {hasLoyaltySaving && (
+                                          <LoyaltyBadge
+                                            retailer={
+                                              store.retailer
+                                            }
+                                            strong
+                                          >
+                                            Save R
+                                            {formatMoney(
+                                              itemData
+                                                .loyaltySavings
+                                            )}
+                                          </LoyaltyBadge>
+                                        )}
+                                      </div>
+                                    )}
 
 
                                   {/* ========================= */}
@@ -1522,30 +1395,27 @@ function GrossaryPlusResults({
                                     itemData
                                       .promotionalSavings >
                                       0 && (
-
-                                    <span
-                                      className="
-                                        inline-flex
-                                        items-center
-                                        mt-2
-                                        bg-[#E9FFF4]
-                                        text-[#168B55]
-                                        text-xs
-                                        font-semibold
-                                        rounded-full
-                                        px-2.5
-                                        py-1
-                                      "
-                                    >
-                                      Save R
-                                      {formatMoney(
-                                        itemData
-                                          .promotionalSavings
-                                      )}
-                                    </span>
-
-                                  )}
-
+                                      <span
+                                        className="
+                                          inline-flex
+                                          items-center
+                                          mt-2
+                                          bg-[#E9FFF4]
+                                          text-[#168B55]
+                                          text-xs
+                                          font-semibold
+                                          rounded-full
+                                          px-2.5
+                                          py-1
+                                        "
+                                      >
+                                        Save R
+                                        {formatMoney(
+                                          itemData
+                                            .promotionalSavings
+                                        )}
+                                      </span>
+                                    )}
                                 </div>
 
 
@@ -1557,7 +1427,6 @@ function GrossaryPlusResults({
                                     flex-shrink-0
                                   "
                                 >
-
                                   <p
                                     className="
                                       font-bold
@@ -1570,10 +1439,8 @@ function GrossaryPlusResults({
                                     )}
                                   </p>
 
-
                                   {itemData
                                     .loyaltyApplied ? (
-
                                     <p
                                       className="
                                         text-[10px]
@@ -1592,11 +1459,8 @@ function GrossaryPlusResults({
                                       }{" "}
                                       price
                                     </p>
-
                                   ) : (
-
                                     item.priceSource && (
-
                                       <p
                                         className="
                                           text-[10px]
@@ -1611,13 +1475,9 @@ function GrossaryPlusResults({
                                         }{" "}
                                         price
                                       </p>
-
                                     )
-
                                   )}
-
                                 </div>
-
                               </div>
 
 
@@ -1633,54 +1493,40 @@ function GrossaryPlusResults({
                                 itemData
                                   .qualifyingBundles >
                                   0 && (
+                                  <p
+                                    className="
+                                      text-xs
+                                      text-gray-400
+                                      mt-2
+                                    "
+                                  >
+                                    {itemData
+                                      .qualifyingBundles}{" "}
 
-                                <p
-                                  className="
-                                    text-xs
-                                    text-gray-400
-                                    mt-2
-                                  "
-                                >
-
-                                  {itemData
-                                    .qualifyingBundles}{" "}
-
-                                  {itemData
-                                    .qualifyingBundles ===
+                                    {itemData
+                                      .qualifyingBundles ===
                                     1
-                                    ? "qualifying bundle"
-                                    : "qualifying bundles"}
+                                      ? "qualifying bundle"
+                                      : "qualifying bundles"}
 
-                                  {itemData
-                                    .remainingQuantity >
+                                    {itemData
+                                      .remainingQuantity >
                                     0
-                                    ? ` + ${itemData.remainingQuantity} at normal price`
-                                    : ""}
-
-                                </p>
-
-                              )}
-
+                                      ? ` + ${itemData.remainingQuantity} at normal price`
+                                      : ""}
+                                  </p>
+                                )}
                             </div>
-
                           );
-
                         }
                       )}
-
                     </div>
-
                   </div>
-
                 );
-
               }
             )}
-
           </div>
-
         ) : (
-
           <div
             className="
               bg-white
@@ -1691,7 +1537,6 @@ function GrossaryPlusResults({
               text-center
             "
           >
-
             <p
               className="
                 text-sm
@@ -1701,11 +1546,8 @@ function GrossaryPlusResults({
               No store allocations were
               returned.
             </p>
-
           </div>
-
         )}
-
       </section>
 
 
@@ -1738,20 +1580,17 @@ function GrossaryPlusResults({
           disabled:cursor-not-allowed
         "
       >
-
         {savingPlan
           ? "Updating your list..."
           : "Use Best Option"}
-
       </button>
 
 
       {/* ================================= */}
-      {/* SINGLE STORE OPTION */}
+      {/* CONVENIENCE OPTION */}
       {/* ================================= */}
 
       {cheapestSingleStore && (
-
         <section
           className="
             bg-[#F2F4F3]
@@ -1759,36 +1598,32 @@ function GrossaryPlusResults({
             p-5
           "
         >
-
-          <p
-            className="
-              text-xs
-              font-semibold
-              uppercase
-              tracking-wide
-              text-gray-500
-            "
-          >
-            Convenience option
-          </p>
-
-
           <div
             className="
               flex
-              items-center
+              items-start
               justify-between
               gap-4
-              mt-2
             "
           >
-
-            <div>
+            <div className="min-w-0">
+              <p
+                className="
+                  text-xs
+                  font-semibold
+                  uppercase
+                  tracking-wide
+                  text-gray-500
+                "
+              >
+                Convenience option
+              </p>
 
               <p
                 className="
                   font-bold
                   text-[#0B2E1E]
+                  mt-2
                 "
               >
                 Shop at only{" "}
@@ -1798,39 +1633,188 @@ function GrossaryPlusResults({
                 }
               </p>
 
+              {cheapestSingleStore
+                .storeName && (
+                <p
+                  className="
+                    text-xs
+                    text-gray-500
+                    mt-1
+                  "
+                >
+                  {
+                    cheapestSingleStore
+                      .storeName
+                  }
+                </p>
+              )}
+            </div>
 
+            <div
+              className="
+                text-right
+                flex-shrink-0
+              "
+            >
               <p
                 className="
                   text-xs
                   text-gray-500
-                  mt-1
                 "
               >
-                Complete the entire basket
-                at one store.
+                Estimated total
               </p>
 
+              <p
+                className="
+                  text-xl
+                  font-bold
+                  text-[#0B2E1E]
+                  whitespace-nowrap
+                  mt-0.5
+                "
+              >
+                R{formatMoney(
+                  cheapestSingleStore
+                    .total
+                )}
+              </p>
             </div>
-
-
-            <p
-              className="
-                font-bold
-                text-[#0B2E1E]
-                whitespace-nowrap
-              "
-            >
-              R{formatMoney(
-                cheapestSingleStore
-                  .total
-              )}
-            </p>
-
           </div>
 
 
-          {splitSavings > 0 && (
+          {/* ================================= */}
+          {/* PARTIAL CONVENIENCE INFO */}
+          {/* ================================= */}
 
+          {convenienceIsPartial ? (
+            <div
+              className="
+                mt-4
+                rounded-xl
+                border
+                border-orange-200
+                bg-orange-50
+                p-4
+              "
+            >
+              <div
+                className="
+                  flex
+                  items-start
+                  gap-3
+                "
+              >
+                <div
+                  className="
+                    w-8
+                    h-8
+                    rounded-lg
+                    bg-orange-100
+                    flex
+                    items-center
+                    justify-center
+                    flex-shrink-0
+                    text-sm
+                    font-bold
+                    text-orange-700
+                  "
+                >
+                  !
+                </div>
+
+                <div className="min-w-0">
+                  <p
+                    className="
+                      text-sm
+                      font-bold
+                      text-[#0B2E1E]
+                    "
+                  >
+                    This estimate covers{" "}
+                    {convenienceMatchedCount}{" "}
+                    {convenienceMatchedCount ===
+                    1
+                      ? "item"
+                      : "items"}
+                  </p>
+
+                  <p
+                    className="
+                      text-xs
+                      text-gray-600
+                      mt-1
+                      leading-relaxed
+                    "
+                  >
+                    The R
+                    {formatMoney(
+                      cheapestSingleStore
+                        .total
+                    )}{" "}
+                    total only includes the{" "}
+                    {convenienceMatchedCount}{" "}
+                    {convenienceMatchedCount ===
+                    1
+                      ? "item"
+                      : "items"}{" "}
+                    included in this
+                    convenience comparison.
+                  </p>
+
+                  {convenienceExcludedCount >
+                    0 && (
+                    <p
+                      className="
+                        text-xs
+                        text-gray-600
+                        mt-2
+                        leading-relaxed
+                      "
+                    >
+                      <span
+                        className="
+                          font-bold
+                          text-[#0B2E1E]
+                        "
+                      >
+                        {
+                          convenienceExcludedCount
+                        }{" "}
+                        {convenienceExcludedCount ===
+                        1
+                          ? "item is"
+                          : "items are"}
+                      </span>{" "}
+                      not included in this
+                      estimate. You can still
+                      shop for those items
+                      separately.
+                    </p>
+                  )}
+                </div>
+              </div>
+            </div>
+          ) : (
+            <p
+              className="
+                text-xs
+                text-gray-500
+                mt-3
+              "
+            >
+              Complete your entire shopping
+              list at one store.
+            </p>
+          )}
+
+
+          {/* ================================= */}
+          {/* COMPLETE-BASKET SPLIT SAVINGS */}
+          {/* ================================= */}
+
+          {!convenienceIsPartial &&
+            splitSavings > 0 && (
             <div
               className="
                 mt-4
@@ -1839,7 +1823,6 @@ function GrossaryPlusResults({
                 border-gray-200
               "
             >
-
               <p
                 className="
                   text-xs
@@ -1860,68 +1843,54 @@ function GrossaryPlusResults({
                   )}
                 </span>
 
-                {" "}compared with shopping
+                {" "}more compared with shopping
                 at one store.
               </p>
-
             </div>
-
           )}
 
-        </section>
 
-      )}
+          {/* ================================= */}
+          {/* USE CONVENIENCE OPTION */}
+          {/* ================================= */}
 
+          <button
+            type="button"
+            onClick={() =>
+              onSelectPlan(
+                Number(
+                  cheapestSingleStore
+                    ?.total ||
+                  0
+                ),
 
-      {cheapestSingleStore && (
-
-        <button
-          type="button"
-          onClick={() =>
-            onSelectPlan(
-              Number(
-                cheapestSingleStore
-                  ?.total ||
-                0
-              ),
-
-              Number(
-                cheapestSingleStore
-                  ?.promotionalSavings ||
-                0
-              ) +
-
-              Number(
-                cheapestSingleStore
-                  ?.loyaltySavings ||
-                0
+                convenienceSavings
               )
-            )
-          }
-          disabled={savingPlan}
-          className="
-            mt-4
-            w-full
-            bg-white
-            border
-            border-[#0B2E1E]
-            text-[#0B2E1E]
-            font-bold
-            py-3.5
-            px-5
-            rounded-2xl
-            hover:bg-gray-50
-            active:scale-[0.99]
-            transition
-            disabled:opacity-50
-            disabled:cursor-not-allowed
-          "
-        >
-          {savingPlan
-            ? "Updating your list..."
-            : "Use Convenience Option"}
-        </button>
-
+            }
+            disabled={savingPlan}
+            className="
+              mt-5
+              w-full
+              bg-white
+              border
+              border-[#0B2E1E]
+              text-[#0B2E1E]
+              font-bold
+              py-3.5
+              px-5
+              rounded-2xl
+              hover:bg-gray-50
+              active:scale-[0.99]
+              transition
+              disabled:opacity-50
+              disabled:cursor-not-allowed
+            "
+          >
+            {savingPlan
+              ? "Updating your list..."
+              : "Use Convenience Option"}
+          </button>
+        </section>
       )}
 
 
@@ -1931,7 +1900,6 @@ function GrossaryPlusResults({
 
       {!complete &&
         unmatchedItems.length > 0 && (
-
         <section
           className="
             border
@@ -1941,7 +1909,6 @@ function GrossaryPlusResults({
             p-5
           "
         >
-
           <div
             className="
               flex
@@ -1949,7 +1916,6 @@ function GrossaryPlusResults({
               gap-3
             "
           >
-
             <div
               className="
                 w-9
@@ -1960,14 +1926,14 @@ function GrossaryPlusResults({
                 items-center
                 justify-center
                 flex-shrink-0
+                font-bold
+                text-orange-700
               "
             >
               !
             </div>
 
-
-            <div>
-
+            <div className="min-w-0">
               <p
                 className="
                   font-bold
@@ -1977,7 +1943,6 @@ function GrossaryPlusResults({
                 Some items couldn&apos;t be
                 compared
               </p>
-
 
               <p
                 className="
@@ -1992,19 +1957,101 @@ function GrossaryPlusResults({
                 {unmatchedItems.length === 1
                   ? "item"
                   : "items"}
-                .
+                . These items are not included
+                in the estimated basket total.
               </p>
 
+              <div
+                className="
+                  mt-4
+                  space-y-2
+                "
+              >
+                {unmatchedItems.map(
+                  (
+                    unmatchedItem,
+                    index
+                  ) => {
+                    const requestedItem =
+                      unmatchedItem
+                        ?.requestedItem ||
+                      unmatchedItem ||
+                      {};
+
+                    const name =
+                      requestedItem
+                        ?.item_name ||
+                      unmatchedItem
+                        ?.itemName ||
+                      unmatchedItem
+                        ?.name ||
+                      "Item";
+
+                    return (
+                      <div
+                        key={
+                          requestedItem
+                            ?.id ||
+                          `${name}-${index}`
+                        }
+                        className="
+                          flex
+                          items-center
+                          justify-between
+                          gap-3
+                          rounded-xl
+                          bg-white/70
+                          px-3
+                          py-2.5
+                        "
+                      >
+                        <p
+                          className="
+                            text-sm
+                            font-medium
+                            text-[#0B2E1E]
+                          "
+                        >
+                          {name}
+                        </p>
+
+                        <span
+                          className="
+                            text-[10px]
+                            font-bold
+                            uppercase
+                            tracking-wide
+                            text-orange-700
+                            bg-orange-100
+                            rounded-full
+                            px-2
+                            py-1
+                            flex-shrink-0
+                          "
+                        >
+                          Not compared
+                        </span>
+                      </div>
+                    );
+                  }
+                )}
+              </div>
+
+              <p
+                className="
+                  text-xs
+                  text-gray-500
+                  mt-3
+                "
+              >
+                You can still add these items
+                to your trolley when you shop.
+              </p>
             </div>
-
           </div>
-
         </section>
-
       )}
-
     </div>
-
   );
 }
 

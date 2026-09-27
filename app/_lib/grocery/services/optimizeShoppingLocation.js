@@ -21,6 +21,7 @@ function findBasketItem(
   basket,
   item
 ) {
+
   return basket.items.find(
     basketItem =>
       basketItem
@@ -40,13 +41,16 @@ function findBasketItem(
 function isUsableResult(
   result
 ) {
+
   if (!result) {
     return false;
   }
 
+
   if (!result.matched) {
     return false;
   }
+
 
   if (
     !Number.isFinite(
@@ -55,22 +59,26 @@ function isUsableResult(
       )
     )
   ) {
+
     return false;
   }
+
 
   /*
    * Explicitly out-of-stock products
    * cannot be selected.
    *
-   * null = stock unknown, which is currently
-   * the case for Checkers.
+   * null = stock unknown.
    */
+
   if (
     result.product?.inStock ===
     false
   ) {
+
     return false;
   }
+
 
   return true;
 }
@@ -93,6 +101,7 @@ function chooseBestItemOption(
       checkersResult
     );
 
+
   const pnpUsable =
     isUsableResult(
       pnpResult
@@ -102,11 +111,14 @@ function chooseBestItemOption(
   /*
    * Neither retailer has a usable match.
    */
+
   if (
     !checkersUsable &&
     !pnpUsable
   ) {
+
     return {
+
       requestedItem:
         item,
 
@@ -136,6 +148,9 @@ function chooseBestItemOption(
       promotionalSavings:
         0,
 
+      loyaltySavings:
+        0,
+
       checkers:
         checkersResult ||
         null,
@@ -143,6 +158,7 @@ function chooseBestItemOption(
       pnp:
         pnpResult ||
         null,
+
     };
   }
 
@@ -150,11 +166,14 @@ function chooseBestItemOption(
   /*
    * Only Checkers has the item.
    */
+
   if (
     checkersUsable &&
     !pnpUsable
   ) {
+
     return {
+
       ...checkersResult,
 
       selectedRetailer:
@@ -166,6 +185,7 @@ function chooseBestItemOption(
       pnp:
         pnpResult ||
         null,
+
     };
   }
 
@@ -173,11 +193,14 @@ function chooseBestItemOption(
   /*
    * Only PnP has the item.
    */
+
   if (
     !checkersUsable &&
     pnpUsable
   ) {
+
     return {
+
       ...pnpResult,
 
       selectedRetailer:
@@ -189,6 +212,7 @@ function chooseBestItemOption(
 
       pnp:
         pnpResult,
+
     };
   }
 
@@ -196,17 +220,15 @@ function chooseBestItemOption(
   /*
    * Both retailers have the item.
    *
-   * Compare UNIT prices.
-   *
-   * Quantity is identical for both,
-   * so unit-price comparison gives
-   * the same winner as line-total
-   * comparison.
+   * Compare the effective unit price
+   * returned by the basket provider.
    */
+
   const checkersPrice =
     Number(
       checkersResult.unitPrice
     );
+
 
   const pnpPrice =
     Number(
@@ -214,14 +236,13 @@ function chooseBestItemOption(
     );
 
 
-  /*
-   * Checkers cheaper.
-   */
   if (
     checkersPrice <
     pnpPrice
   ) {
+
     return {
+
       ...checkersResult,
 
       selectedRetailer:
@@ -232,18 +253,18 @@ function chooseBestItemOption(
 
       pnp:
         pnpResult,
+
     };
   }
 
 
-  /*
-   * PnP cheaper.
-   */
   if (
     pnpPrice <
     checkersPrice
   ) {
+
     return {
+
       ...pnpResult,
 
       selectedRetailer:
@@ -254,21 +275,20 @@ function chooseBestItemOption(
 
       pnp:
         pnpResult,
+
     };
   }
 
 
   /*
-   * Same price.
+   * Equal price.
    *
-   * For now choose Checkers deterministically
-   * rather than randomly moving equal-price
-   * items between retailers.
-   *
-   * We'll improve tie handling later so that
-   * we minimise the number of stores visited.
+   * Keep Checkers as deterministic
+   * tie-breaker for now.
    */
+
   return {
+
     ...checkersResult,
 
     selectedRetailer:
@@ -282,6 +302,7 @@ function chooseBestItemOption(
 
     pnp:
       pnpResult,
+
   };
 }
 
@@ -339,7 +360,25 @@ function buildRetailerAllocation(
     );
 
 
+  const loyaltySavings =
+    items.reduce(
+      (
+        sum,
+        item
+      ) =>
+        sum +
+        (
+          Number(
+            item
+              .loyaltySavings
+          ) || 0
+        ),
+      0
+    );
+
+
   return {
+
     retailer,
 
     items,
@@ -357,52 +396,419 @@ function buildRetailerAllocation(
         promotionalSavings
           .toFixed(2)
       ),
+
+    loyaltySavings:
+      Number(
+        loyaltySavings
+          .toFixed(2)
+      ),
+
   };
 }
 
 
 /*
  * ------------------------------------------------
- * Get complete single-store total
+ * Get all usable matched items from one
+ * retailer basket.
+ * ------------------------------------------------
+ */
+
+function getUsableBasketItems(
+  basket
+) {
+
+  if (
+    !Array.isArray(
+      basket?.items
+    )
+  ) {
+
+    return [];
+  }
+
+
+  return basket.items.filter(
+    item =>
+      isUsableResult(
+        item
+      )
+  );
+}
+
+
+/*
+ * ------------------------------------------------
+ * Build a single-store option
+ * ------------------------------------------------
+ *
+ * IMPORTANT:
+ *
+ * We no longer discard a retailer simply
+ * because some requested products could
+ * not be matched.
+ *
+ * A retailer can therefore produce:
+ *
+ * complete = true
+ *
+ * OR
+ *
+ * complete = false
+ *
+ * The partial option contains only products
+ * that were confidently matched at that
+ * retailer.
  * ------------------------------------------------
  */
 
 function getSingleStoreOption(
   basket,
-  store
+  store,
+  totalRequestedItems
 ) {
 
-  /*
-   * A single-store option is only valid
-   * when that retailer can supply every
-   * requested item.
-   */
-  if (!basket.complete) {
+  const matchedItems =
+    getUsableBasketItems(
+      basket
+    );
+
+
+  if (
+    matchedItems.length ===
+    0
+  ) {
+
     return {
+
       retailer:
-        basket.retailer,
+        basket?.retailer ||
+        null,
 
       storeId:
-        store.storeId,
+        store?.storeId ||
+        null,
 
       storeName:
-        store.storeName,
+        store?.storeName ||
+        null,
 
       complete:
         false,
+
+      partial:
+        true,
+
+      matchedCount:
+        0,
+
+      unmatchedCount:
+        totalRequestedItems,
+
+      coverage:
+        0,
 
       total:
         null,
 
       promotionalSavings:
-        basket
-          .promotionalSavings ||
         0,
+
+      loyaltySavings:
+        0,
+
+      items:
+        [],
+
     };
   }
 
 
+  const total =
+    matchedItems.reduce(
+      (
+        sum,
+        item
+      ) =>
+        sum +
+        (
+          Number(
+            item.lineTotal
+          ) || 0
+        ),
+      0
+    );
+
+
+  const promotionalSavings =
+    matchedItems.reduce(
+      (
+        sum,
+        item
+      ) =>
+        sum +
+        (
+          Number(
+            item
+              .promotionalSavings
+          ) || 0
+        ),
+      0
+    );
+
+
+  const loyaltySavings =
+    matchedItems.reduce(
+      (
+        sum,
+        item
+      ) =>
+        sum +
+        (
+          Number(
+            item
+              .loyaltySavings
+          ) || 0
+        ),
+      0
+    );
+
+
+  const matchedCount =
+    matchedItems.length;
+
+
+  const unmatchedCount =
+    Math.max(
+      0,
+      totalRequestedItems -
+      matchedCount
+    );
+
+
+  const complete =
+    unmatchedCount ===
+    0;
+
+
+  const coverage =
+    totalRequestedItems > 0
+      ? matchedCount /
+        totalRequestedItems
+      : 0;
+
+
   return {
+
+    retailer:
+      basket.retailer,
+
+    storeId:
+      store.storeId,
+
+    storeName:
+      store.storeName,
+
+    complete,
+
+    partial:
+      !complete,
+
+    matchedCount,
+
+    unmatchedCount,
+
+    coverage:
+      Number(
+        coverage.toFixed(4)
+      ),
+
+    total:
+      Number(
+        total.toFixed(2)
+      ),
+
+    promotionalSavings:
+      Number(
+        promotionalSavings
+          .toFixed(2)
+      ),
+
+    loyaltySavings:
+      Number(
+        loyaltySavings
+          .toFixed(2)
+      ),
+
+    items:
+      matchedItems,
+
+  };
+}
+
+
+/*
+ * ------------------------------------------------
+ * Find items matched at BOTH retailers
+ * ------------------------------------------------
+ *
+ * This gives us a fair comparison when
+ * neither store can supply the complete
+ * requested list.
+ *
+ * We don't want to compare:
+ *
+ * Checkers: 4 items = R200
+ *
+ * against:
+ *
+ * PnP: 7 items = R350
+ *
+ * because those are different baskets.
+ * ------------------------------------------------
+ */
+
+function getCommonMatchedItemIds(
+  checkersBasket,
+  pnpBasket
+) {
+
+  const checkersIds =
+    new Set(
+      getUsableBasketItems(
+        checkersBasket
+      )
+        .map(
+          item =>
+            item
+              ?.requestedItem
+              ?.id
+        )
+        .filter(Boolean)
+    );
+
+
+  const pnpIds =
+    new Set(
+      getUsableBasketItems(
+        pnpBasket
+      )
+        .map(
+          item =>
+            item
+              ?.requestedItem
+              ?.id
+        )
+        .filter(Boolean)
+    );
+
+
+  return new Set(
+    [
+      ...checkersIds,
+    ].filter(
+      id =>
+        pnpIds.has(id)
+    )
+  );
+}
+
+
+/*
+ * ------------------------------------------------
+ * Build fair partial single-store option
+ * ------------------------------------------------
+ *
+ * Uses the SAME requested items at both
+ * retailers.
+ * ------------------------------------------------
+ */
+
+function getComparablePartialOption(
+  basket,
+  store,
+  commonMatchedIds,
+  totalRequestedItems
+) {
+
+  const items =
+    getUsableBasketItems(
+      basket
+    ).filter(
+      item =>
+        commonMatchedIds.has(
+          item
+            ?.requestedItem
+            ?.id
+        )
+    );
+
+
+  if (
+    items.length ===
+    0
+  ) {
+
+    return null;
+  }
+
+
+  const total =
+    items.reduce(
+      (
+        sum,
+        item
+      ) =>
+        sum +
+        (
+          Number(
+            item.lineTotal
+          ) || 0
+        ),
+      0
+    );
+
+
+  const promotionalSavings =
+    items.reduce(
+      (
+        sum,
+        item
+      ) =>
+        sum +
+        (
+          Number(
+            item
+              .promotionalSavings
+          ) || 0
+        ),
+      0
+    );
+
+
+  const loyaltySavings =
+    items.reduce(
+      (
+        sum,
+        item
+      ) =>
+        sum +
+        (
+          Number(
+            item
+              .loyaltySavings
+          ) || 0
+        ),
+      0
+    );
+
+
+  const matchedCount =
+    items.length;
+
+
+  return {
+
     retailer:
       basket.retailer,
 
@@ -413,16 +819,111 @@ function getSingleStoreOption(
       store.storeName,
 
     complete:
-      true,
+      matchedCount ===
+      totalRequestedItems,
+
+    partial:
+      matchedCount !==
+      totalRequestedItems,
+
+    matchedCount,
+
+    unmatchedCount:
+      Math.max(
+        0,
+        totalRequestedItems -
+        matchedCount
+      ),
+
+    coverage:
+      totalRequestedItems > 0
+        ? Number(
+            (
+              matchedCount /
+              totalRequestedItems
+            ).toFixed(4)
+          )
+        : 0,
 
     total:
-      basket.total,
+      Number(
+        total.toFixed(2)
+      ),
 
     promotionalSavings:
-      basket
-        .promotionalSavings ||
-      0,
+      Number(
+        promotionalSavings
+          .toFixed(2)
+      ),
+
+    loyaltySavings:
+      Number(
+        loyaltySavings
+          .toFixed(2)
+      ),
+
+    items,
+
   };
+}
+
+
+/*
+ * ------------------------------------------------
+ * Pick cheapest option
+ * ------------------------------------------------
+ */
+
+function getCheapestOption(
+  options
+) {
+
+  const validOptions =
+    options.filter(
+      option =>
+        option &&
+        Number.isFinite(
+          Number(
+            option.total
+          )
+        )
+    );
+
+
+  if (
+    validOptions.length ===
+    0
+  ) {
+
+    return null;
+  }
+
+
+  return validOptions.reduce(
+    (
+      cheapest,
+      option
+    ) => {
+
+      if (!cheapest) {
+        return option;
+      }
+
+
+      return (
+        Number(
+          option.total
+        ) <
+        Number(
+          cheapest.total
+        )
+      )
+        ? option
+        : cheapest;
+
+    },
+    null
+  );
 }
 
 
@@ -441,6 +942,7 @@ async function optimizeShoppingLocation({
     !Array.isArray(items) ||
     items.length === 0
   ) {
+
     throw new Error(
       "Grossary Plus requires at least one item."
     );
@@ -450,6 +952,7 @@ async function optimizeShoppingLocation({
   if (
     !location?.checkers?.storeId
   ) {
+
     throw new Error(
       "Checkers storeId is required."
     );
@@ -459,6 +962,7 @@ async function optimizeShoppingLocation({
   if (
     !location?.pnp?.storeId
   ) {
+
     throw new Error(
       "PnP storeId is required."
     );
@@ -469,14 +973,11 @@ async function optimizeShoppingLocation({
    * ------------------------------------------------
    * Price the same list at both stores
    * ------------------------------------------------
+   *
+   * Keep sequential for now because both
+   * providers currently have Parse limits.
    */
 
-  /*
-   * Keep these sequential for now.
-   *
-   * Both providers currently have
-   * Parse request limits.
-   */
   const checkersBasket =
     await getCheckersBasket(
       items,
@@ -602,87 +1103,148 @@ async function optimizeShoppingLocation({
     );
 
 
+  const loyaltySavings =
+    matchedItems.reduce(
+      (
+        sum,
+        item
+      ) =>
+        sum +
+        (
+          Number(
+            item
+              .loyaltySavings
+          ) || 0
+        ),
+      0
+    );
+
+
   /*
    * ------------------------------------------------
-   * Single-store alternatives
+   * Full single-store alternatives
    * ------------------------------------------------
+   *
+   * These now contain useful information
+   * even when the retailer only matched
+   * part of the list.
    */
 
   const checkersOnly =
     getSingleStoreOption(
       checkersBasket,
-      location.checkers
+      location.checkers,
+      items.length
     );
 
 
   const pnpOnly =
     getSingleStoreOption(
       pnpBasket,
-      location.pnp
+      location.pnp,
+      items.length
     );
-
-
-  const completeSingleStores =
-    [
-      checkersOnly,
-      pnpOnly,
-    ].filter(
-      option =>
-        option.complete &&
-        Number.isFinite(
-          Number(
-            option.total
-          )
-        )
-    );
-
-
-  let cheapestSingleStore =
-    null;
-
-
-  if (
-    completeSingleStores.length >
-    0
-  ) {
-    cheapestSingleStore =
-      completeSingleStores.reduce(
-        (
-          cheapest,
-          option
-        ) => {
-
-          if (!cheapest) {
-            return option;
-          }
-
-          return (
-            Number(
-              option.total
-            ) <
-            Number(
-              cheapest.total
-            )
-          )
-            ? option
-            : cheapest;
-
-        },
-        null
-      );
-  }
 
 
   /*
    * ------------------------------------------------
-   * Combination savings
+   * Complete single-store option
+   * ------------------------------------------------
+   */
+
+  const cheapestComplete =
+    getCheapestOption(
+      [
+        checkersOnly?.complete
+          ? checkersOnly
+          : null,
+
+        pnpOnly?.complete
+          ? pnpOnly
+          : null,
+      ]
+    );
+
+
+  /*
+   * ------------------------------------------------
+   * Partial single-store option
    * ------------------------------------------------
    *
-   * Only calculate this when:
+   * IMPORTANT:
    *
-   * 1. optimized basket contains every item
-   * 2. at least one retailer can supply the
-   *    entire list alone
+   * Compare exactly the same products at
+   * Checkers and PnP.
+   */
+
+  const commonMatchedIds =
+    getCommonMatchedItemIds(
+      checkersBasket,
+      pnpBasket
+    );
+
+
+  const checkersPartial =
+    getComparablePartialOption(
+      checkersBasket,
+      location.checkers,
+      commonMatchedIds,
+      items.length
+    );
+
+
+  const pnpPartial =
+    getComparablePartialOption(
+      pnpBasket,
+      location.pnp,
+      commonMatchedIds,
+      items.length
+    );
+
+
+  const cheapestPartial =
+    getCheapestOption(
+      [
+        checkersPartial,
+        pnpPartial,
+      ]
+    );
+
+
+  /*
+   * ------------------------------------------------
+   * Convenience option
+   * ------------------------------------------------
+   *
+   * Priority:
+   *
+   * 1. Complete single-store basket
+   *
+   * 2. Fair partial single-store basket
+   */
+
+  const convenienceOption =
+    cheapestComplete ||
+    cheapestPartial;
+
+
+  /*
+   * Keep `cheapest` for compatibility with
+   * the existing frontend/select-plan API.
+   *
+   * This means the frontend can immediately
+   * show a convenience option even when
+   * products are unmatched.
+   */
+
+  const cheapestSingleStore =
+    convenienceOption;
+
+
+  /*
+   * ------------------------------------------------
+   * Is optimized result complete?
+   * ------------------------------------------------
    */
 
   const complete =
@@ -690,20 +1252,35 @@ async function optimizeShoppingLocation({
     0;
 
 
+  /*
+   * ------------------------------------------------
+   * Combination savings
+   * ------------------------------------------------
+   *
+   * For a complete basket, compare against
+   * the complete convenience option.
+   *
+   * For an incomplete basket we deliberately
+   * do NOT compare optimizedTotal against a
+   * partial convenience basket because they
+   * may represent different item subsets.
+   */
+
   let combinationSavings =
     null;
 
 
   if (
     complete &&
-    cheapestSingleStore
+    cheapestComplete
   ) {
+
     combinationSavings =
       Math.max(
         0,
 
         Number(
-          cheapestSingleStore.total
+          cheapestComplete.total
         ) -
         optimizedTotal
       );
@@ -734,7 +1311,9 @@ async function optimizeShoppingLocation({
    */
 
   return {
+
     location: {
+
       name:
         location.name ||
         null,
@@ -748,6 +1327,7 @@ async function optimizeShoppingLocation({
 
       pnp:
         location.pnp,
+
     },
 
 
@@ -757,14 +1337,17 @@ async function optimizeShoppingLocation({
     itemCount:
       items.length,
 
+
     matchedCount:
       matchedItems.length,
+
 
     unmatchedCount:
       unmatchedItems.length,
 
 
     optimized: {
+
       total:
         Number(
           optimizedTotal.toFixed(2)
@@ -776,30 +1359,84 @@ async function optimizeShoppingLocation({
             .toFixed(2)
         ),
 
+      loyaltySavings:
+        Number(
+          loyaltySavings
+            .toFixed(2)
+        ),
+
       storesUsed,
 
       items:
         optimizedItems,
 
       allocations: {
+
         checkers:
           checkersAllocation,
 
         pnp:
           pnpAllocation,
+
       },
+
     },
 
 
     singleStoreOptions: {
+
+      /*
+       * Retailer-specific options.
+       *
+       * These may be complete or partial.
+       */
+
       checkers:
         checkersOnly,
 
       pnp:
         pnpOnly,
 
+
+      /*
+       * Cheapest complete basket.
+       *
+       * null when neither retailer has
+       * every requested item.
+       */
+
+      cheapestComplete,
+
+
+      /*
+       * Fair partial comparison.
+       */
+
+      partial: {
+
+        checkers:
+          checkersPartial,
+
+        pnp:
+          pnpPartial,
+
+      },
+
+
+      cheapestPartial,
+
+
+      /*
+       * Backwards-compatible convenience
+       * option.
+       *
+       * Complete is preferred.
+       * Partial is fallback.
+       */
+
       cheapest:
         cheapestSingleStore,
+
     },
 
 
@@ -818,23 +1455,34 @@ async function optimizeShoppingLocation({
 
     /*
      * Keep raw baskets during development.
-     *
-     * Very useful for debugging matches.
      */
+
     baskets: {
+
       checkers:
         checkersBasket,
 
       pnp:
         pnpBasket,
+
     },
+
   };
 }
 
 
 module.exports = {
+
   optimizeShoppingLocation,
+
   chooseBestItemOption,
+
   buildRetailerAllocation,
+
   isUsableResult,
+
+  getSingleStoreOption,
+
+  getComparablePartialOption,
+
 };

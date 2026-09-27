@@ -617,7 +617,7 @@ bottom-5'>Add Your Grocery list items using the Plus button above</p> */}
             whitespace-nowrap
           "
         >
-          R{Number(item.recommended_price).toFixed(2)}
+          R{item.promotion}{Number(item.recommended_price).toFixed(2)}
         </span>
       )}
 

@@ -7,10 +7,391 @@ import {
 } from "@/app/_utils/supabase/server";
 
 
+/*
+ * ------------------------------------------------
+ * Money helper
+ * ------------------------------------------------
+ */
+
+function roundMoney(value) {
+  return Number(
+    Number(value || 0).toFixed(2)
+  );
+}
+
+
+/*
+ * ------------------------------------------------
+ * Compare monetary totals
+ * ------------------------------------------------
+ *
+ * Protects against floating-point differences:
+ *
+ * 99.989999999
+ *
+ * vs
+ *
+ * 99.99
+ * ------------------------------------------------
+ */
+
+function totalsMatch(
+  first,
+  second
+) {
+  const a =
+    Number(first);
+
+  const b =
+    Number(second);
+
+  if (
+    !Number.isFinite(a) ||
+    !Number.isFinite(b)
+  ) {
+    return false;
+  }
+
+  return (
+    Math.abs(
+      a - b
+    ) < 0.01
+  );
+}
+
+
+/*
+ * ------------------------------------------------
+ * Resolve shopping location store
+ * ------------------------------------------------
+ */
+
+function getLocationStore(
+  data,
+  optimization,
+  retailer
+) {
+  const shoppingLocation =
+    data?.shoppingLocation ||
+    optimization?.location ||
+    null;
+
+  if (!shoppingLocation) {
+    return null;
+  }
+
+  if (
+    retailer === "Checkers"
+  ) {
+    return (
+      shoppingLocation
+        ?.checkers ||
+      null
+    );
+  }
+
+  return (
+    shoppingLocation
+      ?.pnp ||
+    null
+  );
+}
+
+
+/*
+ * ------------------------------------------------
+ * Convert an optimized item into a recommendation
+ * ------------------------------------------------
+ */
+
+function buildRecommendation({
+  item,
+  retailer = null,
+  storeId = null,
+  storeName = null,
+}) {
+  if (!item) {
+    return null;
+  }
+
+  /*
+   * Explicitly unmatched items must never
+   * receive Grossary+ recommendation fields.
+   */
+
+  if (
+    item.matched === false
+  ) {
+    return null;
+  }
+
+  const requestedItem =
+    item?.requestedItem ||
+    {};
+
+  const product =
+    item?.product ||
+    {};
+
+  const itemId =
+    requestedItem?.id ||
+    item?.itemId ||
+    null;
+
+  if (!itemId) {
+    return null;
+  }
+
+
+  /*
+   * Prefer information attached directly to
+   * the optimized item.
+   */
+
+  const resolvedRetailer =
+    item?.selectedRetailer ||
+    item?.retailer ||
+    retailer ||
+    null;
+
+
+  const resolvedStoreId =
+    item?.storeId ||
+    product?.storeId ||
+    storeId ||
+    null;
+
+
+  const resolvedStoreName =
+    item?.storeName ||
+    item?.branchName ||
+    product?.storeName ||
+    product?.branchName ||
+    storeName ||
+    resolvedRetailer ||
+    null;
+
+
+  const price =
+    Number(
+      item?.unitPrice ??
+      product?.price
+    );
+
+
+  if (
+    !Number.isFinite(price)
+  ) {
+    return null;
+  }
+
+
+  const productName =
+    product?.productName ||
+    item?.productName ||
+    requestedItem?.item_name ||
+    null;
+
+
+  return {
+    itemId,
+
+    retailer:
+      resolvedRetailer,
+
+    storeId:
+      resolvedStoreId,
+
+    storeName:
+      resolvedStoreName,
+
+    price:
+      roundMoney(price),
+
+    productName,
+  };
+}
+
+
+/*
+ * ------------------------------------------------
+ * Build BEST OPTION recommendations
+ * ------------------------------------------------
+ */
+
+function buildBestRecommendations({
+  optimization,
+  data,
+}) {
+  const items =
+    Array.isArray(
+      optimization
+        ?.optimized
+        ?.items
+    )
+      ? optimization
+          .optimized
+          .items
+      : [];
+
+
+  return items
+    .filter(
+      (item) =>
+        item &&
+        item.matched !== false
+    )
+    .map(
+      (item) => {
+        const retailer =
+          item?.selectedRetailer ||
+          item?.retailer ||
+          null;
+
+        const locationStore =
+          getLocationStore(
+            data,
+            optimization,
+            retailer
+          );
+
+        return buildRecommendation({
+          item,
+
+          retailer,
+
+          storeId:
+            locationStore?.storeId ||
+            null,
+
+          storeName:
+            locationStore?.storeName ||
+            retailer ||
+            null,
+        });
+      }
+    )
+    .filter(Boolean);
+}
+
+
+/*
+ * ------------------------------------------------
+ * Build CONVENIENCE OPTION recommendations
+ * ------------------------------------------------
+ *
+ * IMPORTANT:
+ *
+ * Do NOT rebuild this from:
+ *
+ * baskets.checkers.matched
+ *
+ * or
+ *
+ * baskets.pnp.matched
+ *
+ *
+ * The optimizer now attaches the exact products
+ * represented by the convenience total to:
+ *
+ * singleStoreOptions.cheapest.items
+ *
+ *
+ * This matters when the convenience option is
+ * partial.
+ *
+ * Example:
+ *
+ * User has 10 items.
+ *
+ * Checkers has 8.
+ * PnP has 9.
+ * Only 7 are fairly comparable at both stores.
+ *
+ * The convenience option may therefore represent
+ * only those 7 items.
+ *
+ * We must update ONLY those 7 list_items.
+ * ------------------------------------------------
+ */
+
+function buildConvenienceRecommendations({
+  optimization,
+  data,
+}) {
+  const convenience =
+    optimization
+      ?.singleStoreOptions
+      ?.cheapest;
+
+  if (!convenience) {
+    return [];
+  }
+
+
+  const retailer =
+    convenience?.retailer ||
+    null;
+
+
+  const locationStore =
+    getLocationStore(
+      data,
+      optimization,
+      retailer
+    );
+
+
+  const storeId =
+    convenience?.storeId ||
+    locationStore?.storeId ||
+    null;
+
+
+  const storeName =
+    convenience?.storeName ||
+    convenience?.branchName ||
+    locationStore?.storeName ||
+    retailer ||
+    null;
+
+
+  const items =
+    Array.isArray(
+      convenience?.items
+    )
+      ? convenience.items
+      : [];
+
+
+  return items
+    .filter(
+      (item) =>
+        item &&
+        item.matched !== false
+    )
+    .map(
+      (item) =>
+        buildRecommendation({
+          item,
+          retailer,
+          storeId,
+          storeName,
+        })
+    )
+    .filter(Boolean);
+}
+
+
+/*
+ * ------------------------------------------------
+ * POST
+ * ------------------------------------------------
+ */
+
 export async function POST(
   request
 ) {
-
   try {
 
     // =====================================
@@ -27,15 +408,13 @@ export async function POST(
 
 
     if (!listId) {
-
       return NextResponse.json(
         {
           error:
             "listId is required.",
         },
         {
-          status:
-            400,
+          status: 400,
         }
       );
     }
@@ -49,7 +428,7 @@ export async function POST(
 
     const selectedSavings =
       Number(
-        savings
+        savings ?? 0
       );
 
 
@@ -59,15 +438,13 @@ export async function POST(
       ) ||
       selectedBasketTotal < 0
     ) {
-
       return NextResponse.json(
         {
           error:
             "A valid basketTotal is required.",
         },
         {
-          status:
-            400,
+          status: 400,
         }
       );
     }
@@ -79,23 +456,21 @@ export async function POST(
       ) ||
       selectedSavings < 0
     ) {
-
       return NextResponse.json(
         {
           error:
             "A valid savings amount is required.",
         },
         {
-          status:
-            400,
+          status: 400,
         }
       );
     }
 
 
-    const supabase =
-      await createClient();
-
+    // =====================================
+    // RESULT
+    // =====================================
 
     const data =
       result?.result ||
@@ -107,15 +482,30 @@ export async function POST(
 
 
     if (!optimization) {
-
       return NextResponse.json(
         {
           error:
             "Optimization result is missing.",
         },
         {
-          status:
-            400,
+          status: 400,
+        }
+      );
+    }
+
+
+    const optimized =
+      optimization?.optimized;
+
+
+    if (!optimized) {
+      return NextResponse.json(
+        {
+          error:
+            "Optimized shopping plan is missing.",
+        },
+        {
+          status: 400,
         }
       );
     }
@@ -126,30 +516,26 @@ export async function POST(
     // =====================================
 
     /*
-     * The frontend no longer sends:
+     * The frontend sends the monetary value,
+     * rather than:
      *
      * "best"
+     *
      * or
-     * "convenience"
      *
-     * grossary_plus_plan now stores the
-     * actual selected basket total.
+     * "convenience".
      *
-     * We therefore determine which option
-     * was selected by comparing basketTotal
-     * against the available options.
+     * grossary_plus_plan therefore continues
+     * to store the actual selected basket
+     * amount.
      */
-
-
-    const optimized =
-      optimization
-        ?.optimized;
 
 
     const cheapestSingleStore =
       optimization
         ?.singleStoreOptions
-        ?.cheapest;
+        ?.cheapest ||
+      null;
 
 
     const optimizedTotal =
@@ -163,42 +549,6 @@ export async function POST(
         cheapestSingleStore
           ?.total
       );
-
-
-    /*
-     * Small tolerance protects us from
-     * floating-point differences such as:
-     *
-     * 99.989999999
-     * vs
-     * 99.99
-     */
-
-    const totalsMatch = (
-      first,
-      second
-    ) => {
-
-      if (
-        !Number.isFinite(
-          first
-        ) ||
-        !Number.isFinite(
-          second
-        )
-      ) {
-
-        return false;
-      }
-
-
-      return (
-        Math.abs(
-          first -
-          second
-        ) < 0.01
-      );
-    };
 
 
     const selectedBestPlan =
@@ -217,7 +567,11 @@ export async function POST(
 
     /*
      * If both totals happen to be exactly
-     * the same, prefer the optimized plan.
+     * equal, the monetary values alone cannot
+     * distinguish which button was clicked.
+     *
+     * We preserve the existing behaviour and
+     * prefer Best Option.
      */
 
     let selectedPlan =
@@ -227,22 +581,18 @@ export async function POST(
     if (
       selectedBestPlan
     ) {
-
       selectedPlan =
         "best";
 
     } else if (
       selectedConveniencePlan
     ) {
-
       selectedPlan =
         "convenience";
-
     }
 
 
     if (!selectedPlan) {
-
       console.error(
         "Unable to identify selected Grossary+ option:",
         {
@@ -252,15 +602,13 @@ export async function POST(
         }
       );
 
-
       return NextResponse.json(
         {
           error:
             "The selected shopping plan could not be identified.",
         },
         {
-          status:
-            400,
+          status: 400,
         }
       );
     }
@@ -278,175 +626,104 @@ export async function POST(
       selectedPlan ===
       "best"
     ) {
-
       recommendations =
-        optimization
-          ?.optimized
-          ?.items
-          ?.filter(
-            item =>
-              item.matched
-          )
-          .map(
-            item => {
-
-              const requestedItem =
-                item.requestedItem;
-
-
-              const product =
-                item.product;
-
-
-              const retailer =
-                item.selectedRetailer ||
-                item.retailer;
-
-
-              const store =
-                retailer ===
-                "Checkers"
-                  ? data
-                      ?.shoppingLocation
-                      ?.checkers
-                  : data
-                      ?.shoppingLocation
-                      ?.pnp;
-
-
-              return {
-
-                itemId:
-                  requestedItem?.id,
-
-                retailer,
-
-                storeId:
-                  store?.storeId ||
-                  item.storeId,
-
-                storeName:
-                  store?.storeName ||
-                  retailer,
-
-                price:
-                  item.unitPrice,
-
-                productName:
-                  product
-                    ?.productName ||
-                  requestedItem
-                    ?.item_name,
-              };
-            }
-          ) ||
-        [];
+        buildBestRecommendations({
+          optimization,
+          data,
+        });
 
     } else {
 
       /*
-       * ===================================
-       * CONVENIENCE PLAN
-       * ===================================
+       * Convenience can now be either:
+       *
+       * COMPLETE
+       *
+       * or
+       *
+       * PARTIAL
+       *
+       * Both are valid.
        */
 
-      const cheapest =
-        optimization
-          ?.singleStoreOptions
-          ?.cheapest;
-
-
-      if (!cheapest) {
-
+      if (
+        !cheapestSingleStore
+      ) {
         return NextResponse.json(
           {
             error:
-              "No complete single-store option is available.",
+              "No single-store convenience option is available.",
           },
           {
-            status:
-              400,
+            status: 400,
           }
         );
       }
 
 
-      const retailer =
-        cheapest.retailer;
-
-
-      const basket =
-        retailer ===
-        "Checkers"
-          ? optimization
-              ?.baskets
-              ?.checkers
-          : optimization
-              ?.baskets
-              ?.pnp;
-
-
-      const store =
-        retailer ===
-        "Checkers"
-          ? data
-              ?.shoppingLocation
-              ?.checkers
-          : data
-              ?.shoppingLocation
-              ?.pnp;
-
-
       recommendations =
-        basket
-          ?.matched
-          ?.map(
-            item => ({
-
-              itemId:
-                item
-                  ?.requestedItem
-                  ?.id,
-
-              retailer,
-
-              storeId:
-                store?.storeId ||
-                item.storeId,
-
-              storeName:
-                store?.storeName ||
-                retailer,
-
-              price:
-                item.unitPrice,
-
-              productName:
-                item
-                  ?.product
-                  ?.productName ||
-                item
-                  ?.requestedItem
-                  ?.item_name,
-            })
-          ) ||
-        [];
+        buildConvenienceRecommendations({
+          optimization,
+          data,
+        });
     }
+
+
+    /*
+     * A selected plan should always contain
+     * at least one matched item.
+     */
+
+    if (
+      recommendations.length ===
+      0
+    ) {
+      return NextResponse.json(
+        {
+          error:
+            "No matched products were available for the selected shopping plan.",
+        },
+        {
+          status: 400,
+        }
+      );
+    }
+
+
+    // =====================================
+    // SUPABASE
+    // =====================================
+
+    const supabase =
+      await createClient();
 
 
     // =====================================
     // UPDATE LIST ITEMS
     // =====================================
 
+    /*
+     * IMPORTANT:
+     *
+     * Only items included in the selected
+     * plan are updated.
+     *
+     * For a partial convenience option this
+     * means excluded products are left alone.
+     */
+
+
+    let updatedCount =
+      0;
+
+
     for (
       const recommendation
       of recommendations
     ) {
-
       if (
         !recommendation.itemId
       ) {
-
         continue;
       }
 
@@ -459,7 +736,6 @@ export async function POST(
             "list_items"
           )
           .update({
-
             recommended_retailer:
               recommendation
                 .retailer,
@@ -495,9 +771,22 @@ export async function POST(
 
 
       if (error) {
+        console.error(
+          "Failed to update Grossary+ item recommendation:",
+          {
+            listId,
+
+            recommendation,
+
+            error,
+          }
+        );
 
         throw error;
       }
+
+
+      updatedCount += 1;
     }
 
 
@@ -506,24 +795,27 @@ export async function POST(
     // =====================================
 
     /*
-     * IMPORTANT:
+     * grossary_plus_plan
      *
-     * Previously:
+     * stores the actual selected basket
+     * amount.
      *
-     * grossary_plus_plan = "best"
+     *
+     * grossary_plus_savings
+     *
+     * stores the actual savings associated
+     * with the selected option.
+     *
+     *
+     * We do NOT store:
+     *
+     * "best"
      *
      * or
      *
-     * grossary_plus_plan = "convenience"
+     * "convenience"
      *
-     *
-     * Now:
-     *
-     * grossary_plus_plan =
-     * actual basket amount
-     *
-     * grossary_plus_savings =
-     * actual selected savings
+     * in these numeric columns.
      */
 
 
@@ -539,38 +831,122 @@ export async function POST(
           "user_lists"
         )
         .update({
-
           grossary_plus_plan:
-            Number(
+            roundMoney(
               selectedBasketTotal
-                .toFixed(2)
             ),
 
           grossary_plus_savings:
-            Number(
+            roundMoney(
               selectedSavings
-                .toFixed(2)
             ),
-
         })
         .eq(
           "id",
           listId
         )
-        .select(
-          `
-            id,
-            grossary_plus_plan,
-            grossary_plus_savings
-          `
-        )
+        .select(`
+          id,
+          grossary_plus_plan,
+          grossary_plus_savings
+        `)
         .single();
 
 
     if (listError) {
+      console.error(
+        "Failed to update Grossary+ list:",
+        {
+          listId,
+          listError,
+        }
+      );
 
       throw listError;
     }
+
+
+    // =====================================
+    // SELECTED OPTION INFORMATION
+    // =====================================
+
+    const selectedOption =
+      selectedPlan ===
+      "convenience"
+        ? cheapestSingleStore
+        : optimized;
+
+
+    const partial =
+      selectedPlan ===
+        "convenience"
+        ? (
+            cheapestSingleStore
+              ?.partial ===
+              true ||
+            cheapestSingleStore
+              ?.complete ===
+              false
+          )
+        : (
+            optimization
+              ?.complete ===
+              false
+          );
+
+
+    const matchedCount =
+      selectedPlan ===
+        "convenience"
+        ? Number(
+            cheapestSingleStore
+              ?.matchedCount ??
+            recommendations.length
+          )
+        : recommendations.length;
+
+
+    const totalItemCount =
+      Number(
+        optimization?.itemCount ??
+        (
+          optimization
+            ?.matchedCount != null &&
+          optimization
+            ?.unmatchedCount != null
+            ? Number(
+                optimization
+                  .matchedCount
+              ) +
+              Number(
+                optimization
+                  .unmatchedCount
+              )
+            : 0
+        )
+      );
+
+
+    const excludedCount =
+      selectedPlan ===
+        "convenience"
+        ? Number(
+            cheapestSingleStore
+              ?.unmatchedCount ??
+            Math.max(
+              0,
+              totalItemCount -
+              matchedCount
+            )
+          )
+        : Number(
+            optimization
+              ?.unmatchedCount ??
+            optimization
+              ?.unmatchedItems
+              ?.length ??
+            0
+          );
 
 
     // =====================================
@@ -580,10 +956,11 @@ export async function POST(
     console.log(
       "Grossary Plus plan saved:",
       {
-
         listId,
 
         selectedPlan,
+
+        partial,
 
         basketTotal:
           selectedBasketTotal,
@@ -594,12 +971,14 @@ export async function POST(
         recommendations:
           recommendations.length,
 
+        matchedCount,
+
+        excludedCount,
       }
     );
 
 
     return NextResponse.json({
-
       success:
         true,
 
@@ -607,57 +986,92 @@ export async function POST(
       /*
        * Useful internally/debugging.
        *
-       * We aren't storing this string in
-       * user_lists anymore.
+       * This string is NOT stored in
+       * grossary_plus_plan.
        */
 
       selectedPlan,
 
 
+      /*
+       * Lets the frontend know whether the
+       * selected recommendation represented
+       * the full requested list.
+       */
+
+      partial,
+
+
       basketTotal:
-        Number(
+        roundMoney(
           selectedBasketTotal
-            .toFixed(2)
         ),
 
 
       savings:
-        Number(
+        roundMoney(
           selectedSavings
-            .toFixed(2)
         ),
+
+
+      matchedCount,
+
+      excludedCount,
+
+
+      /*
+       * Number of list_items that actually
+       * received Grossary+ recommendations.
+       */
+
+      updatedCount,
 
 
       recommendations,
 
 
-      updatedCount:
-        recommendations.length,
+      selectedOption: {
+        retailer:
+          selectedOption
+            ?.retailer ||
+          null,
+
+        storeId:
+          selectedOption
+            ?.storeId ||
+          null,
+
+        storeName:
+          selectedOption
+            ?.storeName ||
+          selectedOption
+            ?.branchName ||
+          null,
+
+        complete:
+          !partial,
+      },
 
 
       list:
         updatedList,
-
     });
 
 
   } catch (error) {
-
     console.error(
       "Grossary Plus select plan error:",
       error
     );
 
-
     return NextResponse.json(
       {
         error:
-          error.message ||
+          error?.message ||
           "Unable to save shopping plan.",
       },
       {
-        status:
-          500,
+        status: 500,
       }
     );
   }

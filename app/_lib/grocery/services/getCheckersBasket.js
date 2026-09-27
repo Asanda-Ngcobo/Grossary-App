@@ -1,33 +1,21 @@
 const {
   searchCheckersStoreProducts,
   getCheckersBonusBuy,
-} = require(
-  "../providers/checkers"
-);
-
+} = require("../providers/checkers");
 
 const {
   normalizeCheckersProducts,
   normalizeCheckersBonusBuy,
-} = require(
-  "../normalizers/checkers"
-);
-
+} = require("../normalizers/checkers");
 
 const {
   matchProduct,
-} = require(
-  "../matchProduct"
-);
-
+} = require("../matchProduct");
 
 const {
   getFreshCachedProducts,
   saveProductsToCache,
-} = require(
-  "./productPriceCache"
-);
-
+} = require("./productPriceCache");
 
 /*
  * ------------------------------------------------
@@ -35,10 +23,7 @@ const {
  * ------------------------------------------------
  */
 
-function buildCheckersSearchQuery(
-  item
-) {
-
+function buildCheckersSearchQuery(item) {
   return [
     item.item_brand,
     item.item_name,
@@ -54,29 +39,21 @@ function buildCheckersSearchQuery(
     .join(" ");
 }
 
-
 /*
  * ------------------------------------------------
  * Extract products from Parse response
  * ------------------------------------------------
  */
 
-function extractCheckersProducts(
-  response
-) {
-
+function extractCheckersProducts(response) {
   const data =
     response?.data ??
     response;
 
-
-  return Array.isArray(
-    data?.products
-  )
+  return Array.isArray(data?.products)
     ? data.products
     : [];
 }
-
 
 /*
  * ------------------------------------------------
@@ -84,29 +61,19 @@ function extractCheckersProducts(
  * ------------------------------------------------
  */
 
-function getQuantity(
-  item
-) {
-
+function getQuantity(item) {
   const quantity =
-    Number(
-      item?.item_quantity
-    );
-
+    Number(item?.item_quantity);
 
   if (
     !Number.isFinite(quantity) ||
     quantity <= 0
   ) {
-
     return 1;
-
   }
-
 
   return quantity;
 }
-
 
 /*
  * ------------------------------------------------
@@ -114,66 +81,43 @@ function getQuantity(
  * ------------------------------------------------
  */
 
-function isPromotionActive(
-  product
-) {
-
+function isPromotionActive(product) {
   if (!product) {
     return false;
   }
 
+  const now = Date.now();
 
-  const now =
-    Date.now();
-
-
-  if (
-    product.promotionStartsAt
-  ) {
-
+  if (product.promotionStartsAt) {
     const start =
       new Date(
         product.promotionStartsAt
       ).getTime();
 
-
     if (
       Number.isFinite(start) &&
       now < start
     ) {
-
       return false;
-
     }
-
   }
 
-
-  if (
-    product.promotionEndsAt
-  ) {
-
+  if (product.promotionEndsAt) {
     const end =
       new Date(
         product.promotionEndsAt
       ).getTime();
 
-
     if (
       Number.isFinite(end) &&
       now > end
     ) {
-
       return false;
-
     }
-
   }
-
 
   return true;
 }
-
 
 /*
  * ------------------------------------------------
@@ -196,34 +140,22 @@ function canUseLoyaltyPricing(
     useLoyaltyPricing = true,
   } = {}
 ) {
-
   if (!useLoyaltyPricing) {
     return false;
   }
 
-
   if (
-    product?.requiresLoyaltyCard !==
-    true
+    product?.requiresLoyaltyCard !== true
   ) {
-
     return false;
-
   }
 
-
-  if (
-    !isPromotionActive(product)
-  ) {
-
+  if (!isPromotionActive(product)) {
     return false;
-
   }
-
 
   return true;
 }
-
 
 /*
  * ------------------------------------------------
@@ -232,13 +164,9 @@ function canUseLoyaltyPricing(
  *
  * Supports:
  *
- * 1. Normal price
- *
+ * 1. Normal pricing
  * 2. Xtra Savings FIXED_PRICE
- *
- * MULTIBUY is deliberately NOT implemented
- * until we see the actual Checkers Bonus Buy
- * response for a multibuy promotion.
+ * 3. Xtra Savings MULTIBUY
  * ------------------------------------------------
  */
 
@@ -249,43 +177,23 @@ function calculateCheckersProductPricing(
     useLoyaltyPricing = true,
   } = {}
 ) {
-
   const normalUnitPrice =
-    Number(
-      product?.price
-    );
+    Number(product?.price);
 
-
-  if (
-    !Number.isFinite(
-      normalUnitPrice
-    )
-  ) {
-
+  if (!Number.isFinite(normalUnitPrice)) {
     return null;
-
   }
 
-
   const safeQuantity =
-    Number.isFinite(
-      Number(quantity)
-    ) &&
+    Number.isFinite(Number(quantity)) &&
     Number(quantity) > 0
       ? Number(quantity)
       : 1;
 
-
   const normalTotal =
-    normalUnitPrice *
-    safeQuantity;
-
+    normalUnitPrice * safeQuantity;
 
   /*
-   * ----------------------------------------------
-   * Standard non-loyalty promotion saving
-   * ----------------------------------------------
-   *
    * Existing Checkers normalizer treats
    * promotionalSavings as a per-unit value.
    */
@@ -293,18 +201,9 @@ function calculateCheckersProductPricing(
   const promotionalSavings =
     (
       Number(
-        product
-          ?.promotionalSavings
+        product?.promotionalSavings
       ) || 0
-    ) *
-    safeQuantity;
-
-
-  /*
-   * ----------------------------------------------
-   * Loyalty / Xtra Savings
-   * ----------------------------------------------
-   */
+    ) * safeQuantity;
 
   const loyaltyAllowed =
     canUseLoyaltyPricing(
@@ -314,16 +213,153 @@ function calculateCheckersProductPricing(
       }
     );
 
-
   const mechanic =
-    product
-      ?.promotionMechanic;
+    product?.promotionMechanic;
 
+  const promotionQuantity =
+    Math.max(
+      1,
+      Number(
+        product?.promotionQuantity
+      ) || 1
+    );
+
+  const promotionBundlePrice =
+    Number(
+      product?.promotionBundlePrice
+    );
 
   /*
-   * ----------------------------------------------
+   * ------------------------------------------------
+   * MULTIBUY
+   * ------------------------------------------------
+   *
+   * Example:
+   *
+   * Coca-Cola Light 440ml
+   *
+   * normal price:
+   * R14.99 each
+   *
+   * promotion:
+   * 4 for R55
+   *
+   * quantity:
+   * 4
+   *
+   * normalTotal:
+   * R59.96
+   *
+   * lineTotal:
+   * R55
+   *
+   * loyaltySavings:
+   * R4.96
+   * ------------------------------------------------
+   */
+
+  if (
+    loyaltyAllowed &&
+    mechanic === "MULTIBUY" &&
+    promotionQuantity > 1 &&
+    Number.isFinite(
+      promotionBundlePrice
+    ) &&
+    promotionBundlePrice > 0
+  ) {
+    const qualifyingBundles =
+      Math.floor(
+        safeQuantity /
+        promotionQuantity
+      );
+
+    const remainingQuantity =
+      safeQuantity %
+      promotionQuantity;
+
+    /*
+     * The customer needs at least one
+     * complete bundle to receive the deal.
+     */
+
+    if (qualifyingBundles > 0) {
+      const bundleTotal =
+        qualifyingBundles *
+        promotionBundlePrice;
+
+      const remainingTotal =
+        remainingQuantity *
+        normalUnitPrice;
+
+      const lineTotal =
+        bundleTotal +
+        remainingTotal;
+
+      const loyaltySavings =
+        Math.max(
+          0,
+          normalTotal -
+          lineTotal
+        );
+
+      return {
+        normalUnitPrice,
+
+        normalTotal:
+          Number(
+            normalTotal.toFixed(2)
+          ),
+
+        /*
+         * MULTIBUY doesn't have a real
+         * discounted single-unit price.
+         *
+         * Keep unitPrice as normal shelf price.
+         * lineTotal is the actual basket cost.
+         */
+
+        unitPrice:
+          normalUnitPrice,
+
+        lineTotal:
+          Number(
+            lineTotal.toFixed(2)
+          ),
+
+        promotionalSavings:
+          Number(
+            promotionalSavings.toFixed(2)
+          ),
+
+        loyaltySavings:
+          Number(
+            loyaltySavings.toFixed(2)
+          ),
+
+        loyaltyApplied:
+          loyaltySavings > 0,
+
+        promotionMechanic:
+          mechanic,
+
+        promotionQuantity,
+
+        promotionBundlePrice:
+          Number(
+            promotionBundlePrice.toFixed(2)
+          ),
+
+        qualifyingBundles,
+
+        remainingQuantity,
+      };
+    }
+  }
+
+  /*
+   * ------------------------------------------------
    * FIXED_PRICE
-   * ----------------------------------------------
+   * ------------------------------------------------
    *
    * Example:
    *
@@ -334,33 +370,27 @@ function calculateCheckersProductPricing(
    *
    * Xtra Savings:
    * R36.99
+   * ------------------------------------------------
    */
 
   if (
     loyaltyAllowed &&
-    mechanic ===
-      "FIXED_PRICE"
+    mechanic === "FIXED_PRICE"
   ) {
-
     const loyaltyUnitPrice =
       Number(
-        product
-          ?.loyaltyPrice ??
-        product
-          ?.promotionBundlePrice
+        product?.loyaltyPrice ??
+        product?.promotionBundlePrice
       );
-
 
     if (
       Number.isFinite(
         loyaltyUnitPrice
       )
     ) {
-
       const lineTotal =
         loyaltyUnitPrice *
         safeQuantity;
-
 
       const loyaltySavings =
         Math.max(
@@ -369,15 +399,12 @@ function calculateCheckersProductPricing(
           lineTotal
         );
 
-
       return {
-
         normalUnitPrice,
 
         normalTotal:
           Number(
-            normalTotal
-              .toFixed(2)
+            normalTotal.toFixed(2)
           ),
 
         unitPrice:
@@ -385,62 +412,69 @@ function calculateCheckersProductPricing(
 
         lineTotal:
           Number(
-            lineTotal
-              .toFixed(2)
+            lineTotal.toFixed(2)
           ),
 
         promotionalSavings:
           Number(
-            promotionalSavings
-              .toFixed(2)
+            promotionalSavings.toFixed(2)
           ),
 
         loyaltySavings:
           Number(
-            loyaltySavings
-              .toFixed(2)
+            loyaltySavings.toFixed(2)
           ),
 
         loyaltyApplied:
-          true,
+          loyaltySavings > 0,
 
         promotionMechanic:
           mechanic,
 
         promotionQuantity:
           Number(
-            product
-              ?.promotionQuantity
+            product?.promotionQuantity
           ) || 1,
 
         promotionBundlePrice:
           Number(
-            product
-              ?.promotionBundlePrice
+            product?.promotionBundlePrice
           ) ||
           loyaltyUnitPrice,
 
+        qualifyingBundles:
+          safeQuantity,
+
+        remainingQuantity:
+          0,
       };
-
     }
-
   }
 
-
   /*
-   * ----------------------------------------------
+   * ------------------------------------------------
    * Normal price fallback
-   * ----------------------------------------------
+   * ------------------------------------------------
+   *
+   * This also handles a MULTIBUY where the
+   * requested quantity isn't enough to form
+   * a complete bundle.
+   *
+   * Example:
+   *
+   * 4 for R55
+   * quantity = 3
+   *
+   * Customer pays normal price × 3.
+   * ------------------------------------------------
    */
 
   return {
-
     normalUnitPrice,
 
     normalTotal:
       Number(
-        normalTotal
-          .toFixed(2)
+        normalTotal.toFixed(2)
       ),
 
     unitPrice:
@@ -448,14 +482,12 @@ function calculateCheckersProductPricing(
 
     lineTotal:
       Number(
-        normalTotal
-          .toFixed(2)
+        normalTotal.toFixed(2)
       ),
 
     promotionalSavings:
       Number(
-        promotionalSavings
-          .toFixed(2)
+        promotionalSavings.toFixed(2)
       ),
 
     loyaltySavings:
@@ -465,22 +497,23 @@ function calculateCheckersProductPricing(
       false,
 
     promotionMechanic:
-      mechanic ||
-      null,
+      mechanic || null,
 
     promotionQuantity:
-      product
-        ?.promotionQuantity ??
+      product?.promotionQuantity ??
       null,
 
     promotionBundlePrice:
-      product
-        ?.promotionBundlePrice ??
+      product?.promotionBundlePrice ??
       null,
 
+    qualifyingBundles:
+      0,
+
+    remainingQuantity:
+      safeQuantity,
   };
 }
-
 
 /*
  * ------------------------------------------------
@@ -492,16 +525,12 @@ function applyBonusBuyToProduct(
   product,
   bonusBuy
 ) {
-
   if (
     !product ||
     !bonusBuy
   ) {
-
     return product;
-
   }
-
 
   /*
    * Critical store safety check.
@@ -513,15 +542,12 @@ function applyBonusBuyToProduct(
     String(
       bonusBuy.providerStoreId
     ) !==
-    String(
-      product.providerStoreId
-    )
+      String(
+        product.providerStoreId
+      )
   ) {
-
     return product;
-
   }
-
 
   /*
    * The Bonus Buy endpoint returns the
@@ -535,11 +561,9 @@ function applyBonusBuyToProduct(
   const productId =
     product.providerProductId
       ? String(
-          product
-            .providerProductId
+          product.providerProductId
         )
       : null;
-
 
   const articleNumber =
     product.articleNumber
@@ -548,41 +572,34 @@ function applyBonusBuyToProduct(
         )
       : null;
 
-
   const articleCode =
     articleNumber
       ? `${articleNumber}EA`
       : null;
 
-
   const qualifyingIds =
     Array.isArray(
-      bonusBuy
-        .qualifyingProductIds
+      bonusBuy.qualifyingProductIds
     )
-      ? bonusBuy
-          .qualifyingProductIds
-          .map(String)
+      ? bonusBuy.qualifyingProductIds.map(
+          String
+        )
       : [];
-
 
   const qualifyingCodes =
     Array.isArray(
-      bonusBuy
-        .qualifyingProductCodes
+      bonusBuy.qualifyingProductCodes
     )
-      ? bonusBuy
-          .qualifyingProductCodes
-          .map(String)
+      ? bonusBuy.qualifyingProductCodes.map(
+          String
+        )
       : [];
-
 
   const matchesById =
     productId &&
     qualifyingIds.includes(
       productId
     );
-
 
   const matchesByCode =
     (
@@ -595,22 +612,17 @@ function applyBonusBuyToProduct(
       articleNumber &&
       qualifyingCodes.some(
         code =>
-          String(code)
-            .replace(
-              /EA$/i,
-              ""
-            ) ===
+          String(code).replace(
+            /EA$/i,
+            ""
+          ) ===
           articleNumber
       )
     );
 
-
   /*
    * If Parse gives us qualifying lists,
    * require the product to be in them.
-   *
-   * This prevents accidentally applying
-   * an unrelated Bonus Buy.
    */
 
   if (
@@ -621,16 +633,11 @@ function applyBonusBuyToProduct(
     !matchesById &&
     !matchesByCode
   ) {
-
     return product;
-
   }
 
-
   return {
-
     ...product,
-
 
     /*
      * Keep normal customer price.
@@ -638,7 +645,6 @@ function applyBonusBuyToProduct(
 
     price:
       product.price,
-
 
     /*
      * Loyalty / Xtra Savings pricing.
@@ -651,9 +657,7 @@ function applyBonusBuyToProduct(
       bonusBuy.loyaltySavings,
 
     requiresLoyaltyCard:
-      bonusBuy
-        .requiresLoyaltyCard,
-
+      bonusBuy.requiresLoyaltyCard,
 
     /*
      * Promotion metadata.
@@ -669,29 +673,22 @@ function applyBonusBuyToProduct(
       bonusBuy.promotionCode,
 
     promotionMessage:
-      bonusBuy
-        .promotionMessage,
+      bonusBuy.promotionMessage,
 
     promotionMechanic:
-      bonusBuy
-        .promotionMechanic,
+      bonusBuy.promotionMechanic,
 
     promotionQuantity:
-      bonusBuy
-        .promotionQuantity,
+      bonusBuy.promotionQuantity,
 
     promotionBundlePrice:
-      bonusBuy
-        .promotionBundlePrice,
+      bonusBuy.promotionBundlePrice,
 
     promotionStartsAt:
-      bonusBuy
-        .promotionStartsAt,
+      bonusBuy.promotionStartsAt,
 
     promotionEndsAt:
-      bonusBuy
-        .promotionEndsAt,
-
+      bonusBuy.promotionEndsAt,
 
     /*
      * Preserve useful promotion data.
@@ -708,66 +705,45 @@ function applyBonusBuyToProduct(
 
       {
         promotionCode:
-          bonusBuy
-            .promotionCode,
+          bonusBuy.promotionCode,
 
         promotionType:
-          bonusBuy
-            .promotionType,
+          bonusBuy.promotionType,
 
         promotionMessage:
-          bonusBuy
-            .promotionMessage,
+          bonusBuy.promotionMessage,
 
         promotionMechanic:
-          bonusBuy
-            .promotionMechanic,
+          bonusBuy.promotionMechanic,
 
         loyaltyPrice:
-          bonusBuy
-            .loyaltyPrice,
+          bonusBuy.loyaltyPrice,
 
         loyaltySavings:
-          bonusBuy
-            .loyaltySavings,
+          bonusBuy.loyaltySavings,
 
         requiresLoyaltyCard:
-          bonusBuy
-            .requiresLoyaltyCard,
+          bonusBuy.requiresLoyaltyCard,
 
         promotionQuantity:
-          bonusBuy
-            .promotionQuantity,
+          bonusBuy.promotionQuantity,
 
         promotionBundlePrice:
-          bonusBuy
-            .promotionBundlePrice,
+          bonusBuy.promotionBundlePrice,
 
         promotionStartsAt:
-          bonusBuy
-            .promotionStartsAt,
+          bonusBuy.promotionStartsAt,
 
         promotionEndsAt:
-          bonusBuy
-            .promotionEndsAt,
+          bonusBuy.promotionEndsAt,
       },
     ],
-
   };
 }
-
 
 /*
  * ------------------------------------------------
  * Resolve Checkers Bonus Buys
- * ------------------------------------------------
- *
- * Important:
- *
- * One Bonus Buy can cover multiple products.
- *
- * Therefore each unique Bonus Buy ID is
- * requested only once during this basket run.
  * ------------------------------------------------
  */
 
@@ -776,30 +752,17 @@ async function enrichCheckersBonusBuys(
   storeId,
   bonusBuyCache = new Map()
 ) {
-
   if (
     !Array.isArray(products) ||
     products.length === 0
   ) {
-
     return products || [];
-
   }
-
-
-  /*
-   * Collect unique Bonus Buy IDs.
-   */
 
   const bonusBuyIds =
     new Set();
 
-
-  for (
-    const product
-    of products
-  ) {
-
+  for (const product of products) {
     const ids =
       Array.isArray(
         product.bonusBuyIds
@@ -807,35 +770,21 @@ async function enrichCheckersBonusBuys(
         ? product.bonusBuyIds
         : [];
 
-
     for (
       const bonusBuyId
       of ids
     ) {
-
       if (bonusBuyId) {
-
         bonusBuyIds.add(
-          String(
-            bonusBuyId
-          )
+          String(bonusBuyId)
         );
-
       }
-
     }
-
   }
 
-
-  if (
-    bonusBuyIds.size === 0
-  ) {
-
+  if (bonusBuyIds.size === 0) {
     return products;
-
   }
-
 
   /*
    * Resolve each unique promotion once.
@@ -845,24 +794,18 @@ async function enrichCheckersBonusBuys(
     const bonusBuyId
     of bonusBuyIds
   ) {
-
     if (
       bonusBuyCache.has(
         bonusBuyId
       )
     ) {
-
       continue;
-
     }
 
-
     try {
-
       console.log(
         `→ Resolving Checkers Bonus Buy ${bonusBuyId} for store ${storeId}...`
       );
-
 
       const response =
         await getCheckersBonusBuy(
@@ -870,12 +813,10 @@ async function enrichCheckersBonusBuys(
           storeId
         );
 
-
       const normalized =
         normalizeCheckersBonusBuy(
           response
         );
-
 
       /*
        * Store safety.
@@ -883,82 +824,58 @@ async function enrichCheckersBonusBuys(
 
       if (
         normalized &&
-        normalized
-          .providerStoreId &&
+        normalized.providerStoreId &&
         String(
-          normalized
-            .providerStoreId
+          normalized.providerStoreId
         ) !==
-        String(storeId)
+          String(storeId)
       ) {
-
         console.warn(
           `Ignoring Checkers Bonus Buy ${bonusBuyId}: returned store ${normalized.providerStoreId}, expected ${storeId}`
         );
 
-
         bonusBuyCache.set(
           bonusBuyId,
           null
         );
 
-
         continue;
-
       }
-
-
-      /*
-       * Promotion must actually be
-       * available at this branch.
-       */
 
       if (
         normalized &&
-        normalized
-          .availableAtStore ===
+        normalized.availableAtStore ===
           false
       ) {
-
         console.log(
           `Checkers Bonus Buy ${bonusBuyId} is not available at store ${storeId}`
         );
 
-
         bonusBuyCache.set(
           bonusBuyId,
           null
         );
 
-
         continue;
-
       }
-
 
       bonusBuyCache.set(
         bonusBuyId,
-        normalized ||
-        null
+        normalized || null
       );
 
-
       if (normalized) {
-
         console.log(
-          `✓ Checkers Bonus Buy resolved: ${normalized.promotionMessage || bonusBuyId}`
+          `✓ Checkers Bonus Buy resolved: ${
+            normalized.promotionMessage ||
+            bonusBuyId
+          }`
         );
-
       }
-
     } catch (error) {
-
       /*
-       * A promotion lookup failure should
-       * not destroy the whole basket.
-       *
-       * Grossary can still use the normal
-       * Checkers price.
+       * Promotion lookup failure should not
+       * destroy the whole basket.
        */
 
       console.error(
@@ -966,16 +883,12 @@ async function enrichCheckersBonusBuys(
         error.message
       );
 
-
       bonusBuyCache.set(
         bonusBuyId,
         null
       );
-
     }
-
   }
-
 
   /*
    * Apply resolved promotions.
@@ -983,10 +896,8 @@ async function enrichCheckersBonusBuys(
 
   return products.map(
     product => {
-
       let enriched =
         product;
-
 
       const ids =
         Array.isArray(
@@ -995,12 +906,10 @@ async function enrichCheckersBonusBuys(
           ? product.bonusBuyIds
           : [];
 
-
       for (
         const bonusBuyId
         of ids
       ) {
-
         const promotion =
           bonusBuyCache.get(
             String(
@@ -1008,27 +917,21 @@ async function enrichCheckersBonusBuys(
             )
           );
 
-
         if (!promotion) {
           continue;
         }
-
 
         enriched =
           applyBonusBuyToProduct(
             enriched,
             promotion
           );
-
       }
 
-
       return enriched;
-
     }
   );
 }
-
 
 /*
  * ------------------------------------------------
@@ -1044,9 +947,7 @@ function buildUnmatchedResult({
   priceSource,
   reasons,
 }) {
-
   return {
-
     retailer:
       "Checkers",
 
@@ -1064,8 +965,7 @@ function buildUnmatchedResult({
       null,
 
     score:
-      matchResult?.score ||
-      0,
+      matchResult?.score || 0,
 
     reasons:
       reasons ||
@@ -1096,15 +996,28 @@ function buildUnmatchedResult({
     loyaltyApplied:
       false,
 
+    promotionMechanic:
+      null,
+
+    promotionQuantity:
+      null,
+
+    promotionBundlePrice:
+      null,
+
+    qualifyingBundles:
+      0,
+
+    remainingQuantity:
+      getQuantity(item),
+
     priceSource,
 
     candidates:
       matchResult?.candidates ||
       [],
-
   };
 }
-
 
 /*
  * ------------------------------------------------
@@ -1120,14 +1033,11 @@ function buildMatchedResult({
   priceSource,
   useLoyaltyPricing = true,
 }) {
-
   const product =
     matchResult.match;
 
-
   const quantity =
     getQuantity(item);
-
 
   const pricing =
     calculateCheckersProductPricing(
@@ -1138,17 +1048,12 @@ function buildMatchedResult({
       }
     );
 
-
   /*
-   * ------------------------------------------------
    * Invalid price
-   * ------------------------------------------------
    */
 
   if (!pricing) {
-
     return {
-
       retailer:
         "Checkers",
 
@@ -1199,19 +1104,33 @@ function buildMatchedResult({
       loyaltyApplied:
         false,
 
+      promotionMechanic:
+        product?.promotionMechanic ??
+        null,
+
+      promotionQuantity:
+        product?.promotionQuantity ??
+        null,
+
+      promotionBundlePrice:
+        product?.promotionBundlePrice ??
+        null,
+
+      qualifyingBundles:
+        0,
+
+      remainingQuantity:
+        quantity,
+
       priceSource,
 
       candidates:
         matchResult.candidates ||
         [],
-
     };
-
   }
 
-
   return {
-
     retailer:
       "Checkers",
 
@@ -1236,7 +1155,6 @@ function buildMatchedResult({
 
     quantity,
 
-
     /*
      * Actual customer price Grossary+
      * uses for this basket.
@@ -1247,7 +1165,6 @@ function buildMatchedResult({
 
     lineTotal:
       pricing.lineTotal,
-
 
     /*
      * Normal Checkers price before
@@ -1260,57 +1177,56 @@ function buildMatchedResult({
     normalTotal:
       pricing.normalTotal,
 
-
     /*
      * Savings remain separate.
      */
 
     promotionalSavings:
-      pricing
-        .promotionalSavings,
+      pricing.promotionalSavings,
 
     loyaltySavings:
-      pricing
-        .loyaltySavings,
+      pricing.loyaltySavings,
 
     loyaltyApplied:
-      pricing
-        .loyaltyApplied,
-
+      pricing.loyaltyApplied,
 
     /*
-     * Promotion mechanics are useful
-     * downstream in optimizer/UI.
+     * Promotion mechanics.
      */
 
     promotionMechanic:
-      pricing
-        .promotionMechanic,
+      pricing.promotionMechanic,
 
     promotionQuantity:
-      pricing
-        .promotionQuantity,
+      pricing.promotionQuantity,
 
     promotionBundlePrice:
-      pricing
-        .promotionBundlePrice,
-
+      pricing.promotionBundlePrice,
 
     /*
-     * cache = Supabase data
-     * api   = fresh Parse request
+     * MULTIBUY details.
+     */
+
+    qualifyingBundles:
+      pricing.qualifyingBundles ??
+      0,
+
+    remainingQuantity:
+      pricing.remainingQuantity ??
+      0,
+
+    /*
+     * cache = Supabase
+     * api = fresh Parse request
      */
 
     priceSource,
 
-
     candidates:
       matchResult.candidates ||
       [],
-
   };
 }
-
 
 /*
  * ------------------------------------------------
@@ -1323,36 +1239,31 @@ async function getCheckersBasketItem(
   {
     storeId,
     cachedProducts = [],
-    bonusBuyCache =
-      new Map(),
-    useLoyaltyPricing =
-      true,
+    bonusBuyCache = new Map(),
+    useLoyaltyPricing = true,
   } = {}
 ) {
-
   /*
    * Checkers prices must always belong
    * to a specific branch.
    */
 
   if (!storeId) {
-
     throw new Error(
       "Checkers storeId is required."
     );
-
   }
-
 
   const searchQuery =
     buildCheckersSearchQuery(
       item
     );
 
-
-  // =====================================
-  // 1. TRY CACHE FIRST
-  // =====================================
+  /*
+   * =====================================
+   * 1. TRY CACHE FIRST
+   * =====================================
+   */
 
   const cacheMatch =
     matchProduct(
@@ -1360,16 +1271,13 @@ async function getCheckersBasketItem(
       cachedProducts
     );
 
-
   if (
     cacheMatch.matched &&
     cacheMatch.match
   ) {
-
     console.log(
       `✓ Checkers cache hit: ${searchQuery}`
     );
-
 
     return buildMatchedResult({
       item,
@@ -1384,27 +1292,27 @@ async function getCheckersBasketItem(
 
       useLoyaltyPricing,
     });
-
   }
 
-
-  // =====================================
-  // 2. CACHE MISS
-  // =====================================
+  /*
+   * =====================================
+   * 2. CACHE MISS
+   * =====================================
+   */
 
   console.log(
     `✗ Checkers cache miss: ${searchQuery}`
   );
 
-
   console.log(
     `→ Fetching Checkers ${storeId} from Parse...`
   );
 
-
-  // =====================================
-  // 3. SEARCH EXACT CHECKERS BRANCH
-  // =====================================
+  /*
+   * =====================================
+   * 3. SEARCH EXACT CHECKERS BRANCH
+   * =====================================
+   */
 
   const response =
     await searchCheckersStoreProducts(
@@ -1416,22 +1324,21 @@ async function getCheckersBasketItem(
       }
     );
 
-
-  // =====================================
-  // 4. NORMALIZE RESULTS
-  // =====================================
+  /*
+   * =====================================
+   * 4. NORMALIZE RESULTS
+   * =====================================
+   */
 
   const rawProducts =
     extractCheckersProducts(
       response
     );
 
-
   let normalizedProducts =
     normalizeCheckersProducts(
       rawProducts
     );
-
 
   /*
    * Critical safety check.
@@ -1449,21 +1356,14 @@ async function getCheckersBasketItem(
         String(storeId)
     );
 
-
   console.log(
     `Checkers API returned ${normalizedProducts.length} valid products for ${searchQuery}`
   );
 
-
-  // =====================================
-  // 5. RESOLVE BONUS BUY PROMOTIONS
-  // =====================================
-
   /*
-   * This happens BEFORE the cache write.
-   *
-   * Therefore Xtra Savings metadata is
-   * persisted in grocery_product_cache.
+   * =====================================
+   * 5. RESOLVE BONUS BUY PROMOTIONS
+   * =====================================
    */
 
   const storeProducts =
@@ -1473,20 +1373,15 @@ async function getCheckersBasketItem(
       bonusBuyCache
     );
 
+  /*
+   * =====================================
+   * 6. CACHE ENRICHED PRODUCTS
+   * =====================================
+   */
 
-  // =====================================
-  // 6. CACHE ENRICHED PRODUCTS
-  // =====================================
-
-  if (
-    storeProducts.length >
-    0
-  ) {
-
+  if (storeProducts.length > 0) {
     try {
-
       await saveProductsToCache({
-
         retailer:
           "Checkers",
 
@@ -1494,49 +1389,38 @@ async function getCheckersBasketItem(
 
         products:
           storeProducts,
-
       });
-
 
       console.log(
         `✓ Cached ${storeProducts.length} Checkers products`
       );
-
     } catch (cacheError) {
-
       /*
-       * A cache write failure must NOT
-       * prevent Grossary from using the
-       * fresh API result.
+       * Cache failure must not stop fresh
+       * Checkers pricing from being used.
        */
 
       console.error(
         "Checkers cache save failed:",
         cacheError.message
       );
-
     }
 
-
     /*
-     * Add products to the same in-memory
-     * cache used by this basket.
-     *
-     * This means another list item may
-     * reuse the products without another
-     * product search.
+     * Reuse fetched products for later
+     * items in this same basket.
      */
 
     cachedProducts.push(
       ...storeProducts
     );
-
   }
 
-
-  // =====================================
-  // 7. MATCH FRESH RESULTS
-  // =====================================
+  /*
+   * =====================================
+   * 7. MATCH FRESH RESULTS
+   * =====================================
+   */
 
   const apiMatch =
     matchProduct(
@@ -1544,18 +1428,13 @@ async function getCheckersBasketItem(
       storeProducts
     );
 
-
   if (
     !apiMatch.matched ||
     !apiMatch.match
   ) {
-
     return buildUnmatchedResult({
-
       item,
-
       storeId,
-
       searchQuery,
 
       matchResult:
@@ -1563,22 +1442,18 @@ async function getCheckersBasketItem(
 
       priceSource:
         "api",
-
     });
-
   }
 
-
-  // =====================================
-  // 8. RETURN FRESH API MATCH
-  // =====================================
+  /*
+   * =====================================
+   * 8. RETURN FRESH API MATCH
+   * =====================================
+   */
 
   return buildMatchedResult({
-
     item,
-
     storeId,
-
     searchQuery,
 
     matchResult:
@@ -1588,10 +1463,8 @@ async function getCheckersBasketItem(
       "api",
 
     useLoyaltyPricing,
-
   });
 }
-
 
 /*
  * ------------------------------------------------
@@ -1610,63 +1483,47 @@ async function getCheckersBasket(
      * true while Grossary+ loyalty
      * pricing is being tested.
      *
-     * Later this should be determined
-     * from the user's loyalty cards.
+     * Later determine this from user's
+     * loyalty cards.
      */
-    useLoyaltyPricing =
-      true,
 
+    useLoyaltyPricing = true,
   } = {}
 ) {
-
-  if (
-    !Array.isArray(items)
-  ) {
-
+  if (!Array.isArray(items)) {
     throw new Error(
       "Checkers basket items must be an array."
     );
-
   }
 
-
   if (!storeId) {
-
     throw new Error(
       "Checkers storeId is required."
     );
-
   }
-
 
   const results = [];
 
+  /*
+   * =====================================
+   * LOAD CACHE ONCE
+   * =====================================
+   */
 
-  // =====================================
-  // LOAD CACHE ONCE
-  // =====================================
-
-  let cachedProducts =
-    [];
-
+  let cachedProducts = [];
 
   try {
-
     cachedProducts =
       await getFreshCachedProducts({
-
         retailer:
           "Checkers",
 
         storeId,
-
       });
-
 
     console.log(
       `Checkers ${storeId}: ${cachedProducts.length} fresh cached products`
     );
-
 
     console.log(
       "Checkers cached products:",
@@ -1679,7 +1536,6 @@ async function getCheckersBasket(
         products:
           cachedProducts.map(
             product => ({
-
               name:
                 product.productName,
 
@@ -1695,28 +1551,34 @@ async function getCheckersBasket(
               loyaltySavings:
                 product.loyaltySavings,
 
+              requiresLoyaltyCard:
+                product.requiresLoyaltyCard,
+
               promotionType:
                 product.promotionType,
 
               promotionMechanic:
-                product
-                  .promotionMechanic,
+                product.promotionMechanic,
+
+              promotionQuantity:
+                product.promotionQuantity,
+
+              promotionBundlePrice:
+                product.promotionBundlePrice,
+
+              promotionMessage:
+                product.promotionMessage,
 
               promotionEndsAt:
-                product
-                  .promotionEndsAt,
+                product.promotionEndsAt,
 
               providerStoreId:
-                product
-                  .providerStoreId,
-
+                product.providerStoreId,
             })
           ),
       }
     );
-
   } catch (error) {
-
     /*
      * Cache being unavailable should not
      * completely break retailer pricing.
@@ -1727,82 +1589,47 @@ async function getCheckersBasket(
       error.message
     );
 
-
-    cachedProducts =
-      [];
-
+    cachedProducts = [];
   }
 
-
   /*
-   * ----------------------------------------------
-   * Basket-local Bonus Buy cache
-   * ----------------------------------------------
+   * Basket-local Bonus Buy cache.
    *
-   * Example:
-   *
-   * Multiple Oros products can share:
-   *
-   * 6aa3f6487f9ef8e1acca61d9
-   *
-   * We only request that Bonus Buy once
-   * during this basket calculation.
+   * Multiple products can share the same
+   * Bonus Buy ID, so only resolve it once.
    */
 
   const bonusBuyCache =
     new Map();
 
-
-  // =====================================
-  // PROCESS ITEMS SEQUENTIALLY
-  // =====================================
-
   /*
+   * =====================================
+   * PROCESS ITEMS SEQUENTIALLY
+   * =====================================
+   *
    * Do not use Promise.all().
    *
-   * Processing sequentially lets products
-   * fetched for item 1 become candidates
-   * for item 2 during the same basket.
+   * Products fetched for item 1 can then
+   * become candidates for item 2.
    */
 
-  for (
-    const item
-    of items
-  ) {
-
+  for (const item of items) {
     try {
-
       const result =
         await getCheckersBasketItem(
           item,
           {
             storeId,
-
-            /*
-             * Same array instance shared
-             * across basket items.
-             */
-
             cachedProducts,
-
-            /*
-             * Same Bonus Buy Map shared
-             * across basket items.
-             */
-
             bonusBuyCache,
-
             useLoyaltyPricing,
           }
         );
 
-
       results.push(
         result
       );
-
     } catch (error) {
-
       console.error(
         `Checkers search failed for "${buildCheckersSearchQuery(
           item
@@ -1810,15 +1637,13 @@ async function getCheckersBasket(
         error.message
       );
 
-
       /*
-       * One failed search should not
-       * destroy the entire basket.
+       * One failed search should not destroy
+       * the entire basket.
        */
 
       results.push(
         buildUnmatchedResult({
-
           item,
 
           storeId,
@@ -1834,18 +1659,16 @@ async function getCheckersBasket(
           reasons: [
             `search failed: ${error.message}`,
           ],
-
         })
       );
-
     }
-
   }
 
-
-  // =====================================
-  // BASKET SUMMARY
-  // =====================================
+  /*
+   * =====================================
+   * BASKET SUMMARY
+   * =====================================
+   */
 
   const matched =
     results.filter(
@@ -1853,13 +1676,11 @@ async function getCheckersBasket(
         result.matched
     );
 
-
   const unmatched =
     results.filter(
       result =>
         !result.matched
     );
-
 
   /*
    * Actual amount customer pays.
@@ -1879,11 +1700,8 @@ async function getCheckersBasket(
       0
     );
 
-
   /*
-   * Total before loyalty pricing.
-   *
-   * Useful for debugging and UI.
+   * Total before Xtra Savings.
    */
 
   const normalTotal =
@@ -1900,7 +1718,6 @@ async function getCheckersBasket(
       0
     );
 
-
   /*
    * Standard retailer promotion savings.
    */
@@ -1913,13 +1730,11 @@ async function getCheckersBasket(
       ) =>
         sum +
         (
-          result
-            .promotionalSavings ||
+          result.promotionalSavings ||
           0
         ),
       0
     );
-
 
   /*
    * Xtra Savings.
@@ -1933,17 +1748,17 @@ async function getCheckersBasket(
       ) =>
         sum +
         (
-          result
-            .loyaltySavings ||
+          result.loyaltySavings ||
           0
         ),
       0
     );
 
-
-  // =====================================
-  // CACHE / API STATISTICS
-  // =====================================
+  /*
+   * =====================================
+   * CACHE / API STATISTICS
+   * =====================================
+   */
 
   const cacheHits =
     results.filter(
@@ -1952,14 +1767,12 @@ async function getCheckersBasket(
         "cache"
     ).length;
 
-
   const apiResults =
     results.filter(
       result =>
         result.priceSource ===
         "api"
     ).length;
-
 
   const failedResults =
     results.filter(
@@ -1968,9 +1781,7 @@ async function getCheckersBasket(
         "error"
     ).length;
 
-
   return {
-
     retailer:
       "Checkers",
 
@@ -1983,7 +1794,6 @@ async function getCheckersBasket(
 
     unmatched,
 
-
     /*
      * Actual optimized Checkers spend.
      */
@@ -1992,7 +1802,6 @@ async function getCheckersBasket(
       Number(
         total.toFixed(2)
       ),
-
 
     /*
      * Normal total before Xtra Savings.
@@ -2003,23 +1812,19 @@ async function getCheckersBasket(
         normalTotal.toFixed(2)
       ),
 
-
     /*
      * Savings kept separately.
      */
 
     promotionalSavings:
       Number(
-        promotionalSavings
-          .toFixed(2)
+        promotionalSavings.toFixed(2)
       ),
 
     loyaltySavings:
       Number(
-        loyaltySavings
-          .toFixed(2)
+        loyaltySavings.toFixed(2)
       ),
-
 
     itemCount:
       results.length,
@@ -2031,9 +1836,7 @@ async function getCheckersBasket(
       unmatched.length,
 
     complete:
-      unmatched.length ===
-      0,
-
+      unmatched.length === 0,
 
     /*
      * Useful while developing Grossary+
@@ -2041,7 +1844,6 @@ async function getCheckersBasket(
      */
 
     cacheStats: {
-
       freshProductsLoaded:
         cachedProducts.length,
 
@@ -2058,12 +1860,9 @@ async function getCheckersBasket(
 
       bonusBuyRequests:
         bonusBuyCache.size,
-
     },
-
   };
 }
-
 
 /*
  * ------------------------------------------------
@@ -2072,25 +1871,14 @@ async function getCheckersBasket(
  */
 
 module.exports = {
-
   buildCheckersSearchQuery,
-
   extractCheckersProducts,
-
   getQuantity,
-
   isPromotionActive,
-
   canUseLoyaltyPricing,
-
   calculateCheckersProductPricing,
-
   applyBonusBuyToProduct,
-
   enrichCheckersBonusBuys,
-
   getCheckersBasketItem,
-
   getCheckersBasket,
-
 };
