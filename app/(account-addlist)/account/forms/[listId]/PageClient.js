@@ -455,7 +455,7 @@ async function handleGrossaryPlus() {
         <div className="flex flex-col justify-between font-bold">
            <ListMoneySpent money_spent={money_spent}
            />
-           {listitems.recommended_price !== null && <p className='text-xs text-gray-400'>Expected Spending &plusmn;R{plan}</p>}
+           {listitems.recommended_price !== null || <p className='text-xs text-gray-400'>Expected Spending &plusmn;R{plan}</p>}
            {/* <ListMoneyLeft money_left={money_left}/> */}
 
          

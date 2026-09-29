@@ -95,6 +95,8 @@ function getItemDisplayData(item) {
   const product =
     item?.product || {};
 
+    const BrandName = item?.item_brand || null;
+
   const requestedItem =
     item?.requestedItem || {};
 
@@ -1195,7 +1197,7 @@ function GrossaryPlusResults({
                                         "
                                       >
                                         For:{" "}
-                                        {
+                                        {itemData.brandName}{
                                           itemData
                                             .requestedName
                                         }

@@ -177,12 +177,24 @@ function calculateCheckersProductPricing(
     useLoyaltyPricing = true,
   } = {}
 ) {
+  /*
+   * ------------------------------------------------
+   * Normal price
+   * ------------------------------------------------
+   */
+
   const normalUnitPrice =
     Number(product?.price);
 
   if (!Number.isFinite(normalUnitPrice)) {
     return null;
   }
+
+  /*
+   * ------------------------------------------------
+   * Quantity
+   * ------------------------------------------------
+   */
 
   const safeQuantity =
     Number.isFinite(Number(quantity)) &&
@@ -205,6 +217,12 @@ function calculateCheckersProductPricing(
       ) || 0
     ) * safeQuantity;
 
+  /*
+   * ------------------------------------------------
+   * Can this customer use Xtra Savings?
+   * ------------------------------------------------
+   */
+
   const loyaltyAllowed =
     canUseLoyaltyPricing(
       product,
@@ -212,6 +230,12 @@ function calculateCheckersProductPricing(
         useLoyaltyPricing,
       }
     );
+
+  /*
+   * ------------------------------------------------
+   * Promotion metadata
+   * ------------------------------------------------
+   */
 
   const mechanic =
     product?.promotionMechanic;
@@ -229,23 +253,25 @@ function calculateCheckersProductPricing(
       product?.promotionBundlePrice
     );
 
+  const promotionDiscountPercentage =
+    Number(
+      product?.promotionDiscountPercentage
+    );
+
   /*
-   * ------------------------------------------------
+   * =================================================
    * MULTIBUY
-   * ------------------------------------------------
+   * =================================================
    *
    * Example:
    *
-   * Coca-Cola Light 440ml
-   *
-   * normal price:
+   * Normal price:
    * R14.99 each
    *
-   * promotion:
+   * Promotion:
    * 4 for R55
    *
-   * quantity:
-   * 4
+   * quantity = 4
    *
    * normalTotal:
    * R59.96
@@ -255,7 +281,15 @@ function calculateCheckersProductPricing(
    *
    * loyaltySavings:
    * R4.96
-   * ------------------------------------------------
+   *
+   * IMPORTANT:
+   *
+   * MULTIBUY does NOT have a true discounted
+   * single-unit price.
+   *
+   * promotionBundlePrice is the amount paid
+   * for the qualifying group.
+   * =================================================
    */
 
   if (
@@ -278,8 +312,8 @@ function calculateCheckersProductPricing(
       promotionQuantity;
 
     /*
-     * The customer needs at least one
-     * complete bundle to receive the deal.
+     * Customer must have at least one complete
+     * qualifying bundle.
      */
 
     if (qualifyingBundles > 0) {
@@ -311,15 +345,19 @@ function calculateCheckersProductPricing(
           ),
 
         /*
-         * MULTIBUY doesn't have a real
-         * discounted single-unit price.
+         * Keep unitPrice as the normal shelf price.
          *
-         * Keep unitPrice as normal shelf price.
-         * lineTotal is the actual basket cost.
+         * There is no true single-unit loyalty
+         * price for something such as "4 for R55".
          */
 
         unitPrice:
           normalUnitPrice,
+
+        /*
+         * lineTotal is what the customer
+         * actually pays.
+         */
 
         lineTotal:
           Number(
@@ -349,6 +387,9 @@ function calculateCheckersProductPricing(
             promotionBundlePrice.toFixed(2)
           ),
 
+        promotionDiscountPercentage:
+          null,
+
         qualifyingBundles,
 
         remainingQuantity,
@@ -357,134 +398,176 @@ function calculateCheckersProductPricing(
   }
 
   /*
- * ------------------------------------------------
- * QUANTITY_PERCENTAGE
- * ------------------------------------------------
- *
- * Example:
- *
- * Buy 2 & Save 25%
- *
- * Normal unit price = R20
- * Quantity = 5
- *
- * 2 qualifying groups = 4 products
- * 1 remaining product = normal price
- */
-
-const promotionDiscountPercentage =
-  Number(
-    product?.promotionDiscountPercentage
-  );
-
-if (
-  loyaltyAllowed &&
-  mechanic === "QUANTITY_PERCENTAGE" &&
-  promotionQuantity > 1 &&
-  Number.isFinite(
-    promotionDiscountPercentage
-  ) &&
-  promotionDiscountPercentage > 0
-) {
-  const qualifyingBundles =
-    Math.floor(
-      safeQuantity /
-      promotionQuantity
-    );
-
-  const qualifyingQuantity =
-    qualifyingBundles *
-    promotionQuantity;
-
-  const remainingQuantity =
-    safeQuantity -
-    qualifyingQuantity;
-
-  if (qualifyingBundles > 0) {
-    const qualifyingNormalTotal =
-      qualifyingQuantity *
-      normalUnitPrice;
-
-    const discountRate =
-      promotionDiscountPercentage /
-      100;
-
-    const loyaltySavings =
-      qualifyingNormalTotal *
-      discountRate;
-
-    const discountedTotal =
-      qualifyingNormalTotal -
-      loyaltySavings;
-
-    const remainingTotal =
-      remainingQuantity *
-      normalUnitPrice;
-
-    const lineTotal =
-      discountedTotal +
-      remainingTotal;
-
-    return {
-      normalUnitPrice,
-
-      normalTotal:
-        Number(
-          normalTotal.toFixed(2)
-        ),
-
-      unitPrice:
-        normalUnitPrice,
-
-      lineTotal:
-        Number(
-          lineTotal.toFixed(2)
-        ),
-
-      promotionalSavings:
-        Number(
-          promotionalSavings.toFixed(2)
-        ),
-
-      loyaltySavings:
-        Number(
-          loyaltySavings.toFixed(2)
-        ),
-
-      loyaltyApplied:
-        loyaltySavings > 0,
-
-      promotionMechanic:
-        mechanic,
-
-      promotionQuantity,
-
-      promotionDiscountPercentage,
-
-      promotionBundlePrice:
-        null,
-
-      qualifyingBundles,
-
-      remainingQuantity,
-    };
-  }
-}
-  /*
-   * ------------------------------------------------
-   * FIXED_PRICE
-   * ------------------------------------------------
+   * =================================================
+   * QUANTITY_PERCENTAGE
+   * =================================================
    *
    * Example:
    *
-   * Oros
+   * Buy 2 & Save 25%
    *
-   * normal:
+   * Normal unit price:
+   * R52.99
+   *
+   * Quantity:
+   * 2
+   *
+   * Normal total:
+   * R105.98
+   *
+   * 25% saving:
+   * approximately R26.50
+   *
+   * Customer pays:
+   * approximately R79.49
+   *
+   * IMPORTANT:
+   *
+   * The discount only applies to complete
+   * qualifying groups.
+   *
+   * Example:
+   *
+   * Buy 2 & Save 25%
+   * quantity = 5
+   *
+   * 4 products qualify.
+   * 1 product remains at normal price.
+   * =================================================
+   */
+
+  if (
+    loyaltyAllowed &&
+    mechanic ===
+      "QUANTITY_PERCENTAGE" &&
+    promotionQuantity > 1 &&
+    Number.isFinite(
+      promotionDiscountPercentage
+    ) &&
+    promotionDiscountPercentage > 0
+  ) {
+    const qualifyingBundles =
+      Math.floor(
+        safeQuantity /
+        promotionQuantity
+      );
+
+    const qualifyingQuantity =
+      qualifyingBundles *
+      promotionQuantity;
+
+    const remainingQuantity =
+      safeQuantity -
+      qualifyingQuantity;
+
+    /*
+     * Customer must have at least one complete
+     * qualifying group.
+     */
+
+    if (qualifyingBundles > 0) {
+      const qualifyingNormalTotal =
+        qualifyingQuantity *
+        normalUnitPrice;
+
+      const discountRate =
+        promotionDiscountPercentage /
+        100;
+
+      const loyaltySavings =
+        qualifyingNormalTotal *
+        discountRate;
+
+      const discountedTotal =
+        qualifyingNormalTotal -
+        loyaltySavings;
+
+      const remainingTotal =
+        remainingQuantity *
+        normalUnitPrice;
+
+      const lineTotal =
+        discountedTotal +
+        remainingTotal;
+
+      return {
+        normalUnitPrice,
+
+        normalTotal:
+          Number(
+            normalTotal.toFixed(2)
+          ),
+
+        /*
+         * Keep normal shelf price as unitPrice.
+         *
+         * The promotion depends on buying the
+         * required quantity.
+         */
+
+        unitPrice:
+          normalUnitPrice,
+
+        lineTotal:
+          Number(
+            lineTotal.toFixed(2)
+          ),
+
+        promotionalSavings:
+          Number(
+            promotionalSavings.toFixed(2)
+          ),
+
+        loyaltySavings:
+          Number(
+            loyaltySavings.toFixed(2)
+          ),
+
+        loyaltyApplied:
+          loyaltySavings > 0,
+
+        promotionMechanic:
+          mechanic,
+
+        promotionQuantity,
+
+        /*
+         * QUANTITY_PERCENTAGE does not depend
+         * on a fixed bundle price for the
+         * calculation.
+         */
+
+        promotionBundlePrice:
+          product?.promotionBundlePrice ??
+          null,
+
+        promotionDiscountPercentage,
+
+        qualifyingBundles,
+
+        remainingQuantity,
+      };
+    }
+  }
+
+  /*
+   * =================================================
+   * FIXED_PRICE
+   * =================================================
+   *
+   * Example:
+   *
+   * Normal price:
    * R45.99
    *
    * Xtra Savings:
    * R36.99
-   * ------------------------------------------------
+   *
+   * Every qualifying unit costs R36.99.
+   *
+   * Therefore FIXED_PRICE has a real
+   * discounted unit price.
+   * =================================================
    */
 
   if (
@@ -500,7 +583,8 @@ if (
     if (
       Number.isFinite(
         loyaltyUnitPrice
-      )
+      ) &&
+      loyaltyUnitPrice > 0
     ) {
       const lineTotal =
         loyaltyUnitPrice *
@@ -520,6 +604,11 @@ if (
           Number(
             normalTotal.toFixed(2)
           ),
+
+        /*
+         * FIXED_PRICE has a real loyalty
+         * unit price, so expose it here.
+         */
 
         unitPrice:
           loyaltyUnitPrice,
@@ -551,10 +640,15 @@ if (
           ) || 1,
 
         promotionBundlePrice:
-          Number(
-            product?.promotionBundlePrice
-          ) ||
-          loyaltyUnitPrice,
+          Number.isFinite(
+            promotionBundlePrice
+          )
+            ? promotionBundlePrice
+            : loyaltyUnitPrice,
+
+        promotionDiscountPercentage:
+          product?.promotionDiscountPercentage ??
+          null,
 
         qualifyingBundles:
           safeQuantity,
@@ -566,21 +660,38 @@ if (
   }
 
   /*
-   * ------------------------------------------------
-   * Normal price fallback
-   * ------------------------------------------------
+   * =================================================
+   * NORMAL PRICE FALLBACK
+   * =================================================
    *
-   * This also handles a MULTIBUY where the
-   * requested quantity isn't enough to form
-   * a complete bundle.
+   * Used when:
+   *
+   * - there is no Xtra Savings promotion
+   * - loyalty pricing is disabled
+   * - promotion is inactive
+   * - customer hasn't bought enough units
+   *   to qualify for MULTIBUY
+   * - customer hasn't bought enough units
+   *   to qualify for QUANTITY_PERCENTAGE
+   *
+   * IMPORTANT:
+   *
+   * Preserve promotion metadata even when
+   * the current requested quantity does not
+   * qualify.
    *
    * Example:
    *
-   * 4 for R55
-   * quantity = 3
+   * Promotion:
+   * Buy 2 & Save 25%
    *
-   * Customer pays normal price × 3.
-   * ------------------------------------------------
+   * Requested:
+   * quantity = 1
+   *
+   * Customer pays normal price, but Grossary
+   * still knows that the product has the
+   * Buy 2 & Save 25% promotion.
+   * =================================================
    */
 
   return {
@@ -619,6 +730,10 @@ if (
 
     promotionBundlePrice:
       product?.promotionBundlePrice ??
+      null,
+
+    promotionDiscountPercentage:
+      product?.promotionDiscountPercentage ??
       null,
 
     qualifyingBundles:
