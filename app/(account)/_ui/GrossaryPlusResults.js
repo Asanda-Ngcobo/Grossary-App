@@ -778,7 +778,7 @@ function GrossaryPlusResults({
                     text-white/60
                   "
                 >
-                  Grossary+ savings
+                  grossary<span className="text-[#1EC677]">plus</span> savings
                 </p>
 
                 <p

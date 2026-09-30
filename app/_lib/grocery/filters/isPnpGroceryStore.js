@@ -4,6 +4,7 @@ const ALLOWED_PNP_TYPES = [
   "HYPER",
   "LOCAL",
   "MARKET",
+ 
 ];
 
 

@@ -162,7 +162,7 @@ function GrossaryPlusLoading() {
       {/* INTRO */}
       {/* ================================= */}
 
-      <div
+      {/* <div
         className="
           mb-8
         "
@@ -205,12 +205,12 @@ function GrossaryPlusLoading() {
         </p>
 
       </div>
-
+ */}
 
       {/* ================================= */}
       {/* ACTIVE STEP CARD */}
       {/* ================================= */}
-
+{/* 
       <div
         className="
           bg-[#0B2E1E]
@@ -294,7 +294,7 @@ function GrossaryPlusLoading() {
         </div>
 
 
-        {/* Progress bar */}
+         Progress bar 
 
         <div
           className="
@@ -346,7 +346,7 @@ function GrossaryPlusLoading() {
 
         </div>
 
-      </div>
+      </div> */}
 
 
       {/* ================================= */}
@@ -355,10 +355,9 @@ function GrossaryPlusLoading() {
 
       <div
         className="
-          bg-white
-          rounded-3xl
-          border
-          border-gray-100
+       
+         
+         
           mt-5
           overflow-hidden
         "

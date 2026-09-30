@@ -1502,9 +1502,7 @@ async function getCheckersBasketItem(
   }
 
   const searchQuery =
-    buildCheckersSearchQuery(
-      item
-    );
+    buildCheckersSearchQuery(item);
 
   /*
    * =====================================
@@ -1573,8 +1571,18 @@ async function getCheckersBasketItem(
 
   /*
    * =====================================
-   * 4. NORMALIZE RESULTS
+   * 4. NORMALIZE SEARCH RESULTS
    * =====================================
+   *
+   * IMPORTANT:
+   *
+   * We do NOT resolve Bonus Buys here.
+   *
+   * Previously every returned candidate
+   * could trigger get_bonus_buy.
+   *
+   * Now we first determine which product
+   * actually matches the user's item.
    */
 
   const rawProducts =
@@ -1588,9 +1596,9 @@ async function getCheckersBasketItem(
     );
 
   /*
-   * Critical safety check.
+   * Critical store safety check.
    *
-   * Never allow a product from another
+   * Never allow products from another
    * Checkers branch into this basket.
    */
 
@@ -1609,76 +1617,49 @@ async function getCheckersBasketItem(
 
   /*
    * =====================================
-   * 5. RESOLVE BONUS BUY PROMOTIONS
+   * 5. MATCH BEFORE BONUS BUY LOOKUPS
    * =====================================
-   */
-
-  const storeProducts =
-    await enrichCheckersBonusBuys(
-      normalizedProducts,
-      storeId,
-      bonusBuyCache
-    );
-
-  /*
-   * =====================================
-   * 6. CACHE ENRICHED PRODUCTS
-   * =====================================
-   */
-
-  if (storeProducts.length > 0) {
-    try {
-      await saveProductsToCache({
-        retailer:
-          "Checkers",
-
-        storeId,
-
-        products:
-          storeProducts,
-      });
-
-      console.log(
-        `✓ Cached ${storeProducts.length} Checkers products`
-      );
-    } catch (cacheError) {
-      /*
-       * Cache failure must not stop fresh
-       * Checkers pricing from being used.
-       */
-
-      console.error(
-        "Checkers cache save failed:",
-        cacheError.message
-      );
-    }
-
-    /*
-     * Reuse fetched products for later
-     * items in this same basket.
-     */
-
-    cachedProducts.push(
-      ...storeProducts
-    );
-  }
-
-  /*
-   * =====================================
-   * 7. MATCH FRESH RESULTS
-   * =====================================
+   *
+   * OLD:
+   *
+   * search
+   * → normalize all
+   * → resolve Bonus Buys for all
+   * → cache all
+   * → match
+   *
+   *
+   * NEW:
+   *
+   * search
+   * → normalize all
+   * → match
+   * → resolve Bonus Buys for match only
+   * → cache matched product only
    */
 
   const apiMatch =
     matchProduct(
       item,
-      storeProducts
+      normalizedProducts
     );
+
+  /*
+   * No valid product match.
+   *
+   * IMPORTANT:
+   * We return here WITHOUT making any
+   * get_bonus_buy requests.
+   */
 
   if (
     !apiMatch.matched ||
     !apiMatch.match
   ) {
+    console.log(
+      `✗ No Checkers product match for ${searchQuery}`
+    );
+
     return buildUnmatchedResult({
       item,
       storeId,
@@ -1694,7 +1675,197 @@ async function getCheckersBasketItem(
 
   /*
    * =====================================
-   * 8. RETURN FRESH API MATCH
+   * 6. WE NOW HAVE THE MATCHED PRODUCT
+   * =====================================
+   */
+
+  const matchedProduct =
+    apiMatch.match;
+
+  console.log(
+    `✓ Checkers matched before Bonus Buy lookup: ${
+      matchedProduct.productName ||
+      matchedProduct.name ||
+      searchQuery
+    }`
+  );
+
+  /*
+   * =====================================
+   * 7. RESOLVE BONUS BUY FOR MATCH ONLY
+   * =====================================
+   *
+   * This is the major credit-saving change.
+   *
+   * enrichCheckersBonusBuys() still works
+   * exactly as before, but instead of giving
+   * it all 20 search candidates, we give it
+   * an array containing ONLY the matched
+   * product.
+   *
+   * Therefore:
+   *
+   * 20 candidates
+   * 6 Bonus Buy IDs
+   *
+   * no longer means:
+   *
+   * 6 get_bonus_buy calls.
+   *
+   * Only Bonus Buy IDs belonging to the
+   * matched product can be requested.
+   */
+
+  const enrichedMatches =
+    await enrichCheckersBonusBuys(
+      [matchedProduct],
+      storeId,
+      bonusBuyCache
+    );
+
+  /*
+   * enrichCheckersBonusBuys returns an
+   * array.
+   *
+   * Since we passed one product, take the
+   * first result.
+   *
+   * If enrichment fails for some reason,
+   * retain the original matched product.
+   */
+
+  const enrichedMatchedProduct =
+    enrichedMatches[0] ||
+    matchedProduct;
+
+  /*
+   * Replace matchProduct's original match
+   * with the enriched version.
+   *
+   * Keep:
+   *
+   * - score
+   * - reasons
+   * - candidates
+   *
+   * from the original matcher result.
+   */
+
+  const enrichedApiMatch = {
+    ...apiMatch,
+
+    match:
+      enrichedMatchedProduct,
+  };
+
+  /*
+   * =====================================
+   * 8. CACHE ONLY MATCHED PRODUCT
+   * =====================================
+   *
+   * Previously every search candidate was
+   * written to grocery_product_cache.
+   *
+   * Now only the product Grossary actually
+   * matched is persisted.
+   *
+   * The cached version is also the enriched
+   * version, so its Xtra Savings information
+   * is saved with it.
+   */
+
+  try {
+    await saveProductsToCache({
+      retailer:
+        "Checkers",
+
+      storeId,
+
+      products: [
+        enrichedMatchedProduct,
+      ],
+    });
+
+    console.log(
+      `✓ Cached matched Checkers product: ${
+        enrichedMatchedProduct.productName ||
+        enrichedMatchedProduct.name ||
+        searchQuery
+      }`
+    );
+  } catch (cacheError) {
+    /*
+     * Cache failure must never prevent
+     * Grossary from using the fresh
+     * Checkers result.
+     */
+
+    console.error(
+      "Checkers matched product cache save failed:",
+      cacheError.message
+    );
+  }
+
+  /*
+   * =====================================
+   * 9. ADD MATCH TO BASKET-LOCAL CACHE
+   * =====================================
+   *
+   * This is NOT another Supabase write.
+   *
+   * It simply means later items in this
+   * same Grossary+ basket can reuse this
+   * matched product without another
+   * Checkers API request.
+   */
+
+  const matchedProductId =
+    enrichedMatchedProduct
+      ?.providerProductId;
+
+  const existingMatchedIndex =
+    matchedProductId
+      ? cachedProducts.findIndex(
+          product =>
+            String(
+              product
+                ?.providerProductId ??
+              ""
+            ) ===
+              String(
+                matchedProductId
+              ) &&
+            String(
+              product
+                ?.providerStoreId ??
+              ""
+            ) ===
+              String(storeId)
+        )
+      : -1;
+
+  /*
+   * If the product somehow already exists
+   * in our basket-local cache, replace it
+   * with the newly enriched version.
+   */
+
+  if (
+    existingMatchedIndex >= 0
+  ) {
+    cachedProducts[
+      existingMatchedIndex
+    ] =
+      enrichedMatchedProduct;
+  } else {
+    cachedProducts.push(
+      enrichedMatchedProduct
+    );
+  }
+
+  /*
+   * =====================================
+   * 10. RETURN ENRICHED MATCH
    * =====================================
    */
 
@@ -1704,7 +1875,7 @@ async function getCheckersBasketItem(
     searchQuery,
 
     matchResult:
-      apiMatch,
+      enrichedApiMatch,
 
     priceSource:
       "api",
@@ -1712,7 +1883,6 @@ async function getCheckersBasketItem(
     useLoyaltyPricing,
   });
 }
-
 /*
  * ------------------------------------------------
  * Build complete Checkers basket

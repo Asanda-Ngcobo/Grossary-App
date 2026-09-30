@@ -730,57 +730,85 @@ function calculateSpecificWordMatch(
   expected,
   actual
 ) {
+  /*
+   * Words that usually describe the general
+   * product/category rather than the specific
+   * product identity.
+   *
+   * Retailers frequently omit these from
+   * product titles.
+   *
+   * Example:
+   *
+   * Grossary:
+   * Coca-Cola Original Taste Soft Drink
+   *
+   * Retailer:
+   * Coca-Cola Original 6 x 300ml
+   *
+   * "soft drink" should not cause the correct
+   * product to fail.
+   */
 
   const ignoredWords =
     new Set([
-
       "the",
       "and",
       "with",
       "of",
 
-    ]);
+      "soft",
+      "drink",
+      "beverage",
+      "beverages",
 
+      "product",
+      "products",
+
+      "pack",
+      "packs",
+
+      "bottle",
+      "bottles",
+
+      "can",
+      "cans",
+
+      "packet",
+      "packets",
+    ]);
 
   const expectedWords =
     getWords(
       expected
-    )
-      .filter(
-        word =>
-          !ignoredWords.has(
-            word
-          )
-      );
-
+    ).filter(
+      word =>
+        !ignoredWords.has(
+          word
+        )
+    );
 
   const actualWords =
     new Set(
       getWords(
         actual
+      ).filter(
+        word =>
+          !ignoredWords.has(
+            word
+          )
       )
     );
-
 
   if (
     !expectedWords.length
   ) {
-
     return {
-
-      similarity:
-        0,
-
-      matchedWords:
-        [],
-
-      missingWords:
-        [],
-
+      similarity: 0,
+      matchedWords: [],
+      missingWords: [],
     };
-
   }
-
 
   const matchedWords =
     expectedWords.filter(
@@ -790,7 +818,6 @@ function calculateSpecificWordMatch(
         )
     );
 
-
   const missingWords =
     expectedWords.filter(
       word =>
@@ -799,9 +826,7 @@ function calculateSpecificWordMatch(
         )
     );
 
-
   return {
-
     similarity:
       matchedWords.length /
       expectedWords.length,
@@ -809,9 +834,7 @@ function calculateSpecificWordMatch(
     matchedWords,
 
     missingWords,
-
   };
-
 }
 
 
@@ -978,7 +1001,30 @@ function buildExpectedProductName(
  * Score one retailer product
  * ------------------------------------------------
  */
+const PRODUCT_IDENTITY_TERMS = [
+  "original",
+  "zero",
+  "zero sugar",
+  "no sugar",
+  "sugar free",
+  "diet",
+  "light",
+  "less sugar",
+];
 
+function extractProductIdentityTerms(
+  value
+) {
+  const text =
+    ` ${normalizeText(value)} `;
+
+  return PRODUCT_IDENTITY_TERMS.filter(
+    term =>
+      text.includes(
+        ` ${normalizeText(term)} `
+      )
+  );
+}
 function scoreProductMatch(
   listItem,
   product
@@ -1002,9 +1048,12 @@ function scoreProductMatch(
    */
 
   const expectedProductName =
-    buildExpectedProductName(
-      listItem
-    );
+  [
+    listItem?.item_brand,
+    listItem?.item_name,
+  ]
+    .filter(Boolean)
+    .join(" ");
 
 
   const nameMatch =
@@ -1068,6 +1117,40 @@ function scoreProductMatch(
 
   }
 
+  const expectedIdentityTerms =
+  extractProductIdentityTerms(
+    listItem.item_name
+  );
+
+const actualIdentityTerms =
+  extractProductIdentityTerms(
+    product.productName
+  );
+
+if (
+  expectedIdentityTerms.length > 0 &&
+  actualIdentityTerms.length > 0
+) {
+  const hasIdentityMatch =
+    expectedIdentityTerms.some(
+      term =>
+        actualIdentityTerms.includes(
+          term
+        )
+    );
+
+  if (!hasIdentityMatch) {
+    score -= 60;
+
+    reasons.push(
+      `product identity mismatch: expected ${expectedIdentityTerms.join(
+        ", "
+      )}, found ${actualIdentityTerms.join(
+        ", "
+      )}: -60`
+    );
+  }
+}
 
   /*
    * ==============================================
@@ -1123,11 +1206,11 @@ function scoreProductMatch(
     ) {
 
       score -=
-        40;
+        30;
 
 
       reasons.push(
-        "variant mismatch: -40"
+        "variant mismatch: -30"
       );
 
     }
@@ -1830,5 +1913,6 @@ module.exports = {
   buildExpectedProductName,
 
   sizesMatch,
+  extractProductIdentityTerms,
 
 };
