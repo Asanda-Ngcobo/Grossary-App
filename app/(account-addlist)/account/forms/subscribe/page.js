@@ -137,7 +137,7 @@ export default async function SubscribePage() {
               "
             >
               plus
-            </span>
+            </span> {" "} Early Access
           </div>
 
 
@@ -155,7 +155,7 @@ export default async function SubscribePage() {
                 text-[#1EC677]
               "
             >
-              R100
+              R100 or more
             </span>{" "}
             per 6 Items
           </h1>
@@ -167,10 +167,7 @@ export default async function SubscribePage() {
               mt-3
             "
           >
-            grossary plus compares your
-            grocery list items across participating
-            nearby stores and shows you where
-            each item is cheaper.
+           Find better prices for your grocery list across supported stores, see where to buy each item, and discover potential savings before you shop.
           </p>
 
         </div>

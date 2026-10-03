@@ -4,27 +4,20 @@
  * Matches a Grossary list item against normalized
  * retailer products.
  *
- * Important distinction:
+ * IMPORTANT:
  *
  * item_quantity = how many products / packs to buy
  *
- * item_volume_mass = the configuration of ONE
+ * item_volume_mass = configuration of ONE
  * product being purchased.
  *
  * Examples:
  *
- * item_volume_mass = "200"
- * item_unit = "ml"
+ * 200 + ml
+ * = 1 x 200ml
  *
- * means:
- * 1 x 200ml
- *
- *
- * item_volume_mass = "6 x 200"
- * item_unit = "ml"
- *
- * means:
- * 6 x 200ml pack
+ * 6 x 200 + ml
+ * = 6 x 200ml
  *
  * These MUST NOT be treated as the same product.
  */
@@ -37,24 +30,45 @@
  */
 
 function normalizeText(value) {
-
   return String(value || "")
     .toLowerCase()
-    .replace(/[^a-z0-9\s.]/g, " ")
-    .replace(/\s+/g, " ")
-    .trim();
 
+    /*
+     * Normalize SPF formatting.
+     *
+     * SPF50
+     * SPF 50
+     * SPF-50
+     * SPF 50+
+     *
+     * all become:
+     *
+     * spf50
+     */
+    .replace(
+      /\bspf[\s-]*(\d+)\+?\b/gi,
+      "spf$1"
+    )
+
+    .replace(
+      /[^a-z0-9\s.]/g,
+      " "
+    )
+
+    .replace(
+      /\s+/g,
+      " "
+    )
+
+    .trim();
 }
 
 
 function normalizeUnit(unit) {
-
   const value =
     normalizeText(unit);
 
-
   const units = {
-
     kilograms: "kg",
     kilogram: "kg",
     kgs: "kg",
@@ -75,133 +89,98 @@ function normalizeUnit(unit) {
     milliliters: "ml",
     milliliter: "ml",
     ml: "ml",
-
   };
-
 
   return (
     units[value] ||
     value
   );
-
 }
 
 
 /*
  * ------------------------------------------------
  * Normalize one individual size
- *
- * Examples:
+ * ------------------------------------------------
  *
  * 2kg   -> 2000g
  * 500g  -> 500g
- *
  * 1.5L  -> 1500ml
  * 200ml -> 200ml
- * ------------------------------------------------
  */
 
 function normalizeSize(
   value,
   unit
 ) {
-
   const number =
     Number(value);
-
 
   if (
     !Number.isFinite(number) ||
     number <= 0
   ) {
-
     return null;
-
   }
-
 
   const normalizedUnit =
     normalizeUnit(unit);
 
-
   if (
     normalizedUnit === "kg"
   ) {
-
     return {
-
       value:
         number * 1000,
 
       unit:
         "g",
-
     };
-
   }
-
 
   if (
     normalizedUnit === "g"
   ) {
-
     return {
-
       value:
         number,
 
       unit:
         "g",
-
     };
-
   }
-
 
   if (
     normalizedUnit === "l"
   ) {
-
     return {
-
       value:
         number * 1000,
 
       unit:
         "ml",
-
     };
-
   }
-
 
   if (
     normalizedUnit === "ml"
   ) {
-
     return {
-
       value:
         number,
 
       unit:
         "ml",
-
     };
-
   }
 
-
   return {
-
     value:
       number,
 
     unit:
       normalizedUnit,
-
   };
-
 }
 
 
@@ -212,56 +191,50 @@ function normalizeSize(
  *
  * IMPORTANT:
  *
- * We preserve BOTH:
+ * Preserve:
  *
- * - individual size
- * - pack quantity
- *
+ * - individualSize
+ * - packQuantity
+ * - totalSize
  *
  * "200" + "ml"
  *
- * becomes:
+ * =>
  *
  * {
  *   value: 200,
+ *   totalSize: 200,
  *   individualSize: 200,
  *   packQuantity: 1,
- *   totalSize: 200,
  *   unit: "ml",
  *   isMultipack: false
  * }
  *
- *
  * "6 x 200" + "ml"
  *
- * becomes:
+ * =>
  *
  * {
  *   value: 1200,
+ *   totalSize: 1200,
  *   individualSize: 200,
  *   packQuantity: 6,
- *   totalSize: 1200,
  *   unit: "ml",
  *   isMultipack: true
  * }
- * ------------------------------------------------
  */
 
 function parseListItemSize(
   value,
   unit
 ) {
-
   if (
     value === null ||
     value === undefined ||
     value === ""
   ) {
-
     return null;
-
   }
-
 
   const text =
     String(value)
@@ -270,15 +243,11 @@ function parseListItemSize(
       .replace(/\s+/g, " ")
       .trim();
 
-
   /*
-   * ----------------------------------------------
-   * Pack format:
+   * Multipack:
    *
    * 6 x 200
    * 6x200
-   * 6 X 200
-   * ----------------------------------------------
    */
 
   const packMatch =
@@ -286,22 +255,16 @@ function parseListItemSize(
       /^(\d+)\s*x\s*(\d+(?:\.\d+)?)$/
     );
 
-
-  if (
-    packMatch
-  ) {
-
+  if (packMatch) {
     const packQuantity =
       Number(
         packMatch[1]
       );
 
-
     const rawIndividualSize =
       Number(
         packMatch[2]
       );
-
 
     const normalized =
       normalizeSize(
@@ -309,18 +272,11 @@ function parseListItemSize(
         unit
       );
 
-
-    if (
-      !normalized
-    ) {
-
+    if (!normalized) {
       return null;
-
     }
 
-
     return {
-
       value:
         normalized.value *
         packQuantity,
@@ -339,16 +295,11 @@ function parseListItemSize(
 
       isMultipack:
         packQuantity > 1,
-
     };
-
   }
 
-
   /*
-   * ----------------------------------------------
    * Single product
-   * ----------------------------------------------
    */
 
   const normalized =
@@ -357,18 +308,11 @@ function parseListItemSize(
       unit
     );
 
-
-  if (
-    !normalized
-  ) {
-
+  if (!normalized) {
     return null;
-
   }
 
-
   return {
-
     value:
       normalized.value,
 
@@ -386,9 +330,7 @@ function parseListItemSize(
 
     isMultipack:
       false,
-
   };
-
 }
 
 
@@ -416,23 +358,14 @@ function parseListItemSize(
  *
  * IMPORTANT:
  *
- * We DO NOT collapse:
- *
  * 6 x 200ml
  *
- * into only:
+ * must remain different from:
  *
  * 1200ml
- *
- * because Grossary must distinguish a six-pack
- * from one 1.2L product.
- * ------------------------------------------------
  */
 
-function extractSizeFromName(
-  name
-) {
-
+function extractSizeFromName(name) {
   const text =
     String(name || "")
       .toLowerCase()
@@ -440,14 +373,11 @@ function extractSizeFromName(
       .replace(/\s+/g, " ")
       .trim();
 
-
   /*
-   * ----------------------------------------------
-   * Quantity first
+   * Quantity first:
    *
    * 6 x 200ml
    * 12 x 1.5L
-   * ----------------------------------------------
    */
 
   const quantityFirstMatch =
@@ -455,22 +385,16 @@ function extractSizeFromName(
       /(\d+)\s*x\s*(\d+(?:\.\d+)?)\s*(kg|g|l|ml)\b/i
     );
 
-
-  if (
-    quantityFirstMatch
-  ) {
-
+  if (quantityFirstMatch) {
     const packQuantity =
       Number(
         quantityFirstMatch[1]
       );
 
-
     const rawIndividualSize =
       Number(
         quantityFirstMatch[2]
       );
-
 
     const normalized =
       normalizeSize(
@@ -478,13 +402,8 @@ function extractSizeFromName(
         quantityFirstMatch[3]
       );
 
-
-    if (
-      normalized
-    ) {
-
+    if (normalized) {
       return {
-
         value:
           normalized.value *
           packQuantity,
@@ -503,21 +422,15 @@ function extractSizeFromName(
 
         isMultipack:
           packQuantity > 1,
-
       };
-
     }
-
   }
 
-
   /*
-   * ----------------------------------------------
-   * Size first
+   * Size first:
    *
    * 200ml x 6
    * 1.5L x 12
-   * ----------------------------------------------
    */
 
   const sizeFirstMatch =
@@ -525,22 +438,16 @@ function extractSizeFromName(
       /(\d+(?:\.\d+)?)\s*(kg|g|l|ml)\s*x\s*(\d+)\b/i
     );
 
-
-  if (
-    sizeFirstMatch
-  ) {
-
+  if (sizeFirstMatch) {
     const rawIndividualSize =
       Number(
         sizeFirstMatch[1]
       );
 
-
     const packQuantity =
       Number(
         sizeFirstMatch[3]
       );
-
 
     const normalized =
       normalizeSize(
@@ -548,13 +455,8 @@ function extractSizeFromName(
         sizeFirstMatch[2]
       );
 
-
-    if (
-      normalized
-    ) {
-
+    if (normalized) {
       return {
-
         value:
           normalized.value *
           packQuantity,
@@ -573,22 +475,16 @@ function extractSizeFromName(
 
         isMultipack:
           packQuantity > 1,
-
       };
-
     }
-
   }
 
-
   /*
-   * ----------------------------------------------
-   * Standard single size
+   * Standard single size:
    *
    * 200ml
    * 1.5L
    * 2kg
-   * ----------------------------------------------
    */
 
   const standardMatch =
@@ -596,15 +492,9 @@ function extractSizeFromName(
       /(\d+(?:\.\d+)?)\s*(kg|g|l|ml)\b/i
     );
 
-
-  if (
-    !standardMatch
-  ) {
-
+  if (!standardMatch) {
     return null;
-
   }
-
 
   const normalized =
     normalizeSize(
@@ -614,18 +504,11 @@ function extractSizeFromName(
       standardMatch[2]
     );
 
-
-  if (
-    !normalized
-  ) {
-
+  if (!normalized) {
     return null;
-
   }
 
-
   return {
-
     value:
       normalized.value,
 
@@ -643,15 +526,13 @@ function extractSizeFromName(
 
     isMultipack:
       false,
-
   };
-
 }
 
 
 /*
  * ------------------------------------------------
- * Compare sizes with tolerance
+ * Compare sizes with 2% tolerance
  * ------------------------------------------------
  */
 
@@ -659,24 +540,18 @@ function sizesMatch(
   expected,
   actual
 ) {
-
   expected =
     Number(expected);
 
-
   actual =
     Number(actual);
-
 
   if (
     !Number.isFinite(expected) ||
     !Number.isFinite(actual)
   ) {
-
     return false;
-
   }
-
 
   const difference =
     Math.abs(
@@ -684,17 +559,13 @@ function sizesMatch(
       actual
     );
 
-
   const tolerance =
-    expected *
-    0.02;
-
+    expected * 0.02;
 
   return (
     difference <=
     tolerance
   );
-
 }
 
 
@@ -704,10 +575,7 @@ function sizesMatch(
  * ------------------------------------------------
  */
 
-function getWords(
-  value
-) {
-
+function getWords(value) {
   return normalizeText(
     value
   )
@@ -716,8 +584,121 @@ function getWords(
       word =>
         word.length > 1
     );
-
 }
+
+
+/*
+ * ------------------------------------------------
+ * Words that do not strongly identify a product
+ * ------------------------------------------------
+ */
+
+const GENERIC_PRODUCT_WORDS =
+  new Set([
+    "the",
+    "and",
+    "with",
+    "of",
+
+    "soft",
+    "drink",
+    "beverage",
+    "beverages",
+
+    "product",
+    "products",
+
+    "pack",
+    "packs",
+
+    "bottle",
+    "bottles",
+
+    "can",
+    "cans",
+
+    "packet",
+    "packets",
+  ]);
+
+
+/*
+ * ------------------------------------------------
+ * Product form / packaging words
+ * ------------------------------------------------
+ *
+ * These can describe the format of a product,
+ * but must NOT establish product identity by
+ * themselves.
+ *
+ * Example:
+ *
+ * Everysun SPF50 Sun Spray 300ml
+ *
+ * and
+ *
+ * TRESemmé Heat Defence Hair Spray 300ml
+ *
+ * are both:
+ *
+ * spray + 300ml
+ *
+ * but are completely different products.
+ */
+
+const PRODUCT_FORM_WORDS =
+  new Set([
+    "bottle",
+    "bottles",
+
+    "refill",
+    "refills",
+
+    "sachet",
+    "sachets",
+
+    "pouch",
+    "pouches",
+
+    "packet",
+    "packets",
+
+    "pack",
+    "packs",
+
+    "box",
+    "boxes",
+
+    "can",
+    "cans",
+
+    "tin",
+    "tins",
+
+    "tub",
+    "tubs",
+
+    "jar",
+    "jars",
+
+    "aerosol",
+    "spray",
+    "trigger",
+
+    "roll",
+    "stick",
+    "bar",
+
+    "liquid",
+    "gel",
+    "powder",
+
+    "concentrate",
+    "lotion",
+    " moisture",
+    "spf50",
+    "spf30"
+  ]);
 
 
 /*
@@ -730,60 +711,12 @@ function calculateSpecificWordMatch(
   expected,
   actual
 ) {
-  /*
-   * Words that usually describe the general
-   * product/category rather than the specific
-   * product identity.
-   *
-   * Retailers frequently omit these from
-   * product titles.
-   *
-   * Example:
-   *
-   * Grossary:
-   * Coca-Cola Original Taste Soft Drink
-   *
-   * Retailer:
-   * Coca-Cola Original 6 x 300ml
-   *
-   * "soft drink" should not cause the correct
-   * product to fail.
-   */
-
-  const ignoredWords =
-    new Set([
-      "the",
-      "and",
-      "with",
-      "of",
-
-      "soft",
-      "drink",
-      "beverage",
-      "beverages",
-
-      "product",
-      "products",
-
-      "pack",
-      "packs",
-
-      "bottle",
-      "bottles",
-
-      "can",
-      "cans",
-
-      "packet",
-      "packets",
-    ]);
-
   const expectedWords =
     getWords(
       expected
     ).filter(
       word =>
-        !ignoredWords.has(
+        !GENERIC_PRODUCT_WORDS.has(
           word
         )
     );
@@ -794,7 +727,7 @@ function calculateSpecificWordMatch(
         actual
       ).filter(
         word =>
-          !ignoredWords.has(
+          !GENERIC_PRODUCT_WORDS.has(
             word
           )
       )
@@ -845,7 +778,6 @@ function calculateSpecificWordMatch(
  */
 
 const PRODUCT_VARIANTS = [
-
   "bottle",
   "refill",
   "sachet",
@@ -871,7 +803,6 @@ const PRODUCT_VARIANTS = [
   "powder",
 
   "concentrate",
-
 ];
 
 
@@ -884,27 +815,21 @@ const PRODUCT_VARIANTS = [
 function extractProductVariants(
   value
 ) {
-
   const text =
     normalizeText(value);
 
-
   return PRODUCT_VARIANTS.filter(
     variant => {
-
       const normalizedVariant =
         normalizeText(
           variant
         );
 
-
       return text.includes(
         normalizedVariant
       );
-
     }
   );
-
 }
 
 
@@ -918,36 +843,28 @@ function productNameContainsBrand(
   productName,
   expectedBrand
 ) {
-
   const name =
     normalizeText(
       productName
     );
-
 
   const brand =
     normalizeText(
       expectedBrand
     );
 
-
   if (
     !name ||
     !brand
   ) {
-
     return false;
-
   }
 
-
   return (
-    ` ${name} `
-      .includes(
-        ` ${brand} `
-      )
+    ` ${name} `.includes(
+      ` ${brand} `
+    )
   );
-
 }
 
 
@@ -958,59 +875,60 @@ function productNameContainsBrand(
  *
  * Brand + item name.
  *
- * Example:
- *
  * Coca-Cola
  * +
- * Original Taste Less Sugar Soft Drink
+ * Original Taste Soft Drink
  *
- * becomes:
+ * =
  *
- * Coca-Cola Original Taste Less Sugar Soft Drink
- * ------------------------------------------------
+ * Coca-Cola Original Taste Soft Drink
  */
 
 function buildExpectedProductName(
   listItem
 ) {
-
   return [
-
-    listItem
-      ?.item_brand,
-
-    listItem
-      ?.item_name,
-
+    listItem?.item_brand,
+    listItem?.item_name,
   ]
     .filter(
       value =>
         value !== null &&
         value !== undefined &&
-        String(
-          value
-        ).trim() !== ""
+        String(value).trim() !== ""
     )
     .join(" ");
-
 }
 
 
 /*
  * ------------------------------------------------
- * Score one retailer product
+ * Explicit product identity terms
  * ------------------------------------------------
+ *
+ * These help protect against products that share
+ * the same brand but are explicitly different.
+ *
+ * Example:
+ *
+ * Coca-Cola Original
+ * must not be rescued by
+ * Coca-Cola Zero Sugar
+ * merely because brand and pack match.
  */
+
 const PRODUCT_IDENTITY_TERMS = [
   "original",
-  "zero",
   "zero sugar",
   "no sugar",
   "sugar free",
+  "less sugar",
+  "zero",
   "diet",
   "light",
-  "less sugar",
+  "blend",
 ];
+
 
 function extractProductIdentityTerms(
   value
@@ -1025,43 +943,41 @@ function extractProductIdentityTerms(
       )
   );
 }
+
+
+/*
+ * ------------------------------------------------
+ * Score one retailer product
+ * ------------------------------------------------
+ */
+
 function scoreProductMatch(
   listItem,
   product
 ) {
+  let score = 0;
 
-  let score =
-    0;
-
-
-  const reasons =
-    [];
-
+  const reasons = [];
 
   /*
    * ==============================================
    * PRODUCT NAME
+   * ==============================================
    *
    * Maximum:
    * +40
-   * ==============================================
    */
 
   const expectedProductName =
-  [
-    listItem?.item_brand,
-    listItem?.item_name,
-  ]
-    .filter(Boolean)
-    .join(" ");
-
+    buildExpectedProductName(
+      listItem
+    );
 
   const nameMatch =
     calculateSpecificWordMatch(
       expectedProductName,
-      product.productName
+      product?.productName
     );
-
 
   const nameScore =
     Math.round(
@@ -1069,10 +985,8 @@ function scoreProductMatch(
       40
     );
 
-
   score +=
     nameScore;
-
 
   reasons.push(
     `name: +${nameScore}`
@@ -1080,101 +994,99 @@ function scoreProductMatch(
 
 
   /*
-   * ----------------------------------------------
-   * Missing name words
+   * Missing expected words.
    *
-   * 5 points each.
-   * Maximum penalty = 20.
-   * ----------------------------------------------
+   * 2.5 points each.
+   * Maximum penalty = 10.
    */
 
   if (
-    nameMatch
-      .missingWords
-      .length > 0
+    nameMatch.missingWords.length >
+    0
   ) {
-
     const penalty =
       Math.min(
-
         nameMatch
           .missingWords
           .length *
-          5,
+          2.5,
 
-        20
-
+        10
       );
-
 
     score -=
       penalty;
 
-
     reasons.push(
-      `missing ${nameMatch.missingWords.join(", ")}: -${penalty}`
+      `missing ${nameMatch.missingWords.join(
+        ", "
+      )}: -${penalty}`
     );
-
   }
 
-  const expectedIdentityTerms =
-  extractProductIdentityTerms(
-    listItem.item_name
-  );
-
-const actualIdentityTerms =
-  extractProductIdentityTerms(
-    product.productName
-  );
-
-if (
-  expectedIdentityTerms.length > 0 &&
-  actualIdentityTerms.length > 0
-) {
-  const hasIdentityMatch =
-    expectedIdentityTerms.some(
-      term =>
-        actualIdentityTerms.includes(
-          term
-        )
-    );
-
-  if (!hasIdentityMatch) {
-    score -= 60;
-
-    reasons.push(
-      `product identity mismatch: expected ${expectedIdentityTerms.join(
-        ", "
-      )}, found ${actualIdentityTerms.join(
-        ", "
-      )}: -60`
-    );
-  }
-}
 
   /*
    * ==============================================
-   * PRODUCT VARIANT
+   * EXPLICIT PRODUCT IDENTITY
+   * ==============================================
+   */
+
+  const expectedIdentityTerms =
+    extractProductIdentityTerms(
+      listItem?.item_name
+    );
+
+  const actualIdentityTerms =
+    extractProductIdentityTerms(
+      product?.productName
+    );
+
+  if (
+    expectedIdentityTerms.length > 0 &&
+    actualIdentityTerms.length > 0
+  ) {
+    const hasIdentityMatch =
+      expectedIdentityTerms.some(
+        term =>
+          actualIdentityTerms.includes(
+            term
+          )
+      );
+
+    if (!hasIdentityMatch) {
+      score -= 40;
+
+      reasons.push(
+        `product identity mismatch: expected ${expectedIdentityTerms.join(
+          ", "
+        )}, found ${actualIdentityTerms.join(
+          ", "
+        )}: -40`
+      );
+    }
+  }
+
+
+  /*
+   * ==============================================
+   * PRODUCT VARIANT / FORM
    * ==============================================
    */
 
   const expectedVariants =
     extractProductVariants(
-      listItem.item_name
+      listItem?.item_name
     );
-
 
   const actualVariants =
     extractProductVariants(
-      product.productName
+      product?.productName
     );
-
 
   if (
     expectedVariants.length >
     0
   ) {
-
     const matchedVariants =
       expectedVariants.filter(
         variant =>
@@ -1183,127 +1095,95 @@ if (
           )
       );
 
-
     if (
       matchedVariants.length ===
       expectedVariants.length
     ) {
-
-      score +=
-        20;
-
+      score += 20;
 
       reasons.push(
         "variant exact: +20"
       );
-
     }
-
 
     else if (
       actualVariants.length >
       0
     ) {
-
-      score -=
-        30;
-
+      score -= 10;
 
       reasons.push(
-        "variant mismatch: -30"
+        "variant mismatch: -10"
       );
-
     }
-
 
     else {
-
-      score -=
-        10;
-
+      score -= 5;
 
       reasons.push(
-        "variant unavailable: -10"
+        "variant unavailable: -5"
       );
-
     }
-
   }
 
 
   /*
    * ==============================================
    * BRAND
-   *
-   * Maximum:
-   * +30
    * ==============================================
    */
 
   const expectedBrand =
     normalizeText(
-      listItem.item_brand
+      listItem?.item_brand
     );
-
 
   const actualBrand =
     normalizeText(
-      product.brand
+      product?.brand
     );
-
 
   const productName =
     normalizeText(
-      product.productName
+      product?.productName
     );
 
+  let brandConfirmed =
+    false;
 
-  if (
-    expectedBrand
-  ) {
-
+  if (expectedBrand) {
     /*
      * Retailer explicitly provides brand.
      */
 
-    if (
-      actualBrand
-    ) {
-
+    if (actualBrand) {
       if (
         actualBrand ===
         expectedBrand
       ) {
+        brandConfirmed =
+          true;
 
-        score +=
-          30;
-
+        score += 30;
 
         reasons.push(
           "brand exact: +30"
         );
-
       }
 
       else {
-
-        score -=
-          20;
-
+        score -= 10;
 
         reasons.push(
-          "brand mismatch: -20"
+          "brand mismatch: -10"
         );
-
       }
-
     }
-
 
     /*
      * No explicit brand field.
      *
-     * Try product title.
+     * Try retailer product title.
      */
 
     else if (
@@ -1312,30 +1192,105 @@ if (
         expectedBrand
       )
     ) {
+      brandConfirmed =
+        true;
 
-      score +=
-        30;
-
+      score += 30;
 
       reasons.push(
         "brand confirmed by product name: +30"
       );
-
     }
-
 
     else {
-
-      score -=
-        10;
-
+      score -= 5;
 
       reasons.push(
-        "brand unavailable: -10"
+        "brand unavailable: -5"
+      );
+    }
+  }
+
+
+  /*
+   * ==============================================
+   * MEANINGFUL PRODUCT IDENTITY GATE
+   * ==============================================
+   *
+   * This prevents size + packaging/form from
+   * establishing product identity.
+   *
+   * Example:
+   *
+   * Expected:
+   * Everysun SPF50 Sun Spray 300ml
+   *
+   * Candidate:
+   * TRESemmé Heat Defence Hair Spray 300ml
+   *
+   * Shared:
+   * spray
+   * 300ml
+   *
+   * Those are not enough to establish identity.
+   */
+
+  const expectedBrandWords =
+    new Set(
+      getWords(
+        listItem?.item_brand
+      )
+    );
+
+  /*
+   * Remove:
+   *
+   * - brand words
+   * - generic category words
+   * - packaging/form words
+   *
+   * from the words that are allowed to establish
+   * product identity.
+   */
+
+  const meaningfulMatchedWords =
+    nameMatch
+      .matchedWords
+      .filter(
+        word =>
+          !expectedBrandWords.has(
+            word
+          ) &&
+          !GENERIC_PRODUCT_WORDS.has(
+            word
+          ) &&
+          !PRODUCT_FORM_WORDS.has(
+            word
+          )
       );
 
-    }
+  /*
+   * Product identity is established when:
+   *
+   * 1. expected brand is confirmed
+   *
+   * OR
+   *
+   * 2. there is meaningful name overlap.
+   *
+   * Size and packaging alone can NEVER make this
+   * true.
+   */
 
+  const identityEligible =
+    brandConfirmed ||
+    meaningfulMatchedWords.length >
+      0;
+
+  if (!identityEligible) {
+    reasons.push(
+      "product identity not established"
+    );
   }
 
 
@@ -1344,127 +1299,67 @@ if (
    * SIZE + PACK CONFIGURATION
    * ==============================================
    *
-   * This is deliberately strict.
-   *
-   * Grossary:
-   *
-   * item_volume_mass = "200"
-   * item_unit = "ml"
-   *
-   * means:
-   *
-   * 1 x 200ml
-   *
-   *
-   * Grossary:
-   *
-   * item_volume_mass = "6 x 200"
-   * item_unit = "ml"
-   *
-   * means:
-   *
-   * 6 x 200ml
-   *
-   *
-   * Therefore:
+   * Deliberately strict.
    *
    * 200ml
-   *
-   * MUST NOT match:
-   *
+   * !=
    * 6 x 200ml
    *
-   *
-   * And:
-   *
    * 1.5L
-   *
-   * MUST NOT match:
-   *
-   * 1.5L x 12
-   * ==============================================
+   * !=
+   * 12 x 1.5L
    */
 
   const expectedSize =
     parseListItemSize(
+      listItem
+        ?.item_volume_mass,
 
       listItem
-        .item_volume_mass,
-
-      listItem
-        .item_unit
-
+        ?.item_unit
     );
-
 
   const actualSize =
     extractSizeFromName(
-      product.productName
+      product?.productName
     );
-
 
   if (
     expectedSize &&
     actualSize
   ) {
-
     /*
-     * --------------------------------------------
-     * Units must represent the same measurement.
-     * --------------------------------------------
+     * Units must represent the same
+     * measurement type.
      */
 
     if (
       expectedSize.unit !==
       actualSize.unit
     ) {
-
-      score -=
-        40;
-
+      score -= 40;
 
       reasons.push(
         `unit mismatch: expected ${expectedSize.unit}, found ${actualSize.unit}: -40`
       );
-
     }
 
-
     else {
-
       /*
-       * ------------------------------------------
-       * Compare individual unit size FIRST.
-       *
-       * Example:
-       *
-       * expected:
-       * 6 x 200ml
-       *
-       * actual:
-       * 6 x 250ml
-       *
-       * Pack quantity is the same but individual
-       * size is wrong.
-       * ------------------------------------------
+       * Compare individual unit size.
        */
 
       const individualSizeMatches =
         sizesMatch(
-
           expectedSize
             .individualSize,
 
           actualSize
             .individualSize
-
         );
 
-
       /*
-       * ------------------------------------------
-       * Compare pack quantity separately.
-       * ------------------------------------------
+       * Compare pack quantity independently.
        */
 
       const packQuantityMatches =
@@ -1476,17 +1371,7 @@ if (
 
       /*
        * ------------------------------------------
-       * PERFECT CONFIGURATION
-       *
-       * Examples:
-       *
-       * 200ml == 200ml
-       *
-       * 6 x 200ml == 6 x 200ml
-       *
-       * 1.5L == 1.5L
-       *
-       * 1.5L x 12 == 1.5L x 12
+       * PERFECT SIZE + PACK
        * ------------------------------------------
        */
 
@@ -1494,134 +1379,83 @@ if (
         individualSizeMatches &&
         packQuantityMatches
       ) {
-
-        score +=
-          30;
-
+        score += 30;
 
         if (
           expectedSize
             .packQuantity >
           1
         ) {
-
           reasons.push(
             `size and pack exact: ${expectedSize.packQuantity} x ${expectedSize.individualSize}${expectedSize.unit}: +30`
           );
-
         }
 
         else {
-
           reasons.push(
             "size and pack exact: +30"
           );
-
         }
-
       }
 
 
       /*
        * ------------------------------------------
        * PACK MISMATCH
-       *
-       * This is a STRONG mismatch.
-       *
-       * Examples:
-       *
-       * expected:
-       * 1 x 1.5L
-       *
-       * actual:
-       * 12 x 1.5L
-       *
-       *
-       * expected:
-       * 6 x 200ml
-       *
-       * actual:
-       * 1 x 200ml
-       *
-       *
-       * Even though the individual bottle/carton
-       * size matches, these are different products.
        * ------------------------------------------
+       *
+       * Strong mismatch.
+       *
+       * 200ml
+       * !=
+       * 6 x 200ml
        */
 
       else if (
         individualSizeMatches &&
         !packQuantityMatches
       ) {
-
-        score -=
-          60;
-
+        score -= 60;
 
         reasons.push(
           `pack mismatch: expected ${expectedSize.packQuantity}, found ${actualSize.packQuantity}: -60`
         );
-
       }
 
 
       /*
        * ------------------------------------------
        * INDIVIDUAL SIZE MISMATCH
-       *
-       * Examples:
-       *
-       * 6 x 200ml
-       * vs
-       * 6 x 250ml
-       *
-       * or
-       *
-       * 1.5L
-       * vs
-       * 2L
        * ------------------------------------------
        */
 
       else if (
         !individualSizeMatches
       ) {
-
-        score -=
-          40;
-
+        score -= 40;
 
         reasons.push(
           `size mismatch: expected ${expectedSize.individualSize}${expectedSize.unit}, found ${actualSize.individualSize}${actualSize.unit}: -40`
         );
-
       }
-
     }
-
   }
 
 
   /*
-   * ----------------------------------------------
    * Requested size exists but retailer size
    * cannot be determined.
-   * ----------------------------------------------
    */
 
   if (
     expectedSize &&
     !actualSize
   ) {
-
-    score -=
-      10;
-
+    score -= 10;
 
     reasons.push(
       "size unavailable: -10"
     );
-
   }
 
 
@@ -1632,18 +1466,14 @@ if (
    */
 
   if (
-    product.inStock ===
+    product?.inStock ===
     false
   ) {
-
-    score -=
-      50;
-
+    score -= 50;
 
     reasons.push(
       "out of stock: -50"
     );
-
   }
 
 
@@ -1654,16 +1484,29 @@ if (
    */
 
   return {
-
     product,
 
     score,
 
     reasons,
 
+    /*
+     * Candidate eligibility is intentionally
+     * separate from numerical score.
+     *
+     * A product may have a high numerical score
+     * because size/form matches while still being
+     * the wrong actual product.
+     */
+
+    identityEligible,
+
+    brandConfirmed,
+
+    meaningfulMatchedWords,
 
     /*
-     * Debugging information.
+     * Debugging
      */
 
     expectedProductName,
@@ -1684,9 +1527,7 @@ if (
     expectedSize,
 
     actualSize,
-
   };
-
 }
 
 
@@ -1700,10 +1541,9 @@ function matchProduct(
   listItem,
   products,
   {
-    minimumScore = 60,
+    minimumScore = 50,
   } = {}
 ) {
-
   if (
     !Array.isArray(
       products
@@ -1711,9 +1551,7 @@ function matchProduct(
     products.length ===
       0
   ) {
-
     return {
-
       matched:
         false,
 
@@ -1728,14 +1566,20 @@ function matchProduct(
 
       candidates:
         [],
-
     };
-
   }
 
 
   /*
    * Score every retailer candidate.
+   *
+   * IMPORTANT:
+   *
+   * Identity-eligible products ALWAYS rank ahead
+   * of products whose identity could not be
+   * established.
+   *
+   * Score is used only after that distinction.
    */
 
   const candidates =
@@ -1748,9 +1592,21 @@ function matchProduct(
           )
       )
       .sort(
-        (a, b) =>
-          b.score -
-          a.score
+        (a, b) => {
+          if (
+            a.identityEligible !==
+            b.identityEligible
+          ) {
+            return a.identityEligible
+              ? -1
+              : 1;
+          }
+
+          return (
+            b.score -
+            a.score
+          );
+        }
       );
 
 
@@ -1760,18 +1616,20 @@ function matchProduct(
 
 
   /*
-   * Best candidate does not meet
-   * minimum confidence.
+   * Candidate must satisfy BOTH:
+   *
+   * 1. Product identity is established.
+   *
+   * 2. Numerical score reaches minimumScore.
    */
 
   if (
     !bestMatch ||
+    !bestMatch.identityEligible ||
     bestMatch.score <
       minimumScore
   ) {
-
     return {
-
       matched:
         false,
 
@@ -1798,9 +1656,10 @@ function matchProduct(
           ?.expectedSize ||
         parseListItemSize(
           listItem
-            .item_volume_mass,
+            ?.item_volume_mass,
+
           listItem
-            .item_unit
+            ?.item_unit
         ),
 
       actualSize:
@@ -1818,14 +1677,27 @@ function matchProduct(
           ?.missingWords ||
         [],
 
+      identityEligible:
+        bestMatch
+          ?.identityEligible ??
+        false,
+
+      brandConfirmed:
+        bestMatch
+          ?.brandConfirmed ??
+        false,
+
+      meaningfulMatchedWords:
+        bestMatch
+          ?.meaningfulMatchedWords ||
+        [],
+
       candidates:
         candidates.slice(
           0,
           5
         ),
-
     };
-
   }
 
 
@@ -1834,7 +1706,6 @@ function matchProduct(
    */
 
   return {
-
     matched:
       true,
 
@@ -1852,10 +1723,24 @@ function matchProduct(
         .expectedProductName,
 
     matchedWords:
-      bestMatch.matchedWords,
+      bestMatch
+        .matchedWords,
 
     missingWords:
-      bestMatch.missingWords,
+      bestMatch
+        .missingWords,
+
+    identityEligible:
+      bestMatch
+        .identityEligible,
+
+    brandConfirmed:
+      bestMatch
+        .brandConfirmed,
+
+    meaningfulMatchedWords:
+      bestMatch
+        .meaningfulMatchedWords,
 
     expectedVariants:
       bestMatch
@@ -1876,11 +1761,9 @@ function matchProduct(
     candidates:
       candidates.slice(
         0,
-        5
+        10
       ),
-
   };
-
 }
 
 
@@ -1891,7 +1774,6 @@ function matchProduct(
  */
 
 module.exports = {
-
   matchProduct,
 
   scoreProductMatch,
@@ -1913,6 +1795,6 @@ module.exports = {
   buildExpectedProductName,
 
   sizesMatch,
-  extractProductIdentityTerms,
 
+  extractProductIdentityTerms,
 };

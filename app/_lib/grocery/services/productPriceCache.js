@@ -413,6 +413,13 @@ function cacheRowToProduct(
             row.promotion_bundle_price
           ),
 
+promotionDiscountPercentage:
+  row.promotion_discount_percentage === null ||
+  row.promotion_discount_percentage === undefined
+    ? null
+    : Number(
+        row.promotion_discount_percentage
+      ),
 
     /*
      * --------------------------------------------
@@ -984,7 +991,10 @@ async function saveProductsToCache({
                 .promotionBundlePrice ??
               null,
 
-
+promotion_discount_percentage:
+  product
+    .promotionDiscountPercentage ??
+  null,
             /*
              * --------------------------------------
              * Promotion metadata

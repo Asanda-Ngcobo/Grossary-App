@@ -549,7 +549,162 @@ function calculateCheckersProductPricing(
       };
     }
   }
+  /*
+   * =================================================
+   * PERCENTAGE_DISCOUNT
+   * =================================================
+   *
+   * Example:
+   *
+   * Normal price:
+   * R149.99
+   *
+   * Xtra Savings:
+   * Save 30%
+   *
+   * Quantity:
+   * 2
+   *
+   * Normal total:
+   * R299.98
+   *
+   * Saving:
+   * R89.99
+   *
+   * Customer pays:
+   * R209.99
+   *
+   * IMPORTANT:
+   *
+   * Unlike QUANTITY_PERCENTAGE:
+   *
+   * "Save 30%"
+   *
+   * does NOT require the customer to buy
+   * a specific number of products.
+   *
+   * Every unit receives the percentage discount.
+   *
+   * =================================================
+   */
 
+  if (
+    loyaltyAllowed &&
+    mechanic ===
+      "PERCENTAGE_DISCOUNT" &&
+    Number.isFinite(
+      promotionDiscountPercentage
+    ) &&
+    promotionDiscountPercentage > 0 &&
+    promotionDiscountPercentage < 100
+  ) {
+    const discountRate =
+      promotionDiscountPercentage /
+      100;
+
+    /*
+     * Calculate the discounted unit price
+     * directly from the normal shelf price.
+     *
+     * We deliberately DO NOT trust:
+     *
+     * product.loyaltyPrice
+     * product.promotionBundlePrice
+     *
+     * for this mechanic.
+     *
+     * This protects us from the Parse response
+     * where:
+     *
+     * Save 30%
+     *
+     * was incorrectly represented as:
+     *
+     * loyaltyPrice: 30
+     * promotionBundlePrice: 30
+     */
+
+    const loyaltyUnitPrice =
+      normalUnitPrice *
+      (
+        1 -
+        discountRate
+      );
+
+    const loyaltySavings =
+      normalTotal *
+      discountRate;
+
+    const lineTotal =
+      normalTotal -
+      loyaltySavings;
+
+    return {
+      normalUnitPrice,
+
+      normalTotal:
+        Number(
+          normalTotal.toFixed(2)
+        ),
+
+      /*
+       * Unlike a multibuy, this promotion
+       * creates a real discounted unit price.
+       */
+
+      unitPrice:
+        Number(
+          loyaltyUnitPrice.toFixed(2)
+        ),
+
+      lineTotal:
+        Number(
+          lineTotal.toFixed(2)
+        ),
+
+      promotionalSavings:
+        Number(
+          promotionalSavings.toFixed(2)
+        ),
+
+      loyaltySavings:
+        Number(
+          loyaltySavings.toFixed(2)
+        ),
+
+      loyaltyApplied:
+        loyaltySavings > 0,
+
+      promotionMechanic:
+        mechanic,
+
+      promotionQuantity:
+        1,
+
+      /*
+       * Percentage discounts do not have
+       * a bundle price.
+       */
+
+      promotionBundlePrice:
+        null,
+
+      promotionDiscountPercentage,
+
+      /*
+       * Every requested item qualifies.
+       *
+       * Keeping this field consistent with
+       * the rest of the pricing result.
+       */
+
+      qualifyingBundles:
+        safeQuantity,
+
+      remainingQuantity:
+        0,
+    };
+  }
   /*
    * =================================================
    * FIXED_PRICE
@@ -1595,25 +1750,53 @@ async function getCheckersBasketItem(
       rawProducts
     );
 
-  /*
-   * Critical store safety check.
-   *
-   * Never allow products from another
-   * Checkers branch into this basket.
-   */
+/*
+ * search_store_products is already scoped
+ * to the requested Checkers branch through:
+ *
+ * store_id: storeId
+ *
+ * Do NOT discard products simply because
+ * the normalized product does not contain
+ * providerStoreId.
+ *
+ * Instead, attach the requested store ID
+ * when the API/normalizer did not provide it.
+ */
 
-  normalizedProducts =
-    normalizedProducts.filter(
-      product =>
-        String(
-          product.providerStoreId
-        ) ===
-        String(storeId)
-    );
+normalizedProducts =
+  normalizedProducts.map(
+    product => ({
+      ...product,
 
-  console.log(
-    `Checkers API returned ${normalizedProducts.length} valid products for ${searchQuery}`
+      providerStoreId:
+        product.providerStoreId ??
+        String(storeId),
+    })
   );
+
+console.log(
+  `Checkers API returned ${normalizedProducts.length} products for ${searchQuery}`
+);
+
+console.log(
+  "Checkers candidates before matching:",
+  normalizedProducts.map(
+    product => ({
+      productName:
+        product.productName,
+
+      providerStoreId:
+        product.providerStoreId,
+
+      price:
+        product.price,
+
+      bonusBuyIds:
+        product.bonusBuyIds,
+    })
+  )
+);
 
   /*
    * =====================================
@@ -1637,6 +1820,9 @@ async function getCheckersBasketItem(
    * → resolve Bonus Buys for match only
    * → cache matched product only
    */
+  console.log(
+  `→ Matching ${normalizedProducts.length} Checkers candidates for: ${searchQuery}`
+);
 
   const apiMatch =
     matchProduct(
@@ -1644,6 +1830,24 @@ async function getCheckersBasketItem(
       normalizedProducts
     );
 
+    console.log(
+  "Checkers matcher result:",
+  {
+    matched:
+      apiMatch.matched,
+
+    score:
+      apiMatch.score,
+
+    product:
+      apiMatch.match
+        ?.productName ??
+      null,
+
+    reasons:
+      apiMatch.reasons,
+  }
+);
   /*
    * No valid product match.
    *

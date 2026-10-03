@@ -93,7 +93,7 @@ async function searchCheckersProducts(
   query,
   {
     page = 0,
-    limit = 10,
+    limit = 20,
   } = {}
 ) {
   return parseRequest(
