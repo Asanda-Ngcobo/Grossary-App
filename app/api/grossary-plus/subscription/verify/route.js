@@ -36,7 +36,7 @@ const VERIFICATION_AMOUNT =
   100;
 
 const SUBSCRIPTION_AMOUNT =
-  3900;
+  2900;
 
 
 // ========================================

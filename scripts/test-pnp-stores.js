@@ -21,7 +21,7 @@ async function main() {
 
   const response =
     await getPnpStores(
-      "midrand"
+      "westville"
     );
 
 

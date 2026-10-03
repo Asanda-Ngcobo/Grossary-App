@@ -168,7 +168,7 @@ export default async function SubscribePage() {
             "
           >
             grossary plus compares your
-            grocery list across participating
+            grocery list items across participating
             nearby stores and shows you where
             each item is cheaper.
           </p>
@@ -208,7 +208,7 @@ export default async function SubscribePage() {
                 text-[#0B2E1E]
               "
             >
-              R39
+              R29
             </span>
 
 
@@ -321,8 +321,8 @@ export default async function SubscribePage() {
           >
 
             {trialEligible
-              ? "   R1 refundable card verification now. Then, R39/month after your 7-day free trial. Cancel anytime."
-              : "R39/month. Cancel anytime."}
+              ? "   R1 refundable card verification now. Then, R29/month after your 7-day free trial. Cancel anytime."
+              : "R29/month. Cancel anytime."}
 
           </p>
 

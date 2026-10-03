@@ -314,7 +314,7 @@ GrossaryPlusCallbackPage() {
               text-[#0B2E1E]
             "
           >
-            Welcome to grossary<span className="text-[#1EC677]">+</span>
+            Welcome to grossary<span className="text-[#1EC677]">plus</span>
           </h1>
 
 

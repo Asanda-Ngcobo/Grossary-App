@@ -252,7 +252,7 @@ export async function POST(
      *      ↓
      * 7-day free trial
      *      ↓
-     * R39 subscription starts after trial
+     * R29 subscription starts after trial
      */
 
     if (
@@ -455,7 +455,7 @@ export async function POST(
 
 
     // =====================================
-    // 10. INITIALIZE R39 SUBSCRIPTION
+    // 10. INITIALIZE R29 SUBSCRIPTION
     // =====================================
 
     /*
@@ -498,11 +498,11 @@ export async function POST(
                * supplied the plan amount
                * takes precedence.
                *
-               * R39 = 3900 cents.
+               * R29 = 2900 cents.
                */
 
               amount:
-                3900,
+                2900,
 
               currency:
                 "ZAR",

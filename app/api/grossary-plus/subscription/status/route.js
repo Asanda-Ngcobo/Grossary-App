@@ -230,7 +230,7 @@ export async function GET() {
           profile.plus_status,
 
         price:
-          39,
+          29,
 
         currency:
           "ZAR",
