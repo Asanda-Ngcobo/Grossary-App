@@ -807,8 +807,7 @@ bottom-5'>Add Your Grocery list items using the Plus button above</p> */}
       type="button"
       onClick={handleGrossaryPlus}
       disabled={isOptimizing}
-      className="
-        bg-[#0B2E1E]
+      className={` ${isOptimizing && 'bg-gray-500'}   bg-[#0B2E1E]
         text-white
        
         rounded-full
@@ -822,8 +821,9 @@ bottom-5'>Add Your Grocery list items using the Plus button above</p> */}
         disabled:cursor-not-allowed
         h-15 w-15 flex justify-center items-center
         right-2 bottom-2
-        z-10 fixed
-      "
+        z-10 fixed`
+     
+      }
     >
       {isOptimizing
         ? "Finding prices..."

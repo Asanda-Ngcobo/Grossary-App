@@ -1,8 +1,11 @@
 "use client";
 
 import { ChevronLeft } from "@deemlol/next-icons";
+
 import { createClient } from "@supabase/supabase-js";
+
 import { Lexend_Deca } from "next/font/google";
+
 import {
   useCallback,
   useEffect,
@@ -46,24 +49,41 @@ export default function StarterItemsModal({
 }) {
   const observerRef = useRef(null);
 
-  // Prevent multiple simultaneous Supabase requests
+  /*
+   * Prevent multiple simultaneous
+   * Supabase requests.
+   */
   const fetchingRef = useRef(false);
 
   const [items, setItems] = useState([]);
-  const [selectedItems, setSelectedItems] =
-    useState([]);
 
-  const [search, setSearch] = useState("");
+  const [
+    selectedItems,
+    setSelectedItems,
+  ] = useState([]);
 
-  // Actual search value sent to Supabase.
-  // This updates 300ms after the user stops typing.
-  const [debouncedSearch, setDebouncedSearch] =
+  const [search, setSearch] =
     useState("");
 
-  const [activeTab, setActiveTab] =
-    useState("All");
+  /*
+   * Actual search value sent to
+   * PostgreSQL.
+   *
+   * Updates 300ms after the user stops
+   * typing.
+   */
+  const [
+    debouncedSearch,
+    setDebouncedSearch,
+  ] = useState("");
 
-  const [page, setPage] = useState(0);
+  const [
+    activeTab,
+    setActiveTab,
+  ] = useState("All");
+
+  const [page, setPage] =
+    useState(0);
 
   const [loading, setLoading] =
     useState(false);
@@ -74,37 +94,55 @@ export default function StarterItemsModal({
   const [hasMore, setHasMore] =
     useState(true);
 
-  /* ==========================================
-     INITIAL TAB LOGIC
-  ========================================== */
+  /*
+   * ==========================================
+   * INITIAL TAB LOGIC
+   * ==========================================
+   */
 
   useEffect(() => {
-    const lower = list_name.toLowerCase();
+    const lower = String(
+      list_name || ""
+    ).toLowerCase();
 
-    if (lower.includes("toiletries")) {
+    if (
+      lower.includes("toiletries")
+    ) {
       setActiveTab("Toiletries");
     }
 
-    if (lower.includes("baby")) {
+    if (
+      lower.includes("baby")
+    ) {
       setActiveTab("Baby");
     }
 
-    if (lower.includes("medication")) {
+    if (
+      lower.includes("medication")
+    ) {
       setActiveTab("Medication");
     }
 
-    if (lower.includes("meat")) {
-      setActiveTab("Meat and Poultry");
+    if (
+      lower.includes("meat")
+    ) {
+      setActiveTab(
+        "Meat and Poultry"
+      );
     }
   }, [list_name]);
 
-  /* ==========================================
-     DEBOUNCE SEARCH
-  ========================================== */
+  /*
+   * ==========================================
+   * DEBOUNCE SEARCH
+   * ==========================================
+   */
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      setDebouncedSearch(search.trim());
+      setDebouncedSearch(
+        search.trim()
+      );
     }, 300);
 
     return () => {
@@ -112,166 +150,269 @@ export default function StarterItemsModal({
     };
   }, [search]);
 
-  /* ==========================================
-     FETCH ITEMS
-  ========================================== */
+  /*
+   * ==========================================
+   * GET CATEGORY FILTER
+   * ==========================================
+   *
+   * The search RPC accepts:
+   *
+   * category_filter text[]
+   *
+   * This function converts the current
+   * onboarding/list state into that array.
+   */
+
+  const getCategoryFilter =
+    useCallback(() => {
+      const lower = String(
+        list_name || ""
+      ).toLowerCase();
+
+      let categoryFilter = null;
+
+      /*
+       * Weekly / Monthly
+       *
+       * No category restriction.
+       */
+      if (
+        lower.includes("weekly") ||
+        lower.includes("monthly")
+      ) {
+        categoryFilter = null;
+      }
+
+      /*
+       * Meat onboarding
+       */
+      else if (
+        lower.includes("meat")
+      ) {
+        categoryFilter = [
+          "Frozen Foods",
+          "Meat & Poultry",
+          "Deli & Chilled Meat",
+        ];
+      }
+
+      /*
+       * Toiletries onboarding
+       */
+      else if (
+        lower.includes(
+          "toiletries"
+        )
+      ) {
+        categoryFilter = [
+          "Toiletries",
+          "Personal Care",
+        ];
+      }
+
+      /*
+       * Baby onboarding
+       */
+      else if (
+        lower.includes(
+          "baby essentials"
+        )
+      ) {
+        categoryFilter = [
+          "Baby",
+          "Health Care",
+          "Personal Care",
+        ];
+      }
+
+      /*
+       * Medication onboarding
+       */
+      else if (
+        lower.includes(
+          "medication"
+        )
+      ) {
+        categoryFilter = [
+          "Health Care",
+        ];
+      }
+
+      /*
+       * Snacks onboarding
+       */
+      else if (
+        lower.includes("snacks")
+      ) {
+        categoryFilter = [
+          "Sweets & Snacks",
+          "Beverages. Juices & Cordials",
+        ];
+      }
+
+      /*
+       * Alcohol onboarding
+       */
+      else if (
+        lower.includes("booze")
+      ) {
+        categoryFilter = [
+          "Wine, Beer & Spirits",
+          "Beverages. Juices & Cordials",
+        ];
+      }
+
+      /*
+       * Manual tab selection overrides
+       * onboarding categories.
+       */
+      if (
+        activeTab !== "All"
+      ) {
+        categoryFilter = [
+          activeTab,
+        ];
+      }
+
+      return categoryFilter;
+    }, [
+      list_name,
+      activeTab,
+    ]);
+
+  /*
+   * ==========================================
+   * FETCH ITEMS
+   * ==========================================
+   */
 
   const fetchItems = useCallback(
     async (reset = false) => {
-      // Prevent duplicate requests
-      if (fetchingRef.current) {
+      /*
+       * Prevent duplicate requests.
+       */
+      if (
+        fetchingRef.current
+      ) {
         return;
       }
 
       try {
         fetchingRef.current = true;
+
         setLoading(true);
 
-        const currentPage = reset
-          ? 0
-          : page;
+        const currentPage =
+          reset ? 0 : page;
 
         /*
-         * PAGE 0 = 0 - 99
-         * PAGE 1 = 100 - 199
-         * PAGE 2 = 200 - 299
-         * etc.
+         * PAGE 0
+         * offset = 0
+         *
+         * PAGE 1
+         * offset = 100
+         *
+         * PAGE 2
+         * offset = 200
          */
-
         const from =
-          currentPage * PAGE_SIZE;
+          currentPage *
+          PAGE_SIZE;
 
         const to =
-          from + PAGE_SIZE - 1;
+          from +
+          PAGE_SIZE -
+          1;
 
-        let query = supabase
-          .from("grocery_items")
-          .select("*")
-          .order("item_name")
-          .range(from, to);
+        const categoryFilter =
+          getCategoryFilter();
 
-        /* ======================================
-           SEARCH
-        ====================================== */
+        let data = null;
+
+        let error = null;
+
+        /*
+         * ======================================
+         * SEARCH MODE
+         * ======================================
+         *
+         * PostgreSQL now handles:
+         *
+         * - exact item-name ranking
+         * - exact brand ranking
+         * - starts-with ranking
+         * - contains ranking
+         * - punctuation normalization
+         * - whole wheat / whole-wheat
+         * - weetbix / wheatbix / weet-bix
+         *
+         * Ranking happens BEFORE LIMIT/OFFSET.
+         */
 
         if (debouncedSearch) {
-          query = query.or(
-            `item_name.ilike.%${debouncedSearch}%,item_brand.ilike.%${debouncedSearch}%`
-          );
+          const response =
+            await supabase.rpc(
+              "search_grocery_items",
+              {
+                search_term:
+                  debouncedSearch,
+
+                result_limit:
+                  PAGE_SIZE,
+
+                result_offset:
+                  from,
+
+                category_filter:
+                  categoryFilter,
+              }
+            );
+
+          data = response.data;
+
+          error = response.error;
         }
 
-        /* ======================================
-           ONBOARDING CATEGORY FILTERS
-        ====================================== */
+        /*
+         * ======================================
+         * NORMAL BROWSING MODE
+         * ======================================
+         *
+         * No search text.
+         *
+         * Continue using the normal
+         * grocery_items table.
+         */
+        else {
+          let query = supabase
+            .from("grocery_items")
+            .select("*")
+            .order("item_name")
+            .range(from, to);
 
-        const lower =
-          list_name.toLowerCase();
+          if (
+            categoryFilter &&
+            categoryFilter.length > 0
+          ) {
+            query = query.in(
+              "item_category",
+              categoryFilter
+            );
+          }
 
-        // Weekly / Monthly
-        // Show all categories
-        if (
-          lower.includes("weekly") ||
-          lower.includes("monthly")
-        ) {
-          // No category filter
+          const response =
+            await query;
+
+          data = response.data;
+
+          error = response.error;
         }
 
-        // Meat onboarding
-        else if (
-          lower.includes("meat")
-        ) {
-          query = query.in(
-            "item_category",
-            [
-              "Frozen Foods",
-              "Meat & Poultry",
-              "Deli & Chilled Meat",
-            ]
-          );
-        }
-
-        // Toiletries onboarding
-        else if (
-          lower.includes("toiletries")
-        ) {
-          query = query.in(
-            "item_category",
-            [
-              "Toiletries",
-              "Personal Care",
-            ]
-          );
-        }
-
-        // Baby onboarding
-        else if (
-          lower.includes(
-            "baby essentials"
-          )
-        ) {
-          query = query.in(
-            "item_category",
-            [
-              "Baby",
-              "Health Care",
-              "Personal Care",
-            ]
-          );
-        }
-
-        // Medication onboarding
-        else if (
-          lower.includes("medication")
-        ) {
-          query = query.eq(
-            "item_category",
-            "Health Care"
-          );
-        }
-
-        // Snacks onboarding
-        else if (
-          lower.includes("snacks")
-        ) {
-          query = query.in(
-            "item_category",
-            [
-              "Sweets & Snacks",
-              "Beverages. Juices & Cordials",
-            ]
-          );
-        }
-
-        // Alcohol onboarding
-        else if (
-          lower.includes("booze")
-        ) {
-          query = query.in(
-            "item_category",
-            [
-              "Wine, Beer & Spirits",
-              "Beverages. Juices & Cordials",
-            ]
-          );
-        }
-
-        /* ======================================
-           MANUAL TAB OVERRIDE
-        ====================================== */
-
-        if (activeTab !== "All") {
-          query = query.eq(
-            "item_category",
-            activeTab
-          );
-        }
-
-        /* ======================================
-           RUN QUERY
-        ====================================== */
-
-        const { data, error } =
-          await query;
+        /*
+         * ======================================
+         * ERROR HANDLING
+         * ======================================
+         */
 
         if (error) {
           console.error(
@@ -282,25 +423,40 @@ export default function StarterItemsModal({
           return;
         }
 
-        const newItems = data || [];
+        const newItems =
+          data || [];
 
-        /* ======================================
-           UPDATE ITEMS
-        ====================================== */
+        /*
+         * ======================================
+         * UPDATE ITEMS
+         * ======================================
+         */
 
         if (reset) {
+          /*
+           * New search/category.
+           *
+           * Replace old results.
+           */
           setItems(newItems);
         } else {
+          /*
+           * Infinite scroll.
+           *
+           * Append the next already-ranked
+           * database page.
+           */
           setItems((prev) => {
             /*
-             * Avoid duplicates in case the
-             * observer fires more than once.
+             * Protect against duplicate rows
+             * if IntersectionObserver fires
+             * more than once.
              */
-
             const existingIds =
               new Set(
                 prev.map(
-                  (item) => item.id
+                  (item) =>
+                    item.id
                 )
               );
 
@@ -319,28 +475,38 @@ export default function StarterItemsModal({
           });
         }
 
-        /* ======================================
-           CHECK IF MORE ITEMS EXIST
-        ====================================== */
+        /*
+         * ======================================
+         * CHECK IF MORE ITEMS EXIST
+         * ======================================
+         *
+         * If PostgreSQL returned fewer than
+         * 100 rows, we've reached the end.
+         */
 
         setHasMore(
-          newItems.length === PAGE_SIZE
+          newItems.length ===
+            PAGE_SIZE
         );
 
-        /* ======================================
-           UPDATE PAGE
-        ====================================== */
+        /*
+         * ======================================
+         * UPDATE PAGE
+         * ======================================
+         */
 
         if (reset) {
           /*
-           * Page 0 was just fetched.
-           * Next request should fetch page 1.
+           * Page 0 was fetched.
+           *
+           * Next request should fetch
+           * page 1 / offset 100.
            */
-
           setPage(1);
         } else {
           setPage(
-            (prev) => prev + 1
+            (prev) =>
+              prev + 1
           );
         }
       } catch (error) {
@@ -349,41 +515,48 @@ export default function StarterItemsModal({
           error
         );
       } finally {
-        fetchingRef.current = false;
+        fetchingRef.current =
+          false;
+
         setLoading(false);
       }
     },
     [
       page,
       debouncedSearch,
-      activeTab,
-      list_name,
+      getCategoryFilter,
     ]
   );
 
-  /* ==========================================
-     RESET WHEN SEARCH / TAB CHANGES
-  ========================================== */
+  /*
+   * ==========================================
+   * RESET WHEN SEARCH / TAB CHANGES
+   * ==========================================
+   */
 
   useEffect(() => {
     /*
-     * Start again from the first 100
-     * whenever the search or category changes.
+     * Start again from page 0 whenever
+     * search or category changes.
      */
 
     setPage(0);
+
     setHasMore(true);
 
     fetchItems(true);
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     debouncedSearch,
     activeTab,
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   ]);
 
-  /* ==========================================
-     INFINITE SCROLL
-  ========================================== */
+  /*
+   * ==========================================
+   * INFINITE SCROLL
+   * ==========================================
+   */
 
   useEffect(() => {
     const target =
@@ -396,7 +569,8 @@ export default function StarterItemsModal({
     const observer =
       new IntersectionObserver(
         (entries) => {
-          const entry = entries[0];
+          const entry =
+            entries[0];
 
           if (
             entry.isIntersecting &&
@@ -412,9 +586,11 @@ export default function StarterItemsModal({
            * Start loading before the user
            * reaches the absolute bottom.
            */
-
           root: null,
-          rootMargin: "200px",
+
+          rootMargin:
+            "200px",
+
           threshold: 0,
         }
       );
@@ -431,35 +607,48 @@ export default function StarterItemsModal({
     fetchItems,
   ]);
 
-  /* ==========================================
-     SELECT / UNSELECT ITEM
-  ========================================== */
+  /*
+   * ==========================================
+   * SELECT / UNSELECT ITEM
+   * ==========================================
+   */
 
   function toggleItem(item) {
-    setSelectedItems((prev) => {
-      const exists = prev.find(
-        (selected) =>
-          selected.id === item.id
-      );
+    setSelectedItems(
+      (prev) => {
+        const exists =
+          prev.find(
+            (selected) =>
+              selected.id ===
+              item.id
+          );
 
-      if (exists) {
-        return prev.filter(
-          (selected) =>
-            selected.id !== item.id
-        );
+        if (exists) {
+          return prev.filter(
+            (selected) =>
+              selected.id !==
+              item.id
+          );
+        }
+
+        return [
+          ...prev,
+          item,
+        ];
       }
-
-      return [...prev, item];
-    });
+    );
   }
 
-  /* ==========================================
-     ADD ITEMS TO LIST
-  ========================================== */
+  /*
+   * ==========================================
+   * ADD ITEMS TO LIST
+   * ==========================================
+   */
 
   async function handleAddItems() {
     if (
-      selectedItems.length === 0 ||
+      selectedItems.length ===
+        0 ||
       adding
     ) {
       return;
@@ -471,7 +660,8 @@ export default function StarterItemsModal({
       const rows =
         selectedItems.map(
           (item) => ({
-            list_id: listId,
+            list_id:
+              listId,
 
             item_name:
               item.item_name,
@@ -516,9 +706,11 @@ export default function StarterItemsModal({
     }
   }
 
-  /* ==========================================
-     ANIMATION STATE
-  ========================================== */
+  /*
+   * ==========================================
+   * ANIMATION STATE
+   * ==========================================
+   */
 
   const [
     isVisible,
@@ -549,9 +741,11 @@ export default function StarterItemsModal({
     }, 300);
   }
 
-  /* ==========================================
-     UI
-  ========================================== */
+  /*
+   * ==========================================
+   * UI
+   * ==========================================
+   */
 
   return (
     <div
@@ -584,7 +778,9 @@ export default function StarterItemsModal({
             itemsLength > 0) && (
             <button
               type="button"
-              onClick={handleClose}
+              onClick={
+                handleClose
+              }
               className="text-black w-10 h-10"
             >
               <ChevronLeft
@@ -639,7 +835,8 @@ export default function StarterItemsModal({
 
         {search !==
           debouncedSearch &&
-          search.length > 0 && (
+          search.length >
+            0 && (
             <p className="text-xs text-gray-400 mb-2 px-2">
               Searching...
             </p>
@@ -649,7 +846,8 @@ export default function StarterItemsModal({
             CATEGORY TABS
         ========================= */}
 
-        {/* <div
+        {/*
+        <div
           className="
             flex
             overflow-x-auto
@@ -682,15 +880,15 @@ export default function StarterItemsModal({
                     activeTab ===
                     category
                       ? `
-                        bg-[#0B2E1E]
-                        text-white
-                        border-[#0B2E1E]
-                      `
+                          bg-[#0B2E1E]
+                          text-white
+                          border-[#0B2E1E]
+                        `
                       : `
-                        bg-white
-                        text-gray-600
-                        border-gray-200
-                      `
+                          bg-white
+                          text-gray-600
+                          border-gray-200
+                        `
                   }
                 `}
               >
@@ -698,7 +896,8 @@ export default function StarterItemsModal({
               </button>
             )
           )}
-        </div> */}
+        </div>
+        */}
 
         {/* =========================
             MANUAL ENTRY
@@ -706,13 +905,16 @@ export default function StarterItemsModal({
 
         {debouncedSearch.length >=
           2 &&
-          items.length === 0 &&
+          items.length ===
+            0 &&
           !loading && (
             <AddingOwn
               search={
                 debouncedSearch
               }
-              listId={listId}
+              listId={
+                listId
+              }
               setSearch={
                 setSearch
               }
@@ -725,104 +927,112 @@ export default function StarterItemsModal({
 
         <div className="overflow-y-auto flex-1 pr-1 mt-3">
           <div className="grid grid-cols-1 gap-3">
-            {items.map((item) => {
-              const isSelected =
-                selectedItems.some(
-                  (selected) =>
-                    selected.id ===
-                    item.id
-                );
+            {items.map(
+              (item) => {
+                const isSelected =
+                  selectedItems.some(
+                    (
+                      selected
+                    ) =>
+                      selected.id ===
+                      item.id
+                  );
 
-              return (
-                <button
-                  type="button"
-                  key={item.id}
-                  onClick={() =>
-                    toggleItem(item)
-                  }
-                  className={`
-                    border
-                    rounded-2xl
-                    p-4
-                    text-left
-                    transition-all
-                    flex
-                    items-center
-                    gap-3
-
-                    ${
-                      isSelected
-                        ? `
-                          bg-[#1EC677]
-                          border-black
-                        `
-                        : `
-                          bg-white
-                          border-gray-200
-                        `
+                return (
+                  <button
+                    type="button"
+                    key={item.id}
+                    onClick={() =>
+                      toggleItem(
+                        item
+                      )
                     }
-                  `}
-                >
-                  {/* Checkbox */}
-
-                  <div
                     className={`
-                      w-5
-                      h-5
-                      rounded-md
                       border
+                      rounded-2xl
+                      p-4
+                      text-left
+                      transition-all
                       flex
                       items-center
-                      justify-center
-                      text-xs
-                      font-bold
-                      flex-shrink-0
+                      gap-3
 
                       ${
                         isSelected
                           ? `
-                            bg-black
-                            border-black
-                            text-white
-                          `
+                              bg-[#1EC677]
+                              border-black
+                            `
                           : `
-                            border-gray-300
-                          `
+                              bg-white
+                              border-gray-200
+                            `
                       }
                     `}
                   >
-                    {isSelected
-                      ? "✓"
-                      : ""}
-                  </div>
+                    {/* Checkbox */}
 
-                  {/* Item */}
+                    <div
+                      className={`
+                        w-5
+                        h-5
+                        rounded-md
+                        border
+                        flex
+                        items-center
+                        justify-center
+                        text-xs
+                        font-bold
+                        flex-shrink-0
 
-                  <div className="flex flex-row w-full justify-between gap-3">
-                    <div className="flex flex-col">
-                      <span className="font-medium">
-                        {
-                          item.item_name
+                        ${
+                          isSelected
+                            ? `
+                                bg-black
+                                border-black
+                                text-white
+                              `
+                            : `
+                                border-gray-300
+                              `
                         }
-                      </span>
-
-                      <span className="text-xs text-gray-400">
-                        {
-                          item.item_brand
-                        }
-                      </span>
+                      `}
+                    >
+                      {isSelected
+                        ? "✓"
+                        : ""}
                     </div>
 
-                    <span className="text-sm text-gray-500 whitespace-nowrap">
-                      {
-                        item.item_volume_mass
-                      }
-                      {item.item_unit}
-                    </span>
-                  </div>
-                </button>
-              );
-            })}
+                    {/* Item */}
+
+                    <div className="flex flex-row w-full justify-between gap-3">
+                      <div className="flex flex-col min-w-0">
+                        <span className="font-medium">
+                          {
+                            item.item_name
+                          }
+                        </span>
+
+                        {item.item_brand && (
+                          <span className="text-xs text-gray-400">
+                            {
+                              item.item_brand
+                            }
+                          </span>
+                        )}
+                      </div>
+
+                      <span className="text-sm text-gray-500 whitespace-nowrap">
+                        {
+                          item.item_volume_mass
+                        }
+                        {item.item_unit}
+                      </span>
+                    </div>
+                  </button>
+                );
+              }
+            )}
           </div>
 
           {/* =========================
@@ -851,8 +1061,8 @@ export default function StarterItemsModal({
               items.length >
                 0 && (
                 <span className="text-xs text-gray-400">
-                  You`ve reached
-                  the end.
+                  You&apos;ve
+                  reached the end.
                 </span>
               )}
           </div>
@@ -863,10 +1073,12 @@ export default function StarterItemsModal({
         ========================= */}
 
         <div className="pt-5 mt-5 border-t">
-          {itemsLength === 0 &&
+          {itemsLength ===
+            0 &&
             selectedItems.length ===
               0 &&
-            search.length === 0 && (
+            search.length ===
+              0 && (
               <p className="text-red-400 text-center text-xl">
                 Please select at
                 least one item

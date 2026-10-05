@@ -1,7 +1,8 @@
+import Image from "next/image";
+
 function formatMoney(value) {
   return Number(value || 0).toFixed(2);
 }
-
 
 /*
  * ------------------------------------------------
@@ -39,7 +40,6 @@ function normalizeAllocations(allocations) {
   return [];
 }
 
-
 /*
  * ------------------------------------------------
  * Retailer loyalty branding
@@ -55,10 +55,7 @@ function getLoyaltyDetails(retailer) {
   if (normalizedRetailer === "checkers") {
     return {
       name: "Xtra Savings",
-
-      // Checkers blue
       color: "#38A8AE",
-
       background: "#EAF7F8",
     };
   }
@@ -69,10 +66,7 @@ function getLoyaltyDetails(retailer) {
   ) {
     return {
       name: "Smart Shopper",
-
-      // Pick n Pay blue
       color: "#003359",
-
       background: "#E8EEF0",
     };
   }
@@ -84,7 +78,6 @@ function getLoyaltyDetails(retailer) {
   };
 }
 
-
 /*
  * ------------------------------------------------
  * Get item display data
@@ -95,10 +88,15 @@ function getItemDisplayData(item) {
   const product =
     item?.product || {};
 
-    const BrandName = item?.item_brand || null;
-
   const requestedItem =
     item?.requestedItem || {};
+
+  const brandName =
+    requestedItem?.item_brand ||
+    item?.item_brand ||
+    product?.brand ||
+    product?.brandName ||
+    null;
 
   const productName =
     product.productName ||
@@ -170,6 +168,11 @@ function getItemDisplayData(item) {
     product?.promotionBundlePrice ??
     null;
 
+  const promotionDiscountPercentage =
+    item?.promotionDiscountPercentage ??
+    product?.promotionDiscountPercentage ??
+    null;
+
   const promotionMessage =
     item?.promotionMessage ||
     product?.promotionMessage ||
@@ -197,9 +200,29 @@ function getItemDisplayData(item) {
       0
     );
 
+  /*
+   * Product image can come from:
+   *
+   * Checkers:
+   * catalog.sixty60.co.za
+   *
+   * PnP:
+   * cdn-prd-02.pnp.co.za
+   *
+   * The UI does not need to know the retailer.
+   */
+
+  const imageUrl =
+
+    product?.image_url ||
+  
+    item?.image_url ||
+    null;
+
   return {
     product,
     requestedItem,
+    brandName,
     productName,
     requestedName,
     quantity,
@@ -212,14 +235,15 @@ function getItemDisplayData(item) {
     promotionMechanic,
     promotionQuantity,
     promotionBundlePrice,
+    promotionDiscountPercentage,
     promotionMessage,
     loyaltyPrice,
     normalUnitPrice,
     qualifyingBundles,
     remainingQuantity,
+    imageUrl,
   };
 }
-
 
 /*
  * ------------------------------------------------
@@ -253,7 +277,6 @@ function LoyaltyBadge({
       style={{
         backgroundColor:
           loyalty.background,
-
         color:
           loyalty.color,
       }}
@@ -263,6 +286,85 @@ function LoyaltyBadge({
   );
 }
 
+/*
+ * ------------------------------------------------
+ * Product image
+ * ------------------------------------------------
+ */
+
+function ProductImage({
+  imageUrl,
+  productName,
+}) {
+  return (
+    <div
+      className="
+        w-16
+        h-16
+        sm:w-20
+        sm:h-20
+        flex-shrink-0
+        rounded-xl
+        border
+        border-gray-100
+        bg-white
+        overflow-hidden
+        flex
+        items-center
+        justify-center
+      "
+    >
+      {imageUrl ? (
+        <Image
+          src={imageUrl}
+          alt={
+            productName ||
+            "Grocery product"
+          }
+          loading="lazy"
+          className="
+            w-full
+            h-full
+            object-contain
+            p-1.5
+          "
+          onError={(event) => {
+            event.currentTarget.style.display =
+              "none";
+
+            const fallback =
+              event.currentTarget
+                .nextElementSibling;
+
+            if (fallback) {
+              fallback.style.display =
+                "flex";
+            }
+          }}
+        />
+      ) : null}
+
+      <div
+        className="
+          w-full
+          h-full
+          items-center
+          justify-center
+          text-xl
+          bg-gray-50
+        "
+        style={{
+          display: imageUrl
+            ? "none"
+            : "flex",
+        }}
+        aria-hidden="true"
+      >
+        🛒
+      </div>
+    </div>
+  );
+}
 
 /*
  * ------------------------------------------------
@@ -300,7 +402,6 @@ function GrossaryPlusResults({
       optimized?.allocations
     );
 
-
   /*
    * ------------------------------------------------
    * Totals
@@ -312,7 +413,6 @@ function GrossaryPlusResults({
       optimized?.total ||
       0
     );
-
 
   /*
    * ------------------------------------------------
@@ -369,7 +469,6 @@ function GrossaryPlusResults({
       0
     );
 
-
   /*
    * ------------------------------------------------
    * Savings created by Grossary choosing
@@ -386,7 +485,6 @@ function GrossaryPlusResults({
       0
     );
 
-
   /*
    * ------------------------------------------------
    * Total customer-facing Grossary+ savings
@@ -397,7 +495,6 @@ function GrossaryPlusResults({
     itemSavings +
     splitSavings;
 
-
   const storesUsed =
     Number(
       optimized?.storesUsed ??
@@ -405,21 +502,9 @@ function GrossaryPlusResults({
       allocations.length
     );
 
-
   /*
    * ------------------------------------------------
    * Convenience option
-   * ------------------------------------------------
-   *
-   * The optimizer now returns:
-   *
-   * cheapestComplete
-   * cheapestPartial
-   * cheapest
-   *
-   * "cheapest" already prioritises a complete
-   * basket and falls back to the partial
-   * convenience basket.
    * ------------------------------------------------
    */
 
@@ -431,13 +516,11 @@ function GrossaryPlusResults({
       ?.cheapestSingleStore ||
     null;
 
-
   const convenienceIsPartial =
     cheapestSingleStore?.partial ===
       true ||
     cheapestSingleStore?.complete ===
       false;
-
 
   const convenienceItems =
     Array.isArray(
@@ -446,7 +529,6 @@ function GrossaryPlusResults({
       ? cheapestSingleStore.items
       : [];
 
-
   const convenienceMatchedCount =
     Number(
       cheapestSingleStore
@@ -454,7 +536,6 @@ function GrossaryPlusResults({
       convenienceItems.length ??
       0
     );
-
 
   const totalRequestedItems =
     Number(
@@ -475,7 +556,6 @@ function GrossaryPlusResults({
       )
     );
 
-
   const convenienceExcludedCount =
     Number(
       cheapestSingleStore
@@ -483,10 +563,9 @@ function GrossaryPlusResults({
       Math.max(
         0,
         totalRequestedItems -
-        convenienceMatchedCount
+          convenienceMatchedCount
       )
     );
-
 
   const convenienceSavings =
     Number(
@@ -500,7 +579,6 @@ function GrossaryPlusResults({
       0
     );
 
-
   /*
    * ------------------------------------------------
    * Shopping location
@@ -511,7 +589,6 @@ function GrossaryPlusResults({
     data?.shoppingLocation ||
     optimization?.location ||
     null;
-
 
   /*
    * ------------------------------------------------
@@ -526,7 +603,6 @@ function GrossaryPlusResults({
     optimization
       ?.unmatchedItems ||
     [];
-
 
   /*
    * ------------------------------------------------
@@ -591,14 +667,12 @@ function GrossaryPlusResults({
     );
   }
 
-
   return (
     <div
       className="
         space-y-5
       "
     >
-
       {/* ================================= */}
       {/* SUCCESS HEADER */}
       {/* ================================= */}
@@ -665,12 +739,10 @@ function GrossaryPlusResults({
             >
               {shoppingLocation.name}
             </span>
-
             .
           </p>
         )}
       </section>
-
 
       {/* ================================= */}
       {/* HERO CARD */}
@@ -753,7 +825,6 @@ function GrossaryPlusResults({
           </div>
         </div>
 
-
         {grossaryPlusSavings > 0 && (
           <div
             className="
@@ -778,7 +849,11 @@ function GrossaryPlusResults({
                     text-white/60
                   "
                 >
-                  grossary<span className="text-[#1EC677]">plus</span> savings
+                  grossary
+                  <span className="text-[#1EC677]">
+                    plus
+                  </span>{" "}
+                  savings
                 </p>
 
                 <p
@@ -789,7 +864,8 @@ function GrossaryPlusResults({
                     mt-1
                   "
                 >
-                  R{formatMoney(
+                  R
+                  {formatMoney(
                     grossaryPlusSavings
                   )}
                 </p>
@@ -853,7 +929,6 @@ function GrossaryPlusResults({
           </div>
         )}
       </section>
-
 
       {/* ================================= */}
       {/* SHOPPING LOCATION */}
@@ -924,15 +999,14 @@ function GrossaryPlusResults({
                   {Number(
                     shoppingLocation
                       .distanceKm
-                  ).toFixed(1)}
-                  {" "}km away
+                  ).toFixed(1)}{" "}
+                  km away
                 </p>
               )}
             </div>
           </div>
         </section>
       )}
-
 
       {/* ================================= */}
       {/* SHOPPING PLAN */}
@@ -962,10 +1036,8 @@ function GrossaryPlusResults({
           </p>
         </div>
 
-
         {allocations.length > 0 ? (
           <div className="space-y-4">
-
             {allocations.map(
               (
                 store,
@@ -1014,7 +1086,6 @@ function GrossaryPlusResults({
                       overflow-hidden
                     "
                   >
-
                     {/* STORE HEADER */}
 
                     <div
@@ -1107,13 +1178,13 @@ function GrossaryPlusResults({
                             mt-0.5
                           "
                         >
-                          R{formatMoney(
+                          R
+                          {formatMoney(
                             store.total
                           )}
                         </p>
                       </div>
                     </div>
-
 
                     {/* ITEMS */}
 
@@ -1150,7 +1221,8 @@ function GrossaryPlusResults({
                                 itemIndex
                               }
                               className="
-                                px-5
+                                px-4
+                                sm:px-5
                                 py-4
                               "
                             >
@@ -1158,10 +1230,20 @@ function GrossaryPlusResults({
                                 className="
                                   flex
                                   items-start
-                                  justify-between
-                                  gap-4
+                                  gap-3
+                                  sm:gap-4
                                 "
                               >
+                                {/* PRODUCT IMAGE */}
+
+                                <ProductImage
+                                  imageUrl={
+                                    itemData.imageUrl
+                                  }
+                                  productName={
+                                    itemData.productName
+                                  }
+                                />
 
                                 {/* PRODUCT DETAILS */}
 
@@ -1171,59 +1253,133 @@ function GrossaryPlusResults({
                                     min-w-0
                                   "
                                 >
-                                  <p
+                                  <div
                                     className="
-                                      text-sm
-                                      font-semibold
-                                      text-[#0B2E1E]
+                                      flex
+                                      items-start
+                                      justify-between
+                                      gap-3
                                     "
                                   >
-                                    {
-                                      itemData
-                                        .productName
-                                    }
-                                  </p>
+                                    <div
+                                      className="
+                                        flex-1
+                                        min-w-0
+                                      "
+                                    >
+                                      <p
+                                        className="
+                                          text-sm
+                                          font-semibold
+                                          text-[#0B2E1E]
+                                        "
+                                      >
+                                        {
+                                          itemData.productName
+                                        }
+                                      </p>
 
-                                  {itemData.requestedName &&
-                                    itemData
-                                      .productName !==
-                                      itemData
-                                        .requestedName && (
+                                      {itemData.requestedName &&
+                                        itemData
+                                          .productName !==
+                                          itemData
+                                            .requestedName && (
+                                          <p
+                                            className="
+                                              text-xs
+                                              text-gray-400
+                                              mt-1
+                                            "
+                                          >
+                                            For:{" "}
+                                            {itemData.brandName
+                                              ? `${itemData.brandName} `
+                                              : ""}
+                                            {
+                                              itemData.requestedName
+                                            }
+                                          </p>
+                                        )}
+
+                                      {/* NORMAL PRICE / QUANTITY */}
+
                                       <p
                                         className="
                                           text-xs
-                                          text-gray-400
+                                          text-gray-500
                                           mt-1
                                         "
                                       >
-                                        For:{" "}
-                                        {itemData.brandName}{
-                                          itemData
-                                            .requestedName
+                                        {
+                                          itemData.quantity
                                         }
+                                        {" × R"}
+                                        {formatMoney(
+                                          itemData.unitPrice
+                                        )}
                                       </p>
-                                    )}
+                                    </div>
 
+                                    {/* LINE TOTAL */}
 
-                                  {/* NORMAL PRICE / QUANTITY */}
+                                    <div
+                                      className="
+                                        text-right
+                                        flex-shrink-0 w-full
+                                      "
+                                    >
+                                      <p
+                                        className="
+                                          font-bold
+                                          text-[#0B2E1E]
+                                        "
+                                      >
+                                        R
+                                        {formatMoney(
+                                          itemData.lineTotal
+                                        )}
+                                      </p>
 
-                                  <p
-                                    className="
-                                      text-xs
-                                      text-gray-500
-                                      mt-1
-                                    "
-                                  >
-                                    {itemData.quantity}
-
-                                    {" × R"}
-
-                                    {formatMoney(
-                                      itemData
-                                        .unitPrice
-                                    )}
-                                  </p>
-
+                                      {itemData
+                                        .loyaltyApplied ? (
+                                        <p
+                                          className="
+                                            text-[10px]
+                                            font-bold
+                                            uppercase
+                                            tracking-wide
+                                            mt-1
+                                          "
+                                          style={{
+                                            color:
+                                              loyalty.color,
+                                          }}
+                                        >
+                                          {
+                                            loyalty.name
+                                          }{" "}
+                                          price
+                                        </p>
+                                      ) : (
+                                        item.priceSource && (
+                                          <p
+                                            className="
+                                              text-[10px]
+                                              uppercase
+                                              tracking-wide
+                                              text-gray-400
+                                              mt-1
+                                            "
+                                          >
+                                            {
+                                              item.priceSource
+                                            }{" "}
+                                            price
+                                          </p>
+                                        )
+                                      )}
+                                    </div>
+                                  </div>
 
                                   {/* ========================= */}
                                   {/* LOYALTY MULTIBUY */}
@@ -1234,6 +1390,159 @@ function GrossaryPlusResults({
                                     itemData
                                       .promotionMechanic ===
                                       "MULTIBUY" && (
+                                      <div
+                                        className="
+                                          mt-2
+                                          flex
+                                          flex-row
+                                          items-center
+                                          gap-2
+                                        "
+                                      >
+                                        <LoyaltyBadge
+                                          retailer={
+                                            store.retailer
+                                          }
+                                        >
+                                          {
+                                            loyalty.name
+                                          }
+                                          :{" "}
+                                          {itemData
+                                            .promotionMessage ||
+                                            `${itemData.promotionQuantity} for R${formatMoney(
+                                              itemData.promotionBundlePrice
+                                            )}`}
+                                        </LoyaltyBadge>
+
+                                        {hasLoyaltySaving && (
+                                          <LoyaltyBadge
+                                            retailer={
+                                              store.retailer
+                                            }
+                                            strong
+                                          >
+                                            Save R
+                                            {formatMoney(
+                                              itemData.loyaltySavings
+                                            )}
+                                          </LoyaltyBadge>
+                                        )}
+                                      </div>
+                                    )}
+
+                                  {/* ========================= */}
+                                  {/* LOYALTY FIXED PRICE */}
+                                  {/* ========================= */}
+
+                                  {itemData
+                                    .loyaltyApplied &&
+                                    itemData
+                                      .promotionMechanic ===
+                                      "FIXED_PRICE" && (
+                                      <div
+                                        className="
+                                          mt-2
+                                          flex
+                                          flex-row
+                                          items-center
+                                          gap-2
+                                        "
+                                      >
+                                        <LoyaltyBadge
+                                          retailer={
+                                            store.retailer
+                                          }
+                                        >
+                                          {
+                                            loyalty.name
+                                          }{" "}
+                                          R
+                                          {formatMoney(
+                                            itemData.loyaltyPrice ??
+                                              itemData.unitPrice
+                                          )}
+                                        </LoyaltyBadge>
+
+                                        {hasLoyaltySaving && (
+                                          <LoyaltyBadge
+                                            retailer={
+                                              store.retailer
+                                            }
+                                            strong
+                                          >
+                                            Save R
+                                            {formatMoney(
+                                              itemData.loyaltySavings
+                                            )}
+                                          </LoyaltyBadge>
+                                        )}
+                                      </div>
+                                    )}
+
+                                  {/* ========================= */}
+                                  {/* PERCENTAGE DISCOUNT */}
+                                  {/* ========================= */}
+
+                                  {itemData
+                                    .loyaltyApplied &&
+                                    itemData
+                                      .promotionMechanic ===
+                                      "PERCENTAGE_DISCOUNT" && (
+                                      <div
+                                        className="
+                                          mt-2
+                                          flex
+                                          flex-row
+                                          items-center
+                                          gap-2
+                                        "
+                                      >
+                                        <LoyaltyBadge
+                                          retailer={
+                                            store.retailer
+                                          }
+                                        >
+                                          {
+                                            loyalty.name
+                                          }
+                                          :{" "}
+                                          {itemData
+                                            .promotionMessage ||
+                                            (
+                                              itemData
+                                                .promotionDiscountPercentage !=
+                                              null
+                                                ? `Save ${itemData.promotionDiscountPercentage}%`
+                                                : "Special price"
+                                            )}
+                                        </LoyaltyBadge>
+
+                                        {hasLoyaltySaving && (
+                                          <LoyaltyBadge
+                                            retailer={
+                                              store.retailer
+                                            }
+                                            strong
+                                          >
+                                            Save R
+                                            {formatMoney(
+                                              itemData.loyaltySavings
+                                            )}
+                                          </LoyaltyBadge>
+                                        )}
+                                      </div>
+                                    )}
+
+                                  {/* ========================= */}
+                                  {/* QUANTITY PERCENTAGE */}
+                                  {/* ========================= */}
+
+                                  {itemData
+                                    .loyaltyApplied &&
+                                    itemData
+                                      .promotionMechanic ===
+                                      "QUANTITY_PERCENTAGE" && (
                                       <div
                                         className="
                                           mt-2
@@ -1252,13 +1561,15 @@ function GrossaryPlusResults({
                                             loyalty.name
                                           }
                                           :{" "}
-
                                           {itemData
                                             .promotionMessage ||
-                                            `${itemData.promotionQuantity} for R${formatMoney(
+                                            (
                                               itemData
-                                                .promotionBundlePrice
-                                            )}`}
+                                                .promotionDiscountPercentage !=
+                                                null
+                                                ? `Buy ${itemData.promotionQuantity} & save ${itemData.promotionDiscountPercentage}%`
+                                                : "Special price"
+                                            )}
                                         </LoyaltyBadge>
 
                                         {hasLoyaltySaving && (
@@ -1270,68 +1581,12 @@ function GrossaryPlusResults({
                                           >
                                             Save R
                                             {formatMoney(
-                                              itemData
-                                                .loyaltySavings
+                                              itemData.loyaltySavings
                                             )}
                                           </LoyaltyBadge>
                                         )}
                                       </div>
                                     )}
-
-
-                                  {/* ========================= */}
-                                  {/* LOYALTY FIXED PRICE */}
-                                  {/* ========================= */}
-
-                                  {itemData
-                                    .loyaltyApplied &&
-                                    itemData
-                                      .promotionMechanic ===
-                                      "FIXED_PRICE" && (
-                                      <div
-                                        className="
-                                          mt-2
-                                          flex
-                                          flex-wrap
-                                          items-center
-                                          gap-2
-                                        "
-                                      >
-                                        <LoyaltyBadge
-                                          retailer={
-                                            store.retailer
-                                          }
-                                        >
-                                          {
-                                            loyalty.name
-                                          }{" "}
-
-                                          R
-                                          {formatMoney(
-                                            itemData
-                                              .loyaltyPrice ??
-                                            itemData
-                                              .unitPrice
-                                          )}
-                                        </LoyaltyBadge>
-
-                                        {hasLoyaltySaving && (
-                                          <LoyaltyBadge
-                                            retailer={
-                                              store.retailer
-                                            }
-                                            strong
-                                          >
-                                            Save R
-                                            {formatMoney(
-                                              itemData
-                                                .loyaltySavings
-                                            )}
-                                          </LoyaltyBadge>
-                                        )}
-                                      </div>
-                                    )}
-
 
                                   {/* ========================= */}
                                   {/* UNKNOWN LOYALTY MECHANIC */}
@@ -1342,6 +1597,8 @@ function GrossaryPlusResults({
                                     ![
                                       "MULTIBUY",
                                       "FIXED_PRICE",
+                                      "PERCENTAGE_DISCOUNT",
+                                      "QUANTITY_PERCENTAGE",
                                     ].includes(
                                       itemData
                                         .promotionMechanic
@@ -1379,14 +1636,12 @@ function GrossaryPlusResults({
                                           >
                                             Save R
                                             {formatMoney(
-                                              itemData
-                                                .loyaltySavings
+                                              itemData.loyaltySavings
                                             )}
                                           </LoyaltyBadge>
                                         )}
                                       </div>
                                     )}
-
 
                                   {/* ========================= */}
                                   {/* STANDARD PROMOTION */}
@@ -1413,111 +1668,48 @@ function GrossaryPlusResults({
                                       >
                                         Save R
                                         {formatMoney(
-                                          itemData
-                                            .promotionalSavings
+                                          itemData.promotionalSavings
                                         )}
                                       </span>
                                     )}
-                                </div>
 
-
-                                {/* LINE TOTAL */}
-
-                                <div
-                                  className="
-                                    text-right
-                                    flex-shrink-0
-                                  "
-                                >
-                                  <p
-                                    className="
-                                      font-bold
-                                      text-[#0B2E1E]
-                                    "
-                                  >
-                                    R{formatMoney(
-                                      itemData
-                                        .lineTotal
-                                    )}
-                                  </p>
+                                  {/* ========================= */}
+                                  {/* MULTIBUY EXPLANATION */}
+                                  {/* ========================= */}
 
                                   {itemData
-                                    .loyaltyApplied ? (
-                                    <p
-                                      className="
-                                        text-[10px]
-                                        font-bold
-                                        uppercase
-                                        tracking-wide
-                                        mt-1
-                                      "
-                                      style={{
-                                        color:
-                                          loyalty.color,
-                                      }}
-                                    >
-                                      {
-                                        loyalty.name
-                                      }{" "}
-                                      price
-                                    </p>
-                                  ) : (
-                                    item.priceSource && (
+                                    .loyaltyApplied &&
+                                    itemData
+                                      .promotionMechanic ===
+                                      "MULTIBUY" &&
+                                    itemData
+                                      .qualifyingBundles >
+                                      0 && (
                                       <p
                                         className="
-                                          text-[10px]
-                                          uppercase
-                                          tracking-wide
+                                          text-xs
                                           text-gray-400
-                                          mt-1
+                                          mt-2
                                         "
                                       >
                                         {
-                                          item.priceSource
+                                          itemData.qualifyingBundles
                                         }{" "}
-                                        price
+                                        {itemData
+                                          .qualifyingBundles ===
+                                        1
+                                          ? "qualifying bundle"
+                                          : "qualifying bundles"}
+
+                                        {itemData
+                                          .remainingQuantity >
+                                        0
+                                          ? ` + ${itemData.remainingQuantity} at normal price`
+                                          : ""}
                                       </p>
-                                    )
-                                  )}
+                                    )}
                                 </div>
                               </div>
-
-
-                              {/* ========================= */}
-                              {/* MULTIBUY EXPLANATION */}
-                              {/* ========================= */}
-
-                              {itemData
-                                .loyaltyApplied &&
-                                itemData
-                                  .promotionMechanic ===
-                                  "MULTIBUY" &&
-                                itemData
-                                  .qualifyingBundles >
-                                  0 && (
-                                  <p
-                                    className="
-                                      text-xs
-                                      text-gray-400
-                                      mt-2
-                                    "
-                                  >
-                                    {itemData
-                                      .qualifyingBundles}{" "}
-
-                                    {itemData
-                                      .qualifyingBundles ===
-                                    1
-                                      ? "qualifying bundle"
-                                      : "qualifying bundles"}
-
-                                    {itemData
-                                      .remainingQuantity >
-                                    0
-                                      ? ` + ${itemData.remainingQuantity} at normal price`
-                                      : ""}
-                                  </p>
-                                )}
                             </div>
                           );
                         }
@@ -1552,7 +1744,6 @@ function GrossaryPlusResults({
         )}
       </section>
 
-
       {/* ================================= */}
       {/* USE BEST OPTION */}
       {/* ================================= */}
@@ -1586,7 +1777,6 @@ function GrossaryPlusResults({
           ? "Updating your list..."
           : "Use Best Option"}
       </button>
-
 
       {/* ================================= */}
       {/* CONVENIENCE OPTION */}
@@ -1676,14 +1866,14 @@ function GrossaryPlusResults({
                   mt-0.5
                 "
               >
-                R{formatMoney(
+                R
+                {formatMoney(
                   cheapestSingleStore
                     .total
                 )}
               </p>
             </div>
           </div>
-
 
           {/* ================================= */}
           {/* PARTIAL CONVENIENCE INFO */}
@@ -1810,7 +2000,6 @@ function GrossaryPlusResults({
             </p>
           )}
 
-
           {/* ================================= */}
           {/* COMPLETE-BASKET SPLIT SAVINGS */}
           {/* ================================= */}
@@ -1840,7 +2029,8 @@ function GrossaryPlusResults({
                     text-[#1EC677]
                   "
                 >
-                  R{formatMoney(
+                  R
+                  {formatMoney(
                     splitSavings
                   )}
                 </span>
@@ -1850,7 +2040,6 @@ function GrossaryPlusResults({
               </p>
             </div>
           )}
-
 
           {/* ================================= */}
           {/* USE CONVENIENCE OPTION */}
@@ -1865,7 +2054,6 @@ function GrossaryPlusResults({
                     ?.total ||
                   0
                 ),
-
                 convenienceSavings
               )
             }
@@ -1894,7 +2082,6 @@ function GrossaryPlusResults({
           </button>
         </section>
       )}
-
 
       {/* ================================= */}
       {/* UNMATCHED ITEMS */}
@@ -2056,6 +2243,5 @@ function GrossaryPlusResults({
     </div>
   );
 }
-
 
 export default GrossaryPlusResults;
