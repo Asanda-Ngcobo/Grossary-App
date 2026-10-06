@@ -48,7 +48,7 @@ export default function CancellationPolicyPage() {
           <PolicySection number="1" title="Grossary+ Subscription">
             <p>
             grossary<span className="text-[#1EC677]">plus</span> is currently offered at{" "}
-              <strong className="text-gray-900">R39 per month</strong>.
+              <strong className="text-gray-900">R29 per month</strong>.
             </p>
 
             <p>
@@ -105,7 +105,7 @@ export default function CancellationPolicyPage() {
 
             <ul className="list-disc space-y-2 pl-6">
               <li>
-                You will not be charged the R39 monthly subscription fee.
+                You will not be charged the R29 monthly subscription fee.
               </li>
               <li>Your subscription will not automatically renew.</li>
               <li>

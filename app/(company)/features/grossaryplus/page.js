@@ -66,7 +66,7 @@ function GrossaryPlusPage() {
           <p className="text-sm mt-1 text-gray-600">
             Save time, energy, and stay under budget.
           </p>
-          <h6n  className="text-sm mt-1 text-gray-600">R39/Month after free trial</h6n>
+          <h6n  className="text-sm mt-1 text-gray-600">R29/Month after free trial</h6n>
           <div className="mt-6">
             <Link href="/auth/signup">
               <SignUpButton>
