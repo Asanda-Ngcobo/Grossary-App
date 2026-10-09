@@ -821,7 +821,7 @@ bottom-5'>Add Your Grocery list items using the Plus button above</p> */}
         disabled:cursor-not-allowed
         h-15 w-15 flex justify-center items-center
         right-2 bottom-2
-        z-10 fixed`
+        z-10 fixed active:h-17 active:w-17`
      
       }
     >

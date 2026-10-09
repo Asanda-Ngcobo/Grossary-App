@@ -791,7 +791,7 @@ export default function StarterItemsModal({
         </div>
 
         <div className="mb-4">
-          <h1 className="text-3xl font-black text-[#1EC677]">
+          <h1 className="text-3xl text-[#1EC677]">
             Add your grocery items
           </h1>
 
