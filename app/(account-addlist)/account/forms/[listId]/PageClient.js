@@ -26,7 +26,11 @@ import StarterItemsModal from './startItemsModel';
 import EditItem from '../EditItem';
 import GrossaryPlusBunner from '@/app/(account)/_ui/GrossaryPlusBunner';
 
-
+import {
+  initializeGrossaryPlusSound,
+  playGrossaryPlusSuccessSound,
+   playGrossaryPlusErrorSound,
+} from "@/app/_lib/grocery/utils/playGrossarySound";
 
 const ButtonFont = Lexend_Deca({
   subsets: ["latin"],
@@ -148,7 +152,7 @@ const isFirstList = lists.length === 1 && !profile.surveyed;
 
 //handlingGrossaryPlus
 async function handleGrossaryPlus() {
-
+   void initializeGrossaryPlusSound();
   try {
 
     // ==================================
@@ -392,6 +396,7 @@ async function handleGrossaryPlus() {
       data.result
     );
 
+void playGrossaryPlusSuccessSound();
 
   } catch (error) {
 
@@ -405,6 +410,7 @@ async function handleGrossaryPlus() {
       "error"
     );
 
+  void playGrossaryPlusErrorSound();
 
   } finally {
 

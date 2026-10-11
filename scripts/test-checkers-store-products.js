@@ -21,14 +21,15 @@ const stores = [
     storeId: "162387",
   },
   {
-    name: "Checkers FX Westwood Mall",
-    storeId: "168545",
+    name: "Checkers Davenport Road",
+
+    storeId: "1878",
   },
 ];
 
 
 const query =
-  "Oros Tropical Flavoured Apple Squash 2L";
+  "Tastic Rice 2kg";
 
 
 /*
