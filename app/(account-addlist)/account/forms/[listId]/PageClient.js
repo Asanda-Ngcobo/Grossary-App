@@ -19,7 +19,7 @@ import ListMoneySpent from '@/app/(account)/_ui/ListMoneySpent';
 
 import DeleteModal from "@/app/(account)/account/lists/DeleteModal";
 import DeleteList from '@/app/(account)/_ui/DeleteList';
-import { deleteList } from '@/app/_lib/actions';
+import { completeOnboarding, deleteList } from '@/app/_lib/actions';
 import AddPriceSheet from '../AddPriceSheet';
 import StarterItemsModal from './startItemsModel';
 
@@ -31,6 +31,9 @@ import {
   playGrossaryPlusSuccessSound,
    playGrossaryPlusErrorSound,
 } from "@/app/_lib/grocery/utils/playGrossarySound";
+import GrossaryTipPopup from '@/app/(account)/_ui/GrossaryTipPopup';
+import { supabase } from '@/app/_lib/supabase';
+import ConfirmPlusModel from '../../../../(account)/_ui/ConfirmPlus';
 
 const ButtonFont = Lexend_Deca({
   subsets: ["latin"],
@@ -42,7 +45,7 @@ const MoneyFont = Quicksand({
   display: 'swap',
 });
 export default function PageClient({ listId, list_name, 
-  list_budget, listitems, groupedItems, profile, lists, savings, plan }) {
+  list_budget, listitems, groupedItems,profile, lists, savings, plan }) {
  const [selectedCategory, setSelectedCategory] = useState('');
  const [isOpenModal, setIsOpenModal] = useState(false)
  const [showForm, setShowForm] = useState(false)
@@ -53,37 +56,52 @@ export default function PageClient({ listId, list_name,
   const [GrossaryPlusRun, setGrossaryPlusRun] = useState(false)
 const [activeRecommendedPriceId, setActiveRecommendedPriceId] = useState(null);
   const [locationStatus, setLocationStatus] = useState("idle");
+  const [confirmPlus, setConfirmPlus] = useState(false)
 const router = useRouter();
 
+
+
+//Parse Price
 
 function HandleParseprice(itemId) {
   setActiveRecommendedPriceId((currentId) =>
     currentId === itemId ? null : itemId
   );
 }
+
+//Show form
     function HandleShowForm (){
         setShowForm(def => !def)
     }
 
-    
+  //Edit Item  
     function openEditItem(item) {
   setEditingItem(item);
 }
 
+//Leave edit item
 function closeEditItem() {
   setEditingItem(null);
 }
+
+//Show Delete list
       const [isDeleteModal, setIsDeleteModal] = useState(false)
    function handleModal(){
     setIsDeleteModal((isDeleteModal) => !isDeleteModal)
    }
 
-   //Handle Form
+   //add price Form
    const [activeItemId, setActiveItemId] = useState(null);
 
 function openPrice(id) {
   setActiveItemId(id);
 }
+
+//Show plus form
+
+  function HandleConfirmPlusForm (){
+        setConfirmPlus(def => !def)
+    }
    
                //Delete Ui
    
@@ -153,6 +171,7 @@ const isFirstList = lists.length === 1 && !profile.surveyed;
 //handlingGrossaryPlus
 async function handleGrossaryPlus() {
    void initializeGrossaryPlusSound();
+   HandleConfirmPlusForm();
   try {
 
     // ==================================
@@ -420,6 +439,90 @@ void playGrossaryPlusSuccessSound();
 
   }
 }
+
+//handle onboarding tips
+
+  // Handle onboarding tips
+  const [activeTip, setActiveTip] = useState(0);
+  const [savingOnboarding, setSavingOnboarding] = useState(false);
+
+  // Show tips only when the profile is not onboarded
+useEffect(() => {
+  if (profile && profile.onboarded === false && listitems.length > 0) {
+    const timer = setTimeout(() => {
+      setActiveTip(1);
+    }, 2000);
+
+    return () => clearTimeout(timer);
+  } else {
+    setActiveTip(0);
+  }
+}, [profile?.onboarded, listitems.length, profile]);
+
+ 
+async function handleFinishOnboarding() {
+  if (savingOnboarding) return;
+
+  setSavingOnboarding(true);
+
+  try {
+    const result = await completeOnboarding();
+
+    if (!result.success) {
+      console.error("Failed to complete onboarding:", result.error);
+      return;
+    }
+
+    setActiveTip(0);
+  } finally {
+    setSavingOnboarding(false);
+  }
+}
+
+  const tips = [
+    {
+      title: "Be Specific!",
+      description:
+        "If your Rice is Tastic Wholegrain Long Grain Brown Rice 2kg,  " +
+        "add exactly that rice on your list. " +
+        "Before activating Grossary Plus.",
+      example:
+        "Tastic Wholegrain Long Grain Brown Rice 2kg, instead of just “Rice 2kg”.",
+    },
+    {
+      title: "However!",
+      description:
+        "If you are looking for just a cheaper rice " +
+        "and not brand specific, you can just add",
+      example:
+        "Rice   2kg.",
+    },
+
+     {
+      title: "Build a Complete List!",
+      description:
+        "Add everything you plan to buy before activating Grossary Plus. " +
+        "This helps grossary give you a complete shopping plan, helping you maximise your savings.",
+ 
+    },
+  ];
+
+  const currentTip =
+    activeTip > 0 ? tips[activeTip - 1] : null;
+
+ function handleNextTip() {
+  if (activeTip < tips.length) {
+    setActiveTip(activeTip + 1);
+  } else {
+    handleFinishOnboarding();
+  }
+}
+
+  function handleSkipTips() {
+    // Close tips without marking the user as onboarded.
+    setActiveTip(0);
+  }
+
   return (
     <div>
       {/* Header Card */}
@@ -429,7 +532,7 @@ void playGrossaryPlusSuccessSound();
         <div className="flex items-center justify-between mb-4">
     
         <Link
-  href={isFirstList ? "/account/forms/quiz" : "/account/lists"}
+  href={isFirstList ? "/account/cards" : "/account/lists"}
   className="
     bg-white
     text-black
@@ -811,7 +914,7 @@ bottom-5'>Add Your Grocery list items using the Plus button above</p> */}
     {itemsLength !== 0 &&  (
       <button
       type="button"
-      onClick={handleGrossaryPlus}
+      onClick={HandleConfirmPlusForm}
       disabled={isOptimizing}
       className={` ${isOptimizing && 'bg-gray-500'}   bg-[#0B2E1E]
         text-white
@@ -848,6 +951,33 @@ bottom-5'>Add Your Grocery list items using the Plus button above</p> */}
     listId={listId}
   />
 )}
+
+
+
+{listitems.length > 0  && (
+  <GrossaryTipPopup
+    open={activeTip > 0}
+    title={currentTip?.title}
+    description={currentTip?.description}
+    example={currentTip?.example}
+    tipNumber={activeTip}
+    totalTips={tips.length}
+    onNext={handleNextTip}
+    onSkip={handleSkipTips}
+    nextLabel={
+      activeTip === tips.length
+        ? savingOnboarding
+          ? "Saving..."
+          : "Got It!"
+        : "Okay, next"
+    }
+  />
+)}
+{confirmPlus && <ConfirmPlusModel
+grossaryplus={handleGrossaryPlus}
+leave={HandleConfirmPlusForm}
+isOptimizing={isOptimizing}/>}
+
     </div>
     
   );

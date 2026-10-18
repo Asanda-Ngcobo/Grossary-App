@@ -28,7 +28,7 @@ export default async function CardsPage() {
   const { data: authData, error: authError } = await supabase.auth.getUser();
   if (authError || !authData?.user) redirect("/login");
 
-  const userId = authData.user.id;
+  const userId = authData.user.id ?? data.user.id;
 
   // Get profile
   const { data: profile } = await supabase

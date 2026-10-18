@@ -93,7 +93,7 @@ export async function addCard(formData){
     const supabase = await createClient()
       const { data } = await supabase.auth.getUser()
     
-     if (!data) throw new Error('You must be logged in to add a list');
+     if (!data) throw new Error('You must be logged in to delete a list');
     const { data: profile } = await supabase
         .from('users_info')
         .select('*')
@@ -749,4 +749,58 @@ export async function ReportIssue(formData) {
 }
 
  
- 
+
+export async function completeOnboarding() {
+
+   const supabase = await createClient();
+  try {
+
+
+    // Verify the authenticated user using their session.
+    const {
+      data: { user },
+      error: authError,
+    } = await supabase.auth.getUser();
+
+    if (authError || !user) {
+      return {
+        success: false,
+        error: "You must be logged in to complete onboarding.",
+      };
+    }
+
+    // Assumes users_info.id matches the authenticated user's UUID.
+    const { data, error } = await supabase
+      .from("users_info")
+      .update({ onboarded: true })
+      .eq("id", user.id)
+      .select("id, onboarded")
+      .maybeSingle();
+
+    if (error) {
+      console.error("Onboarding update failed:", error);
+
+      return {
+        success: false,
+        error: "Could not save your onboarding status.",
+      };
+    }
+
+    if (!data) {
+      return {
+        success: false,
+        error:
+          "No profile was updated. Check the profile ID and RLS policy.",
+      };
+    }
+
+    return { success: true };
+  } catch (error) {
+    console.error("Unexpected onboarding error:", error);
+
+    return {
+      success: false,
+      error: "An unexpected error occurred.",
+    };
+  }
+}

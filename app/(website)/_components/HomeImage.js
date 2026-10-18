@@ -26,7 +26,7 @@ function HomeImage() {
       />
 
       {/* Mobile Video */}
-      {/* <Video /> */}
+      <Video />
 
  </Suspense>
  

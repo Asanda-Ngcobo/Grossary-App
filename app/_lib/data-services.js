@@ -1,4 +1,5 @@
-import { createClient } from "../_utils/supabase/client";
+import { createClient } from "../_utils/supabase/server";
+
 import { supabase } from "./supabase";
 import { notFound } from "next/navigation";
 
@@ -51,20 +52,19 @@ export async function getLists(userId) {
 
 
 export async function getCards(userId) {
+ const supabase = await createClient();
   const { data, error } = await supabase
-    .from('cards')
-    .select('*')
-    .eq('user_id', userId)
-    .order('created_at', { ascending: false }); // descending = newest first
+    .from("cards")
+    .select("*")
+    .eq("user_id", userId)
+    .order("created_at", { ascending: false });
 
   if (error) {
-    console.error("Supabase error loading Cards:", error.message);
-    throw new Error('We couldn’t load your Cards at this time. Please try again later.');
+    console.error("getCards error:", error.message);
+    return [];
   }
-
   return data;
 }
-
 export async function getOldLists(userId) {
   const { data, error } = await supabase
     .from('user_lists')
