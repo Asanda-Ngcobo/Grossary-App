@@ -22,6 +22,8 @@ import toast from "react-hot-toast";
 function GrossaryPlusBunner({
   results,
   optimizing,
+  error,
+  onRetry,
   setGrossaryPlusRun,
   listId,
 }) {
@@ -294,6 +296,9 @@ async function handleSelectPlan(basketTotal, savings) {
             savingPlan={
               savingPlan
             }
+            error={error}
+            onRetry={onRetry}
+            setGrossaryPlusRun={setGrossaryPlusRun}
           />
 
         )}

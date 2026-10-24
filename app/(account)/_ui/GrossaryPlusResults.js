@@ -1,3 +1,5 @@
+import { ERROR_COPY, DEFAULT_COPY } from "@/app/(account)/_ui/plusErrors";
+
 function formatMoney(value) {
   return Number(value || 0).toFixed(2);
 }
@@ -228,6 +230,10 @@ function GrossaryPlusResults({
   results,
   savingPlan,
   onSelectPlan,
+  error,
+   onRetry,
+   setGrossaryPlusRun,
+
 }) {
   /*
    * API may pass either:
@@ -442,62 +448,58 @@ function GrossaryPlusResults({
    * Invalid result
    * ------------------------------------------------
    */
-  if (
-    !optimization ||
-    !optimized
-  ) {
-    return (
+if (!optimization || !optimized) {
+  const copy = (error && ERROR_COPY[error.code]) || DEFAULT_COPY;
+
+  return (
+    <div className="bg-white border border-gray-100 rounded-3xl p-6 text-center">
       <div
         className="
-          bg-white
-          border
-          border-gray-100
-          rounded-3xl
-          p-6
-          text-center
+          w-12 h-12 mx-auto rounded-2xl
+          bg-red-50 text-red-500
+          flex items-center justify-center
+          font-bold text-xl mb-4
         "
       >
-        <div
-          className="
-            w-12
-            h-12
-            mx-auto
-            rounded-2xl
-            bg-red-50
-            text-red-500
-            flex
-            items-center
-            justify-center
-            font-bold
-            text-xl
-            mb-4
-          "
-        >
-          !
-        </div>
-        <p
-          className="
-            font-bold
-            text-[#0B2E1E]
-          "
-        >
-          We couldn&apos;t create your
-          shopping plan.
-        </p>
-        <p
-          className="
-            text-sm
-            text-gray-500
-            mt-2
-          "
-        >
-          Please refresh the page &  try again.
-          If the issue persists, please:
-        </p>
-        <p>WhatsApp us @ 072 124 7120 or Email @ support@grossary.shop</p>
+        !
       </div>
-    );
-  }
+
+      <p className="font-bold text-[#0B2E1E]">{copy.title}</p>
+
+      <p className="text-sm text-gray-500 mt-2">{copy.body}</p>
+   
+   <div className="flex flex-col">     {copy.retry && onRetry && (
+        <button
+          type="button"
+          onClick={onRetry}
+          className="
+            mt-4 h-10 px-6 rounded-full
+            bg-[#0B2E1E] text-white
+            text-sm font-semibold
+            active:scale-95 transition-all
+          "
+        >
+          Try again
+        </button>
+      )}
+
+      {copy.support && (
+        <p className="text-sm text-gray-500 mt-4">
+          WhatsApp us @ 072 124 7120 or Email @ support@grossary.shop
+        </p>
+      )}
+
+      <button
+        type="button"
+        onClick={() => setGrossaryPlusRun(false)}
+        className="mt-3 text-sm text-gray-400 underline"
+      >
+        Close
+      </button></div>
+ 
+    </div>
+  );
+}
   return (
     <div
       className="

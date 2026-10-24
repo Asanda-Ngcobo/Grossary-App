@@ -35,6 +35,11 @@ import GrossaryTipPopup from '@/app/(account)/_ui/GrossaryTipPopup';
 import { supabase } from '@/app/_lib/supabase';
 import ConfirmPlusModel from '../../../../(account)/_ui/ConfirmPlus';
 import Image from 'next/image';
+import {
+  PlusError,
+  toPlusErrorCode,
+} from "@/app/(account)/_ui/plusErrors";
+
 
 const ButtonFont = Lexend_Deca({
   subsets: ["latin"],
@@ -58,6 +63,7 @@ export default function PageClient({ listId, list_name,
 const [activeRecommendedPriceId, setActiveRecommendedPriceId] = useState(null);
   const [locationStatus, setLocationStatus] = useState("idle");
   const [confirmPlus, setConfirmPlus] = useState(false)
+  const [plusError, setPlusError] = useState(null);
 const router = useRouter();
 
 
@@ -168,279 +174,123 @@ useEffect(() => {
 //questionnaire redirecting
 
 const isFirstList = lists.length === 1 && !profile.surveyed;
+//helper
 
-//handlingGrossaryPlus
-async function handleGrossaryPlus() {
-   void initializeGrossaryPlusSound();
-   HandleConfirmPlusForm();
+async function readJson(response) {
   try {
-
-    // ==================================
-    // 1. CHECK SUBSCRIPTION FIRST
-    // ==================================
-
-    console.log(
-      "Checking Grossary Plus subscription..."
-    );
-
-
-    const statusResponse =
-      await fetch(
-        "/api/grossary-plus/status",
-        {
-          method:
-            "GET",
-
-          cache:
-            "no-store",
-        }
-      );
-
-
-    const statusData =
-      await statusResponse.json();
-
-
-    console.log(
-      "Grossary Plus status:",
-      statusData
-    );
-
-
-    // ==================================
-    // USER NOT SUBSCRIBED
-    // ==================================
-
-    if (
-      statusResponse.ok &&
-      !statusData.isPlus
-    ) {
-
-    const returnTo =
-  `/account/forms/${listId}`;
-
-
-      router.push(
-        `/account/forms/subscribe?returnTo=${encodeURIComponent(
-          returnTo
-        )}`
-      );
-
-
-      return;
-    }
-
-
-    if (!statusResponse.ok) {
-
-      throw new Error(
-        statusData?.error ||
-        "Unable to verify Grossary Plus subscription."
-      );
-    }
-
-
-    // ==================================
-    // 2. USER HAS PLUS
-    // ==================================
-
-    setIsOptimizing(
-      true
-    );
-
-    setLocationStatus(
-      "getting-location"
-    );
-
-    setGrossaryPlusRun(
-      true
-    );
-
-
-    console.log(
-      "Starting Grossary Plus..."
-    );
-
-
-    // ==================================
-    // 3. GET USER LOCATION
-    // ==================================
-
-    const position =
-      await new Promise(
-        (
-          resolve,
-          reject
-        ) => {
-
-          if (
-            !navigator.geolocation
-          ) {
-
-            reject(
-              new Error(
-                "Geolocation is not supported by this browser."
-              )
-            );
-
-            return;
-          }
-
-
-          navigator.geolocation
-            .getCurrentPosition(
-              resolve,
-              reject,
-              {
-                enableHighAccuracy:
-                  true,
-
-                timeout:
-                  10000,
-
-                maximumAge:
-                  300000,
-              }
-            );
-        }
-      );
-
-
-    const latitude =
-      position.coords.latitude;
-
-    const longitude =
-      position.coords.longitude;
-
-
-    console.log(
-      "User latitude:",
-      latitude
-    );
-
-    console.log(
-      "User longitude:",
-      longitude
-    );
-
-
-    setLocationStatus(
-      "location-found"
-    );
-
-
-    // ==================================
-    // 4. RUN GROSSARY PLUS
-    // ==================================
-
-    const response =
-      await fetch(
-        "/api/grossary-plus",
-        {
-          method:
-            "POST",
-
-          headers: {
-            "Content-Type":
-              "application/json",
-          },
-
-          body:
-            JSON.stringify({
-              listId,
-              latitude,
-              longitude,
-            }),
-        }
-      );
-
-
-    const data =
-      await response.json();
-
-
-    console.log(
-      "Grossary Plus API response:",
-      data
-    );
-
-
-    // ==================================
-    // 5. SERVER-SIDE SECURITY CHECK
-    // ==================================
-
-    /*
-     * /api/grossary-plus should STILL
-     * check is_plus itself.
-     *
-     * This protects the endpoint if
-     * someone bypasses this frontend.
-     */
-
-    if (
-      response.status === 403 &&
-      data?.error ===
-        "PLUS_REQUIRED"
-    ) {
-
-      setGrossaryPlusRun(
-        false
-      );
-
-
-      router.push(
-        `/account/forms/subscribe?returnTo=${encodeURIComponent(
-          `/account/lists/${listId}`
-        )}`
-      );
-
-
-      return;
-    }
-
-
-    if (!response.ok) {
-
-      throw new Error(
-        data?.error ||
-        "Grossary Plus failed."
-      );
-    }
-
-
-    // ==================================
-    // 6. SUCCESS
-    // ==================================
-
-    setGrossaryPlusResult(
-      data.result
-    );
-
-void playGrossaryPlusSuccessSound();
-
-  } catch (error) {
-
-    console.error(
-      "Failed to activate Grossary Plus:",
-      error
-    );
-
-
-    setLocationStatus(
-      "error"
-    );
-
-  void playGrossaryPlusErrorSound();
-
-  } finally {
-
-    setIsOptimizing(
-      false
-    );
-
+    return await response.json();
+  } catch {
+    return null; // HTML error pages, empty bodies, gateway timeouts
   }
 }
 
+function getPosition(options) {
+  return new Promise((resolve, reject) =>
+    navigator.geolocation.getCurrentPosition(resolve, reject, options)
+  );
+}
+
+async function getUserPosition() {
+  if (!navigator.geolocation) throw new PlusError("GEO_UNSUPPORTED");
+
+  try {
+    return await getPosition({ enableHighAccuracy: true, timeout: 10000, maximumAge: 300000 });
+  } catch (err) {
+    if (err.code === 1) throw err; // denied: retrying won't help
+    return await getPosition({ enableHighAccuracy: false, timeout: 15000, maximumAge: 600000 });
+  }
+}
+
+
+//handlingGrossaryPlus
+async function handleGrossaryPlus() {
+  void initializeGrossaryPlusSound();
+  HandleConfirmPlusForm();
+
+  setPlusError(null);
+  setGrossaryPlusResult(null);
+
+  // Open the banner immediately so ANY failure has somewhere to show
+  setGrossaryPlusRun(true);
+  setIsOptimizing(true);
+
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 60000);
+
+  try {
+    if (typeof navigator !== "undefined" && navigator.onLine === false) {
+      throw new PlusError("OFFLINE");
+    }
+
+    // 1. Subscription check
+    const statusResponse = await fetch("/api/grossary-plus/status", {
+      method: "GET",
+      cache: "no-store",
+      signal: controller.signal,
+    });
+    const statusData = await readJson(statusResponse);
+
+    if (statusResponse.status === 401) throw new PlusError("UNAUTHORIZED", { status: 401 });
+    if (!statusResponse.ok || !statusData) {
+      throw new PlusError(statusData ? "STATUS_CHECK_FAILED" : "BAD_RESPONSE", {
+        status: statusResponse.status,
+      });
+    }
+
+    if (!statusData.isPlus) {
+      setGrossaryPlusRun(false);
+      router.push(
+        `/account/forms/subscribe?returnTo=${encodeURIComponent(`/account/forms/${listId}`)}`
+      );
+      return;
+    }
+
+    // 2. Location
+    setLocationStatus("getting-location");
+    const position = await getUserPosition();
+    const { latitude, longitude } = position.coords;
+    setLocationStatus("location-found");
+
+    // 3. Run Grossary Plus
+    const response = await fetch("/api/grossary-plus", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ listId, latitude, longitude }),
+      signal: controller.signal,
+    });
+    const data = await readJson(response);
+
+    if (response.status === 403 && data?.error === "PLUS_REQUIRED") {
+      setGrossaryPlusRun(false);
+      router.push(
+        `/account/forms/subscribe?returnTo=${encodeURIComponent(`/account/forms/${listId}`)}`
+      );
+      return;
+    }
+
+    if (!response.ok || !data?.success) {
+      throw new PlusError(data?.error || "BAD_RESPONSE", {
+        status: response.status,
+        serverMessage: data?.message,
+      });
+    }
+
+    setGrossaryPlusResult(data.result);
+    void playGrossaryPlusSuccessSound();
+  } catch (error) {
+    console.error("Failed to activate Grossary Plus:", error);
+
+    setPlusError({
+      code: toPlusErrorCode(error),
+      serverMessage: error?.serverMessage || null,
+    });
+    setLocationStatus("error");
+    void playGrossaryPlusErrorSound();
+  } finally {
+    clearTimeout(timeoutId);
+    setIsOptimizing(false);
+  }
+}
 //handle onboarding tips
 
   // Handle onboarding tips
@@ -1001,7 +851,7 @@ bottom-5'>Add Your Grocery list items using the Plus button above</p> */}
 
 
 
-    {itemsLength !== 0 &&  (
+    {itemsLength !== 0 && profile.is_plus !== false &&  (
       <button
       type="button"
       onClick={HandleConfirmPlusForm}
@@ -1035,9 +885,10 @@ bottom-5'>Add Your Grocery list items using the Plus button above</p> */}
   <GrossaryPlusBunner
     optimizing={isOptimizing}
     results={grossaryPlusResult}
+    error={plusError}
+    onRetry={handleGrossaryPlus}
     setGrossaryPlusRun={setGrossaryPlusRun}
     GrossaryPlusRun={GrossaryPlusRun}
-  
     listId={listId}
   />
 )}
