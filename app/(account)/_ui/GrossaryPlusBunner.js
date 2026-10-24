@@ -34,121 +34,175 @@ function GrossaryPlusBunner({
 
     const router =
   useRouter();
-  async function handleSelectPlan(
-  basketTotal,
-  savings
-) {
 
+
+  function compactGrossaryPlusItem(item) {
+  if (!item) return null;
+
+  const requestedItem = item.requestedItem;
+
+  const product = item.product;
+
+  return {
+    matched: item.matched,
+
+    itemId: item.itemId,
+
+    requestedItem: requestedItem
+      ? {
+          id: requestedItem.id,
+          item_name: requestedItem.item_name,
+        }
+      : null,
+
+    selectedRetailer: item.selectedRetailer,
+    retailer: item.retailer,
+    storeId: item.storeId,
+    storeName: item.storeName,
+    branchName: item.branchName,
+    unitPrice: item.unitPrice,
+    productName: item.productName,
+
+    product: product
+      ? {
+          storeId: product.storeId,
+          storeName: product.storeName,
+          branchName: product.branchName,
+          price: product.price,
+          productName: product.productName,
+        }
+      : null,
+  };
+}
+  function compactGrossaryPlusResult(results) {
+  const data = results?.result || results;
+  const optimization = data?.optimization;
+
+  if (!optimization) {
+    throw new Error("Optimization result is missing.");
+  }
+
+  const optimized = optimization.optimized;
+  const cheapest = optimization.singleStoreOptions?.cheapest;
+
+  return {
+    shoppingLocation: data.shoppingLocation,
+
+    optimization: {
+      location: optimization.location,
+      complete: optimization.complete,
+      itemCount: optimization.itemCount,
+      matchedCount: optimization.matchedCount,
+      unmatchedCount: optimization.unmatchedCount,
+
+      unmatchedItems: Array.isArray(optimization.unmatchedItems)
+        ? optimization.unmatchedItems.map(() => null)
+        : [],
+
+      optimized: optimized
+        ? {
+            total: optimized.total,
+            items: (optimized.items || []).map(
+              compactGrossaryPlusItem
+            ),
+          }
+        : null,
+
+      singleStoreOptions: {
+        cheapest: cheapest
+          ? {
+              retailer: cheapest.retailer,
+              storeId: cheapest.storeId,
+              storeName: cheapest.storeName,
+              branchName: cheapest.branchName,
+              total: cheapest.total,
+              partial: cheapest.partial,
+              complete: cheapest.complete,
+              matchedCount: cheapest.matchedCount,
+              unmatchedCount: cheapest.unmatchedCount,
+
+              items: (cheapest.items || []).map(
+                compactGrossaryPlusItem
+              ),
+            }
+          : null,
+      },
+    },
+  };
+}
+  
+async function handleSelectPlan(basketTotal, savings) {
   try {
-
     setSavingPlan(true);
 
+    const compactResults = compactGrossaryPlusResult(results);
 
-    const response =
-      await fetch(
-        "/api/grossary-plus/select-plan",
-        {
-          method:
-            "POST",
-
-          headers: {
-            "Content-Type":
-              "application/json",
-          },
-
-          body:
-            JSON.stringify({
-              listId,
-              basketTotal,
-              savings,
-              result:
-                results,
-            }),
-        }
-      );
-
-
-    const data =
-      await response.json();
-
-
-    if (!response.ok) {
-
-      throw new Error(
-        data.error ||
-        "Unable to save shopping plan."
-      );
-
-    }
-
+    const payload = {
+      listId,
+      basketTotal,
+      savings,
+      result: compactResults,
+    };
 
     console.log(
-      "Grossary Plus plan saved:",
-      data
+      "Grossary Plus select-plan payload size:",
+      new Blob([JSON.stringify(payload)]).size,
+      "bytes"
     );
 
+    const response = await fetch(
+      "/api/grossary-plus/select-plan",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      }
+    );
 
-    /*
-     * Revalidate/refetch the current
-     * list page.
-     *
-     * This allows the newly saved:
-     *
-     * recommended_price
-     * recommended_retailer
-     * recommended_store_name
-     * grossary_plus_plan
-     * grossary_plus_savings
-     *
-     * to appear without the user
-     * manually refreshing.
-     */
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(
+        data.error || "Unable to save shopping plan."
+      );
+    }
+
+    console.log("Grossary Plus plan saved:", data);
 
     router.refresh();
-  
 
-    /*
-     * Close Grossary+ results.
-     */
-
-    setGrossaryPlusRun(prev => !prev)
-
-
-    /*
-     * Success notification.
-     */
+    setGrossaryPlusRun((prev) => !prev);
 
     toast.success(
       "Grossary+ shopping plan added to your list.",
-        {
-              duration: 5000,
-              style: { background: "#0B2E1E", color: "#fff" },
-            }
+      {
+        duration: 5000,
+        style: {
+          background: "#0B2E1E",
+          color: "#fff",
+        },
+      }
     );
-
-
   } catch (error) {
-
     console.error(
       "Failed to save Grossary Plus plan:",
       error
     );
 
-
     toast.error(
-      error.message ||
-      "We couldn't update your list.",
-        {
-              duration: 5000,
-              style: { background: "#0B2E1E", color: "#fff" },
-            }
+      error.message || "We couldn't update your list.",
+      {
+        duration: 5000,
+        style: {
+          background: "#0B2E1E",
+          color: "#fff",
+        },
+      }
     );
-
-
   } finally {
-
     setSavingPlan(false);
-
   }
 }
   return (

@@ -172,6 +172,16 @@ function buildRecommendation({
     null;
 
 
+  
+const imageUrl =
+  item?.imageUrl ||
+  item?.product?.imageUrl ||
+  item?.product?.image_url ||
+  product?.imageUrl ||
+  product?.image_url ||
+  null;
+
+
   const price =
     Number(
       item?.unitPrice ??
@@ -193,23 +203,17 @@ function buildRecommendation({
     null;
 
 
-  return {
-    itemId,
 
-    retailer:
-      resolvedRetailer,
+return {
+  itemId,
+  retailer: resolvedRetailer,
+  storeId: resolvedStoreId,
+  storeName: resolvedStoreName,
+  price: roundMoney(price),
+  productName,
+  imageUrl,
+};
 
-    storeId:
-      resolvedStoreId,
-
-    storeName:
-      resolvedStoreName,
-
-    price:
-      roundMoney(price),
-
-    productName,
-  };
 }
 
 
@@ -259,6 +263,7 @@ function buildBestRecommendations({
           item,
 
           retailer,
+      
 
           storeId:
             locationStore?.storeId ||
@@ -735,30 +740,19 @@ export async function POST(
           .from(
             "list_items"
           )
-          .update({
-            recommended_retailer:
-              recommendation
-                .retailer,
+         
+.update({
+  recommended_retailer: recommendation.retailer,
+  recommended_store_id: recommendation.storeId,
+  recommended_store_name: recommendation.storeName,
+  recommended_price: recommendation.price,
+  recommended_product_name: recommendation.productName,
+  recommendation_source: "grossary_plus",
 
-            recommended_store_id:
-              recommendation
-                .storeId,
+  // Save the recommended product image
+  image_url: recommendation.imageUrl,
+})
 
-            recommended_store_name:
-              recommendation
-                .storeName,
-
-            recommended_price:
-              recommendation
-                .price,
-
-            recommended_product_name:
-              recommendation
-                .productName,
-
-            recommendation_source:
-              "grossary_plus",
-          })
           .eq(
             "id",
             recommendation

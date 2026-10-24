@@ -4,7 +4,7 @@ import { useEffect, useMemo, useOptimistic, useState } from 'react';
 import { useRouter } from "next/navigation";
 import HandleCategories from './add-price/HandleCategories';
 import Link from 'next/link';
-import { Check, ChevronLeft, Edit, Edit2, PenTool, Plus, ShoppingCart } from '@deemlol/next-icons';
+import { Check, ChevronLeft, Edit, Edit2, MapPin, PenTool, Plus, ShoppingBag, ShoppingCart } from '@deemlol/next-icons';
 
 
 import IncreaseQuantity from './_listcomponents/IncreaseQuantity';
@@ -34,6 +34,7 @@ import {
 import GrossaryTipPopup from '@/app/(account)/_ui/GrossaryTipPopup';
 import { supabase } from '@/app/_lib/supabase';
 import ConfirmPlusModel from '../../../../(account)/_ui/ConfirmPlus';
+import Image from 'next/image';
 
 const ButtonFont = Lexend_Deca({
   subsets: ["latin"],
@@ -633,16 +634,41 @@ bottom-5'>Add Your Grocery list items using the Plus button above</p> */}
               </div>
 
               <div className="space-y-4">
-                {[...items]
-                  .sort((a, b) => {
-                    const aHasPrice = a.price != null;
-                    const bHasPrice = b.price != null;
+           
+{[...items]
+  .sort((a, b) => {
+    const aHasPrice = a.price != null;
+    const bHasPrice = b.price != null;
 
-                    if (aHasPrice === bHasPrice) {
-                      return a.item_name.localeCompare(b.item_name);
-                    }
-                    return aHasPrice ? 1 : -1;
-                  })
+    // 1. Items without prices first
+    if (aHasPrice !== bHasPrice) {
+      return aHasPrice ? 1 : -1;
+    }
+
+    // 2. Items with a recommended retailer first,
+    // then sort retailers alphabetically
+    const aRetailer = a.recommended_retailer?.trim() || "";
+    const bRetailer = b.recommended_retailer?.trim() || "";
+
+    if (aRetailer && bRetailer) {
+      const retailerOrder = aRetailer.localeCompare(
+        bRetailer,
+        "en",
+        { sensitivity: "base" }
+      );
+
+      if (retailerOrder !== 0) {
+        return retailerOrder;
+      }
+    } else if (aRetailer !== bRetailer) {
+      return aRetailer ? -1 : 1;
+    }
+
+    // 3. Sort product names alphabetically within each retailer
+    return a.item_name.localeCompare(b.item_name);
+  })
+
+
                   .map((item) => (
                     <div key={item.id} className="border-b border-gray-300 pb-3">
                       <div className="flex justify-between text-xs font-semibold mb-2">
@@ -712,24 +738,88 @@ bottom-5'>Add Your Grocery list items using the Plus button above</p> */}
     onClick={() => HandleParseprice(item.id)}
   >
 
-    {/* Recommended Price */}
+    {/* Recommended product */}
     {item.recommended_price != null &&
       activeRecommendedPriceId === item.id && (
-        <span
-          className="
-            absolute
-            bottom-full
-            left-1/2
-            -translate-x-1/2
-            mb-1
-            text-xs
-            font-bold
-            text-[#1EC677]
-            whitespace-nowrap
-          "
-        >
-          R{item.promotion}{Number(item.recommended_price).toFixed(2)}
+       
+<div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
+  <div
+    className="
+      w-[min(90vw,320px)]
+      overflow-hidden
+      rounded-2xl
+      border border-gray-100
+      bg-white
+      shadow-2xl shadow-black/20
+      animate-in fade-in zoom-in-95 duration-200
+    "
+  >
+    {/* Product image */}
+    <div className="relative flex h-50 w-full items-center justify-center bg-gray-50 p-3">
+      {item.image_url ? (
+        <Image
+          src={item.image_url}
+          alt={item.recommended_product_name || "Recommended product"}
+          fill
+          sizes="(max-width: 420px) 100vw, 420px"
+          className="object-contain p-3"
+        />
+      ) : (
+        <ShoppingBag size={36} className="text-gray-300" />
+      )}
+    </div>
+
+    {/* Product details */}
+    <div className="flex flex-col gap-2 p-4">
+      <div className="flex flex-col items-start justify-between gap-3">
+        <p className="min-w-0 flex-1 text-sm font-semibold leading-5 text-gray-800">
+          {item.recommended_product_name || "Recommended product"}
+        </p>
+       
+        <p className="shrink-0 text-lg font-bold text-[#0B2E1E]">
+          {Number.isFinite(Number(item.recommended_price))
+            ? `R${Number(item.recommended_price).toFixed(2)}`
+            : "Price unavailable"}
+        </p>
+
+          <p className='flex gap-1'>    <span className="text-xs text-gray-600">
+      At
+    </span>
+
+    <span
+      className={`
+        ${
+          item.recommended_retailer === "Checkers"
+            ? "text-[#38A8AE]"
+            : "text-[#003359]"
+        }
+        text-xs
+        font-bold
+      `}
+    >
+      {item.recommended_retailer}
+    </span></p>
+      </div>
+
+      {item.promotion != null &&
+        item.promotion !== "" &&
+        Number.isFinite(Number(item.promotion)) && (
+          <p className="text-xs font-medium text-emerald-600">
+            Promotion: R{Number(item.promotion).toFixed(2)}
+          </p>
+        )}
+
+      <div className="flex items-center gap-2 border-t border-gray-100 pt-3 text-xs text-gray-500">
+        <MapPin size={15} className="shrink-0 text-[#1EC677]" />
+        <span className="min-w-0 break-words">
+          {item.recommended_store_name || "Store unavailable"}
         </span>
+      </div>
+    </div>
+  </div>
+</div>
+
+       
       )}
 
     <span className="text-xs text-gray-600">

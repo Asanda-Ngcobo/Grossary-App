@@ -130,14 +130,14 @@ export default async function SubscribePage() {
               py-2
             "
           >
-            grossary
+            <h2>grossary
             <span
               className="
                 text-[#1EC677]
               "
             >
               plus
-            </span> {" "} Early Access
+            </span> {" "} early access</h2>
           </div>
 
 
@@ -155,7 +155,7 @@ export default async function SubscribePage() {
                 text-[#1EC677]
               "
             >
-              R100 or more
+              R50 or more
             </span>{" "}
             per 6 Items
           </h1>
