@@ -32,7 +32,7 @@ import {
    playGrossaryPlusErrorSound,
 } from "@/app/_lib/grocery/utils/playGrossarySound";
 import GrossaryTipPopup from '@/app/(account)/_ui/GrossaryTipPopup';
-import { supabase } from '@/app/_lib/supabase';
+
 import ConfirmPlusModel from '../../../../(account)/_ui/ConfirmPlus';
 import Image from 'next/image';
 import {
@@ -275,7 +275,20 @@ async function handleGrossaryPlus() {
       });
     }
 
-    setGrossaryPlusResult(data.result);
+       setGrossaryPlusResult(data.result);
+
+    console.log("Grossary Plus activated:", {
+      listId,
+      location: { latitude, longitude },
+      shoppingLocation: data.result?.shoppingLocation?.name,
+      optimizedTotal: data.result?.optimization?.optimized?.total,
+      storesUsed: data.result?.optimization?.optimized?.storesUsed,
+      matchedCount: data.result?.optimization?.matchedCount,
+      unmatchedCount: data.result?.optimization?.unmatchedCount,
+      convenienceTotal: data.result?.optimization?.singleStoreOptions?.cheapest?.total,
+      fullResult: data.result,
+    });
+
     void playGrossaryPlusSuccessSound();
   } catch (error) {
     console.error("Failed to activate Grossary Plus:", error);
@@ -890,6 +903,7 @@ bottom-5'>Add Your Grocery list items using the Plus button above</p> */}
     setGrossaryPlusRun={setGrossaryPlusRun}
     GrossaryPlusRun={GrossaryPlusRun}
     listId={listId}
+    setplus={setConfirmPlus}
   />
 )}
 

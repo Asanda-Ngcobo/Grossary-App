@@ -26,6 +26,7 @@ function GrossaryPlusBunner({
   onRetry,
   setGrossaryPlusRun,
   listId,
+  setplus
 }) {
 
   const [
@@ -72,6 +73,7 @@ function GrossaryPlusBunner({
           branchName: product.branchName,
           price: product.price,
           productName: product.productName,
+          imageUrl: product.imageUrl || null,
         }
       : null,
   };
@@ -299,6 +301,7 @@ async function handleSelectPlan(basketTotal, savings) {
             error={error}
             onRetry={onRetry}
             setGrossaryPlusRun={setGrossaryPlusRun}
+            setplus={setplus}
           />
 
         )}

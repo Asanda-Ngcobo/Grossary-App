@@ -233,6 +233,7 @@ function GrossaryPlusResults({
   error,
    onRetry,
    setGrossaryPlusRun,
+   setplus
 
 }) {
   /*
@@ -451,6 +452,10 @@ function GrossaryPlusResults({
 if (!optimization || !optimized) {
   const copy = (error && ERROR_COPY[error.code]) || DEFAULT_COPY;
 
+   function handleRetry(){
+    onRetry()
+    setplus(false)
+  }
   return (
     <div className="bg-white border border-gray-100 rounded-3xl p-6 text-center">
       <div
@@ -471,7 +476,7 @@ if (!optimization || !optimized) {
    <div className="flex flex-col">     {copy.retry && onRetry && (
         <button
           type="button"
-          onClick={onRetry}
+          onClick={handleRetry}
           className="
             mt-4 h-10 px-6 rounded-full
             bg-[#0B2E1E] text-white

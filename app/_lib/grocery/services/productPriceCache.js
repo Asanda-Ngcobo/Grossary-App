@@ -544,244 +544,110 @@ promotionDiscountPercentage:
  * ------------------------------------------------
  */
 
-async function getFreshCachedProducts({
-  retailer,
-  storeId,
-}) {
 
-  if (
-    !retailer
-  ) {
-
-    throw new Error(
-      "Cache retailer is required."
-    );
-
+/**
+ * Returns cache entries that are valid under Grossary's pricing policy.
+ */
+async function getFreshCachedProducts({ retailer, storeId }) {
+  if (!retailer) {
+    throw new Error("Cache retailer is required.");
   }
 
-
-  if (
-    !storeId
-  ) {
-
-    throw new Error(
-      "Cache storeId is required."
-    );
-
+  if (!storeId) {
+    throw new Error("Cache storeId is required.");
   }
 
+  const { start, end } = getSouthAfricaTodayRange();
+  const now = new Date();
 
-  const {
-    start,
-    end,
-  } =
-    getSouthAfricaTodayRange();
+  // Determine the weekday using South African local time.
+  const weekday = new Intl.DateTimeFormat("en-ZA", {
+    weekday: "long",
+    timeZone: "Africa/Johannesburg",
+  }).format(now);
 
+  const isRefreshDay =
+    weekday === "Monday" || weekday === "Friday";
 
   /*
-   * ------------------------------------------------
-   * Get today's cache
-   * ------------------------------------------------
+   * REGULAR PRICES
+   *
+   * Monday/Friday: use only regular prices updated today.
+   * Other days: reuse regular prices regardless of their age.
    */
+  let regularQuery = supabase
+    .from("grocery_product_cache")
+    .select("*")
+    .eq("retailer", retailer)
+    .eq("provider_store_id", String(storeId))
+    .or("is_promotion.is.null,is_promotion.eq.false");
+
+  if (isRefreshDay) {
+    regularQuery = regularQuery
+      .gte("last_updated", start)
+      .lt("last_updated", end);
+  }
 
   const {
-    data: todayData,
-    error: todayError,
-  } =
-    await supabase
-      .from(
-        "grocery_product_cache"
-      )
-      .select("*")
-      .eq(
-        "retailer",
-        retailer
-      )
-      .eq(
-        "provider_store_id",
-        String(storeId)
-      )
-      .gte(
-        "last_updated",
-        start
-      )
-      .lt(
-        "last_updated",
-        end
-      );
+    data: regularData,
+    error: regularError,
+  } = await regularQuery;
 
-
-  if (
-    todayError
-  ) {
-
+  if (regularError) {
     console.error(
-      "Today's cache lookup error:",
-      todayError
+      "Regular-price cache lookup error:",
+      regularError
     );
-
-
-    throw todayError;
-
+    throw regularError;
   }
 
-
   /*
-   * ------------------------------------------------
-   * Get older promotions that have NOT expired
-   * ------------------------------------------------
+   * PROMOTIONS
    *
-   * These products may have been cached yesterday
-   * or several days ago.
-   *
-   * However, if the retailer explicitly says the
-   * promotion is still active, we can continue
-   * using its promotional pricing.
-   * ------------------------------------------------
+   * Reuse promotions only while their end date is still
+   * in the future. This applies on every day of the week.
    */
-
-  const now =
-    new Date();
-
-
   const {
     data: promotionData,
     error: promotionError,
-  } =
-    await supabase
-      .from(
-        "grocery_product_cache"
-      )
-      .select("*")
-      .eq(
-        "retailer",
-        retailer
-      )
-      .eq(
-        "provider_store_id",
-        String(storeId)
-      )
-      .eq(
-        "is_promotion",
-        true
-      )
-      .lt(
-        "last_updated",
-        start
-      )
-      .gt(
-        "promotion_ends_at",
-        now.toISOString()
-      );
+  } = await supabase
+    .from("grocery_product_cache")
+    .select("*")
+    .eq("retailer", retailer)
+    .eq("provider_store_id", String(storeId))
+    .eq("is_promotion", true)
+    .gt("promotion_ends_at", now.toISOString());
 
-
-  if (
-    promotionError
-  ) {
-
+  if (promotionError) {
     console.error(
-      "Active promotion cache lookup error:",
+      "Promotion cache lookup error:",
       promotionError
     );
-
-
     throw promotionError;
-
   }
 
+  // Validate the promotion start date too, when available.
+  const activePromotions = (promotionData || []).filter(
+    (row) => hasActiveCachedPromotion(row, now)
+  );
 
   /*
-   * ------------------------------------------------
-   * Combine results
-   * ------------------------------------------------
+   * Combine results and deduplicate by cache_key.
    */
+  const uniqueRows = new Map();
 
-  const combined =
-    [
-      ...(todayData || []),
-      ...(promotionData || []),
-    ];
-
-
-  /*
-   * ------------------------------------------------
-   * Deduplicate
-   * ------------------------------------------------
-   *
-   * The database unique constraint already
-   * prevents duplicate cache keys for the same
-   * retailer/store.
-   *
-   * This Map also protects us from overlapping
-   * query results.
-   * ------------------------------------------------
-   */
-
-  const uniqueRows =
-    new Map();
-
-
-  for (
-    const row
-    of combined
-  ) {
-
-    /*
-     * Determine whether the product was
-     * refreshed during today's South African
-     * calendar date.
-     */
-
-    const lastUpdated =
-      new Date(
-        row.last_updated
-      );
-
-
-    const isFromToday =
-      !Number.isNaN(
-        lastUpdated.getTime()
-      ) &&
-      lastUpdated.getTime() >=
-        new Date(start).getTime() &&
-      lastUpdated.getTime() <
-        new Date(end).getTime();
-
-
-    /*
-     * Old rows are only allowed through
-     * when the retailer-supplied promotion
-     * is still active.
-     */
-
-    if (
-      !isFromToday &&
-      !hasActiveCachedPromotion(
-        row,
-        now
-      )
-    ) {
-
-      continue;
-
-    }
-
-
-    uniqueRows.set(
-      row.cache_key,
-      row
-    );
-
+  for (const row of regularData || []) {
+    uniqueRows.set(row.cache_key, row);
   }
 
+  for (const row of activePromotions) {
+    uniqueRows.set(row.cache_key, row);
+  }
 
-  return Array.from(
-    uniqueRows.values()
-  ).map(
+  return Array.from(uniqueRows.values()).map(
     cacheRowToProduct
   );
 }
-
 
 /*
  * ------------------------------------------------

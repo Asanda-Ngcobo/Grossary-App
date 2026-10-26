@@ -485,7 +485,12 @@ export async function POST(
     const optimization =
       data?.optimization;
 
-
+const sample = optimization?.optimized?.items?.[0];
+console.log("select-plan sample item:", {
+  keys: Object.keys(sample || {}),
+  productKeys: Object.keys(sample?.product || {}),
+  imageUrl: sample?.product?.imageUrl,
+});
     if (!optimization) {
       return NextResponse.json(
         {
