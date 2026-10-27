@@ -1,6 +1,6 @@
 "use client";
 
-import { ChevronLeft } from "@deemlol/next-icons";
+import { ChevronLeft, ShoppingBag } from "@deemlol/next-icons";
 
 import { createClient } from "@supabase/supabase-js";
 
@@ -14,6 +14,7 @@ import {
 } from "react";
 
 import AddingOwn from "./_listcomponents/AddingOwn";
+import Image from "next/image";
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL,
@@ -1007,27 +1008,42 @@ export default function StarterItemsModal({
 
                     <div className="flex flex-row w-full justify-between gap-3">
                       <div className="flex flex-col min-w-0">
-                        <span className="font-medium">
-                          {
-                            item.item_name
-                          }
-                        </span>
 
-                        {item.item_brand && (
+                         {item.item_brand && (
                           <span className="text-xs text-gray-400">
                             {
                               item.item_brand
                             }
                           </span>
                         )}
-                      </div>
+                        <span className="font-medium">
+                          {
+                            item.item_name
+                          }
+                        </span>
 
-                      <span className="text-sm text-gray-500 whitespace-nowrap">
+                       
+                          <span className="text-sm text-gray-500 whitespace-nowrap">
                         {
                           item.item_volume_mass
                         }
                         {item.item_unit}
                       </span>
+                      </div>
+    <div className="relative flex h-50 w-full items-center justify-center p-3">
+      {item.image_url ? (
+        <Image
+          src={item.image_url}
+          alt={item.recommended_product_name || "Recommended product"}
+          fill
+          sizes="(max-width: 120px) 100vw, 120px"
+          className="object-contain p-3"
+        />
+      ) : (
+        <ShoppingBag size={36} className="text-gray-300" />
+      )}
+    </div>
+                    
                     </div>
                   </button>
                 );

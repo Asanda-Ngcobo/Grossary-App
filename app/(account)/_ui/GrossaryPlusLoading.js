@@ -498,7 +498,8 @@ function GrossaryPlusLoading() {
           mt-5
         "
       >
-        Please keep Grossary open while we optimise your list.
+      Please avoid locking your phone or
+        leaving Grossary while we&apos;re working.
         This can take few seconds to few minutes, depending on your list items and number.
         We will sound alert you when optimization is done or there&apos;s an error.
       </p>
