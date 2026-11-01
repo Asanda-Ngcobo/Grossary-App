@@ -645,6 +645,23 @@ bottom-5'>Add Your Grocery list items using the Plus button above</p> */}
             : "Price unavailable"}
         </p>
 
+        {item.promotion_message &&  <p
+                                        className="
+                                          inline-flex
+                                          items-center
+                                          mt-2
+                                          bg-[#E9FFF4]
+                                          text-[#168B55]
+                                          text-xs
+                                          font-semibold
+                                          rounded-full
+                                          px-2.5
+                                          py-1
+                                        "
+                                      >
+                                        {item.promotion_message}
+                                      </p>}
+          
           <p className='flex gap-1'>    <span className="text-xs text-gray-600">
       At
     </span>

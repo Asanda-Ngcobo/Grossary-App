@@ -130,7 +130,8 @@ export default function AddPriceSheet({ itemId, listId, onClose }) {
             disabled={loading}
             className="bg-[#1EC677] h-[45px] rounded-lg font-semibold"
           >
-            {loading ? "Saving..." : "Save Price"}
+            
+            {loading ? "Saving..." : "Confirm Price"}
           </button>
         </form>
       </div>

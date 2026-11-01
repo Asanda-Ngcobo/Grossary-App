@@ -545,9 +545,26 @@ promotionDiscountPercentage:
  */
 
 
+
+
+  // South Africa has no daylight saving, so it is always UTC+2.
+function getPriceWindowStart(now = new Date()) {
+  const SA_OFFSET_MS = 2 * 60 * 60 * 1000;
+  const saNow = new Date(now.getTime() + SA_OFFSET_MS); // UTC getters now read SA local time
+  const sinceMonday = (saNow.getUTCDay() + 6) % 7;      // Mon = 0 ... Sun = 6
+  const daysBack = sinceMonday >= 4 ? sinceMonday - 4 : sinceMonday; // Fri-Sun -> Friday, else Monday
+  const startSA = Date.UTC(
+    saNow.getUTCFullYear(),
+    saNow.getUTCMonth(),
+    saNow.getUTCDate() - daysBack
+  );
+  return new Date(startSA - SA_OFFSET_MS); // back to a real UTC instant
+}
+ 
 /**
  * Returns cache entries that are valid under Grossary's pricing policy.
  */
+
 async function getFreshCachedProducts({ retailer, storeId }) {
   if (!retailer) {
     throw new Error("Cache retailer is required.");
@@ -557,36 +574,18 @@ async function getFreshCachedProducts({ retailer, storeId }) {
     throw new Error("Cache storeId is required.");
   }
 
-  const { start, end } = getSouthAfricaTodayRange();
+
   const now = new Date();
 
-  // Determine the weekday using South African local time.
-  const weekday = new Intl.DateTimeFormat("en-ZA", {
-    weekday: "long",
-    timeZone: "Africa/Johannesburg",
-  }).format(now);
+const windowStart = getPriceWindowStart(now);
 
-  const isRefreshDay =
-    weekday === "Monday" || weekday === "Friday";
-
-  /*
-   * REGULAR PRICES
-   *
-   * Monday/Friday: use only regular prices updated today.
-   * Other days: reuse regular prices regardless of their age.
-   */
-  let regularQuery = supabase
-    .from("grocery_product_cache")
-    .select("*")
-    .eq("retailer", retailer)
-    .eq("provider_store_id", String(storeId))
-    .or("is_promotion.is.null,is_promotion.eq.false");
-
-  if (isRefreshDay) {
-    regularQuery = regularQuery
-      .gte("last_updated", start)
-      .lt("last_updated", end);
-  }
+const regularQuery = supabase
+  .from("grocery_product_cache")
+  .select("*")
+  .eq("retailer", retailer)
+  .eq("provider_store_id", String(storeId))
+  .or("is_promotion.is.null,is_promotion.eq.false")
+  .gte("last_updated", windowStart.toISOString());
 
   const {
     data: regularData,

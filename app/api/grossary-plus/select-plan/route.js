@@ -182,6 +182,10 @@ const imageUrl =
   null;
 
 
+  const promotionMessage = item?.promotionMessage
+   || product?.promotionMessage || item?.product?.promotionMessage ||
+  null;
+
   const price =
     Number(
       item?.unitPrice ??
@@ -212,6 +216,7 @@ return {
   price: roundMoney(price),
   productName,
   imageUrl,
+  promotionMessage,
 };
 
 }
@@ -756,6 +761,7 @@ console.log("select-plan sample item:", {
 
   // Save the recommended product image
   image_url: recommendation.imageUrl,
+  promotion_message: recommendation.promotionMessage,
 })
 
           .eq(

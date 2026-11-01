@@ -74,6 +74,7 @@ function GrossaryPlusBunner({
           price: product.price,
           productName: product.productName,
           imageUrl: product.imageUrl || null,
+         promotionMessage: product?.promotionMessage || null,
         }
       : null,
   };
