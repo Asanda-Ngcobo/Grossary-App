@@ -536,7 +536,7 @@ bottom-5'>Add Your Grocery list items using the Plus button above</p> */}
                     <div key={item.id} className="border-b border-gray-300 pb-3">
                       <div className="flex justify-between text-xs font-semibold mb-2">
                         <div className='h-fit flex-col gap-1 '>
-                          <p>{item.item_name}</p>
+                          <p className='w-[80%]'>{item.item_name}</p>
                             <p className='font-bold'>{item.item_brand}</p>
                         </div>
                       
@@ -881,7 +881,7 @@ bottom-5'>Add Your Grocery list items using the Plus button above</p> */}
 
 
 
-    {itemsLength !== 0 && profile.is_plus !== false &&  (
+    {itemsLength !== 0 &&  (
       <button
       type="button"
       onClick={HandleConfirmPlusForm}
