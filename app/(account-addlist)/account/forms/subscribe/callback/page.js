@@ -317,7 +317,7 @@ GrossaryPlusCallbackPage() {
             Welcome to grossary<span className="text-[#1EC677]">plus</span>
           </h1>
 
-
+           <p>Powered by Preci AI</p>
           <p
             className="
               mt-3
