@@ -12,7 +12,7 @@ const {
 async function test() {
 
   const slug =
-    "oros-tropical-flavoured-apple-squash-2l-10705485EA";
+    "tomatoes-1kg-61a5c62834e80bb5a52f0fe6";
 
 
   console.log(

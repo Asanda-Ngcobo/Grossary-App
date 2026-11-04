@@ -20,16 +20,16 @@ const stores = [
     name: "Checkers Musgrave Centre",
     storeId: "162387",
   },
-  {
-    name: "Checkers Davenport Road",
+  // {
+  //   name: "Checkers Davenport Road",
 
-    storeId: "1878",
-  },
+  //   storeId: "1878",
+  // },
 ];
 
 
 const query =
-  "Tastic Rice 2kg";
+  "Tomatoes 1kg";
 
 
 /*

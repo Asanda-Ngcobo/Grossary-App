@@ -124,7 +124,7 @@ function GrossaryPlusLoading() {
             );
 
           },
-          2500
+          5000
         );
 
 
