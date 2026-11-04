@@ -2,11 +2,9 @@
 
 import {
   useState,
+  useEffect,
+  useRef,
 } from "react";
-
-import {
-  X,
-} from "@deemlol/next-icons";
 
 import {
   useRouter,
@@ -18,6 +16,95 @@ import GrossaryPlusLoading from "./GrossaryPlusLoading";
 import GrossaryPlusResults from "./GrossaryPlusResults";
 import toast from "react-hot-toast";
 
+
+function useScreenWakeLock(active) {
+  const wakeLockRef = useRef(null);
+  const requestInProgressRef = useRef(false);
+
+  useEffect(() => {
+    if (!active) return;
+
+    let mounted = true;
+
+    async function requestWakeLock() {
+      if (
+        !mounted ||
+        document.visibilityState !== "visible" ||
+        !("wakeLock" in navigator) ||
+        wakeLockRef.current ||
+        requestInProgressRef.current
+      ) {
+        return;
+      }
+
+      requestInProgressRef.current = true;
+
+      try {
+        const wakeLock = await navigator.wakeLock.request("screen");
+
+        if (!mounted) {
+          await wakeLock.release();
+          return;
+        }
+
+        wakeLockRef.current = wakeLock;
+
+        console.log("Grossary: Screen wake lock acquired");
+
+        wakeLock.addEventListener("release", () => {
+          if (wakeLockRef.current === wakeLock) {
+            wakeLockRef.current = null;
+          }
+
+          console.log("Grossary: Screen wake lock released");
+
+          // Retry if optimization is still active and the page is visible.
+          if (
+            mounted &&
+            document.visibilityState === "visible"
+          ) {
+            requestWakeLock();
+          }
+        });
+      } catch (error) {
+        console.warn(
+          "Grossary: Wake lock request failed:",
+          error
+        );
+      } finally {
+        requestInProgressRef.current = false;
+      }
+    }
+
+    function handleVisibilityChange() {
+      if (document.visibilityState === "visible") {
+        requestWakeLock();
+      }
+    }
+
+    requestWakeLock();
+
+    document.addEventListener(
+      "visibilitychange",
+      handleVisibilityChange
+    );
+
+    return () => {
+      mounted = false;
+
+      document.removeEventListener(
+        "visibilitychange",
+        handleVisibilityChange
+      );
+
+      if (wakeLockRef.current) {
+        const lock = wakeLockRef.current;
+        wakeLockRef.current = null;
+        lock.release().catch(console.error);
+      }
+    };
+  }, [active]);
+}
 
 function GrossaryPlusBunner({
   results,
@@ -38,6 +125,7 @@ function GrossaryPlusBunner({
     const router =
   useRouter();
 
+useScreenWakeLock(optimizing);
 
   function compactGrossaryPlusItem(item) {
   if (!item) return null;

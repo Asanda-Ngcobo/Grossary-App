@@ -139,7 +139,7 @@ export default async function SubscribePage() {
               plus
             </span> {" "} early access</h2>
           </div>
-
+            <p className="text-center text-gray-600 text-sm py-3">Powered by Preci AI</p>
 
           <h1
             className="

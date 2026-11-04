@@ -215,7 +215,7 @@ async function handleGrossaryPlus() {
   setIsOptimizing(true);
 
   const controller = new AbortController();
-  const timeoutId = setTimeout(() => controller.abort(), 60000);
+  const timeoutId = setTimeout(() => controller.abort(), 600000);
 
   try {
     if (typeof navigator !== "undefined" && navigator.onLine === false) {
@@ -428,7 +428,8 @@ async function handleFinishOnboarding() {
         <div className="flex flex-col justify-between font-bold">
            <ListMoneySpent money_spent={money_spent}
            />
-           {listitems.recommended_price !== null || <p className='text-xs text-gray-400'>Expected Spending &plusmn;R{plan}</p>}
+           {plan && <p className='text-xs text-gray-400'>Expected Spending &plusmn;R{plan}</p>}
+              {plan && <p className='text-xs text-gray-400'>grossary<span>+</span>{" "}savings &plusmn;R{savings}</p>}
            {/* <ListMoneyLeft money_left={money_left}/> */}
 
          
