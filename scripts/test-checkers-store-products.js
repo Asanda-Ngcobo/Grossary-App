@@ -16,20 +16,20 @@ const {
  */
 
 const stores = [
-  {
-    name: "Checkers Musgrave Centre",
-    storeId: "162387",
-  },
   // {
-  //   name: "Checkers Davenport Road",
-
-  //   storeId: "1878",
+  //   name: "Checkers Musgrave Centre",
+  //   storeId: "162387",
   // },
+  {
+  name: "Checkers Davenport Road",
+
+   storeId: "1878",
+  },
 ];
 
 
 const query =
-  "Tomatoes 1kg";
+  "Golden Cloud Brown Bread Wheat Flour 2.5kg";
 
 
 /*
@@ -61,7 +61,7 @@ async function testStore(store) {
       store.storeId,
       {
         page: 0,
-        limit: 10,
+        limit: 100,
       }
     );
 

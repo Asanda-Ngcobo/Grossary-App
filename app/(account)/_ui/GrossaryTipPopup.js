@@ -115,19 +115,15 @@ export default function GrossaryTipPopup({
 
 {tipNumber === 3 && (
   <div className="mt-5 overflow-hidden rounded-2xl border border-gray-200 bg-black">
-    <video
-      className="block aspect-video w-full object-cover"
-      autoPlay
-      muted
-      loop
-      playsInline
-      controls
-      preload="metadata"
-      aria-label="Grossary Plus shopping demonstration"
-    >
+  <iframe
+              src="https://1drv.ms/v/c/a69b2f6b39a4e7c8/IQRSyjVzGYM4TJyY1f2S3tVnARR44CC0alJyZ9LonM841_Y?width=3840&height=2160"
+              className="w-full h-[600px]"
+              allow="encrypted-media"
+              allowFullScreen
+            />
       <source src="/Tap the + button.mp4" type="video/mp4" />
       Your browser does not support the video element.
-    </video>
+   
   {/* https://1drv.ms/v/c/a69b2f6b39a4e7c8/IQQCxlK4ebARRazndn4f0ngWAeNIMk-UYp-OafGlLIbgiio?width=800&height=800 */}
   </div>
 )}

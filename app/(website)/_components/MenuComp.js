@@ -15,7 +15,7 @@ function Menu() {
     >
  <div
         className="bg-white h-full w-[90%] ml-[10%] rounded-l-3xl
-        overflow-y-scroll  no-scrollbar lg:w-[25%] shadow-xl lg:ml-[75%] p-4"
+        overflow-y-scroll  no-scrollbar lg:w-[35%] shadow-xl lg:ml-[75%] p-4"
         onClick={(e) => e.stopPropagation()}
       >
     <MenuContent onToggle={toggleMenu}

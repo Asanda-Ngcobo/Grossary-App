@@ -335,7 +335,7 @@ export default function GrossaryPlusSubscription() {
               text-gray-500
             "
           >
-            R39/month
+            R29/month
           </p>
 
         </div>
@@ -492,7 +492,7 @@ export default function GrossaryPlusSubscription() {
               text-gray-800
             "
           >
-            R39 / month
+            R29 / month
           </p>
 
         </div>

@@ -308,51 +308,90 @@ export async function decreaseQuantity(itemId, listId) {
 }
 
 export async function deleteItem(itemId, listId) {
-  const { error } = await supabase
-    .from('list_items')
-    .delete()
-    .eq('id', itemId);
+  const supabase = await createClient();
 
-  if (error) {
-    console.error(error);
-    return { success: false, message: 'Item could not be deleted' };
+  const {
+    data: { user },
+    error: authError,
+  } = await supabase.auth.getUser();
+
+  if (authError || !user) {
+    return { success: false, message: "You must be logged in to delete items." };
   }
 
-  // Revalidate path to reflect changes
+  const { data, error } = await supabase
+    .from("list_items")
+    .delete()
+    .eq("id", itemId)
+    .eq("list_id", listId)
+    .select("id")
+    .maybeSingle();
+
+  if (error) {
+    console.error("Delete failed:", error);
+    return { success: false, message: "Item could not be deleted" };
+  }
+
+  if (!data) {
+    return {
+      success: false,
+      message: "No item was deleted. Check the item's permissions.",
+    };
+  }
+
   revalidatePath(`/account/forms/${listId}`);
-  
 
   return { success: true };
 }
 
 
 
+export async function updateItemPrice(itemId, listId, price) {
+  const supabase = await createClient();
 
-export async function updateItemPrice(
-  itemId,
-  price,
-  item_name,
-  is_checked,
-  listId
-) {
-  const purchased_at = price !== null ? new Date().toISOString() : null;
+  const {
+    data: { user },
+    error: authError,
+  } = await supabase.auth.getUser();
 
-  const { error } = await supabase
+  if (authError || !user) {
+    throw new Error("You must be logged in to update item prices.");
+  }
+
+  const priceValue =
+    price === null || price === "" ? null : Number(price);
+
+  if (
+    priceValue !== null &&
+    (!Number.isFinite(priceValue) || priceValue < 0)
+  ) {
+    throw new Error("Please enter a valid price.");
+  }
+
+  const { data, error } = await supabase
     .from("list_items")
     .update({
-      price,
-      item_name,
-      is_checked: price !== null,
-      purchased_at,
+      price: priceValue,
+      is_checked: priceValue !== null,
+      purchased_at: priceValue !== null ? new Date().toISOString() : null,
     })
-    .eq("id", itemId);
+    .eq("id", itemId)
+    .eq("list_id", listId)
+    .select("id")
+    .maybeSingle();
 
   if (error) {
-    console.error(error);
-    throw new Error("Price update failed");
+    console.error("Price update failed:", error);
+    throw new Error(error.message);
+  }
+
+  if (!data) {
+    throw new Error("No item was updated. Check the item's permissions.");
   }
 
   revalidatePath(`/account/forms/${listId}`);
+
+  return { success: true };
 }
 export async function getListItemById(itemId) {
   const { data, error } = await supabaseServer

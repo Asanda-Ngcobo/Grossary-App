@@ -34,7 +34,7 @@ export default function Navigation() {
         border-b
         border-b-gray-300 
        
-        z-10
+        z-20
         fixed">
 
           <div className="w-[90%] mx-[5%] flex justify-between items-center">

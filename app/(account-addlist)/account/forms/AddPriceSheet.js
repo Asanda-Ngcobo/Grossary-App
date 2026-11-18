@@ -50,7 +50,7 @@ export default function AddPriceSheet({ itemId, listId, onClose }) {
     setLoading(true);
 
     try {
-      await updateItemPrice(itemId, parseFloat(price));
+     await updateItemPrice(itemId, listId, parseFloat(price));
       handleClose();
     } catch (err) {
       console.error(err);

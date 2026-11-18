@@ -1,5 +1,5 @@
 
-import { Minus, Plus, Trash2 } from "@deemlol/next-icons";
+import { Edit2, Minus, Plus, Trash2 } from "@deemlol/next-icons";
 
 function TrackingPrices() {
     return (
@@ -14,7 +14,7 @@ function TrackingPrices() {
                   1 of 3 left
                 </h2>
                 <h2 className="text-md font-bold">
-                 <span className="text-white">125.97</span>
+                 <span className="">R125.97</span>
                 </h2>
               </div>
               
@@ -57,11 +57,11 @@ function TrackingPrices() {
                        
                              
                        
-                            <Trash2 width={10}  />
+                           
                              
                           </div>
                           <span className="font-bold text-sm">1</span>
-                          <Plus width={10}  />
+                          <Edit2 width={15}  />
                         </div>
 
                        
@@ -78,7 +78,7 @@ function TrackingPrices() {
                
                     <div className="border-b border-gray-300 pb-1">
                       <div className="flex justify-between font-semibold mb-2">
-                        <span className="text-white">2 × Spinach</span>
+                        <span className="">2 × Spinach</span>
                        
                         <span>400g</span>
                       </div>
@@ -126,12 +126,11 @@ function TrackingPrices() {
 
                           
                           <div>
-                       
-                            <Minus width={10}  />
+                     
                              
                           </div>
                           <span className="font-bold text-sm">2</span>
-                          <Plus width={10}  />
+                          <Edit2 width={15}  />
                         </div>
 
                       
@@ -200,11 +199,11 @@ function TrackingPrices() {
                           
                           <div>
                        
-                            <Minus width={10}  />
+                          
                              
                           </div>
                           <span className="font-bold text-sm">1</span>
-                          <Plus width={10}  />
+                           <Edit2 width={15}  />
                         </div>
 
                       

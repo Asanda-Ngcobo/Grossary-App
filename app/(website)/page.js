@@ -1,7 +1,14 @@
 
 
 import OnboardingCards from "../(account)/account/onboardingCards";
+import Content from "./_components/Content";
+import Footer from "./_components/Footer";
+import HomeGrossaryPlus from "./_components/HomeGrossaryPlus";
+import HomeImage from "./_components/HomeImage";
+import MainBunner from "./_components/MainBunner";
 import MobileMenu from "./_components/MobileMenu";
+import PlanningAhead from "./_components/PlanningAhead";
+import ShoppingReimagined from "./_components/ShoppingReimagined";
 
 
 export const metadata = {
@@ -9,13 +16,13 @@ export const metadata = {
 
   title: {
     default:
-      "Grossary | Smart Grocery Shopping, Budget Tracking & Price Comparison",
+      "grossary | Smart Grocery Shopping, Budget Tracking & Price Comparison",
       
     template: "%s | Grossary",
   },
 
   description:
-    "Grossary helps you create grocery lists, track shopping costs in real time, compare prices across South African stores, and stay within budget while shopping.",
+    "grossary helps you create grocery lists, track shopping costs in real time, compare prices across South African stores, and stay within budget while shopping.",
 
   keywords: [
     "Grossary",
@@ -61,7 +68,7 @@ export const metadata = {
 
   openGraph: {
     title:
-      "Grossary | Smart Grocery Shopping & Budget Tracking",
+      "grossary | Smart Grocery Shopping & Budget Tracking",
 
     description:
       "Track grocery spending, create shopping lists, compare prices, and shop smarter across South African stores.",
@@ -88,7 +95,7 @@ export const metadata = {
     card: "summary_large_image",
 
     title:
-      "Grossary | Grocery Shopping Made Smarter",
+      "grossary | Grocery Shopping Made Smarter",
 
     description:
       "Create grocery lists, track spending, and compare prices with Grossary.",
@@ -119,9 +126,16 @@ export const metadata = {
 export default function Home() {
   return (
     <main className="pt-15">
-
+  <MobileMenu/>
    <OnboardingCards/>
-   <MobileMenu/>
+   <div className="hidden md:flex md:flex-col">
+ <PlanningAhead/>
+   <HomeGrossaryPlus/>
+   <ShoppingReimagined/>
+   <Footer/>
+   </div>
+  
+   
 
     </main>
 

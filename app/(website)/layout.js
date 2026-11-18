@@ -39,17 +39,14 @@ export default function RootLayout({ children }) {
           <FormProvider>
                 <Navigation/>
                  <Menu/>
-             <div className="lg:grid grid-cols-[5rem_1fr] ">
-              <div>  <AppNavigation/></div>
+             <div className="lg:grid">
+              
               <div> {children}</div>
              </div>
-          </FormProvider>
-    
-       
-          
-              
+          </FormProvider>  
       
         <Analytics/>
+           <AppNavigation/>
       </body>
 
     </html>

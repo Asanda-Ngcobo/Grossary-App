@@ -160,7 +160,7 @@ const categoryList = useMemo(() => {
 
            <MoneySpent moneySpent={moneySpent}/>
 
-     {moneySaved &&   <p className="text-xs text-gray-400 pt-6">grossary<span className="text-[#1EC677]">plus</span> savings &plusmn;R{moneySaved} </p>}
+     {moneySaved &&   <p className="text-xs text-gray-400 pt-6">grossary<span className="text-[#1EC677]">plus</span> savings &plusmn;R{(moneySaved).toFixed(2)} </p>}
    
       </div>
      
@@ -193,7 +193,7 @@ const categoryList = useMemo(() => {
 >
    {expand && <MoneySpent moneySpent={moneySpent} expand={expand}/>}
   <div className="flex justify-end"> 
-      {moneySaved &&   <p className="text-xs text-gray-400 py-6">grossary<span className="text-[#1EC677]">plus</span> savings &plusmn;R{moneySaved} </p>}
+      {moneySaved && expand && <p className="text-xs text-gray-400 py-6">grossary<span className="text-[#1EC677]">plus</span> savings &plusmn;R{(moneySaved).toFixed(2)} </p>}
    
    <button
     onClick={handleExpand}

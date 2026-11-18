@@ -99,9 +99,9 @@ setError(error instanceof Error ? error.message : 'An error occurred')
          {/* Terms and Privacy */}
               <section className="text-center text-sm text-[#908787] mb-4 px-2">
                 By continuing, you agree to our{" "}
-                <Link href="/terms" className="underline text-[#041527]">Terms of Use</Link>{" "}
+                <Link href="/company/terms" className="underline text-[#041527]">Terms of Use</Link>{" "}
                 and{" "}
-                <Link href="/privacy-policy" className="underline text-[#041527]">Privacy Policy</Link>.
+                <Link href="/company/privacy-policy" className="underline text-[#041527]">Privacy Policy</Link>.
               </section>
       </div>
     </form>

@@ -2,7 +2,9 @@
 "use client";
 
 import { ChevronLeft, ShoppingBag } from "@deemlol/next-icons";
-import { createClient } from "@supabase/supabase-js";
+import { createClient } from "@/app/_utils/supabase/client";
+
+
 import { Lexend_Deca } from "next/font/google";
 
 import {
@@ -15,10 +17,7 @@ import {
 import AddingOwn from "./_listcomponents/AddingOwn";
 import Image from "next/image";
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
-);
+
 
 const PAGE_SIZE = 100;
 
@@ -413,7 +412,7 @@ export default function StarterItemsModal({
   // ==========================================
   // ADD ITEMS TO LIST
   // ==========================================
-
+const supabase = createClient();
   async function handleAddItems() {
     if (
       selectedItems.length === 0 ||

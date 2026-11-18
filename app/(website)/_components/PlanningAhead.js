@@ -17,7 +17,7 @@ const contents = [
     {id: 1,
         image: ShoppingList,
         heading: 'Plan Ahead with Precision',
-        description: `Add everything you need as you remember, 
+        description: `Create a list & add everything you need as you remember, 
         from staples to treats. No more forgetting items or doubling up.`,
         link: '/features/planning-ahead',
         bunner: <TertiaryBunner>
@@ -46,16 +46,16 @@ const contents = [
             <FinishedShoppingBunner/>
         </TertiaryBunner>
     },
-       {id: 4,
-        image: Cards,
-       heading: "All Your Loyalty Cards, Always Within Reach",
-description:
-  "Never lose out on savings again. Access your loyalty cards instantly in Grossary and make sure every shop counts toward your rewards.",
-        link: '/features/loyalty-cards',
-        bunner: <TertiaryBunner>
-            <LoyaltyCardsClient/>
-        </TertiaryBunner>
-    },
+//        {id: 4,
+//         image: Cards,
+//        heading: "All Your Loyalty Cards, Always Within Reach",
+// description:
+//   "Never lose out on savings again. Access your loyalty cards instantly in Grossary and make sure every shop counts toward your rewards.",
+//         link: '/features/loyalty-cards',
+//         bunner: <TertiaryBunner>
+//             <LoyaltyCardsClient/>
+//         </TertiaryBunner>
+//     },
 ]
 function PlanningAhead() {
     return (

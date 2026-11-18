@@ -23,12 +23,12 @@ const links = [
 //     name: 'Shop With Purpose',
 //     icon: ChevronRight,
 //   },
-  // {
-  //   id: 4,
-  //   link: `/company/how-it-works`,
-  //   name: 'How It works',
-  //   icon: ChevronRight,
-  // },
+  {
+    id: 4,
+    link: `/company/contactus`,
+    name: 'Contact Us',
+    icon: ChevronRight,
+  },
   {
     id: 5,
     link: `/company/faq`,
@@ -103,7 +103,7 @@ export default function MenuContent({ onToggle, onCart, onAccount }) {
     
 
             <div className="h-fit text-xs m-2 py-7 rounded-2xl font-semibold cursor-pointer">
-          <h3 className="text-gray-300 capitalize text-center">Features</h3>
+          <h3 className="text-gray-300 capitalize text-left pl-4">Features</h3>
         {features.map((link) => {
           const Icon = link.icon;
           return (
@@ -124,7 +124,7 @@ export default function MenuContent({ onToggle, onCart, onAccount }) {
       </div>
 
         <div className="h-fit text-xs m-2 py-7 rounded-2xl font-semibold cursor-pointer">
-          <h3 className="text-gray-300 capitalize text-center">Company</h3>
+          <h3 className="text-gray-300 capitalize text-left pl-4">Company</h3>
         {links.map((link) => {
           const Icon = link.icon;
           return (

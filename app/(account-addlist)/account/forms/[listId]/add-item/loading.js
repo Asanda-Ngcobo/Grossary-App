@@ -1,16 +1,14 @@
 
+import Spinner from "@/app/(website)/_components/Spinner"
 
-function Loading() {
-  return (
-    <div className="flex flex-col justify-center items-center absolute inset-0 z-50 bg-[#04284B] w-full h-full">
-     
-     
-      <div className="animate-spin rounded-full
-       h-20 w-20 border-t-4 border-[#ACF532]">
-
-      </div>
-    </div>
-  )
+function loading() {
+    return (
+       <section className="flex flex-col justify-center items-center w-[80%]
+              h-[80vh] mx-[10%]">
+       
+      <Spinner/>
+      </section>
+    )
 }
 
-export default Loading
+export default loading

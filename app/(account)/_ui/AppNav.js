@@ -16,7 +16,8 @@ export default async function AppNavigation() {
         className="fixed bottom-0 w-full
         h-[80px] bg-white
         flex justify-center items-center
-       
+        z-20
+       md:hidden
         lg:w-[5rem] lg:mx-0 lg:h-screen
         lg:bottom-auto lg:flex-col
         lg:justify-start"
@@ -37,17 +38,16 @@ export default async function AppNavigation() {
   const activeList = myLists.filter(
     (list) => list.money_spent === 0 || list.money_spent === null
   );
-
-  return (
-    <div
-      className="fixed bottom-0 bg-white w-full
-      h-[80px]
-      flex justify-center items-center
-      md:hidden
-      lg:w-full lg:mx-0 lg:h-screen
-      lg:bottom-auto lg:flex-col
-      lg:justify-start"
-    >
+return (
+  <div
+    className="fixed bottom-0 bg-white w-full
+    h-[80px] z-30
+    flex justify-center items-center
+    md:hidden
+    lg:w-full lg:mx-0 lg:h-screen
+    lg:bottom-auto lg:flex-col
+    lg:justify-start"
+  >
       <AppNavLinks userLists={activeList}
       profile={profile} />
     </div>
