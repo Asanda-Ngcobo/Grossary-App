@@ -100,6 +100,8 @@ export default function StarterItemsModal({
   openform,
   itemsLength,
 }) {
+
+  const supabase = createClient();
   // ==========================================
   // REFS
   // ==========================================
@@ -412,7 +414,7 @@ export default function StarterItemsModal({
   // ==========================================
   // ADD ITEMS TO LIST
   // ==========================================
-const supabase = createClient();
+
   async function handleAddItems() {
     if (
       selectedItems.length === 0 ||

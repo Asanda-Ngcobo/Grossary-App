@@ -189,7 +189,7 @@ export default function OnboardingCards({ userName }) {
                     </h1>
 
                     <p className="mt-3 text-gray-500">
-                        We're getting everything ready for you.
+                        We&apos;re getting everything ready for you.
                     </p>
 
                     <p className="mt-2 text-sm font-medium text-[#1EC677]">
