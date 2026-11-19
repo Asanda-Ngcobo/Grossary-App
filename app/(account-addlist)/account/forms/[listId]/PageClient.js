@@ -925,8 +925,7 @@ bottom-5'>Add Your Grocery list items using the Plus button above</p> */}
   />
 )}
 
-
-
+{/* 
 {listitems.length > 0  && (
   <GrossaryTipPopup
     open={activeTip > 0}
@@ -945,7 +944,8 @@ bottom-5'>Add Your Grocery list items using the Plus button above</p> */}
         : "Okay, next"
     }
   />
-)}
+)} */}
+
 {confirmPlus && <ConfirmPlusModel
 grossaryplus={handleGrossaryPlus}
 leave={HandleConfirmPlusForm}
