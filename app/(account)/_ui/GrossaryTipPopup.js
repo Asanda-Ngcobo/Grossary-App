@@ -116,7 +116,7 @@ export default function GrossaryTipPopup({
 {tipNumber === 3 && (
   <div className="mt-5 overflow-hidden rounded-2xl border border-gray-200 bg-black">
   <iframe
-              src="https://1drv.ms/v/c/a69b2f6b39a4e7c8/IQRSyjVzGYM4TJyY1f2S3tVnARR44CC0alJyZ9LonM841_Y?width=3840&height=2160"
+              src="https://1drv.ms/v/c/a69b2f6b39a4e7c8/IQQrT0W9NgVFSZKkWh07H5XWAe0CW31YJBaBB5LoCrSFgZU?width=800&height=800"
               className="w-full h-[600px]"
               allow="encrypted-media"
               allowFullScreen
