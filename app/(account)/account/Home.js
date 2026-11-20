@@ -69,7 +69,7 @@ if (nameParts.length >= 2) {
     <div className="w-full ">
       {/* HEADER */}
       <div className="flex items-center w-screen
-       bg-[#F8F8F8] top-0 h-20 z-10 sticky  ">
+       bg-[#F8F8F8] top-0 h-20 z-30 sticky  ">
        
        {/* HEADER CHILDREN */}
        <div className="flex justify-between w-[90%] mx-auto">

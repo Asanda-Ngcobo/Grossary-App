@@ -173,7 +173,7 @@ export default function OnboardingCards({ userName }) {
     if (isLoading) {
         return (
             <div className="
-                fixed inset-0 z-50 flex min-h-screen w-full
+                fixed inset-0 z-30 flex min-h-screen w-full
                 items-center justify-center bg-[#F8F8F8] px-6
             ">
                 <div className="text-center">

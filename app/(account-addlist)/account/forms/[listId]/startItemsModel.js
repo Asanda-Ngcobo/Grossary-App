@@ -1,9 +1,8 @@
-
 "use client";
 
 import { ChevronLeft, ShoppingBag } from "@deemlol/next-icons";
 import { createClient } from "@/app/_utils/supabase/client";
-
+import toast from "react-hot-toast";
 
 import { Lexend_Deca } from "next/font/google";
 
@@ -17,27 +16,7 @@ import {
 import AddingOwn from "./_listcomponents/AddingOwn";
 import Image from "next/image";
 
-
-
 const PAGE_SIZE = 100;
-
-// ==========================================
-// CATEGORY TABS
-// ==========================================
-
-const categoryTabs = [
-  "All",
-  "Toiletries",
-  "Food Cupboard",
-  "Produce",
-  "Meat",
-  "Frozen Foods",
-  "Snacks",
-  "Drinks",
-  "Dairy",
-  "Hot Drinks"
-
-];
 
 // ==========================================
 // DATABASE CATEGORY MAPPING
@@ -75,19 +54,41 @@ const categoryGroups = {
 
   Snacks: [
     "Sweets & Snacks",
-  
   ],
-Drinks: [  "Beverages",
-    "Juices & Cordials",
-    "Beverages. Juices & Cordials"],
 
-    "Hot Drinks": [
-      "Coffee, Tea & Hot Drinks"
-    ],
+  Drinks: [
+    "Beverages",
+    "Juices & Cordials",
+    "Beverages. Juices & Cordials",
+  ],
+
+  "Hot Drinks": [
+    "Coffee, Tea & Hot Drinks",
+  ],
+
   Dairy: [
     "Milk, Dairy & Eggs",
   ],
+
+  Bakery: [
+    "Bakery",
+  ],
 };
+
+// ==========================================
+// CATEGORY TABS
+// "All" always comes first, the rest are
+// sorted alphabetically from left to right.
+// Built from categoryGroups so the two never
+// get out of sync.
+// ==========================================
+
+const categoryTabs = [
+  "All",
+  ...Object.keys(categoryGroups).sort((a, b) =>
+    a.localeCompare(b, "en", { sensitivity: "base" })
+  ),
+];
 
 const ButtonFont = Lexend_Deca({
   subsets: ["latin"],
@@ -483,6 +484,17 @@ export default function StarterItemsModal({
   }, [isVisible]);
 
   function handleClose() {
+    // The list is empty and nothing has been selected:
+    // keep the modal open and tell the user why.
+    if (itemsLength === 0 && selectedItems.length === 0) {
+      // Fixed id prevents toasts stacking on repeated taps.
+      toast.error("Please select at least one item", {
+        id: "select-at-least-one-item",
+      });
+
+      return;
+    }
+
     setIsVisible(false);
 
     setTimeout(() => {

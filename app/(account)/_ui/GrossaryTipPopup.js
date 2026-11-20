@@ -114,19 +114,16 @@ export default function GrossaryTipPopup({
 </h2>
 
 {tipNumber === 3 && (
-  <div className="mt-5 overflow-hidden rounded-2xl border border-gray-200 bg-black">
-    
-  <iframe
-              src="https://1drv.ms/v/c/a69b2f6b39a4e7c8/IQQrT0W9NgVFSZKkWh07H5XWAe0CW31YJBaBB5LoCrSFgZU?width=800&height=800"
-              className="w-full h-[600px]"
+   <div className="mt-10 flex justify-center">
+          {/* <div className="w-full max-w-md rounded-2xl overflow-hidden shadow-lg border">
+            <iframe
+              src="https://1drv.ms/v/c/a69b2f6b39a4e7c8/IQRSyjVzGYM4TJyY1f2S3tVnARR44CC0alJyZ9LonM841_Y?width=3840&height=2160"
+              className="w-full h-[200px]"
               allow="encrypted-media"
               allowFullScreen
             />
-      <source src="/Tap the + button.mp4" type="video/mp4" />
-      Your browser does not support the video element.
-   
-  {/* https://1drv.ms/v/c/a69b2f6b39a4e7c8/IQQCxlK4ebARRazndn4f0ngWAeNIMk-UYp-OafGlLIbgiio?width=800&height=800 */}
-  </div>
+          </div> */}
+        </div>
 )}
 
 <p

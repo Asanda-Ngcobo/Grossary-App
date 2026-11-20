@@ -11,6 +11,7 @@ import Privacy from "@/app/(account)/_ui/Privacy";
 import ReportIssueButton from "../reports/ReportIssueButton";
 import DeleteAccount from "./DeleteAccount";
 import Membership from "../plusmembership/Membership";
+import EditName from "./EditName";
 
 
 
@@ -64,6 +65,15 @@ const fullName = profile?.fullName
 
 const profileLinks = [
 
+   {
+    name: <EditName/>,
+    id: 0,
+      icon: <ChevronRight/>
+  
+    
+    
+  },
+  
     {
     name: <Membership/>,
     id: 1,
@@ -134,13 +144,8 @@ const profileLinks = [
  
 
     <div className="flex flex-row gap-2 justify-center items-center my-4">
-      <h1 className="text-lg flex gap-2"> <User/>{fullName || Name}</h1>
-      <button
-      type="button"
-      className="p-2 rounded-full  bg-accent-100 hover:bg-accent-200 transition cursor-pointer"
-    >
-     <Link href='/account/forms/edit-profile'><Edit2 color="#A2B06D" className="active:bg-gray-600"/></Link> 
-    </button>
+      <h1 className="text-lg flex gap-2"> {fullName || Name}</h1>
+   
     </div>
 
      <div className="flex flex-row gap-2 justify-center items-center my-4">
