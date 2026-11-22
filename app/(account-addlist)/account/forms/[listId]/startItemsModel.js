@@ -73,6 +73,8 @@ const categoryGroups = {
   Bakery: [
     "Bakery",
   ],
+
+  Household: ["Household & Cleaning"],
 };
 
 // ==========================================

@@ -3,11 +3,34 @@
 import { useEffect, useRef, useState } from "react";
 import { updateItemPrice, getListItemById } from "@/app/_lib/actions";
 import { ChevronLeft } from "@deemlol/next-icons";
+import { Lexend_Deca } from "next/font/google";
 
+
+const ButtonFont = Lexend_Deca({
+  subsets: ["latin"],
+  display: 'swap',
+});
 export default function AddPriceSheet({ itemId, listId, onClose }) {
   /* -------------------- Animation -------------------- */
   const [isVisible, setIsVisible] = useState(false);
 
+  function toPriceInput(value) {
+  if (
+    value === null ||
+    value === undefined ||
+    value === ""
+  ) {
+    return null;
+  }
+
+  const number = Number(value);
+
+  if (!Number.isFinite(number) || number <= 0) {
+    return null;
+  }
+
+  return number.toFixed(2);
+}
   useEffect(() => {
     setIsVisible(true);
   }, []);
@@ -37,10 +60,26 @@ export default function AddPriceSheet({ itemId, listId, onClose }) {
     if (itemId) fetchItem();
   }, [itemId]);
 
+
+    /* -------------------- Prefill price -------------------- */
+  useEffect(() => {
+    if (!item) return;
+
+    const prefilled =
+      toPriceInput(item.loyalty_price) ??
+      toPriceInput(item.recommended_price);
+
+    if (prefilled !== null) {
+      setPrice(prefilled);
+    }
+  }, [item]);
+
+  /* -------------------- Autofocus -------------------- */
   /* -------------------- Autofocus -------------------- */
   useEffect(() => {
     if (item && priceInputRef.current) {
       priceInputRef.current.focus();
+      priceInputRef.current.select();
     }
   }, [item]);
 
@@ -62,7 +101,8 @@ export default function AddPriceSheet({ itemId, listId, onClose }) {
 
   if (!item) return null;
 
-  // const promitionalPrice = item.promotion_bundle_price / promotion_quantity;
+  // const promitionalPrice = item.loyalty_price;
+  // console.log( 'Price', promitionalPrice)
 
   /* -------------------- UI -------------------- */
   return (
@@ -110,7 +150,22 @@ export default function AddPriceSheet({ itemId, listId, onClose }) {
               {item.item_volume_mass}
               {item.item_unit}
             </p>
-
+   {item.promotion_message && <p
+                                            className="
+                                              inline-flex
+                                              items-center
+                                              mt-2
+                                              bg-[#E9FFF4]
+                                              text-[#168B55]
+                                              text-xs
+                                              font-semibold
+                                              rounded-full
+                                              px-2.5
+                                              py-1
+                                            "
+                                          >
+                                            {item.promotion_message}
+                                          </p>}
             <div className="flex items-center gap-2">
               <span className="text-2xl">R</span>
               <input
@@ -130,7 +185,7 @@ export default function AddPriceSheet({ itemId, listId, onClose }) {
           <button
             type="submit"
             disabled={loading}
-            className="bg-[#1EC677] h-[45px] rounded-lg font-semibold"
+            className={`${ButtonFont.className} bg-[#0B2E1E] h-[45px] rounded-lg font-bold text-white text-2xl`}
           >
             
             {loading ? "Saving..." : "Confirm Price"}
