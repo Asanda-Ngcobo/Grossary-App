@@ -226,12 +226,13 @@ function parsePromotionMessage(
    * 2 FOR R32
    * 3 for R50
    * 4 For R100.00
+   * Collectaboks: Buy 3 For R144.00
    * ------------------------------------------------
    */
 
   const multiBuyMatch =
     text.match(
-      /^(\d+)\s*FOR\s*R\s*(\d+(?:\.\d{1,2})?)$/i
+      /^(?:Collectaboks:\s*)?(?:BUY\s+)?(\d+)\s*FOR\s*R\s*(\d+(?:\.\d{1,2})?)$/i
     );
 
 
@@ -306,7 +307,6 @@ function parsePromotionMessage(
 
   };
 }
-
 
 /*
  * ------------------------------------------------

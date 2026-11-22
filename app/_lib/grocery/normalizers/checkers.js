@@ -178,6 +178,45 @@ function getStockStatus(product) {
 
 /*
  * ------------------------------------------------
+ * Discounted unit price helper
+ *
+ * unit price = normal price x (1 - percentage / 100)
+ *
+ * Returns null when either value is missing.
+ * ------------------------------------------------
+ */
+
+function calculateDiscountedUnitPrice(
+  normalPrice,
+  discountPercentage
+) {
+  const price =
+    toNumber(normalPrice);
+
+  const percentage =
+    toNumber(discountPercentage);
+
+  if (
+    price === null ||
+    price < 0 ||
+    percentage === null ||
+    percentage <= 0 ||
+    percentage >= 100
+  ) {
+    return null;
+  }
+
+  return Number(
+    (
+      price *
+      (1 - percentage / 100)
+    ).toFixed(2)
+  );
+}
+
+
+/*
+ * ------------------------------------------------
  * Parse Checkers multibuy promotion
  * ------------------------------------------------
  *
@@ -188,6 +227,7 @@ function getStockStatus(product) {
  * Buy 4 For R55
  * 3 FOR R100
  * 2 for R 34
+ * Collectaboks: Buy 3 For R144.00
  * ------------------------------------------------
  */
 
@@ -241,6 +281,14 @@ function parseCheckersMultibuyMessage(
     quantity,
 
     bundlePrice,
+
+    unitPrice:
+      Number(
+        (
+          bundlePrice /
+          quantity
+        ).toFixed(2)
+      ),
   };
 }
 
@@ -257,11 +305,16 @@ function parseCheckersMultibuyMessage(
  * Buy 3 & Save 10%
  *
  * These require a qualifying quantity.
+ *
+ * The message does not contain a price, so the
+ * unit price is only calculated when normalPrice
+ * is supplied. Otherwise unitPrice is null.
  * ------------------------------------------------
  */
 
 function parseCheckersQuantityPercentageMessage(
-  message
+  message,
+  normalPrice = null
 ) {
   if (!message) {
     return null;
@@ -313,6 +366,12 @@ function parseCheckersQuantityPercentageMessage(
     quantity,
 
     discountPercentage,
+
+    unitPrice:
+      calculateDiscountedUnitPrice(
+        normalPrice,
+        discountPercentage
+      ),
   };
 }
 
@@ -340,11 +399,14 @@ function parseCheckersQuantityPercentageMessage(
  *
  * promotionBundlePrice = R30
  *
+ * The unit price is only calculated when
+ * normalPrice is supplied. Otherwise it is null.
  * ------------------------------------------------
  */
 
 function parseCheckersPercentageDiscountMessage(
-  message
+  message,
+  normalPrice = null
 ) {
   if (!message) {
     return null;
@@ -392,6 +454,12 @@ function parseCheckersPercentageDiscountMessage(
       1,
 
     discountPercentage,
+
+    unitPrice:
+      calculateDiscountedUnitPrice(
+        normalPrice,
+        discountPercentage
+      ),
   };
 }
 
@@ -613,6 +681,22 @@ function isPromotionActive(
  * ------------------------------------------------
  */
 
+/*
+ * ------------------------------------------------
+ * Normalize one Checkers Bonus Buy
+ *
+ * Depends on (defined elsewhere in the normalizer):
+ *
+ * toNumber
+ * calculateDiscountedUnitPrice
+ * parseCheckersMultibuyMessage
+ * parseCheckersQuantityPercentageMessage
+ * parseCheckersPercentageDiscountMessage
+ * normalizePromotionMechanic
+ * isPromotionActive
+ * ------------------------------------------------
+ */
+
 function normalizeCheckersBonusBuy(
   response
 ) {
@@ -710,12 +794,14 @@ function normalizeCheckersBonusBuy(
 
   const parsedQuantityPercentage =
     parseCheckersQuantityPercentageMessage(
-      promotionMessage
+      promotionMessage,
+      normalPrice
     );
 
   const parsedPercentageDiscount =
     parseCheckersPercentageDiscountMessage(
-      promotionMessage
+      promotionMessage,
+      normalPrice
     );
 
 
@@ -854,7 +940,9 @@ function normalizeCheckersBonusBuy(
    *
    * QUANTITY_PERCENTAGE:
    *
-   * no fixed unit price.
+   * unit price when the qualifying quantity is
+   * bought, calculated from normal price and
+   * percentage.
    *
    * PERCENTAGE_DISCOUNT:
    *
@@ -870,32 +958,42 @@ function normalizeCheckersBonusBuy(
     promotionMechanic ===
       "PERCENTAGE_DISCOUNT"
   ) {
-    if (
-      normalPrice !== null &&
-      promotionDiscountPercentage !==
-        null
-    ) {
-      promotionPrice =
-        normalPrice *
-        (
-          1 -
-          promotionDiscountPercentage /
-            100
-        );
-    }
+    /*
+     * Do NOT use the raw 30 from:
+     *
+     * Save 30%
+     *
+     * as R30.
+     */
 
-    else {
-      /*
-       * Do NOT use the raw 30 from:
-       *
-       * Save 30%
-       *
-       * as R30.
-       */
+    promotionPrice =
+      parsedPercentageDiscount
+        ?.unitPrice ??
+      calculateDiscountedUnitPrice(
+        normalPrice,
+        promotionDiscountPercentage
+      );
+  }
 
-      promotionPrice =
-        null;
-    }
+  else if (
+    promotionMechanic ===
+      "QUANTITY_PERCENTAGE"
+  ) {
+    /*
+     * Do NOT use the raw 20 from:
+     *
+     * Buy 2 & Save 20%
+     *
+     * as R20.
+     */
+
+    promotionPrice =
+      parsedQuantityPercentage
+        ?.unitPrice ??
+      calculateDiscountedUnitPrice(
+        normalPrice,
+        promotionDiscountPercentage
+      );
   }
 
 
@@ -977,7 +1075,7 @@ function normalizeCheckersBonusBuy(
    *
    * saving:
    *
-   * (22.99 × 2) - 34
+   * (22.99 x 2) - 34
    */
 
   if (
@@ -1005,11 +1103,11 @@ function normalizeCheckersBonusBuy(
    *
    * qualifying total:
    *
-   * 50 × 2 = 100
+   * 50 x 2 = 100
    *
    * saving:
    *
-   * 100 × 20% = R20
+   * 100 x 20% = R20
    */
 
   else if (
@@ -1041,7 +1139,7 @@ function normalizeCheckersBonusBuy(
    *
    * saving:
    *
-   * 100 × 30% = R30
+   * 100 x 30% = R30
    *
    * loyalty price:
    *
@@ -1140,11 +1238,25 @@ function normalizeCheckersBonusBuy(
    *
    * MULTIBUY:
    *
-   * depends on quantity.
+   * effective per-item price when the
+   * qualifying quantity is bought:
+   *
+   * promotionBundlePrice / promotionQuantity
+   *
+   * Buy 2 For R38 => R19
+   *
+   * IMPORTANT:
+   *
+   * This is NOT the price of a single item
+   * bought on its own. Basket pricing must
+   * still respect promotionQuantity and
+   * promotionBundlePrice.
    *
    * QUANTITY_PERCENTAGE:
    *
    * depends on qualifying quantity.
+   * See promotionUnitPrice for the unit price
+   * when the qualifying quantity is bought.
    *
    * PERCENTAGE_DISCOUNT:
    *
@@ -1172,6 +1284,25 @@ function normalizeCheckersBonusBuy(
   ) {
     loyaltyPrice =
       promotionPrice;
+  }
+
+  else if (
+    requiresLoyaltyCard &&
+    promotionMechanic ===
+      "MULTIBUY" &&
+    promotionBundlePrice !==
+      null &&
+    promotionQuantity > 0
+  ) {
+    /*
+     * Buy 2 For R38
+     *
+     * 38 / 2 = R19 per item
+     */
+
+    loyaltyPrice =
+      promotionBundlePrice /
+      promotionQuantity;
   }
 
   else if (
@@ -1216,6 +1347,60 @@ function normalizeCheckersBonusBuy(
         promotionBundlePrice
           .toFixed(2)
       );
+  }
+
+
+  /*
+   * ------------------------------------------------
+   * Promotion unit price
+   * ------------------------------------------------
+   *
+   * Price per item when the promotion applies:
+   *
+   * MULTIBUY:
+   *
+   * bundle price / quantity
+   * (Buy 3 For R144 => R48)
+   *
+   * QUANTITY_PERCENTAGE:
+   *
+   * normal price less percentage
+   * (R50, Buy 2 & Save 20% => R40)
+   *
+   * PERCENTAGE_DISCOUNT:
+   *
+   * normal price less percentage
+   * (R100, Save 30% => R70)
+   *
+   * FIXED_PRICE / other:
+   *
+   * the promotion price
+   * ------------------------------------------------
+   */
+
+  let promotionUnitPrice =
+    null;
+
+  if (
+    promotionMechanic ===
+      "MULTIBUY"
+  ) {
+    promotionUnitPrice =
+      promotionBundlePrice !==
+        null &&
+      promotionQuantity > 0
+        ? Number(
+            (
+              promotionBundlePrice /
+              promotionQuantity
+            ).toFixed(2)
+          )
+        : null;
+  }
+
+  else {
+    promotionUnitPrice =
+      promotionPrice;
   }
 
 
@@ -1340,6 +1525,8 @@ function normalizeCheckersBonusBuy(
 
     promotionBundlePrice,
 
+    promotionUnitPrice,
+
     promotionDiscountPercentage,
 
 
@@ -1420,12 +1607,6 @@ function normalizeCheckersBonusBuy(
   };
 }
 
-
-/*
- * ------------------------------------------------
- * Normalize one product
- * ------------------------------------------------
- */
 
 function normalizeCheckersProduct(
   product
@@ -1570,6 +1751,9 @@ function normalizeCheckersProduct(
       null,
 
     promotionBundlePrice:
+      null,
+
+    promotionUnitPrice:
       null,
 
     promotionDiscountPercentage:

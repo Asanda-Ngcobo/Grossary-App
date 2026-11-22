@@ -60,6 +60,15 @@ function normalizeText(value) {
       " "
     )
 
+    /*
+     * "whole nut", "wholenut" and "Whole Nut"
+     * must be the same word everywhere.
+     */
+    .replace(
+      /\bwhole nut\b/g,
+      "wholenut"
+    )
+
     .trim();
 }
 
@@ -695,9 +704,35 @@ const PRODUCT_FORM_WORDS =
 
     "concentrate",
     "lotion",
-    " moisture",
+    "moisture",
     "spf50",
     "spf30"
+  ]);
+
+
+/*
+ * ------------------------------------------------
+ * Descriptor words
+ * ------------------------------------------------
+ *
+ * Words that describe what kind of item it is,
+ * but do not distinguish one product line from
+ * another.
+ *
+ * Extend as needed.
+ */
+
+const PRODUCT_DESCRIPTOR_WORDS =
+  new Set([
+    "chocolate",
+    "slab",
+    "block",
+    "tablet",
+    "flavoured",
+    "flavored",
+    "flavour",
+    "flavor",
+    "taste",
   ]);
 
 
@@ -947,6 +982,90 @@ function extractProductIdentityTerms(
 
 /*
  * ------------------------------------------------
+ * Flavour / variant terms
+ * ------------------------------------------------
+ *
+ * If the list item names one of these and the
+ * retailer product does not, the product is a
+ * different variant and must not match.
+ *
+ * Extend this list as new mismatches appear.
+ * ------------------------------------------------
+ */
+
+const PRODUCT_FLAVOUR_TERMS = [
+  // soft drinks / juice
+  "orange",
+  "grape",
+  "cream soda",
+  "ginger ale",
+  "lemon",
+  "lime",
+  "apple",
+  "pineapple",
+  "peach",
+  "mango",
+  "litchi",
+  "naartjie",
+  "tropical",
+  "strawberry",
+  "raspberry",
+  "berry",
+  "banana",
+  "coconut",
+  "vanilla",
+
+  // chocolate / confectionery
+  "wholenut",
+  "fruit and nut",
+  "hazelnut",
+  "almond",
+  "peppermint",
+  "mint",
+  "caramel",
+  "bubbly",
+];
+
+
+/*
+ * "Whole Nut", "WholeNut" and "whole nut" must
+ * all count as the same term.
+ */
+
+function canonicalFlavourText(
+  value
+) {
+  return ` ${normalizeText(value)} `
+    .replace(
+      /\bwhole\s*nut\b/g,
+      "wholenut"
+    )
+    .replace(
+      /\bfruit\s+(?:and\s+)?nut\b/g,
+      "fruit and nut"
+    );
+}
+
+
+function extractFlavourTerms(
+  value
+) {
+  const text =
+    canonicalFlavourText(
+      value
+    );
+
+  return PRODUCT_FLAVOUR_TERMS.filter(
+    term =>
+      text.includes(
+        ` ${term} `
+      )
+  );
+}
+
+
+/*
+ * ------------------------------------------------
  * Score one retailer product
  * ------------------------------------------------
  */
@@ -1064,6 +1183,83 @@ function scoreProductMatch(
         )}: -40`
       );
     }
+  }
+
+
+  /*
+   * ==============================================
+   * FLAVOUR / VARIANT
+   * ==============================================
+   *
+   * If the list item names a flavour and the
+   * retailer product does not have it, the
+   * product is a different variant.
+   *
+   * Cadbury Dairy Milk Whole Nut
+   * must NOT match
+   * Cadbury Dairy Milk Bubbly
+   * just because brand and size agree.
+   */
+
+  const expectedFlavours =
+    extractFlavourTerms(
+      listItem?.item_name
+    );
+
+  const actualFlavours =
+    extractFlavourTerms(
+      product?.productName
+    );
+
+  const missingFlavours =
+    expectedFlavours.filter(
+      term =>
+        !actualFlavours.includes(
+          term
+        )
+    );
+
+  let flavourConflict =
+    false;
+
+  if (
+    missingFlavours.length > 0
+  ) {
+    flavourConflict =
+      true;
+
+    score -= 60;
+
+    reasons.push(
+      `flavour mismatch: expected ${expectedFlavours.join(
+        ", "
+      )}, found ${
+        actualFlavours.length
+          ? actualFlavours.join(
+              ", "
+            )
+          : "none"
+      }: -60`
+    );
+  }
+
+  else if (
+    expectedFlavours.length === 0 &&
+    actualFlavours.length > 0
+  ) {
+    /*
+     * The user asked for the plain version and
+     * this product is flavoured. Rank it lower,
+     * but don't disqualify it.
+     */
+
+    score -= 10;
+
+    reasons.push(
+      `unrequested flavour ${actualFlavours.join(
+        ", "
+      )}: -10`
+    );
   }
 
 
@@ -1278,18 +1474,153 @@ function scoreProductMatch(
    *
    * 2. there is meaningful name overlap.
    *
+   * AND
+   *
+   * 3. there is no flavour/variant conflict.
+   *
    * Size and packaging alone can NEVER make this
    * true.
    */
 
-  const identityEligible =
-    brandConfirmed ||
-    meaningfulMatchedWords.length >
+  /*
+   * ==============================================
+   * PRODUCT LINE
+   * ==============================================
+   *
+   * Distinctive words = what makes this product
+   * line different from its siblings:
+   * not brand, not generic, not packaging,
+   * not a plain descriptor.
+   *
+   * Cadbury Dairy Milk Whole Nut Slab
+   * => dairy, milk, wholenut
+   *
+   * Cadbury Dream Wholenut Slab has only wholenut,
+   * so it is a different product line.
+   */
+
+  const distinctiveExpectedWords =
+    getWords(
+      expectedProductName
+    ).filter(
+      word =>
+        !expectedBrandWords.has(
+          word
+        ) &&
+        !GENERIC_PRODUCT_WORDS.has(
+          word
+        ) &&
+        !PRODUCT_FORM_WORDS.has(
+          word
+        ) &&
+        !PRODUCT_DESCRIPTOR_WORDS.has(
+          word
+        )
+    );
+
+  const missingDistinctiveWords =
+    distinctiveExpectedWords.filter(
+      word =>
+        !nameMatch
+          .matchedWords
+          .includes(
+            word
+          )
+    );
+
+  const distinctiveCoverage =
+    distinctiveExpectedWords.length >
+      0
+      ? (
+          distinctiveExpectedWords.length -
+          missingDistinctiveWords.length
+        ) /
+        distinctiveExpectedWords.length
+      : 1;
+
+  /*
+   * Extra distinctive words on the retailer product
+   * that the user did NOT ask for.
+   *
+   * Cadbury DREAM Wholenut Slab
+   * => extra: dream  (a competing product line)
+   *
+   * Cadbury Slab Wholenut
+   * => extra: none   (just a shortened name)
+   *
+   * A shortened retailer name is fine. A different
+   * line name is not.
+   */
+
+  const expectedWordSet =
+    new Set(
+      getWords(
+        expectedProductName
+      )
+    );
+
+  const extraDistinctiveWords =
+    getWords(
+      product?.productName
+    ).filter(
+      word =>
+        !expectedBrandWords.has(
+          word
+        ) &&
+        !expectedWordSet.has(
+          word
+        ) &&
+        !GENERIC_PRODUCT_WORDS.has(
+          word
+        ) &&
+        !PRODUCT_FORM_WORDS.has(
+          word
+        ) &&
+        !PRODUCT_DESCRIPTOR_WORDS.has(
+          word
+        ) &&
+        !/^\d+(?:\.\d+)?(?:kg|g|l|ml)?$/.test(
+          word
+        )
+    );
+
+  const productLineConflict =
+    distinctiveExpectedWords.length >=
+      2 &&
+    distinctiveCoverage <
+      0.5 &&
+    extraDistinctiveWords.length >
       0;
+
+  if (productLineConflict) {
+    score -= 30;
+
+    reasons.push(
+      `product line mismatch: missing ${missingDistinctiveWords.join(
+        ", "
+      )}, found ${extraDistinctiveWords.join(
+        ", "
+      )}: -30`
+    );
+  }
+
+
+  const identityEligible =
+    (
+      brandConfirmed ||
+      meaningfulMatchedWords.length >
+        0
+    ) &&
+    !flavourConflict &&
+    !productLineConflict;
 
   if (!identityEligible) {
     reasons.push(
-      "product identity not established"
+      flavourConflict
+        ? "product flavour/variant conflict"
+        : productLineConflict
+          ? "product line conflict"
+          : "product identity not established"
     );
   }
 
@@ -1524,6 +1855,18 @@ function scoreProductMatch(
 
     actualVariants,
 
+    expectedFlavours,
+
+    actualFlavours,
+
+    flavourConflict,
+
+    productLineConflict,
+
+    missingDistinctiveWords,
+
+    extraDistinctiveWords,
+
     expectedSize,
 
     actualSize,
@@ -1692,6 +2035,16 @@ function matchProduct(
           ?.meaningfulMatchedWords ||
         [],
 
+      flavourConflict:
+        bestMatch
+          ?.flavourConflict ??
+        false,
+
+      productLineConflict:
+        bestMatch
+          ?.productLineConflict ??
+        false,
+
       candidates:
         candidates.slice(
           0,
@@ -1750,6 +2103,14 @@ function matchProduct(
       bestMatch
         .actualVariants,
 
+    expectedFlavours:
+      bestMatch
+        .expectedFlavours,
+
+    actualFlavours:
+      bestMatch
+        .actualFlavours,
+
     expectedSize:
       bestMatch
         .expectedSize,
@@ -1781,6 +2142,8 @@ module.exports = {
   calculateSpecificWordMatch,
 
   extractProductVariants,
+
+  extractFlavourTerms,
 
   extractSizeFromName,
 

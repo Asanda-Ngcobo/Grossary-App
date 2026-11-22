@@ -181,6 +181,14 @@ const imageUrl =
   product?.image_url ||
   null;
 
+const loyaltyPrice =
+  item?.loyaltyPrice ??
+   item?.promotionUnitPrice ??
+   item?.product.loyaltyPrice ??
+      item?.product.promotionUnitPrice ??
+  product?.loyaltyPrice ??
+  product?.promotionUnitPrice ??
+  null;
 
   const promotionMessage = item?.promotionMessage
    || product?.promotionMessage || item?.product?.promotionMessage ||
@@ -217,6 +225,7 @@ return {
   productName,
   imageUrl,
   promotionMessage,
+  loyaltyPrice,
 };
 
 }
@@ -495,7 +504,22 @@ console.log("select-plan sample item:", {
   keys: Object.keys(sample || {}),
   productKeys: Object.keys(sample?.product || {}),
   imageUrl: sample?.product?.imageUrl,
+
 });
+
+console.log(
+  "loyalty debug:",
+  (optimization?.optimized?.items || []).map((i) => ({
+    name: i.product?.productName,
+    retailer: i.retailer,
+    itemLoyaltyPrice: i.loyaltyPrice,
+    productLoyaltyPrice: i.product?.loyaltyPrice,
+    mechanic: i.product?.promotionMechanic,
+    requiresLoyaltyCard: i.product?.requiresLoyaltyCard,
+    bundlePrice: i.product?.promotionBundlePrice,
+    quantity: i.product?.promotionQuantity,
+  }))
+);
     if (!optimization) {
       return NextResponse.json(
         {
@@ -762,6 +786,7 @@ console.log("select-plan sample item:", {
   // Save the recommended product image
   image_url: recommendation.imageUrl,
   promotion_message: recommendation.promotionMessage,
+  loyalty_price: recommendation.loyaltyPrice,
 })
 
           .eq(

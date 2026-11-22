@@ -62,6 +62,8 @@ export default function AddPriceSheet({ itemId, listId, onClose }) {
 
   if (!item) return null;
 
+  // const promitionalPrice = item.promotion_bundle_price / promotion_quantity;
+
   /* -------------------- UI -------------------- */
   return (
     <>

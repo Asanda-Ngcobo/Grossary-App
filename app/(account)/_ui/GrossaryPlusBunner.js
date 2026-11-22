@@ -163,6 +163,7 @@ useScreenWakeLock(optimizing);
           productName: product.productName,
           imageUrl: product.imageUrl || null,
          promotionMessage: product?.promotionMessage || null,
+         loyaltyPrice: product?.loyaltyPrice || null,
         }
       : null,
   };

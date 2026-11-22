@@ -870,7 +870,7 @@ export default function PageClient({ listId, list_name,
 
       /> : ''}
 
-      <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-20 w-[90%] max-w-lg">
+      <div className="fixed bottom-1 left-1/2 -translate-x-1/2 z-20 w-[90%] max-w-lg">
         <div className="flex items-center gap-3">
 
           {/* Add More Items */}
