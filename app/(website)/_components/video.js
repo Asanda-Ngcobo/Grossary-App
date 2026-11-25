@@ -1,16 +1,14 @@
 export function Video() {
   return (
     <video
-      className="lg:hidden w-full
-       h-full object-cover
-       brightness-30 absolute top-0 left-0 -z-10"
+      className="absolute inset-0 h-full w-[50%] mx-auto object-cover bg-[#0B2E1E]"
       autoPlay
       muted
       loop
       playsInline
-      preload="none"
+      preload="metadata"
     >
-      <source src="/Hero Video.mp4" type="video/mp4" />
+      <source src="/more.mp4" type="video/mp4" />
     </video>
   );
 }

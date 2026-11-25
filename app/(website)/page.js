@@ -128,7 +128,7 @@ export default function Home() {
     <main className="pt-15">
   <MobileMenu/>
    <OnboardingCards/>
-   <div className="hidden md:flex md:flex-col">
+   <div className="hidden">
  <PlanningAhead/>
    <HomeGrossaryPlus/>
    <ShoppingReimagined/>
