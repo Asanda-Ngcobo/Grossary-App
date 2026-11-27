@@ -160,7 +160,7 @@ if (nameParts.length >= 2) {
 
       {/* LIST TEMPLATES */}
       
-      <OnboardingCardsCopy userName={firstName || Name} 
+      <OnboardingCards userName={firstName || Name} 
       
       /> 
         
