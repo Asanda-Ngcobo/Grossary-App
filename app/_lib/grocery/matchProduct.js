@@ -1884,7 +1884,7 @@ function matchProduct(
   listItem,
   products,
   {
-    minimumScore = 50,
+    minimumScore = 60,
   } = {}
 ) {
   if (

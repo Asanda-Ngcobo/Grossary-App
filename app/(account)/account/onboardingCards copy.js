@@ -54,7 +54,7 @@ const onboardingCards = [
   // },
 ];
 
-export default function OnboardingCards({ userName }) {
+export default function OnboardingCardsCopy({ userName }) {
   const supabase = createClient();
   const router = useRouter();
   
@@ -122,7 +122,7 @@ const [isLoading, setIsLoading] = useState(false);
 
 if (isLoading) {
   return (
-    <div className="min-h-screen bg-[#F8F8F8] w-full fixed left-0 top-0 z-10
+    <div className="min-h-screen bg-[#F8F8F8] w-full fixed left-0 top-0 z-50
      flex items-center justify-center px-6">
       <div className="text-center">
 

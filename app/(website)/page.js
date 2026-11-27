@@ -1,6 +1,7 @@
 
 
-import OnboardingCards from "../(account)/account/onboardingCards";
+
+import OnboardingCardsCopy from "../(account)/account/onboardingCards copy";
 import Content from "./_components/Content";
 import Footer from "./_components/Footer";
 import HomeGrossaryPlus from "./_components/HomeGrossaryPlus";
@@ -127,7 +128,7 @@ export default function Home() {
   return (
     <main className="pt-15">
   <MobileMenu/>
-   <OnboardingCards/>
+   <OnboardingCardsCopy/>
    <div className="hidden">
  <PlanningAhead/>
    <HomeGrossaryPlus/>

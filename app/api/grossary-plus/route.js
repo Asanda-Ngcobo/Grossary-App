@@ -1166,12 +1166,13 @@ console.log(
     );
 
 
-    const optimization =
-      await optimizeShoppingLocation({
-        items,
-        location,
-      });
-
+   const optimization =
+  await optimizeShoppingLocation({
+    items,
+    location,
+    latitude: userLatitude,
+    longitude: userLongitude,
+  });
 
     if (
       !optimization

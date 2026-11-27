@@ -12,6 +12,7 @@ import { useForm } from "@/app/providers/Provider";
 
 import OnboardingCards from "./onboardingCards";
 import Link from "next/link";
+import OnboardingCardsCopy from "./onboardingCards copy";
 
 
 export default function Home({ profile, myLists, data }) {
@@ -159,7 +160,7 @@ if (nameParts.length >= 2) {
 
       {/* LIST TEMPLATES */}
       
-      <OnboardingCards userName={firstName || Name} 
+      <OnboardingCardsCopy userName={firstName || Name} 
       
       /> 
         

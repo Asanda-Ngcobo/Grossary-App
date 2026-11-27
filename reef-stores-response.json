@@ -1,0 +1,271 @@
+{
+  "ok": true,
+  "meta": {
+    "api": "checkers",
+    "endpoint": "stores",
+    "mode": "live",
+    "latency_ms": 1220.7,
+    "record_count": 12,
+    "bytes": 11829,
+    "cache_hit": false,
+    "total": 12,
+    "upstream_requests": 2,
+    "exits": {
+      "walls": 1,
+      "scouted": 8,
+      "scout_wins": 1
+    },
+    "charged_credits": 2,
+    "version": "0.2.0",
+    "request_id": "94e9954e9e984867",
+    "queue_ms": 5.6,
+    "fetched_at": "2026-11-26T18:14:57.303Z"
+  },
+  "data": {
+    "site": "checkers",
+    "location": {
+      "latitude": -29.85,
+      "longitude": 31.0034
+    },
+    "radius_km": 10,
+    "returned": 12,
+    "brands": {
+      "Checkers": 3,
+      "Shoprite": 3,
+      "Shoprite LiquorShop": 3,
+      "Checkers Foods": 1,
+      "Checkers LiquorShop": 1,
+      "Petshop Science": 1
+    },
+    "stores": [
+      {
+        "store_id": "69e5fc74fa670d43ca761b18",
+        "name": "Checkers FX Musgrave Centre",
+        "brand": "Checkers",
+        "pos_site_code": "162387",
+        "address": "115 Musgrave Road, Berea, Durban",
+        "latitude": -29.849009,
+        "longitude": 30.999406,
+        "distance_km": 0.4,
+        "hours": {
+          "monday": "08:00-20:00",
+          "tuesday": "08:00-20:00",
+          "wednesday": "08:00-20:00",
+          "thursday": "08:00-20:00",
+          "friday": "08:00-20:00",
+          "saturday": "08:00-20:00",
+          "sunday": "08:00-20:00"
+        }
+      },
+      {
+        "store_id": "6a2c0cf571db63b9c330f0f2",
+        "name": "Shoprite Berea Road",
+        "brand": "Shoprite",
+        "pos_site_code": "6705",
+        "address": "249 Berea Road, Durban",
+        "latitude": -29.856,
+        "longitude": 31.004,
+        "distance_km": 0.7,
+        "hours": {
+          "monday": "08:00-20:00",
+          "tuesday": "08:00-20:00",
+          "wednesday": "08:00-20:00",
+          "thursday": "08:00-20:00",
+          "friday": "08:00-20:00",
+          "saturday": "08:00-20:00",
+          "sunday": "08:00-20:00"
+        }
+      },
+      {
+        "store_id": "6a2c0cf671db63b9c331424d",
+        "name": "Shoprite LiquorShop Berea Road",
+        "brand": "Shoprite LiquorShop",
+        "pos_site_code": "165610",
+        "address": "Shop No. 3 & 4, Berea Shopping Centre, 249 Berea Road, Durban",
+        "latitude": -29.85638,
+        "longitude": 31.003887,
+        "distance_km": 0.7,
+        "hours": {
+          "monday": "08:00-20:00",
+          "tuesday": "08:00-20:00",
+          "wednesday": "08:00-20:00",
+          "thursday": "08:00-20:00",
+          "friday": "08:00-20:00",
+          "saturday": "08:00-17:00",
+          "sunday": "10:00-15:30"
+        }
+      },
+      {
+        "store_id": "6a2c0cf571db63b9c330f836",
+        "name": "Shoprite LiquorShop LSC Rank",
+        "brand": "Shoprite LiquorShop",
+        "pos_site_code": "18051",
+        "address": "115 Warwick Avenue,, Greyville, Greyville, Durban",
+        "latitude": -29.85599,
+        "longitude": 31.01031,
+        "distance_km": 0.9,
+        "hours": {
+          "monday": "08:00-19:00",
+          "tuesday": "08:00-19:00",
+          "wednesday": "08:00-19:00",
+          "thursday": "08:00-19:00",
+          "friday": "08:00-19:00",
+          "saturday": "08:00-18:00",
+          "sunday": "10:00-15:30"
+        }
+      },
+      {
+        "store_id": "69e5fc74fa670d43ca7618c1",
+        "name": "Checkers Foods Cowey Park",
+        "brand": "Checkers Foods",
+        "pos_site_code": "162361",
+        "address": "92-123 Problem Mkhize Road, Morningside, Durban",
+        "latitude": -29.8404,
+        "longitude": 31.0089,
+        "distance_km": 1.2,
+        "hours": {
+          "monday": "08:00-20:00",
+          "tuesday": "08:00-20:00",
+          "wednesday": "08:00-20:00",
+          "thursday": "08:00-20:00",
+          "friday": "08:00-20:00",
+          "saturday": "08:00-20:00",
+          "sunday": "08:00-20:00"
+        }
+      },
+      {
+        "store_id": "69e5fc73fa670d43ca760805",
+        "name": "Checkers Davenport Rd",
+        "brand": "Checkers",
+        "pos_site_code": "1179",
+        "address": "89 Davenport Road, Glenwood, Durban",
+        "latitude": -29.86055278000001,
+        "longitude": 31.00087500000003,
+        "distance_km": 1.2,
+        "hours": {
+          "monday": "08:00-20:00",
+          "tuesday": "08:00-20:00",
+          "wednesday": "08:00-20:00",
+          "thursday": "08:00-20:00",
+          "friday": "08:00-20:00",
+          "saturday": "08:00-20:00",
+          "sunday": "08:00-20:00"
+        }
+      },
+      {
+        "store_id": "6a2c0cf571db63b9c330f946",
+        "name": "Shoprite SCF Rank",
+        "brand": "Shoprite",
+        "pos_site_code": "18556",
+        "address": "Julius Nyerere Street, Berea, Berea, Durban",
+        "latitude": -29.859054,
+        "longitude": 31.010569,
+        "distance_km": 1.2,
+        "hours": {
+          "monday": "06:00-19:00",
+          "tuesday": "06:00-19:00",
+          "wednesday": "06:00-19:00",
+          "thursday": "06:00-19:00",
+          "friday": "06:00-19:00",
+          "saturday": "06:00-18:00",
+          "sunday": "06:00-18:00"
+        }
+      },
+      {
+        "store_id": "69e5fc73fa670d43ca760e53",
+        "name": "Checkers LiquorShop Davenport",
+        "brand": "Checkers LiquorShop",
+        "pos_site_code": "94912",
+        "address": "89 Davenport Road, Glenwood, Durban",
+        "latitude": -29.8609,
+        "longitude": 31.001,
+        "distance_km": 1.2,
+        "hours": {
+          "monday": "08:00-20:00",
+          "tuesday": "08:00-20:00",
+          "wednesday": "08:00-20:00",
+          "thursday": "09:00-20:00",
+          "friday": "09:00-20:00",
+          "saturday": "08:00-17:00",
+          "sunday": "10:00-15:30"
+        }
+      },
+      {
+        "store_id": "6a2c0cf571db63b9c330f94e",
+        "name": "Shoprite SCF West Street",
+        "brand": "Shoprite",
+        "pos_site_code": "18580",
+        "address": "576 West Street, Durban Central, Durban",
+        "latitude": -29.85965877508379,
+        "longitude": 31.012863143440807,
+        "distance_km": 1.4,
+        "hours": {
+          "monday": "06:30-18:00",
+          "tuesday": "06:30-18:00",
+          "wednesday": "06:30-18:00",
+          "thursday": "06:30-18:00",
+          "friday": "06:30-18:00",
+          "saturday": "06:30-17:00",
+          "sunday": "08:00-15:00"
+        }
+      },
+      {
+        "store_id": "69e5fc73fa670d43ca7604e3",
+        "name": "Checkers Overport",
+        "brand": "Checkers",
+        "pos_site_code": "1878",
+        "address": "The Atrium, Juniper Road, Overport, Durban",
+        "latitude": -29.83728056000002,
+        "longitude": 30.99985833,
+        "distance_km": 1.5,
+        "hours": {
+          "monday": "08:00-20:00",
+          "tuesday": "08:00-20:00",
+          "wednesday": "08:00-20:00",
+          "thursday": "08:00-20:00",
+          "friday": "08:00-20:00",
+          "saturday": "08:00-20:00",
+          "sunday": "08:00-20:00"
+        }
+      },
+      {
+        "store_id": "69e5fc74fa670d43ca7623e8",
+        "name": "Petshop Science Overport",
+        "brand": "Petshop Science",
+        "pos_site_code": "167264",
+        "address": "The Atrium Shopping Centre, 430 Peter Mokaba Ridge, Berea, Durban",
+        "latitude": -29.8371,
+        "longitude": 30.9966,
+        "distance_km": 1.6,
+        "hours": {
+          "monday": "08:00-18:00",
+          "tuesday": "08:00-18:00",
+          "wednesday": "08:00-18:00",
+          "thursday": "08:00-18:00",
+          "friday": "08:00-18:00",
+          "saturday": "08:00-17:00",
+          "sunday": "08:00-17:00"
+        }
+      },
+      {
+        "store_id": "6a2c0cf571db63b9c330f840",
+        "name": "Shoprite LiquorShop LSC Umgeni",
+        "brand": "Shoprite LiquorShop",
+        "pos_site_code": "18069",
+        "address": "249 Umgeni Rd, Greyville, Durban",
+        "latitude": -29.84499,
+        "longitude": 31.02058,
+        "distance_km": 1.8,
+        "hours": {
+          "monday": "08:00-18:00",
+          "tuesday": "08:00-18:00",
+          "wednesday": "08:00-18:00",
+          "thursday": "08:00-18:00",
+          "friday": "08:00-18:00",
+          "saturday": "08:00-17:00",
+          "sunday": "10:00-15:30"
+        }
+      }
+    ]
+  }
+}

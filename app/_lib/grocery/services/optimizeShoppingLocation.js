@@ -1,9 +1,14 @@
-const {
-  getCheckersBasket,
-} = require(
-  "./getCheckersBasket"
-);
+// const {
+//   getCheckersBasket,
+// } = require(
+//   "./getCheckersBasket"
+// );
 
+const {
+  getReefCheckersBasket,
+} = require(
+  "./getReefCheckersBasket"
+);
 const {
   getPnpBasket,
 } = require(
@@ -936,6 +941,8 @@ function getCheapestOption(
 async function optimizeShoppingLocation({
   items,
   location,
+  latitude,
+  longitude,
 }) {
 
   if (
@@ -978,16 +985,15 @@ async function optimizeShoppingLocation({
    * providers currently have Parse limits.
    */
 
-  const checkersBasket =
-    await getCheckersBasket(
-      items,
-      {
-        storeId:
-          location
-            .checkers
-            .storeId,
-      }
-    );
+const checkersBasket = await getReefCheckersBasket(
+  items,
+  {
+    latitude,
+    longitude,
+    useLoyaltyPricing: true,
+    useSupabaseCache: false,
+  }
+);
 
 
   const pnpBasket =
