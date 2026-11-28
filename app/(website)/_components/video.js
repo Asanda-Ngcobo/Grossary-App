@@ -1,7 +1,8 @@
 export function Video() {
   return (
     <video
-      className="absolute w-[60%] inset-0 h-full mx-auto object-cover"
+      className="absolute inset-0 h-full
+       w-[60%] mx-auto object-cover md:w-full"
       autoPlay
       muted
       loop

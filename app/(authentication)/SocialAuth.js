@@ -36,8 +36,8 @@ function SocialAuth() {
     }
   }
 
-  const buttonClass =
-    "w-[85%] border border-gray-400 hover:bg-gray-200 cursor-pointer flex justify-center items-center gap-2 rounded-sm py-2 text-sm"
+   const buttonClass =
+    "w-[85%] md:max-w-sm border border-gray-400 hover:bg-gray-100 cursor-pointer flex justify-center items-center gap-2 rounded-sm py-2 text-sm md:py-3 md:text-base md:rounded-md transition-colors";
 
   return (
     <form
@@ -45,25 +45,24 @@ function SocialAuth() {
         e.preventDefault()
         handleSocialLogin()
       }}
-      className="w-full md:w-[40%] h-[40vh] md:shadow-lg rounded-tl-3xl 
-      rounded-tr-3xl
-      bg-gray-200"
+      className="w-full h-[40vh] rounded-t-3xl shadow-2xl shadow-gray-300
+      md:h-full md:w-1/2 md:rounded-none md:bg-white md:shadow-none"
     >
-      <div className="h-full flex flex-col justify-evenly items-center overflow-y-auto px-2 py-2">
+      <div className="h-full flex flex-col justify-evenly items-center overflow-y-auto px-2 py-2 md:px-10 md:py-8">
         {/* Header */}
-        <header className="text-center space-y-0.5">
-          <h1 className={`text-xl font-bold ${LogoFont.className}`}>
-            Welcome to{""}<Logo />
+        <header className="text-center space-y-0.5 md:space-y-2">
+          <h1 className={`text-xl font-bold md:text-3xl ${LogoFont.className}`}>
+            Welcome to <Logo />
           </h1>
-          <h2 className="text-sm font-semibold">
+          <h2 className="text-sm font-semibold md:text-lg">
             Create an account & start saving more for every grocery trip.
           </h2>
-          <p className="text-[#908787] text-xs">
+          <p className="text-[#908787] text-xs md:text-sm">
             Plan smarter. Shop better. Save more.
           </p>
         </header>
 
-        {error && <p className="text-xs text-red-600">{error}</p>}
+        {error && <p className="text-xs text-red-600 md:text-sm">{error}</p>}
 
         <button type="submit" disabled={isLoading} className={buttonClass}>
           {isLoading ? (
@@ -82,7 +81,7 @@ function SocialAuth() {
         </Link>
 
         {/* Terms and Privacy */}
-        <p className="text-center text-[11px] leading-tight text-[#908787] px-2">
+        <p className="text-center text-[11px] leading-tight text-[#908787] px-2 md:text-xs md:max-w-sm">
           By continuing, you agree to our{" "}
           <Link href="/company/terms" className="underline text-[#041527]">
             Terms of Use
@@ -94,7 +93,7 @@ function SocialAuth() {
           .
         </p>
 
-        <p className="text-center text-xs">
+        <p className="text-center text-xs md:text-sm">
           <span className="font-semibold">Already have an account? </span>
           <Link href="/login" className="text-[#5358BB] font-semibold underline">
             Login

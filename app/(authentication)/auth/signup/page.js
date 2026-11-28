@@ -100,15 +100,16 @@ export const metadata = {
 
 export default function Page() {
   return (
-    <div className="w-screen h-screen flex flex-col items-center
-    ">
-    {/* <Testimonials/>  */}
-    <Visuals/>
-        <SocialAuth/>
- 
+    <main className="w-full h-dvh md:flex md:items-center md:justify-center md:bg-gray-100 md:p-8">
+      <div
+        className="w-full h-full flex flex-col items-center justify-center
+        md:flex-row-reverse md:items-stretch md:justify-start
+        md:max-w-5xl md:h-[min(640px,85vh)]
+        md:rounded-3xl md:shadow-2xl md:overflow-hidden md:bg-white"
+      >
+        <Visuals />
+        <SocialAuth />
       </div>
-  
-      
-   
+    </main>
   );
 }
