@@ -1,14 +1,15 @@
 export function Video() {
   return (
     <video
-      className="absolute inset-0 h-full w-[50%] mx-auto object-cover bg-[#0B2E1E]"
+      className="absolute w-[60%] inset-0 h-full mx-auto object-cover"
       autoPlay
       muted
       loop
       playsInline
       preload="metadata"
+      aria-hidden="true"
     >
-      <source src="/more.mp4" type="video/mp4" />
+      <source src="/more (1).mp4" type="video/mp4" />
     </video>
   );
 }

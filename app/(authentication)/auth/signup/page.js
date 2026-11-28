@@ -2,6 +2,7 @@
 import Testimonials from "@/app/(website)/_components/Testimonials";
 import SocialAuth from "../../SocialAuth";
 import Link from "next/link"
+import Visuals from "./Visuals";
 
 
 export const metadata = {
@@ -99,16 +100,12 @@ export const metadata = {
 
 export default function Page() {
   return (
-    <div className="w-screen h-screen flex flex-col justify-center items-center
+    <div className="w-screen h-screen flex flex-col items-center
     ">
     {/* <Testimonials/>  */}
+    <Visuals/>
         <SocialAuth/>
-   <section className="text-center text-sm mt-[10vh]">
-        <span className="font-semibold">Already have an account? </span>
-        <Link href="/login" className="text-[#5358BB] font-semibold underline">
-          Login
-        </Link>
-      </section>
+ 
       </div>
   
       
